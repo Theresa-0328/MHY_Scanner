@@ -6,9 +6,10 @@ class v2api
 public:
 	v2api();
 	void Initialize();
+	std::string GetHttpStream(std::string api, std::map<std::string, std::string> param);
+private:
 	int GetRealRoomID();
 	int HandlerLiveStatus(std::string string);
-	std::string GetHttpStream(std::string api, std::map<std::string, std::string> param);
 private:
 	const std::string V1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";
 	const std::string V2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
