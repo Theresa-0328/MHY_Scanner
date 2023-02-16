@@ -3,6 +3,7 @@
 v2api::v2api() 
 {
 }
+
 void v2api::Initialize()
 {
     int realRoomID = GetRealRoomID();
@@ -46,12 +47,10 @@ int v2api::GetRealRoomID()
 {
 	std::cout << "请输入BiliBili直播间房间号：" << std::endl;
 	std::string roomID;
-	//roomID = "1000";//test id
 	std::cin >> roomID;
 	std::map<std::string, std::string> params = { {"id", roomID} };
 	std::string addres = utils.Url(address, params);
 	std::string result = utils.GetRequest(addres);
-	//std::cout << result << std::endl;
 	int realRoomID = HandlerLiveStatus(result);
 	return realRoomID;
 }
@@ -84,6 +83,8 @@ int v2api::HandlerLiveStatus(std::string string)
 			return room_id;
 		}
 	}
+	std::cout << "未知错误" << std::endl;
+	return -1;
 }
 
 std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::string> param)
