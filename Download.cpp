@@ -6,6 +6,7 @@ std::atomic<bool> stop_download(false);
 Download::Download() :input_thread(&Download::check_input, this) 
 {
     a = 1;
+
 }
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)
@@ -65,7 +66,7 @@ void Download::curlDownlod(std::string url)
         );
         if (fp)
         {
-            curl_easy_setopt(curl, CURLOPT_URL, "https://xy111x22x233x2xy.mcdn.bilivideo.cn:486/live-bvc/344022/live_50329118_9516950_bluray.flv?expires=1676714106&pt=web&deadline=1676714106&len=0&oi=614544756&platform=web&qn=10000&trid=1000567f19db76774f46ae67776dda396354&uipk=100&uipv=100&nbs=1&uparams=cdn,deadline,len,oi,platform,qn,trid,uipk,uipv,nbs&cdn=cn-live-mcdn&upsig=4b9609ca985ee75207a9b5ef84cc775b&sk=4207df3de646838b084f14f252be3affacddc1131b55556afe312ac1012d0357&p2p_type=1&src=57345&sl=10&free_type=0&mid=0&sid=mcdn-wx-hnxx-cm-16000094&chash=0&sche=ban&score=18&pp=rtmp&machinezone=ylf&source=onetier&trace=2&site=2a6e8048d1102882bc97d0758815e06f&order=1");
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
             curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41");
             curl_easy_setopt(curl, CURLOPT_REFERER, "https://live.bilibili.com");
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);

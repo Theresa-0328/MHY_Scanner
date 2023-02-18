@@ -40,6 +40,7 @@ std::string v2api::Initialize()
         {"ts" , "1676498963"}
     };
     std::string playurl = GetHttpStream(V2API,params);
+	playurl = utils.string_To_UTF8(playurl);
 	return playurl;
 }
 
