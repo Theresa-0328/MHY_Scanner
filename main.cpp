@@ -2,10 +2,13 @@
 int main(int argc, char* argv[])
 {
 	v2api v2api;
-	while (true)
-	{
-		v2api.Initialize();
-	}
+	std::string playurl = v2api.Initialize();
+	
+	Download down;
+	down.curlDownlod(playurl);
+	
+	
+	
 	system("pause");
 	//std::ifstream fin("./config.json");
 	//std::stringstream ss;

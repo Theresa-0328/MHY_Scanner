@@ -8,13 +8,18 @@
 #include <map>
 #include <vector>
 #include <string>
+//#include <stdlib.h>
 #include <sstream>
 //#include <objbase.h>
 #include <curl/curl.h>
 #include <fstream>
 #include <locale>
 #include <codecvt>
+#include <thread>
+#include <chrono>
+
 #include "utils.h"
 #include "v2api.h"
 #include "Json.h"
 #include "Parser.h"
+#include "Download.h"
