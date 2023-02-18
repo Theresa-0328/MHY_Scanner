@@ -4,7 +4,7 @@ v2api::v2api()
 {
 }
 
-void v2api::Initialize()
+std::string v2api::Initialize()
 {
     int realRoomID = GetRealRoomID();
     while (realRoomID == -1)
@@ -40,7 +40,7 @@ void v2api::Initialize()
         {"ts" , "1676498963"}
     };
     std::string playurl = GetHttpStream(V2API,params);
-    //V1HandlerQualityUrl(utils.GetChooseQuality(params, V2API), params);
+	return playurl;
 }
 
 int v2api::GetRealRoomID()
@@ -91,7 +91,7 @@ std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::stri
 {
 	std::string address = utils.Url(api, param);
 	
-	std::string str = utils.GetRequest(address, headers);
+	std::string str = utils.GetRequest(address);
 
 	json::Json j;
 	j.parse(str);
