@@ -1,5 +1,5 @@
 # bilibili_live_honkai_scanner
-- ffmpeg 
 - curl
-
+- opencv
+- cbar
 The test
