@@ -18,7 +18,7 @@ using namespace cv;
 
 int main(int argc, char* argv[])
 {
-    // 打开 FLV 视频文件
+    // 鎵撳紑 FLV 瑙嗛鏂囦欢
     avformat_network_init();
     AVFormatContext* format_ctx = avformat_alloc_context();
     if (avformat_open_input(&format_ctx, "test.flv", NULL, NULL) != 0) {
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // 创建窗口并初始化 OpenCV 图像处理
+    // 鍒涘缓绐楀彛骞跺垵濮嬪寲 OpenCV 鍥惧儚澶勭悊
     namedWindow("FLV Video", cv::WINDOW_NORMAL);
     cv::namedWindow("FLV Video", cv::WINDOW_NORMAL);
     cv::resizeWindow("FLV Video", 1280, 720);
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
     av_image_fill_arrays(frame_BGR->data, frame_BGR->linesize, buffer, AV_PIX_FMT_BGR24, codec_ctx->width, codec_ctx->height, 1);
     SwsContext* sws_ctx = sws_getContext(codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt, codec_ctx->width, codec_ctx->height, AV_PIX_FMT_BGR24, SWS_BILINEAR, NULL, NULL, NULL);
 
-    // 循环读取视频帧并显示
+    // 寰幆璇诲彇瑙嗛甯у苟鏄剧ず
     while (av_read_frame(format_ctx, &packet) >= 0) {
         if (packet.stream_index == video_stream_index) {
             avcodec_send_packet(codec_ctx, &packet);
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
             av_packet_unref(&packet);
         }
     }
-    // 释放资源
+    // 閲婃斁璧勬簮
     av_free(buffer);
     av_frame_free(&frame);
     av_frame_free(&frame_BGR);
