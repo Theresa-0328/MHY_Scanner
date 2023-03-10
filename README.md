@@ -1,4 +1,4 @@
-# bilibili_live_honkai_scan
+# BilibiliLiveHonkai3Scan
 
 ## 依赖
 - curl
