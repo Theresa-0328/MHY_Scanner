@@ -1,4 +1,4 @@
-# BilibiliLiveHonkai3Scan
+# Honkai3StreamQRCode
 
 ## 依赖
 - curl
