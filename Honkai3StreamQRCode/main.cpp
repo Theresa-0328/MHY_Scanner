@@ -8,7 +8,6 @@ int main(int argc, char* argv[])
 	down.curlDownlod(playurl);
 	
 	
-	
 	system("pause");
 	//std::ifstream fin("./config.json");
 	//std::stringstream ss;
