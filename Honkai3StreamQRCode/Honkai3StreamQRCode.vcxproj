@@ -127,11 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="config.json" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Download.cpp" />
-    <ClCompile Include="ffmpeg opencv test.cpp" />
+    <ClCompile Include="ffmpeg opencv test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
