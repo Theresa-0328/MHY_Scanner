@@ -6,7 +6,6 @@ std::atomic<bool> stop_download(false);
 Download::Download() :input_thread(&Download::check_input, this) 
 {
     a = 1;
-
 }
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)

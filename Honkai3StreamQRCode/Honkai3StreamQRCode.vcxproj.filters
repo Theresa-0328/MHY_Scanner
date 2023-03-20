@@ -18,9 +18,6 @@
     <ClCompile Include="Download.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpeg opencv test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Json.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -37,6 +34,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="v2api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg opencv test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,9 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="..\README.md">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
