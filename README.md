@@ -10,7 +10,7 @@
 ## 依赖
 - curl
 - opencv
-- cbar
+- cbar-64
 - ffmpeg
 
 
