@@ -27,16 +27,10 @@
     <ClCompile Include="Parser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Scan.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="v2api.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ffmpeg opencv test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,9 +45,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Parser.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Scan.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">

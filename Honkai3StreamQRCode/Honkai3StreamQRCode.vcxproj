@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\opencv\build\x64\vc15\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -137,15 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Download.cpp" />
-    <ClCompile Include="ffmpeg opencv test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Scan.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="v2api.cpp" />
   </ItemGroup>
@@ -154,11 +148,13 @@
     <ClInclude Include="Json.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="Scan.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="utils.h" />
     <ClInclude Include="v2api.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Scan\Scan.vcxproj">
+      <Project>{46134dc5-8a6e-420c-a99a-3ab3c89f7abb}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

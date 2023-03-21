@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <thread>
-//#include <mutex>
+#include <mutex>
+#include <condition_variable>
 #include <opencv2/opencv.hpp>
 #include <zbar.h>
 #include "Scan.h"
@@ -18,7 +19,7 @@ extern "C"
 int main()
 {
 	Scan scan;
-	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\output.flv");
+	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\test.flv");
 	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
 	scan.FFmpegDecoder(index);
@@ -27,9 +28,7 @@ int main()
 	scan.swsctx(&scan.swsCtx);
 	std::string qrCode;
 
-	namedWindow("Video", cv::WINDOW_NORMAL);
-	cv::namedWindow("Video", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Video", 1280, 720);
+	scan.opencvinit();
 
 	int64_t latestTimestamp = av_gettime_relative();
 
@@ -44,7 +43,7 @@ int main()
 	}
 
 	//av_seek_frame(scan.avformatContext, index, 10 * AV_TIME_BASE, 1);
-	while (/*scan.read(scan.avPacket) >= 0*/1)
+	while (/*scan.read(scan.avPacket) >= 0*/true)
 	{
 		scan.read(scan.avPacket);
 		if (scan.avPacket->stream_index == index)
@@ -80,15 +79,21 @@ int main()
 						break;
 					}
 				}
-				if (qrCode == "11")
-				{
-					break;//不是崩坏二维码情况
-				}
 				frameCount++;
+			}
+			if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
+			{
+				break;
+			}
+			if (qrCode != "")
+			{
+				std::cout << "非崩坏3三二维码" << std::endl;
 			}
 		}
 		av_packet_unref(scan.avPacket);
-
 	}
+
+	std::cout << "test" << std::endl;
+
 	return 0;
 }
