@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Honkai3StreamQRCode", "Honkai3StreamQRCode\Honkai3StreamQRCode.vcxproj", "{39000E21-282F-436B-BF58-BA0DE18B942B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB} = {46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scan", "Scan\Scan.vcxproj", "{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}"
 EndProject
