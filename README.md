@@ -13,7 +13,8 @@
 - cbar-64
 - ffmpeg
 
-
-The test
-
-Markdown
+## 计划
+- GUI
+- 同时抢多个直播间
+- 去除cbar-64依赖
+- 优化cpu占用
