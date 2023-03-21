@@ -11,7 +11,9 @@ std::string v2api::Initialize()
     {
         realRoomID = GetRealRoomID();
     }
-    std::cout << "realRoomID:" << realRoomID << std::endl;
+#ifdef _DEBUG
+	std::cout << "realRoomID:" << realRoomID << std::endl;
+#endif
     std::map<std::string, std::string> params =
     {
         //appkey:iVGUTjsxvpLeuDCf
@@ -108,6 +110,9 @@ std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::stri
 		pos = streamUrl.find("0026");
 	}
 
+#ifdef _DEBUG
 	std::cout << streamUrl << std::endl;
+#endif // _DEBUG
+	
 	return streamUrl;
 }
