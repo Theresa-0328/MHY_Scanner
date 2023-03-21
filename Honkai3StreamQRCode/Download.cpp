@@ -1,14 +1,13 @@
 #include "main.h"
 
 std::atomic<bool> stop_download(false);
-// 定义回调函数，将curl下载的数据写入缓冲区
 
 Download::Download() :input_thread(&Download::check_input, this) 
 {
     a = 1;
 }
 
-size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)
+size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
 {
     if (stop_download.load())
     {
@@ -55,13 +54,13 @@ void Download::curlDownlod(std::string url)
     {
         //fopen_s下载时打不开
         HANDLE fp = CreateFile(
-            L".\\cache\\output.flv",                  // 文件名
-            GENERIC_WRITE,                  // 访问权限
+            L".\\cache\\output.flv",            // 文件名
+            GENERIC_WRITE,                      // 访问权限
             FILE_SHARE_READ | FILE_SHARE_WRITE, // 共享模式
-            NULL,                           // 安全属性
-            CREATE_ALWAYS,                  // 打开模式
-            FILE_ATTRIBUTE_NORMAL,          // 文件属性
-            NULL                            // 模板文件句柄
+            NULL,                               // 安全属性
+            CREATE_ALWAYS,                      // 打开模式
+            FILE_ATTRIBUTE_NORMAL,              // 文件属性
+            NULL                                // 模板文件句柄
         );
         if (fp)
         {
@@ -104,5 +103,8 @@ void Download::curlDownlod(std::string url)
         }
     }
 
+#ifdef _DEBUG
     std::cout << "Exiting program." << std::endl;
+#endif
+
 }

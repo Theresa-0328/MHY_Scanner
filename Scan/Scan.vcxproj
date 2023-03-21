@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{39000e21-282f-436b-bf58-ba0de18b942b}</ProjectGuid>
-    <RootNamespace>Honkai3StreamQRCode</RootNamespace>
+    <ProjectGuid>{46134dc5-8a6e-420c-a99a-3ab3c89f7abb}</ProjectGuid>
+    <RootNamespace>Scan</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\opencv\build\x64\vc15\lib;C:\Program Files (x86)\ZBar\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,14 +106,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460d.lib;libzbar64-0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460d.lib;libzbar64-0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,32 +132,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="config.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Download.cpp" />
-    <ClCompile Include="ffmpeg opencv test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Scan.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="utils.cpp" />
-    <ClCompile Include="v2api.cpp" />
+    <ClCompile Include="Scan.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Download.h" />
-    <ClInclude Include="Json.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="Scan.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="v2api.h" />
+    <ClInclude Include="Scan.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
