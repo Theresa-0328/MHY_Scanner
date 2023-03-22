@@ -1,6 +1,6 @@
 #include "main.h"
 
-std::atomic<bool> stop_download(false);
+std::atomic<bool> stop_download(0);
 
 Download::Download() :input_thread(&Download::check_input, this) 
 {
@@ -15,7 +15,7 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
     }
     DWORD bytes_written = 0;
     BOOL result = WriteFile((HANDLE)stream, ptr, size * nmemb, &bytes_written, NULL);
-    if (result == TRUE)
+    if (result)
     {
         return bytes_written / size;
     }
@@ -29,18 +29,6 @@ void Download::check_input()
 {
     char ch = 0;
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    while (a)
-    {
-        if (a)
-        {
-            ch = std::getchar();
-        }
-        if (ch == 's')
-        {
-            stop_download = true;
-            break;
-        }
-    }
     stop_download = true;
 }
 
@@ -72,7 +60,8 @@ void Download::curlDownlod(std::string url)
             curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000L);
             curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 
-            std::thread input_thread;
+            auto lambda = [this]() { check_input(); };
+            std::thread th(lambda);
 
             CURLcode res = curl_easy_perform(curl);
             //res = CURLE_OK;
@@ -99,7 +88,7 @@ void Download::curlDownlod(std::string url)
             curl_easy_cleanup(curl);
 
             // 等待用户输入线程结束
-            input_thread.join();
+            th.join();
         }
     }
 
