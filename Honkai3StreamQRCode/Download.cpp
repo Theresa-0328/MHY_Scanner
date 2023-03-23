@@ -27,8 +27,7 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
 
 void Download::check_input()
 {
-    char ch = 0;
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::seconds(20));
     stop_download = true;
 }
 
@@ -81,7 +80,6 @@ void Download::curlDownlod(std::string url)
             // 暂停下载操作
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
             curl_easy_pause(curl, CURLPAUSE_ALL);
-
 
             // 关闭文件句柄并释放CURL对象
             CloseHandle(fp);
