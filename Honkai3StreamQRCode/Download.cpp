@@ -84,7 +84,7 @@ void Download::curlDownlod(std::string url)
             curl_easy_cleanup(curl);
 
             // 等待用户输入线程结束
-            th.detach();
+            th.join();
         }
     }
 

@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	Download down;
 	down.curlDownlod(playurl);
 	
-	system("pause");
+	//system("pause");
 	
 	//std::ifstream fin("./config.json");
 	//std::stringstream ss;
@@ -114,6 +114,5 @@ int main(int argc, char* argv[])
 	//}
 
 	//std::cout << "test" << std::endl;
-	
 	return 0;
 }
