@@ -6,7 +6,6 @@ public:
 	Download();
 	void curlDownlod(std::string url);
 private:
-	int a;
 	std::thread input_thread;
 	bool isExit = false;
 private:
