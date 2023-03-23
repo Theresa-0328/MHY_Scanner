@@ -2,9 +2,9 @@
 
 std::atomic<bool> stop_download(0);
 
-Download::Download() :input_thread(&Download::check_input, this) 
+Download::Download() /*:input_thread(&Download::check_input, this) */
 {
-    a = 1;
+
 }
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
@@ -27,7 +27,7 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
 
 void Download::check_input()
 {
-    std::this_thread::sleep_for(std::chrono::seconds(20));
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     stop_download = true;
 }
 
@@ -68,13 +68,11 @@ void Download::curlDownlod(std::string url)
             {
                 std::cout << "Download completed successfully." << std::endl;
                 //stop_download.store(true);
-                a = 0;
 
             }
             else
             {
                 std::cout << "Error downloading: " << curl_easy_strerror(res) << std::endl;
-                a = 0;
             }
 
             // 暂停下载操作
@@ -86,7 +84,7 @@ void Download::curlDownlod(std::string url)
             curl_easy_cleanup(curl);
 
             // 等待用户输入线程结束
-            th.join();
+            th.detach();
         }
     }
 
