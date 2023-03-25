@@ -59,8 +59,8 @@ void Download::curlDownlod(std::string url)
             curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000L);
             curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 
-            auto lambda = [this]() { check_input(); };
-            std::thread th(lambda);
+            //auto lambda = [this]() { check_input(); };
+            //std::thread th(lambda);
 
             CURLcode res = curl_easy_perform(curl);
             //res = CURLE_OK;
@@ -84,7 +84,7 @@ void Download::curlDownlod(std::string url)
             curl_easy_cleanup(curl);
 
             // 等待用户输入线程结束
-            th.join();
+            //th.join();
         }
     }
 
