@@ -7,6 +7,7 @@
 #include <opencv2/opencv.hpp>
 #include <zbar.h>
 #include "..//Scan/Scan.h"
+#include <Windows.h>
 
 extern "C"
 {
@@ -19,8 +20,9 @@ extern "C"
 
 void a()
 {
+	Sleep(3000);
 	Scan scan;
-	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\test.flv");
+	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\output.flv");
 	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
 	scan.FFmpegDecoder(index);
@@ -107,6 +109,8 @@ int main(int argc, char* argv[])
 	
 	std::thread th1(a);
 	th.join();
+	th1.join();
+	getchar();
 	//system("pause");
 	
 	//std::ifstream fin("./config.json");
