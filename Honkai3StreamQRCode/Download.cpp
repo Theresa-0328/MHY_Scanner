@@ -91,5 +91,4 @@ void Download::curlDownlod(std::string url)
 #ifdef _DEBUG
     std::cout << "Exiting program." << std::endl;
 #endif
-
 }
