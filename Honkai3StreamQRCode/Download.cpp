@@ -1,15 +1,14 @@
 #include "main.h"
 
-std::atomic<bool> stop_download(0);
 
 Download::Download() /*:input_thread(&Download::check_input, this) */
 {
-
+    stop_download = 0;
 }
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
 {
-    if (stop_download.load())
+    if (stop_download)
     {
         return 0;//表示不再写入数据
     }
