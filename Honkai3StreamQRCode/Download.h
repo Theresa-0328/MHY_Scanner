@@ -8,6 +8,11 @@ public:
 	Download();
 	void curlDownlod(std::string url);
 	void check_input();
+	static std::atomic<int> stop_download;
+	void getstop()
+	{
+		this->stop_download = 1;
+	}
 private:
 	std::thread input_thread;
 private:
