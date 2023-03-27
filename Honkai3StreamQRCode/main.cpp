@@ -19,11 +19,11 @@ extern "C"
 #include <libswscale/swscale.h>
 }
 
-void a(std::promise<std::string> url)
+void scanMain(std::promise<std::string> url)
 {
-	Sleep(3000);
+	Sleep(1500);
 	Scan scan;
-	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\test.flv");
+	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\output.flv");
 	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
 	scan.FFmpegDecoder(index);
@@ -114,15 +114,18 @@ int main(int argc, char* argv[])
 	
 	std::promise<std::string> QRcodeUrl;
 	std::future<std::string> future_result = QRcodeUrl.get_future();
-	std::thread th1(a, std::move(QRcodeUrl));
+	std::thread th1(scanMain, std::move(QRcodeUrl));
 	th1.join();
 	QRcode = future_result.get();
 	std::cout << "========================" << std::endl;
 	std::cout << QRcode << std::endl;
 	//down.getstop();
-
-	th.join();
-	getchar();
+	if(QRcode!="")
+	{
+		down.stopDownloadAfterDelay();
+		th.join();
+	}
+	//getchar();
 	
 	//std::ifstream fin("./config.json");
 	//std::stringstream ss;

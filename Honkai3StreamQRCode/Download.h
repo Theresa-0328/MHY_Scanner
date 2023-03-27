@@ -1,20 +1,19 @@
 #pragma once
 #include "main.h"
+#include <mutex>
 class Download
 {
 public:
-	bool isExit = false;
-public:
 	Download();
 	void curlDownlod(std::string url);
-	void check_input();
-	static std::atomic<int> stop_download;
-	void getstop()
-	{
-		this->stop_download = 1;
-	}
+	void stopDownloadAfterDelay();
 private:
 	std::thread input_thread;
+	CURL* curl = curl_easy_init();
 private:
 	static size_t write_data(void* ptr, size_t size, size_t nmemb, void* stream);
+	
+	std::atomic<bool> stop_download;
+	std::mutex mux;
+	HANDLE fp;
 };
