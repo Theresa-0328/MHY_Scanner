@@ -48,7 +48,7 @@ std::string v2api::Initialize()
 
 int v2api::GetRealRoomID()
 {
-	std::cout << "请输入BiliBili直播间房间号：" << std::endl;
+	std::cout << "请输入BiliBili直播间房间号：";
 	std::string roomID;
 	std::cin >> roomID;
 	std::map<std::string, std::string> params = { {"id", roomID} };
