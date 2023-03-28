@@ -361,7 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/架构.txt
 /Honkai3StreamQRCode/cache/output.flv
 /Honkai3StreamQRCode/cache/test.flv
 *.flv
