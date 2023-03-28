@@ -139,6 +139,7 @@
     <ClCompile Include="Download.cpp" />
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Md5.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="v2api.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Download.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Md5.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="v2api.h" />
