@@ -36,6 +36,12 @@
     <ClCompile Include="Md5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Bsgsdk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h">
@@ -57,6 +63,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Bsgsdk.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

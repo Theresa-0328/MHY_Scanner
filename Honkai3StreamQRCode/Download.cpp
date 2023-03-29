@@ -9,11 +9,6 @@ Download::Download() /*:input_thread(&Download::check_input, this) */
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
 {
-    if (0)
-    {
-        return 0;
-    }
-    
     DWORD bytes_written = 0;
     BOOL result = WriteFile((HANDLE)stream, ptr, size * nmemb, &bytes_written, NULL);
     if (result)

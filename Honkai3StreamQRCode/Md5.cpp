@@ -4,7 +4,7 @@
 
 // Constants for MD5Transform routine.  
 constexpr int S11 = 7;
-#define S12 12  
+constexpr int S12 = 12  ;
 #define S13 17  
 #define S14 22  
 #define S21 5  

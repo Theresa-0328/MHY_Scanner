@@ -108,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,18 +137,23 @@
     <None Include="config.json" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bsgsdk.cpp" />
     <ClCompile Include="Download.cpp" />
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Md5.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="v2api.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bsgsdk.h" />
     <ClInclude Include="Download.h" />
     <ClInclude Include="Json.h" />
-    <ClInclude Include="main.h" />
+    <ClInclude Include="main.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Md5.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="utils.h" />

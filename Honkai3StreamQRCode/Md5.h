@@ -19,8 +19,8 @@ public:
 
     MD5();
     MD5(const std::string& text);
-    //void update(const unsigned char* buf, size_type length);
-    //void update(const char* buf, size_type length);
+    void update(const unsigned char* buf, size_type length);
+    void update(const char* buf, size_type length);
     MD5& finalize();
     std::string hexdigest() const;
     friend std::ostream& operator<<(std::ostream&, MD5 md5);

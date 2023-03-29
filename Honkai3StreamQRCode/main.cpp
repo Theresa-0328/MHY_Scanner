@@ -19,6 +19,7 @@ extern "C"
 #include <libswscale/swscale.h>
 }
 
+
 void scanMain(std::promise<std::string> url)
 {
 	Sleep(1500);
@@ -137,6 +138,6 @@ int main(int argc, char* argv[])
 	//a = v["quality_description"][0];
 	//std::cout << a.str() <<std::endl;
 	////！！！！！v.clear();
-	std::cout << "exit" << std::endl;
+	std::cout << "Exit" << std::endl;
 	return 0;
 }
