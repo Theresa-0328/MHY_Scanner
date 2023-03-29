@@ -1,8 +1,4 @@
 #pragma once
-//MD5.h   
-#ifndef BZF_MD5_H  
-#define BZF_MD5_H  
-
 #include <string>  
 #include <iostream>  
 
@@ -23,8 +19,8 @@ public:
 
     MD5();
     MD5(const std::string& text);
-    void update(const unsigned char* buf, size_type length);
-    void update(const char* buf, size_type length);
+    //void update(const unsigned char* buf, size_type length);
+    //void update(const char* buf, size_type length);
     MD5& finalize();
     std::string hexdigest() const;
     friend std::ostream& operator<<(std::ostream&, MD5 md5);
@@ -58,5 +54,3 @@ private:
 };
 
 std::string md5(const std::string str);
-
-#endif  

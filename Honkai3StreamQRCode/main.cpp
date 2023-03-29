@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
 	//json::Json a;
 	//a = v["quality_description"][0];
 	//std::cout << a.str() <<std::endl;
-	////注意！！！！！v.clear();
+	////！！！！！v.clear();
 	std::cout << "exit" << std::endl;
 	return 0;
 }

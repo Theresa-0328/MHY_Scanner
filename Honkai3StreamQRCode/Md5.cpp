@@ -1,16 +1,9 @@
-//MD5.cpp  
-
-
-/* interface header */
 #include "Md5.h"  
-
-/* system implementation headers */
 #include <stdio.h> 
 #include <cstring> 
-#pragma warning(disable : 4996)
 
 // Constants for MD5Transform routine.  
-#define S11 7  
+constexpr int S11 = 7;
 #define S12 12  
 #define S13 17  
 #define S14 22  
