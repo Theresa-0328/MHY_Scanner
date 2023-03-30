@@ -1,5 +1,4 @@
 ﻿#include "main.h"
-
 json::Parser::Parser():m_idx(0)
 {
 }

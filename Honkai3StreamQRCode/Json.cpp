@@ -431,3 +431,16 @@ void json::Json::parse(const std::string str)
 	p.load(str);
 	*this = p.parse();
 }
+
+std::map<std::string, std::string> json::Json::objToMap()
+{
+	std::map<std::string, std::string> re;
+	if (m_value.m_object != nullptr) 
+	{
+		for (auto it = m_value.m_object->begin(); it != m_value.m_object->end(); it++) 
+		{
+			re[it->first] = it->second.str();
+		}
+	}
+	return re;
+}

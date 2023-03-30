@@ -78,7 +78,8 @@ namespace json
 		void remove(const std::string &key);
 
 		void parse(const std::string str);
-
+		
+		std::map<std::string, std::string> objToMap();
 	private:
 		union Value
 		{
