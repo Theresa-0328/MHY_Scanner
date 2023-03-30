@@ -160,7 +160,7 @@ std::string utils::GetRequest(std::string address, std::map<std::string, std::st
 	return a;
 }
 
-std::string utils::PostRequest()
+CURLcode utils::PostRequest(const std::string& url, const std::string& postParams, std::string& response)
 {
 	// curl初始化  
 	CURL* curl = curl_easy_init();
