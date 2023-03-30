@@ -1,4 +1,4 @@
-﻿#include "main.h"
+﻿#include "utils.h"
 
 
 //std::string utils::string_To_UTF8(const std::string& str)
@@ -165,50 +165,78 @@ CURLcode utils::PostRequest(const std::string& url, const std::string& postParam
 	// curl初始化  
 	CURL* curl = curl_easy_init();
 	// curl返回值 
-	CURLcode res;
+	CURLcode res{};
 	if (curl)
 	{
 		// set params
 		//设置curl的请求头
 		struct curl_slist* header_list = NULL;
-		header_list = curl_slist_append(header_list, "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
-		header_list = curl_slist_append(header_list, "Content-Type:application/json; charset=UTF-8");
+		header_list = curl_slist_append(header_list, "User-Agent:Mozilla/5.0 BSGameSDK");
+		header_list = curl_slist_append(header_list, "Content-Type:application/x-www-form-urlencoded");
+		header_list = curl_slist_append(header_list, "Host:line1-sdk-center-login-sh.biligame.net");
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header_list);
 
 		//不接收响应头数据0代表不接收 1代表接收
 		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-
 		//设置请求为post请求
 		curl_easy_setopt(curl, CURLOPT_POST, 1);
-
 		//设置请求的URL地址
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 		//设置post请求的参数
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postParams.c_str());
-
 		//设置ssl验证
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
-
 		//CURLOPT_VERBOSE的值为1时，会显示详细的调试信息
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);
-
 		curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
-
 		//设置数据接收和写入函数
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&response);
 
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
-
 		//设置超时时间(单位：s)
 		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
-
 		// 开启post请求
 		res = curl_easy_perform(curl);
 	}
 	//释放curl 
 	curl_easy_cleanup(curl);
 	return res;
+}
+
+int utils::getCurrentUnixTime()
+{
+	return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+std::string utils::urlEncode(const std::string& str)
+{
+	std::string result;
+	for (auto& ch : str) 
+	{
+		if (std::isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == '~') 
+		{
+			result += ch;
+		}
+		else 
+		{
+			result += '%' + std::to_string((int)ch / 16) + std::to_string((int)ch % 16);
+		}
+	}
+	return result;
+}
+
+std::string utils::unicodeEncode(const std::string& str) 
+{
+	std::string result;
+	for (auto& ch : str) 
+	{
+		result += "\\u" + std::to_string((int)ch / 16 / 16 / 16 % 16) +
+			std::to_string((int)ch / 16 / 16 % 16) +
+			std::to_string((int)ch / 16 % 16) +
+			std::to_string((int)ch % 16);
+	}
+	return result;
 }

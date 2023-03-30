@@ -1,16 +1,65 @@
 #include "Bsgsdk.h"
 
+std::string Bsgsdk::remove_quotes(std::string str)
+{
+    std::string result = "";
+    char* p = &str[0];
+    while (*p != '\0') 
+    {
+        if (*p != '"') 
+        {
+            result += *p;
+        }
+        p++;
+    }
+    return result;
+}
+
+std::string Bsgsdk::setSign(std::map<std::string, std::string>data)
+{
+    int t = u.getCurrentUnixTime();
+    data["timestamp"] = std::to_string(t);
+    data["client_timestamp"] = std::to_string(t);
+    std::string sign;
+    std::string data2;
+    for (std::pair<std::string, std::string> c : data)
+    {
+        if (c.first == "pwd")
+        {
+            std::string pwd = u.urlEncode(c.second);
+            data2 += c.first+"="+pwd + "&";
+        }
+        data2 += c.first + "=" + c.second + "&";
+    }
+    for (std::pair<std::string, std::string> c : data)
+    {
+        sign += c.second;
+    }
+    sign = sign + "dbf8f1b4496f430b8a3c0f436a35b931";
+    sign = md5(sign);
+    data2 += "sign=" + sign;
+    return data2;
+}
+
 json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
 {
-    
-    return json::Json();
+    std::string s;
+    json::Json j;
+    j.parse(userinfoParam);
+    j["uid"] = uid;
+    j["accessKey"] = accessKey;
+    std::map < std::string, std::string > m;
+    m = j.objToMap();
+    for (auto& a : m)
+    {
+        a.second = remove_quotes(a.second);
+    }
+    s = setSign(m);
+    std::cout << s << std::endl;
+    return j;
 }
 
-Bsgsdk::Bsgsdk()
-{
-}
-
-json::Json Bsgsdk::login()
-{
-    return json::Json();
-}
+//json::Json Bsgsdk::login()
+//{
+//    return json::Json();
+//}
