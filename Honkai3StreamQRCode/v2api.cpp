@@ -1,6 +1,6 @@
 ﻿#include "main.h"
 
-v2api::v2api() 
+v2api::v2api()
 {
 }
 
