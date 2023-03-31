@@ -44,10 +44,11 @@ std::string Bsgsdk::setSign(std::map<std::string, std::string>data)
 json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
 {
     std::string s;
+    std::string t;
     json::Json j;
     j.parse(userinfoParam);
     j["uid"] = uid;
-    j["accessKey"] = accessKey;
+    j["access_key"] = accessKey;
     std::map < std::string, std::string > m;
     m = j.objToMap();
     for (auto& a : m)
@@ -55,7 +56,9 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
         a.second = remove_quotes(a.second);
     }
     s = setSign(m);
-    std::cout << s << std::endl;
+    u.PostRequest(bililogin + "api/client/user.info", s, t);
+    t = u.UTF8_To_string(t);
+    std::cout << t << std::endl;
     return j;
 }
 
