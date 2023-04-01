@@ -148,6 +148,7 @@
     <ClCompile Include="Md5.cpp" />
     <ClCompile Include="Mihoyosdk.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Sha256.cpp" />
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -161,6 +162,7 @@
     <ClInclude Include="Md5.h" />
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Sha256.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="v2api.h" />
   </ItemGroup>
