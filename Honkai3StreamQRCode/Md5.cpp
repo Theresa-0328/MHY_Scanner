@@ -1,7 +1,4 @@
 #include "Md5.h"  
-#include <stdio.h> 
-#include <cstring> 
-
 // Constants for MD5Transform routine.  
 constexpr int S11 = 7;
 constexpr int S12 = 12  ;

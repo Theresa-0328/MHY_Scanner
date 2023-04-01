@@ -1,6 +1,7 @@
 #pragma once
-#include "main.h"
+#include<curl/curl.h>
 #include <mutex>
+#include <iostream>
 class Download
 {
 public:

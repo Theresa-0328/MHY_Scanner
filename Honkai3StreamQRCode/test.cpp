@@ -1,5 +1,6 @@
-#include"main.h"
 #include"Bsgsdk.h"
+#include"Mihoyosdk.h"
+
 using namespace json;
 using namespace std;
 int main()
@@ -22,5 +23,10 @@ int main()
 	//res = b.setSign(j);
 	res = j.str();
 	cout << res << endl;
+	string uid = j["uid"];
+	string access_key = j["access_key"];
+	Mihoyosdk m;
+	m.verify(uid, access_key);
+
 
 }
