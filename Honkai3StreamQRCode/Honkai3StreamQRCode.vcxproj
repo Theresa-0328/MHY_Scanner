@@ -146,6 +146,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Md5.cpp" />
+    <ClCompile Include="Mihoyosdk.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -157,10 +158,8 @@
     <ClInclude Include="Bsgsdk.h" />
     <ClInclude Include="Download.h" />
     <ClInclude Include="Json.h" />
-    <ClInclude Include="main.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Md5.h" />
+    <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="v2api.h" />

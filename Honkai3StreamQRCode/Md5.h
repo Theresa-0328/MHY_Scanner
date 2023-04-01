@@ -1,6 +1,8 @@
 #pragma once
 #include <string>  
-#include <iostream>  
+#include <iostream>
+#include <stdio.h> 
+#include <cstring> 
 
 // a small class for calculating MD5 hashes of strings or byte arrays  
 // it is not meant to be fast or secure  
