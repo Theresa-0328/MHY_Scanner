@@ -126,15 +126,15 @@ size_t utils::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get
 	return size * nmemb;
 }
 
-std::string utils::GetRequest(std::string address, std::map<std::string, std::string> headers)
+CURLcode utils::GetRequest(std::string& response,std::string address, std::map<std::string, std::string> headers)
 {
-	std::string response;
 	CURL* curl = curl_easy_init(); // 初始化 cURL 库;
-	CURLcode res;
+	CURLcode res{};
 	if (curl)
 	{
 		struct curl_slist* headerList = NULL; // 定义 headerList 变量
-		for (const auto& kv : headers) {
+		for (const auto& kv : headers) 
+		{
 			std::string header = kv.first + ": " + kv.second;
 			headerList = curl_slist_append(headerList, header.c_str());
 		}
@@ -143,24 +143,15 @@ std::string utils::GetRequest(std::string address, std::map<std::string, std::st
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response); // 设置回调函数，保存请求返回的数据
 		res = curl_easy_perform(curl); // 发送请求
-
-		/* Check for errors */
-		if (res != CURLE_OK)
-		{
-			std::cerr << "cURL error: " << curl_easy_strerror(res) << std::endl;
-		}
-
 		/* always cleanup */
 		curl_easy_cleanup(curl);
 		curl_slist_free_all(headerList);
 	}
-	std::string  a = UTF8_To_string(response);
-	//std::cout << a << std::endl;
-	return a;
+	return res;
 }
 
-CURLcode utils::PostRequest(const std::string& url, const std::string& postParams, 
-	std::map<std::string, std::string> headers, std::string& response)
+CURLcode utils::PostRequest(std::string& response,const std::string& url, const std::string& postParams,
+	std::map<std::string, std::string> headers)
 {
 	// curl初始化  
 	CURL* curl = curl_easy_init();
@@ -171,13 +162,11 @@ CURLcode utils::PostRequest(const std::string& url, const std::string& postParam
 		// set params
 		//设置curl的请求头
 		struct curl_slist* headerList = NULL;
-		for (const auto& kv : headers) {
+		for (const auto& kv : headers) 
+		{
 			std::string header = kv.first + ": " + kv.second;
 			headerList = curl_slist_append(headerList, header.c_str());
 		}
-		headerList = curl_slist_append(headerList, "User-Agent:Mozilla/5.0 BSGameSDK");
-		headerList = curl_slist_append(headerList, "Content-Type:application/x-www-form-urlencoded");
-		headerList = curl_slist_append(headerList, "Host:line1-sdk-center-login-sh.biligame.net");
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
 
 		//不接收响应头数据0代表不接收 1代表接收
@@ -204,9 +193,10 @@ CURLcode utils::PostRequest(const std::string& url, const std::string& postParam
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
 		// 开启post请求
 		res = curl_easy_perform(curl);
+		//释放curl 
+		curl_easy_cleanup(curl);
+		curl_slist_free_all(headerList);
 	}
-	//释放curl 
-	curl_easy_cleanup(curl);
 	return res;
 }
 
