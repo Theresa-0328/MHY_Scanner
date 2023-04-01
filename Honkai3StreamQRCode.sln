@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Honkai3StreamQRCode", "Honk
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scan", "Scan\Scan.vcxproj", "{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSL", "SSL\SSL.vcxproj", "{E3EB3982-C14D-4181-A9FE-7C5083C9879C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +36,14 @@ Global
 		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x64.Build.0 = Release|x64
 		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x86.ActiveCfg = Release|Win32
 		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x86.Build.0 = Release|Win32
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Debug|x64.ActiveCfg = Debug|x64
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Debug|x64.Build.0 = Debug|x64
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Debug|x86.ActiveCfg = Debug|Win32
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Debug|x86.Build.0 = Debug|Win32
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Release|x64.ActiveCfg = Release|x64
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Release|x64.Build.0 = Release|x64
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Release|x86.ActiveCfg = Release|Win32
+		{E3EB3982-C14D-4181-A9FE-7C5083C9879C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

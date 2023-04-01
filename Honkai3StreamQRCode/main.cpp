@@ -24,6 +24,7 @@ extern "C"
 }
 
 #include "v2api.h"
+#include "Download.h"
 
 void scanMain(std::promise<std::string> url)
 {
