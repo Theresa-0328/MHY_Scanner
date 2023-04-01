@@ -62,7 +62,7 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
         {"Content-Type","application/x-www-form-urlencoded"}, 
         {"Host","line1-sdk-center-login-sh.biligame.net"} 
     };
-    u.PostRequest(bililogin + "api/client/user.info", s,m, t);
+    u.PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = u.UTF8_To_string(t);
     std::cout << t << std::endl;
     return j;

@@ -53,7 +53,9 @@ int v2api::GetRealRoomID()
 	std::cin >> roomID;
 	std::map<std::string, std::string> params = { {"id", roomID} };
 	std::string addres = utils.Url(address, params);
-	std::string result = utils.GetRequest(addres);
+	std::string result;
+	utils.GetRequest(result,addres);
+	result = utils.UTF8_To_string(result);
 	int realRoomID = HandlerLiveStatus(result);
 	return realRoomID;
 }
@@ -94,7 +96,8 @@ std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::stri
 {
 	std::string address = utils.Url(api, param);
 	
-	std::string str = utils.GetRequest(address);
+	std::string str;
+	utils.GetRequest(str,address);
 
 	json::Json j;
 	j.parse(str);
