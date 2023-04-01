@@ -45,7 +45,10 @@
     <ClCompile Include="Mihoyosdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Sha256.cpp">
+    <ClCompile Include="HmacSha256.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HmacSha256_.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +77,7 @@
     <ClInclude Include="Mihoyosdk.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Sha256.h">
+    <ClInclude Include="HmacSha256.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

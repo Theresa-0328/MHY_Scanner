@@ -37,7 +37,7 @@ std::string Mihoyosdk::makeSign(std::string data)
 std::string Mihoyosdk::bh3Sign(std::string data)
 {
 	std::string key = "0ebc517adb1b62c6b408df153331f9aa";
-	std::string sign =
+	std::string sign;
 	
 	return sign;
 }
