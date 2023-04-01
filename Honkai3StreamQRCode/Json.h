@@ -1,5 +1,9 @@
 ﻿#pragma once
-#include "main.h"
+#include <string>
+#include <vector>
+#include <map>
+
+//#include "Parser.h"
 
 namespace json
 {

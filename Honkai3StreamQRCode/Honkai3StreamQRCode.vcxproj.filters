@@ -42,15 +42,15 @@
     <ClCompile Include="test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Mihoyosdk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Download.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Parser.h">
@@ -66,6 +66,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Bsgsdk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Mihoyosdk.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,3 @@
-#include "main.h"
 #include "Download.h"
 
 Download::Download() /*:input_thread(&Download::check_input, this) */

@@ -1,5 +1,9 @@
 ﻿#pragma once
-#include "main.h"
+#include <string>
+#include <map>
+
+#include"utils.h"
+#include"Json.h"
 
 class v2api
 {

@@ -1,4 +1,8 @@
-﻿#include "main.h"
+﻿//reference
+//https://github.com/ikexing-cn/bilibili-live-stream
+//https://github.com/HonkaiScanner/scannerHelper
+//https://www.bilibili.com/video/BV1TP411p7cC
+//https://github.com/yespon/yazi
 #include <iostream>
 #include <string>
 #include <thread>
@@ -19,6 +23,7 @@ extern "C"
 #include <libswscale/swscale.h>
 }
 
+#include "v2api.h"
 
 void scanMain(std::promise<std::string> url)
 {
