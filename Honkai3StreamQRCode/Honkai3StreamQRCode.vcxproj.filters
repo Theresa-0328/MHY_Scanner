@@ -45,6 +45,9 @@
     <ClCompile Include="Mihoyosdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Sha256.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h">
@@ -69,6 +72,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Mihoyosdk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Sha256.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
