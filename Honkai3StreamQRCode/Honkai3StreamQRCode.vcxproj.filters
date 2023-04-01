@@ -33,9 +33,6 @@
     <ClCompile Include="v2api.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Md5.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Bsgsdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -66,9 +63,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="v2api.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Md5.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Bsgsdk.h">
