@@ -56,7 +56,13 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
         a.second = remove_quotes(a.second);
     }
     s = setSign(m);
-    u.PostRequest(bililogin + "api/client/user.info", s, t);
+    std::map<std::string, std::string> headers = 
+    { 
+        {"User-Agent","Mozilla/5.0 BSGameSDK"}, 
+        {"Content-Type","application/x-www-form-urlencoded"}, 
+        {"Host","line1-sdk-center-login-sh.biligame.net"} 
+    };
+    u.PostRequest(bililogin + "api/client/user.info", s,m, t);
     t = u.UTF8_To_string(t);
     std::cout << t << std::endl;
     return j;

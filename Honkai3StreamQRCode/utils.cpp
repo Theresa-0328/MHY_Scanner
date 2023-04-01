@@ -133,16 +133,15 @@ std::string utils::GetRequest(std::string address, std::map<std::string, std::st
 	CURLcode res;
 	if (curl)
 	{
-		struct curl_slist* chunk = NULL; // 定义 chunk 变量
+		struct curl_slist* headerList = NULL; // 定义 headerList 变量
 		for (const auto& kv : headers) {
 			std::string header = kv.first + ": " + kv.second;
-			chunk = curl_slist_append(chunk, header.c_str());
+			headerList = curl_slist_append(headerList, header.c_str());
 		}
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
 		curl_easy_setopt(curl, CURLOPT_URL, address.c_str()); // 设置请求的 URL
-
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response); // 设置回调函数，保存请求返回的数据
-		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 		res = curl_easy_perform(curl); // 发送请求
 
 		/* Check for errors */
@@ -153,14 +152,15 @@ std::string utils::GetRequest(std::string address, std::map<std::string, std::st
 
 		/* always cleanup */
 		curl_easy_cleanup(curl);
-		curl_slist_free_all(chunk);
+		curl_slist_free_all(headerList);
 	}
 	std::string  a = UTF8_To_string(response);
 	//std::cout << a << std::endl;
 	return a;
 }
 
-CURLcode utils::PostRequest(const std::string& url, const std::string& postParams, std::string& response)
+CURLcode utils::PostRequest(const std::string& url, const std::string& postParams, 
+	std::map<std::string, std::string> headers, std::string& response)
 {
 	// curl初始化  
 	CURL* curl = curl_easy_init();
@@ -170,11 +170,15 @@ CURLcode utils::PostRequest(const std::string& url, const std::string& postParam
 	{
 		// set params
 		//设置curl的请求头
-		struct curl_slist* header_list = NULL;
-		header_list = curl_slist_append(header_list, "User-Agent:Mozilla/5.0 BSGameSDK");
-		header_list = curl_slist_append(header_list, "Content-Type:application/x-www-form-urlencoded");
-		header_list = curl_slist_append(header_list, "Host:line1-sdk-center-login-sh.biligame.net");
-		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header_list);
+		struct curl_slist* headerList = NULL;
+		for (const auto& kv : headers) {
+			std::string header = kv.first + ": " + kv.second;
+			headerList = curl_slist_append(headerList, header.c_str());
+		}
+		headerList = curl_slist_append(headerList, "User-Agent:Mozilla/5.0 BSGameSDK");
+		headerList = curl_slist_append(headerList, "Content-Type:application/x-www-form-urlencoded");
+		headerList = curl_slist_append(headerList, "Host:line1-sdk-center-login-sh.biligame.net");
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
 
 		//不接收响应头数据0代表不接收 1代表接收
 		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
