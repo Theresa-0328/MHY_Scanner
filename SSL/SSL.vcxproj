@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{39000e21-282f-436b-bf58-ba0de18b942b}</ProjectGuid>
-    <RootNamespace>Honkai3StreamQRCode</RootNamespace>
+    <ProjectGuid>{e3eb3982-c14d-4181-a9fe-7c5083c9879c}</ProjectGuid>
+    <RootNamespace>SSL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -70,10 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\opencv\build\x64\vc15\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -106,15 +102,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460d.lib;libzbar64-0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,46 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="config.json" />
+    <ClCompile Include="Md5.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Bsgsdk.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Download.cpp" />
-    <ClCompile Include="Json.cpp" />
-    <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Mihoyosdk.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="HmacSha256.cpp" />
-    <ClCompile Include="test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="utils.cpp" />
-    <ClCompile Include="v2api.cpp" />
-    <ClCompile Include="HmacSha256_.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Bsgsdk.h" />
-    <ClInclude Include="Download.h" />
-    <ClInclude Include="Json.h" />
-    <ClInclude Include="Mihoyosdk.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="HmacSha256.h" />
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="v2api.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Scan\Scan.vcxproj">
-      <Project>{46134dc5-8a6e-420c-a99a-3ab3c89f7abb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SSL\SSL.vcxproj">
-      <Project>{e3eb3982-c14d-4181-a9fe-7c5083c9879c}</Project>
-    </ProjectReference>
+    <ClInclude Include="Md5.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

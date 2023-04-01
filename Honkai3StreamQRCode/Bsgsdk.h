@@ -4,7 +4,7 @@
 
 #include "Json.h"
 #include "Parser.h"
-#include "Md5.h"
+#include "..//SSL/Md5.h"
 #include "utils.h"
 
 class Bsgsdk
