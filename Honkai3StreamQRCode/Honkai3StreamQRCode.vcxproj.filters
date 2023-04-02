@@ -42,12 +42,6 @@
     <ClCompile Include="Mihoyosdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="HmacSha256.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HmacSha256_.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h">
