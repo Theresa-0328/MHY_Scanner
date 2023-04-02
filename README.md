@@ -2,9 +2,7 @@
 
 <div align="center">
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?style=for-the-badge)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
-[![GitHub all releases](https://img.shields.io/github/downloads/Theresa-0328/Honkai3StreamQRCode/total?style=for-the-badge)](https://github.com/infstellar/genshin_impact_assistant/stargazers)
-  
+[![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
 </div>
 
 ## 使用方法
