@@ -9,8 +9,10 @@ int main()
 {
 	uint8_t outdata[128] = { 0 };
 	uint8_t md[SHA256_DIGESTLEN] = { 0 };
-	uint8_t secret[] = { "0ebc517adb1b62c6b408df153331f9aa" };//密钥
-	uint8_t indata[] = { "app_id=1&channel_id=14&data={\"uid\":96023077,\"access_key\":\"ce03007dae8fec024b8482a08e8dda94_sh\"}&device=0000000000000000" };//数据
+	//密钥
+	uint8_t secret[] = { "0ebc517adb1b62c6b408df153331f9aa" };
+	//数据
+	uint8_t indata[] = { "app_id=1&channel_id=14&data={\"uid\":96023077,\"access_key\":\"ce03007dae8fec024b8482a08e8dda94_sh\"}&device=0000000000000000" };
 	int len1 = strlen((char*)secret);
 	int len2 = strlen((char*)indata);
 
