@@ -3,7 +3,7 @@
 <div align="center">
 
 [![GitHub Star](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?style=flat-square)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
-[![Release Download](https://img.shields.io/github/downloads/Theresa-0328/Honkai3StreamQRCode/total?style=flat-square)](https://github.com/infstellar/genshin_impact_assistant/releases/download/v0.3.0/GIA.Launcher.v0.3.0.7z)
+[![Release Download](https://img.shields.io/github/downloads/Theresa-0328/Honkai3StreamQRCode/total?style=flat-square)](https://github.com/Theresa-0328/Honkai3StreamQRCode/archive/refs/tags/v0.1-beta.zip)
 
 </div>
 
