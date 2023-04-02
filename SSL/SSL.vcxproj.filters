@@ -18,9 +18,18 @@
     <ClCompile Include="Md5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HmacSha256.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HmacSha256_.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HmacSha256.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

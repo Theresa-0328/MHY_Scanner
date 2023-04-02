@@ -148,15 +148,11 @@
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="HmacSha256.cpp" />
     <ClCompile Include="test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="v2api.cpp" />
-    <ClCompile Include="HmacSha256_.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bsgsdk.h" />
