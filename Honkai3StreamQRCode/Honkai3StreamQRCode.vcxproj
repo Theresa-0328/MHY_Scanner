@@ -160,7 +160,6 @@
     <ClInclude Include="Json.h" />
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="HmacSha256.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="v2api.h" />
   </ItemGroup>

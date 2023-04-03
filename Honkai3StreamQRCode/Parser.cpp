@@ -1,7 +1,6 @@
 ﻿#include <string.h>
 #include <stdexcept>
 #include <cstdlib>
-
 #include "Parser.h"
 
 json::Parser::Parser():m_idx(0)

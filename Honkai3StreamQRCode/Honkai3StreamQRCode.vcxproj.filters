@@ -65,14 +65,13 @@
     <ClInclude Include="Mihoyosdk.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="HmacSha256.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="..\README.md" />
+    <None Include="..\README.md">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
