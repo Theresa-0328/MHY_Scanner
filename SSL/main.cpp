@@ -3,10 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "HmacSha256.h"
-#include "HmacSha2561.h"
-//这里就不封装了，根据需要自行封装
+#include"Sha256.h"
 int main()
-{
+{	
 	uint8_t outdata[128] = { 0 };
 	uint8_t md[SHA256_DIGESTLEN] = { 0 };
 	//密钥
@@ -27,13 +26,8 @@ int main()
 		printf("%02x", outdata[i]);
 	}
 	printf("\n");
-
-	HmacSha256 h;
-	std::string k = "0ebc517adb1b62c6b408df153331f9aa";
-	std::string m = "app_id=1&channel_id=14&data={\"uid\":96023077,\"access_key\":\"ce03007dae8fec024b8482a08e8dda94_sh\"}&device=0000000000000000";
-	h.Hmac_Sha256(k,m);
-
-
-
+	
+	Sha256 s ("123456");
+	s.init();
 	return 0;
 }
