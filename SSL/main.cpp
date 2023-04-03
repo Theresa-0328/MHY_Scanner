@@ -26,8 +26,6 @@ int main()
 		printf("%02x", outdata[i]);
 	}
 	printf("\n");
-	
-	Sha256 s ("123456");
-	s.init();
+
 	return 0;
 }
