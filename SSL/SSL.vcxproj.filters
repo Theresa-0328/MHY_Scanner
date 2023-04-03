@@ -21,7 +21,10 @@
     <ClCompile Include="HmacSha256.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="HmacSha256_.cpp">
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HmacSha2561.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,6 +33,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="HmacSha256.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HmacSha2561.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
