@@ -128,14 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="HmacSha256.cpp" />
-    <ClCompile Include="HmacSha2561.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Md5.cpp" />
+    <ClCompile Include="Sha256.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HmacSha256.h" />
-    <ClInclude Include="HmacSha2561.h" />
     <ClInclude Include="Md5.h" />
+    <ClInclude Include="Sha256.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
