@@ -3,7 +3,6 @@
 using namespace std;
 Sha256::Sha256()
 {
-	vector<bool> Data;
 }
 
 string Sha256::getsha256(string s)
@@ -12,19 +11,23 @@ string Sha256::getsha256(string s)
 	return this->s;
 }
 
-uint32_t Sha256::R(uint32_t x, int p) {
+uint32_t Sha256::R(uint32_t x, int p) 
+{
 	return (x >> p);
 }
 
-uint32_t Sha256::S(uint32_t x, int p) {
+uint32_t Sha256::S(uint32_t x, int p) 
+{
 	return (x >> p | x << 32 - p);
 }
 
-uint32_t Sha256::z1(uint32_t x) {
+uint32_t Sha256::z1(uint32_t x) 
+{
 	return S(x, 6) ^ S(x, 11) ^ S(x, 25);
 }
 
-uint32_t Sha256::z0(uint32_t x) {
+uint32_t Sha256::z0(uint32_t x) 
+{
 	return S(x, 2) ^ S(x, 13) ^ S(x, 22);
 }
 
@@ -69,10 +72,12 @@ void Sha256::has()
 {
 	uint32_t x = 0;
 	int p = 0;
-	for (int i = 0; i < 512; ++i) { // Get the 16 nums of 32-bits
+	for (int i = 0; i < 512; ++i) 
+	{ // Get the 16 nums of 32-bits
 		x <<= 1;
 		x += Data[i];
-		if ((i + 1) % 32 == 0) {
+		if ((i + 1) % 32 == 0) 
+		{
 			w[p++] = x;
 			x = 0;
 		}
@@ -81,10 +86,12 @@ void Sha256::has()
 		w[i] = s1(w[i - 2]) + w[i - 7] + s0(w[i - 15]) + w[i - 16];
 	uint32_t a[8];
 	for (int i = 0; i < 8; ++i) a[i] = h[i]; // Init h[0] - h[7] 
-	for (int i = 0; i < 64; ++i) {
+	for (int i = 0; i < 64; ++i) 
+	{
 		uint32_t sum1 = k[i] + w[i] + ch(a[4], a[5], a[6]) + z1(a[4]) + a[7];
 		uint32_t sum2 = z0(a[0]) + ma(a[0], a[1], a[2]);
-		for (int j = 7; j >= 0; --j) {// Except the fifth and first, a[j](new) = a[j - 1]
+		for (int j = 7; j >= 0; --j) 
+		{// Except the fifth and first, a[j](new) = a[j - 1]
 			if (j == 4) a[j] = a[j - 1] + sum1;
 			else if (j == 0) a[j] = sum1 + sum2;
 			else a[j] = a[j - 1];
