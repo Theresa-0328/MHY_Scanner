@@ -1,5 +1,5 @@
 //https://blog.csdn.net/Clnulijiayou/article/details/117374825#comments_25096682
-#include <iomanip>#include <iomanip>
+#include <iomanip>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,7 +7,8 @@
 #include "Sha256.h"
 #include "Hmac.h"
 
-std::string hmac_sha256(const std::string& secret, const std::string& indata) {
+std::string hmac_sha256(const std::string& secret, const std::string& indata) 
+{
 	uint8_t outdata[128] = { 0 };
 	uint8_t md[SHA256_DIGESTLEN] = { 0 };
 
@@ -28,8 +29,6 @@ std::string hmac_sha256(const std::string& secret, const std::string& indata) {
 
 	return ss.str();
 }
-
-
 
 //int main()
 //{	
