@@ -4,7 +4,7 @@
 #include <stdio.h> 
 #include <cstring> 
 
-// a small class for calculating MD5 hashes of strings or byte arrays  
+// a small class for calculating MD5 sha256_transformhes of strings or byte arrays  
 // it is not meant to be fast or secure  
 //  
 // usage: 1) feed it blocks of uchars with update()  
