@@ -38,6 +38,6 @@ std::string Mihoyosdk::bh3Sign(std::string data)
 {
 	std::string key = "0ebc517adb1b62c6b408df153331f9aa";
 	std::string sign;
-	
+	//hmac_sha256
 	return sign;
 }
