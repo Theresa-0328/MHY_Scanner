@@ -29,7 +29,7 @@ int main()
 	printf("\n");
 
 
-	std::string s = "123456";
+	std::string s = "8aafaffa";
 	Sha256 sha;
 	sha.sha256_update(s);
 	return 0;
