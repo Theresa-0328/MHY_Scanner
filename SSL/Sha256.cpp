@@ -15,27 +15,39 @@ string Sha256::getsha256(string s)
 uint32_t Sha256::R(uint32_t x, int p) {
 	return (x >> p);
 }
+
 uint32_t Sha256::S(uint32_t x, int p) {
 	return (x >> p | x << 32 - p);
 }
+
 uint32_t Sha256::z1(uint32_t x) {
 	return S(x, 6) ^ S(x, 11) ^ S(x, 25);
 }
+
 uint32_t Sha256::z0(uint32_t x) {
 	return S(x, 2) ^ S(x, 13) ^ S(x, 22);
 }
-uint32_t Sha256::ma(uint32_t x, uint32_t y, uint32_t z) {
+
+uint32_t Sha256::ma(uint32_t x, uint32_t y, uint32_t z) 
+{
 	return (x & y) ^ (x & z) ^ (y & z);
 }
-uint32_t Sha256::ch(uint32_t x, uint32_t y, uint32_t z) {
+
+uint32_t Sha256::ch(uint32_t x, uint32_t y, uint32_t z) 
+{
 	return (x & y) ^ (~x & z);
 }
-uint32_t Sha256::s1(uint32_t x) {
+
+uint32_t Sha256::s1(uint32_t x) 
+{
 	return S(x, 17) ^ S(x, 19) ^ R(x, 10);
 }
-uint32_t Sha256::s0(uint32_t x) {
+
+uint32_t Sha256::s0(uint32_t x) 
+{
 	return S(x, 7) ^ S(x, 18) ^ R(x, 3);
 }
+
 std::string Sha256::toHex(uint32_t ans) 
 {
 	std::vector <char>res;
@@ -82,6 +94,7 @@ void Sha256::has()
 		h[i] += a[i];// Ger h[i](new)
 	}
 }
+
 void Sha256::sha256_update(string m)
 {
 	std::vector<uint8_t> vec(m.begin(), m.end());
