@@ -371,7 +371,7 @@ std::string json::Json::asString() const
 	return *(m_value.m_string);
 }
 
-bool json::Json::has(int index)
+bool json::Json::sha256_transform(int index)
 {
 	if (m_type != json_array)
 	{
@@ -381,13 +381,13 @@ bool json::Json::has(int index)
 	return (index >= 0 && index < size);
 }
 
-bool json::Json::has(const char* key)
+bool json::Json::sha256_transform(const char* key)
 {
 	std::string name(key);
-	return has(name);
+	return sha256_transform(name);
 }
 
-bool json::Json::has(const std::string key)
+bool json::Json::sha256_transform(const std::string key)
 {
 	if (m_type != json_object)
 	{

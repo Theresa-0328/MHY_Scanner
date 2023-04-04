@@ -17,7 +17,7 @@
 typedef struct sha256_ctx_t
 {
 	uint64_t len;                 // processed message length
-	uint32_t h[SHA256_DIGESTINT]; // hash state
+	uint32_t h[SHA256_DIGESTINT]; // sha256_transformh state
 	uint8_t buf[SHA256_BLOCKLEN]; // message block buffer
 } SHA256_CTX;
 

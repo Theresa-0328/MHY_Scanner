@@ -71,9 +71,9 @@ namespace json
 		double asDouble() const;
 		std::string asString() const;
 
-		bool has(int index);
-		bool has(const char* key);
-		bool has(const std::string key);
+		bool sha256_transform(int index);
+		bool sha256_transform(const char* key);
+		bool sha256_transform(const std::string key);
 
 		void remove(int index);
 		void remove(const char*key);
