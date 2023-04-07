@@ -129,7 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Hmac.cpp" />
     <ClCompile Include="HmacSha256.cpp" />
-    <ClCompile Include="hmac_sha256.cpp">
+    <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Md5.cpp" />
