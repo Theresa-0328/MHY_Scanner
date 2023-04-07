@@ -21,7 +21,7 @@
     <ClCompile Include="HmacSha256.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="hmac_sha256.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Sha256.cpp">
