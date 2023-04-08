@@ -1,6 +1,6 @@
 #include "Mihoyosdk.h"
 #include "HmacSha256.hpp"
-std::string Mihoyosdk::verify(int uid, std::string access_key)
+std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
 	std::cout << "verify with uid="<<uid << std::endl;
 	verifyData["uid"] = std::to_string(uid);
@@ -9,14 +9,14 @@ std::string Mihoyosdk::verify(int uid, std::string access_key)
 	json::Json body;
 	body.parse(verifyBody);
 	body["data"] = ssd;
-	std::cout << body.str() << std::endl;
-	makeSign(body.str());
+	const std::string sBody = body.str();
+	body.clear();
 	std::string s;
-	u.PostRequest(s, loginV2Url, makeSign(body.str()));
+	u.PostRequest(s, loginV2Url, makeSign(sBody));
 	return s;
 }
 
-std::string Mihoyosdk::makeSign(std::string data)
+std::string Mihoyosdk::makeSign(const std::string data)
 {
 	std::string sign;
 	std::string	data2;
@@ -47,8 +47,9 @@ std::string Mihoyosdk::makeSign(std::string data)
 	std::cout <<"data2=" << data2 << std::endl;
 	sign = bh3Sign(data2);
 	p["sign"] = sign;
-	std::cout << " p.str()=" << p.str() << std::endl;
-	return p.str();
+	sign = p.str();
+	p.clear();
+	return sign;
 }
 
 std::string Mihoyosdk::bh3Sign(std::string data)
