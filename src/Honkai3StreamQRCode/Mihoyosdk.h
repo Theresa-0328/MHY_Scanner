@@ -9,9 +9,9 @@
 class Mihoyosdk
 {
 public:
-	std::string verify(int uid, std::string access_key);
+	std::string verify(const int uid, const std::string access_key);
 private:
-	std::string makeSign(std::string);
+	std::string makeSign(const std::string);
 	std::string bh3Sign(std::string);
 private:
 	utils u;
