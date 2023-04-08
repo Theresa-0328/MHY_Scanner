@@ -1,5 +1,4 @@
 #include "Bsgsdk.h"
-//#include "HmacSha256_.cpp"
 std::string Bsgsdk::remove_quotes(std::string str)
 {
     std::string result = "";

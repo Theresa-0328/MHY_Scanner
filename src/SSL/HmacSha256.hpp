@@ -3,9 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
+#include <sstream>
 #include "HmacSha256.h"
-#include "Sha256.h"
-#include "Hmac.h"
+//#include "Sha256.h"
+//#include "Hmac.h"
 
 std::string hmac_sha256(const std::string& secret, const std::string& indata) 
 {

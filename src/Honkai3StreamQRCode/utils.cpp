@@ -159,7 +159,6 @@ CURLcode utils::PostRequest(std::string& response,const std::string& url, const 
 	CURLcode res{};
 	if (curl)
 	{
-		// set params
 		//设置curl的请求头
 		struct curl_slist* headerList = NULL;
 		for (const auto& kv : headers) 

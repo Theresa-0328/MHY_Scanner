@@ -1,18 +1,19 @@
 #include "Mihoyosdk.h"
-
-std::string Mihoyosdk::verify(std::string uid, std::string access_key)
+#include "HmacSha256.hpp"
+std::string Mihoyosdk::verify(int uid, std::string access_key)
 {
 	std::cout << "verify with uid="<<uid << std::endl;
-	json::Json data;
-	data.parse(verifyData);
-	data["uid"] = uid;
-	data["access_key"] = access_key;
+	verifyData["uid"] = std::to_string(uid);
+	verifyData["access_key"] = access_key;
+	std::string ssd = "{\\\"access_key\\\":\\\"" + verifyData["access_key"]+ "\\\""",\\\"uid\\\":"+ verifyData["uid"]+"}";
 	json::Json body;
 	body.parse(verifyBody);
-	body["data"] = data;
-	//std::cout << body.str() << std::endl;
+	body["data"] = ssd;
+	std::cout << body.str() << std::endl;
 	makeSign(body.str());
-	return std::string();
+	std::string s;
+	u.PostRequest(s, loginV2Url, makeSign(body.str()));
+	return s;
 }
 
 std::string Mihoyosdk::makeSign(std::string data)
@@ -26,18 +27,36 @@ std::string Mihoyosdk::makeSign(std::string data)
 	{
 		if (it.first == "sign")
 			continue;
+		if(it.first=="data")
+		{
+			if (it.second.front() == '\"')
+				it.second.erase(0, 1);
+			if (it.second.back() == '\"')
+				it.second.pop_back();
+		}
+		if(it.first =="device")
+		{
+			if (it.second.front() == '\"')
+				it.second.erase(0, 1);
+			if (it.second.back() == '\"')
+				it.second.pop_back();
+		}
 		data2 += it.first + "=" + it.second + "&";
 	}
 	data2.erase(data2.length() - 1);
-	std::cout << data2 << std::endl;
+	std::cout <<"data2=" << data2 << std::endl;
 	sign = bh3Sign(data2);
-	return std::string();
+	p["sign"] = sign;
+	std::cout << " p.str()=" << p.str() << std::endl;
+	return p.str();
 }
 
 std::string Mihoyosdk::bh3Sign(std::string data)
 {
+	std::cout << data << std::endl;
 	std::string key = "0ebc517adb1b62c6b408df153331f9aa";
-	std::string sign;
-	//hmac_sha256
+	data.erase(std::remove(data.begin(), data.end(), '\\'), data.end());
+	std::cout << data << std::endl;
+	std::string sign = hmac_sha256(key, data);
 	return sign;
 }
