@@ -2,14 +2,14 @@
 #include <string>
 #include <iostream>
 
-#include "Json.h"
-#include "Parser.h"
 #include "utils.h"
 
 class Mihoyosdk
 {
 public:
 	std::string verify(const int uid, const std::string access_key);
+	std::string getBHVer();
+	std::string getOAServer();
 private:
 	std::string makeSign(const std::string);
 	std::string bh3Sign(std::string);
