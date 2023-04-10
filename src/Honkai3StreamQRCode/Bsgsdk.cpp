@@ -1,4 +1,5 @@
 #include "Bsgsdk.h"
+
 std::string Bsgsdk::remove_quotes(std::string str)
 {
     std::string result = "";
@@ -63,7 +64,7 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
     };
     u.PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = u.UTF8_To_string(t);
-    std::cout <<"BiliBili登录成功：" << t << std::endl;
+    std::cout <<"BiliBili验证成功：" << t << std::endl;
     return j;
 }
 
