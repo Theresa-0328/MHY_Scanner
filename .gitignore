@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 *.flv
+/notes.txt
