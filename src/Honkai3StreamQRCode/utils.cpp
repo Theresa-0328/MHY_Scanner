@@ -126,14 +126,14 @@ size_t utils::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get
 	return size * nmemb;
 }
 
-CURLcode utils::GetRequest(std::string& response,std::string address, std::map<std::string, std::string> headers)
+CURLcode utils::GetRequest(std::string& response, std::string address, std::map<std::string, std::string> headers)
 {
 	CURL* curl = curl_easy_init(); // 初始化 cURL 库;
 	CURLcode res{};
 	if (curl)
 	{
 		struct curl_slist* headerList = NULL; // 定义 headerList 变量
-		for (const auto& kv : headers) 
+		for (const auto& kv : headers)
 		{
 			std::string header = kv.first + ": " + kv.second;
 			headerList = curl_slist_append(headerList, header.c_str());
@@ -150,8 +150,7 @@ CURLcode utils::GetRequest(std::string& response,std::string address, std::map<s
 	return res;
 }
 
-CURLcode utils::PostRequest(std::string& response,const std::string& url, const std::string& postParams,
-	std::map<std::string, std::string> headers)
+CURLcode utils::PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers)
 {
 	// curl初始化  
 	CURL* curl = curl_easy_init();
@@ -161,7 +160,7 @@ CURLcode utils::PostRequest(std::string& response,const std::string& url, const 
 	{
 		//设置curl的请求头
 		struct curl_slist* headerList = NULL;
-		for (const auto& kv : headers) 
+		for (const auto& kv : headers)
 		{
 			std::string header = kv.first + ": " + kv.second;
 			headerList = curl_slist_append(headerList, header.c_str());
@@ -185,7 +184,6 @@ CURLcode utils::PostRequest(std::string& response,const std::string& url, const 
 		//设置数据接收和写入函数
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&response);
-
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 		//设置超时时间(单位：s)
 		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
@@ -207,13 +205,13 @@ int utils::getCurrentUnixTime()
 std::string utils::urlEncode(const std::string& str)
 {
 	std::string result;
-	for (auto& ch : str) 
+	for (auto& ch : str)
 	{
-		if (std::isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == '~') 
+		if (std::isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == '~')
 		{
 			result += ch;
 		}
-		else 
+		else
 		{
 			result += '%' + std::to_string((int)ch / 16) + std::to_string((int)ch % 16);
 		}
@@ -221,10 +219,10 @@ std::string utils::urlEncode(const std::string& str)
 	return result;
 }
 
-std::string utils::unicodeEncode(const std::string& str) 
+std::string utils::unicodeEncode(const std::string& str)
 {
 	std::string result;
-	for (auto& ch : str) 
+	for (auto& ch : str)
 	{
 		result += "\\u" + std::to_string((int)ch / 16 / 16 / 16 % 16) +
 			std::to_string((int)ch / 16 / 16 % 16) +
