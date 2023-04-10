@@ -13,6 +13,7 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	body.clear();
 	std::string s;
 	u.PostRequest(s, loginV2Url, makeSign(sBody));
+	std::cout << "验证完成，登录成功" << std::endl;
 	return s;
 }
 
@@ -49,6 +50,7 @@ std::string Mihoyosdk::makeSign(const std::string data)
 	p["sign"] = sign;
 	sign = p.str();
 	p.clear();
+	std::cout << "Hmac_Sha256签名完成" << std::endl;
 	return sign;
 }
 

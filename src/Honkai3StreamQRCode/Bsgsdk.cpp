@@ -63,7 +63,7 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
     };
     u.PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = u.UTF8_To_string(t);
-    std::cout << t << std::endl;
+    std::cout <<"BiliBiliµÇÂ¼³É¹¦£º" << t << std::endl;
     return j;
 }
 
