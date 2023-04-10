@@ -4,10 +4,10 @@
 #include "Parser.h"
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
-	std::cout << "verify with uid="<<uid << std::endl;
+	std::cout << "verify with uid=" << uid << std::endl;
 	verifyData["uid"] = std::to_string(uid);
 	verifyData["access_key"] = access_key;
-	std::string ssd = "{\\\"access_key\\\":\\\"" + verifyData["access_key"]+ "\\\""",\\\"uid\\\":"+ verifyData["uid"]+"}";
+	std::string ssd = "{\\\"access_key\\\":\\\"" + verifyData["access_key"] + "\\\""",\\\"uid\\\":" + verifyData["uid"] + "}";
 	json::Json body;
 	body.parse(verifyBody);
 	body["data"] = ssd;
@@ -26,23 +26,72 @@ std::string Mihoyosdk::getBHVer()
 
 std::string Mihoyosdk::getOAServer()
 {
-	
+
 	std::string bhVer = getBHVer();
 	std::string oaMainUrl = "https://global2.bh3.com/query_dispatch?";
-	std::string param = "version=" + bhVer+"_gf_android_bilibili&t="+ std::to_string(u.getCurrentUnixTime());
+	std::string param = "version=" + bhVer + "_gf_android_bilibili&t=" + std::to_string(u.getCurrentUnixTime());
 	std::string feedback;
 	u.PostRequest(feedback, oaMainUrl + param, "");
-	std::cout << u.UTF8_To_string(feedback)<< std::endl;
+	//std::cout << u.UTF8_To_string(feedback) << std::endl;
 	param = "?version=" + bhVer + "_gf_android_bilibili&t=" + std::to_string(u.getCurrentUnixTime());
 	json::Json j;
 	j.parse(feedback);
 	std::string dispatch_url = j["region_list"][0]["dispatch_url"];
 	std::string dispatch;
-	u.PostRequest(dispatch, dispatch_url+param,"");
+	u.PostRequest(dispatch, dispatch_url + param, "");
 	dispatch = u.UTF8_To_string(dispatch);
-	std::cout << "获得OA服务器成功 : " <<dispatch << std::endl;
+	std::cout << "获得OA服务器成功 : " << dispatch << std::endl;
 	j.clear();
 	return dispatch;
+}
+
+void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
+{
+	int pos = (int)qrCode.find("ticket=");
+	std::string ticket;
+	int i = (int)qrCode.size();
+	if (pos != std::string::npos)
+	{
+		ticket = qrCode.substr(pos + 7);
+	}
+	json::Json check;
+	check.parse(scanCheckS);
+	check["ticket"] = ticket;
+	check["ts"] = u.getCurrentUnixTime();
+	std::string postBody = makeSign(check.str());
+	std::string feedback;
+	u.PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);
+	check.parse(feedback);
+	if ((int)check["retcode"] == 0)
+		//if ((int)check["retcode"] != 0)
+	{
+		std::cout << "扫码失败" << std::endl;
+		std::cout << feedback << std::endl;
+		return;
+	}
+	else
+	{
+		scanConfirm(qrCode, bhInfo);
+	}
+	check.clear();
+}
+
+void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR)
+{
+	json::Json bhInfoj;
+	bhInfoj.parse(bhInfoR);
+
+	json::Json bhinfo = bhInfoj["data"];
+	json::Json scanResultJ;
+	scanResultJ.parse(scanResult);
+	json::Json scanDataJ;
+	scanDataJ.parse(scanData);
+	scanDataJ["dispatch"] = getOAServer();
+	scanDataJ["accountID"] = bhinfo["open_id"];
+	scanDataJ["accountToken"] = bhinfo["combo_token"];
+	json::Json scanExt; //= json.loads(scanExtR)
+	scanExt.parse(scanExtR);
+
 }
 
 std::string Mihoyosdk::makeSign(const std::string data)
@@ -51,19 +100,19 @@ std::string Mihoyosdk::makeSign(const std::string data)
 	std::string	data2;
 	json::Json p;
 	p.parse(data);
-	std::map<std::string,std::string> m= p.objToMap();
-	for (auto &it: m)
+	std::map<std::string, std::string> m = p.objToMap();
+	for (auto& it : m)
 	{
 		if (it.first == "sign")
 			continue;
-		if(it.first=="data")
+		if (it.first == "data")
 		{
 			if (it.second.front() == '\"')
 				it.second.erase(0, 1);
 			if (it.second.back() == '\"')
 				it.second.pop_back();
 		}
-		if(it.first =="device")
+		if (it.first == "device")
 		{
 			if (it.second.front() == '\"')
 				it.second.erase(0, 1);
@@ -73,7 +122,7 @@ std::string Mihoyosdk::makeSign(const std::string data)
 		data2 += it.first + "=" + it.second + "&";
 	}
 	data2.erase(data2.length() - 1);
-	std::cout <<"data2=" << data2 << std::endl;
+	std::cout << "data2=" << data2 << std::endl;
 	sign = bh3Sign(data2);
 	p["sign"] = sign;
 	sign = p.str();
