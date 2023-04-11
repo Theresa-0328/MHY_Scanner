@@ -12,7 +12,7 @@ class Bsgsdk
 public:
 	//Bsgsdk();
 	//~Bsgsdk();
-	std::string setSign(std::map<std::string, std::string>data);
+	std::string setSign(std::map<std::string, std::string>data );
 	json::Json getUserInfo(std::string, std::string);
 	//json::Json login();//µÇÂ¼ÕËºÅ
 //private:

@@ -231,3 +231,17 @@ std::string utils::unicodeEncode(const std::string& str)
 	}
 	return result;
 }
+
+std::string utils::replaceQuotes(const std::string& str) 
+{
+	std::string newStr;
+	for (int i = 0; i < str.length(); i++) 
+	{
+		if (str[i] == '\"') 
+		{
+			newStr += '\\';
+		}
+		newStr += str[i];
+	}
+	return newStr;
+}
