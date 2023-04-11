@@ -56,19 +56,31 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
         a.second = remove_quotes(a.second);
     }
     s = setSign(m);
-    std::map<std::string, std::string> headers = 
-    { 
-        {"User-Agent","Mozilla/5.0 BSGameSDK"}, 
-        {"Content-Type","application/x-www-form-urlencoded"}, 
-        {"Host","line1-sdk-center-login-sh.biligame.net"} 
-    };
     u.PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = u.UTF8_To_string(t);
     std::cout <<"BiliBili验证成功：" << t << std::endl;
     return j;
 }
 
-//json::Json Bsgsdk::login()
-//{
-//    return json::Json();
-//}
+std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& biliPwd, bool cap)
+{
+    if (cap)
+    {
+
+    }
+    else
+    {
+        login2(biliAccoun, biliPwd);
+    }
+    return std::string();
+}
+
+std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& biliPwd)
+{
+    json::Json data;
+    data.parse(rsaParam);
+    std::map < std::string, std::string> dataM= data.objToMap();
+    std::string p1 = setSign(dataM);
+
+    return std::string();
+}
