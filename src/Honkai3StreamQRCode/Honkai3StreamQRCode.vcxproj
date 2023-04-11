@@ -135,10 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\README.md" />
-    <None Include="config.json" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Bsgsdk.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
