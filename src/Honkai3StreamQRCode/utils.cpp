@@ -199,7 +199,7 @@ CURLcode utils::PostRequest(std::string& response, const std::string& url, const
 
 int utils::getCurrentUnixTime()
 {
-	return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	return (int)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 std::string utils::urlEncode(const std::string& str)
