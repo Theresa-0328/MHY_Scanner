@@ -62,8 +62,8 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	std::string feedback;
 	u.PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);
 	check.parse(feedback);
-	//if ((int)check["retcode"] == 0)
-	if ((int)check["retcode"] != 0)
+	if ((int)check["retcode"] == 0)
+	//if ((int)check["retcode"] != 0)
 	{
 		std::cout << "É¨ÂëÊ§°Ü" << std::endl;
 		std::cout << feedback << std::endl;
@@ -106,6 +106,7 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	scanRawJ["open_id"] = bhInFo["open_id"];
 	scanRawJ["combo_id"] = bhInFo["combo_id"];
 	scanRawJ["combo_token"] = bhInFo["combo_token"];
+	scanRawJ["asterisk_name"] = u.string_To_UTF8("²âÊÔÖÐÎÄÃû³Ætestname1");
 	json::Json scanPayLoadJ;
 	scanPayLoadJ.parse(scanPayloadR);
 	scanPayLoadJ["raw"] = scanRawJ;
@@ -127,16 +128,13 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	std::cout << postBody<< std::endl;
 	std::string response;
 	u.PostRequest(response, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm", postBody);
-	
-	bhInfoJ.clear();
-	bhInFo.clear();
-	scanResultJ.clear();
-	scanDataJ.clear();
-	oa.clear();
-	scanExtJ.clear();
-	scanPayLoadJ.clear();
-	postBodyJ.clear();
-
+	postBodyJ.parse(response);
+	if ((int)postBodyJ["retcode"] == 0)
+		std::cout << "É¨Âë³É¹¦" << std::endl;
+	else
+		std::cout << "É¨ÂëÊ§°Ü" << std::endl;
+		std::cout << postBodyJ.str() << std::endl;
+	return;
 }
 
 std::string Mihoyosdk::makeSign(const std::string data)
