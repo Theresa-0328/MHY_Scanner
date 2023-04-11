@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 {
 	v2api v2api;
 	std::string playurl = v2api.Initialize();
-	std::string QRcode;
+	std::string qrCode;
 
 
 	Download down;
@@ -123,15 +123,17 @@ int main(int argc, char* argv[])
 	std::future<std::string> future_result = QRcodeUrl.get_future();
 	std::thread th1(scanMain, std::move(QRcodeUrl));
 	th1.join();
-	QRcode = future_result.get();
+	qrCode = future_result.get();
 	std::cout << "========================" << std::endl;
-	std::cout << QRcode << std::endl;
+	std::cout << qrCode << std::endl;
 	//down.getstop();
-	if(QRcode!="")
+	if(qrCode !="")
 	{
 		down.stopDownloadAfterDelay();
 		th.join();
 	}
+
+
 	//getchar();
 	
 	//std::ifstream fin("./config.json");

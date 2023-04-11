@@ -106,7 +106,6 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	scanRawJ["open_id"] = bhInFo["open_id"];
 	scanRawJ["combo_id"] = bhInFo["combo_id"];
 	scanRawJ["combo_token"] = bhInFo["combo_token"];
-	scanRawJ["asterisk_name"] = u.string_To_UTF8("≤‚ ‘÷–Œƒ√˚≥∆testname1");
 	json::Json scanPayLoadJ;
 	scanPayLoadJ.parse(scanPayloadR);
 	scanPayLoadJ["raw"] = scanRawJ;
@@ -135,6 +134,14 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 		std::cout << "…®¬Î ß∞‹" << std::endl;
 		std::cout << postBodyJ.str() << std::endl;
 	return;
+}
+
+void Mihoyosdk::setUserName(const std::string& name)
+{
+	json::Json setName;
+	setName.parse(scanRawR);
+	setName["asterisk_name"] = u.string_To_UTF8(name);
+	scanRawR = setName.str();
 }
 
 std::string Mihoyosdk::makeSign(const std::string data)
