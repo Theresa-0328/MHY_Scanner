@@ -71,27 +71,63 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	}
 	else
 	{
-		scanConfirm(qrCode, bhInfo);
+		scanConfirm(ticket, bhInfo);
 	}
 	check.clear();
 }
 
 void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR)
 {
-	json::Json bhInfoj;
-	bhInfoj.parse(bhInfoR);
-
-	json::Json bhinfo = bhInfoj["data"];
+	json::Json bhInfoJ;
+	bhInfoJ.parse(bhInfoR);
+	
+	json::Json bhInFo;
+	bhInFo.parse(bhInfoJ["data"].str());
+	//std::cout << bhInFo.str() << std::endl;
 	json::Json scanResultJ;
 	scanResultJ.parse(scanResult);
+	
 	json::Json scanDataJ;
 	scanDataJ.parse(scanData);
-	scanDataJ["dispatch"] = getOAServer();
-	scanDataJ["accountID"] = bhinfo["open_id"];
-	scanDataJ["accountToken"] = bhinfo["combo_token"];
-	json::Json scanExt; //= json.loads(scanExtR)
-	scanExt.parse(scanExtR);
+	
+	json::Json oa;
+	oa.parse(getOAServer());
+	scanDataJ["dispatch"] = oa;
+	scanDataJ["accountID"] = bhInFo["open_id"];
+	scanDataJ["accountToken"] = bhInFo["combo_token"];
+	//std::cout << scanDataJ.str() << std::endl;
+	json::Json scanExtJ;
+	scanExtJ.parse(scanExtR);
+	//std::cout << scanExtJ.str() << std::endl;
+	scanExtJ["data"] = scanDataJ;
 
+	json::Json scanRawJ;
+	scanRawJ.parse(scanRawR);
+	scanRawJ["open_id"] = bhInFo["open_id"];
+	scanRawJ["combo_id"] = bhInFo["combo_id"];
+	scanRawJ["combo_token"] = bhInFo["combo_token"];
+	json::Json scanPayLoadJ;
+	scanPayLoadJ.parse(scanPayloadR);
+	scanPayLoadJ["raw"] = scanRawJ;
+	scanPayLoadJ["ext"] = scanExtJ;
+	scanResultJ["payload"] = scanPayLoadJ;
+	scanResultJ["ts"] = u.getCurrentUnixTime();
+	scanResultJ["ticket"] = ticket;
+	std::string postBody = scanResultJ.str();
+	postBody = makeSign(postBody);
+	json::Json postBodyJ;
+	postBodyJ.parse(postBody);
+	std::string a1 = postBodyJ["payload"]["ext"].str();
+	a1 = u.replaceQuotes(a1);
+	postBodyJ["payload"]["ext"] = a1;
+	std::string a2 = postBodyJ["payload"]["raw"].str();
+	a2 = u.replaceQuotes(a2);
+	postBodyJ["payload"]["raw"] = a2;
+	postBody = postBodyJ.str();
+	std::cout << postBody<< std::endl;
+	std::string response;
+	u.PostRequest(response, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm", postBody);
+	//postBody = 
 }
 
 std::string Mihoyosdk::makeSign(const std::string data)
