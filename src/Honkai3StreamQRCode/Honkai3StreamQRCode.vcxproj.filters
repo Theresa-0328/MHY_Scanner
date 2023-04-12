@@ -42,9 +42,6 @@
     <ClCompile Include="Mihoyosdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="openssl1.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CryptoKit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
