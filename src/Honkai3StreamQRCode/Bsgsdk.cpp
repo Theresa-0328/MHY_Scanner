@@ -1,4 +1,6 @@
 #include "Bsgsdk.h"
+#include "Md5.h"
+#include "Parser.h"
 
 std::string Bsgsdk::remove_quotes(std::string str)
 {
@@ -74,7 +76,7 @@ std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& bil
 {
     if (cap)
     {
-
+        //C4715
     }
     else
     {
@@ -112,5 +114,7 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     std::string p2 = setSign(dataR);
     re.clear(); 
     u.PostRequest(re, bililogin + "api/client/login", p2, headers);
+    data.clear();
+    re1J.clear();
     return re;
 }
