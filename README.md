@@ -16,7 +16,7 @@
 
 ## 依赖
 - curl
-- opencv
+- opencv 3.10
 - openssl
 - cbar-64
 - ffmpeg
