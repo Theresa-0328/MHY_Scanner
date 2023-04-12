@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\opencv\build\x64\vc15\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;D:\Dev\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\opencv\build\x64\vc15\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -114,8 +114,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460d.lib;libzbar64-0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460d.lib;libzbar64-0.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,12 +139,16 @@
     <ClCompile Include="Bsgsdk.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="CryptoKit.cpp" />
     <ClCompile Include="Download.cpp" />
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp" />
+    <ClCompile Include="openssl1.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -153,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bsgsdk.h" />
+    <ClInclude Include="CryptoKit.h" />
     <ClInclude Include="Download.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="Mihoyosdk.h" />

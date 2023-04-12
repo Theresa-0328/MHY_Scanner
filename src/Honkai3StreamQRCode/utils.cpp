@@ -1,5 +1,5 @@
 ﻿#include "utils.h"
-
+#include <iomanip>
 
 //std::string utils::string_To_UTF8(const std::string& str)
 //{
@@ -204,19 +204,27 @@ int utils::getCurrentUnixTime()
 
 std::string utils::urlEncode(const std::string& str)
 {
-	std::string result;
-	for (auto& ch : str)
-	{
-		if (std::isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == '~')
-		{
-			result += ch;
+	std::ostringstream escaped;
+	escaped.fill('0');
+	escaped << std::hex;
+
+	for (auto itr = str.begin(), end = str.end(); itr != end; ++itr) {
+		const unsigned char c = *itr;
+
+		if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~'
+			|| c == '!' || c == '*' || c == '\'' || c == '(' || c == ')'
+			|| c == ';' || c == ':' || c == '@' || c == '&' || c == '='|| c == '$' || c == ',' || c == '/' || c == '?'
+			|| c == '#' || c == '[' || c == ']') {
+			escaped << c;
+			continue;
 		}
-		else
-		{
-			result += '%' + std::to_string((int)ch / 16) + std::to_string((int)ch % 16);
-		}
+
+		escaped << std::uppercase;
+		escaped << '%' << std::setw(2) << int((unsigned char)c);
+		escaped << std::nouppercase;
 	}
-	return result;
+
+	return escaped.str();
 }
 
 std::string utils::unicodeEncode(const std::string& str)

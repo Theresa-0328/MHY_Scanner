@@ -42,6 +42,12 @@
     <ClCompile Include="Mihoyosdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="openssl1.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CryptoKit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h">
@@ -63,6 +69,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Mihoyosdk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CryptoKit.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
