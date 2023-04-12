@@ -25,6 +25,8 @@ extern "C"
 
 #include "v2api.h"
 #include "Download.h"
+#include"Bsgsdk.h"
+#include"Mihoyosdk.h"
 
 void scanMain(std::promise<std::string> url)
 {
@@ -112,6 +114,28 @@ int main(int argc, char* argv[])
 	std::string playurl = v2api.Initialize();
 	std::string qrCode;
 
+	Bsgsdk b;
+	json::Json j;
+	std::string res;
+	Mihoyosdk m;
+	json::Json loginJ;
+
+	loginJ.parse(b.login1("13731873115", "graphics"));
+	std::string a1 = loginJ["uid"].str();
+	std::string a2 = loginJ["access_key"];
+	loginJ.clear();
+	j = b.getUserInfo(a1, a2);
+	//j = b.getUserInfo("96023077","c464665eb3f8462957b71d9e65a48923_sh");
+	//cout << j.str()<< endl;
+	int uid = std::stoi(j["uid"]);
+	std::string access_key = j["access_key"];
+	j.clear();
+	std::string bhInfo = m.verify(uid, access_key);
+	std::cout << bhInfo << std::endl;
+	//登录成功！
+	m.getOAServer();
+	//开始扫码
+	m.setUserName("中无");
 
 	Download down;
 	std::thread th([&down, playurl]() 
@@ -124,7 +148,6 @@ int main(int argc, char* argv[])
 	std::thread th1(scanMain, std::move(QRcodeUrl));
 	th1.join();
 	qrCode = future_result.get();
-	std::cout << "========================" << std::endl;
 	std::cout << qrCode << std::endl;
 	//down.getstop();
 	if(qrCode !="")
@@ -133,7 +156,10 @@ int main(int argc, char* argv[])
 		th.join();
 	}
 
-
+	m.scanCheck(qrCode, bhInfo);
+	
+	
+	
 	//getchar();
 	
 	//std::ifstream fin("./config.json");

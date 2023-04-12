@@ -78,9 +78,9 @@ std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& bil
     }
     else
     {
-        login2(biliAccoun, biliPwd);
+        return login2(biliAccoun, biliPwd);
     }
-    return std::string();
+    
 }
 
 std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& biliPwd)
@@ -112,5 +112,5 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     std::string p2 = setSign(dataR);
     re.clear(); 
     u.PostRequest(re, bililogin + "api/client/login", p2, headers);
-    return std::string();
+    return re;
 }
