@@ -15,11 +15,19 @@ std::string Bsgsdk::remove_quotes(std::string str)
     return result;
 }
 
-std::string Bsgsdk::setSign(std::map<std::string, std::string>data)
+std::string Bsgsdk::setSign(std::map<std::string, std::string> data)
 {
-    int t = u.getCurrentUnixTime();
-    data["timestamp"] = std::to_string(t);
-    data["client_timestamp"] = std::to_string(t);
+    for (auto it = data.begin(); it != data.end(); ++it)
+    {
+        std::string key = it->first;
+        std::string value = it->second;
+        key.erase(std::remove(key.begin(), key.end(), '\"'), key.end());
+        value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
+        it->second = value;
+    }
+
+    data["timestamp"] = std::to_string(u.getCurrentUnixTime());
+    data["client_timestamp"] = std::to_string(u.getCurrentUnixTime());
     std::string sign;
     std::string data2;
     for (std::pair<std::string, std::string> c : data)
@@ -81,6 +89,28 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     data.parse(rsaParam);
     std::map < std::string, std::string> dataM= data.objToMap();
     std::string p1 = setSign(dataM);
-
+    std::string re;
+    u.PostRequest(re, bililogin + "api/client/rsa", p1,headers);
+    std::cout << re<< std::endl;
+    data.clear();
+    data.parse(loginParam);
+    json::Json re1J;
+    re1J.parse(re);
+    std::string publicKey = re1J["rsa_key"];
+    publicKey = kit.formatRsaPublicKey(publicKey);
+    data["access_key"] = "";
+    data["gt_user_id"] = "";
+    data["uid"] = "";
+    data["challenge"] = "";
+    data["user_id"] = biliAccount;
+    data["validate"] = "";
+    std::string hash1 =  re1J["hash"];
+    std::string rekit = kit.rsaEncrypt(hash1 + biliPwd, publicKey);
+    data["pwd"] = rekit;
+    std::cout << data.str() << std::endl;
+    std::map < std::string, std::string> dataR = data.objToMap();
+    std::string p2 = setSign(dataR);
+    re.clear(); 
+    u.PostRequest(re, bililogin + "api/client/login", p2, headers);
     return std::string();
 }

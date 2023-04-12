@@ -16,6 +16,7 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	std::string s;
 	u.PostRequest(s, loginV2Url, makeSign(sBody));
 	std::cout << "崩坏3验证完成，登录成功" << std::endl;
+	s = u.UTF8_To_string(s);
 	return s;
 }
 
