@@ -63,8 +63,8 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	std::string feedback;
 	u.PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);
 	check.parse(feedback);
-	if ((int)check["retcode"] == 0)
-	//if ((int)check["retcode"] != 0)
+
+	if ((int)check["retcode"] != 0)
 	{
 		std::cout << "É¨ÂëÊ§°Ü" << std::endl;
 		std::cout << feedback << std::endl;
