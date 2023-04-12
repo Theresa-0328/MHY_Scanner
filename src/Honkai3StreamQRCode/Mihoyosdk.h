@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <iostream>
-
 #include "utils.h"
 
 class Mihoyosdk

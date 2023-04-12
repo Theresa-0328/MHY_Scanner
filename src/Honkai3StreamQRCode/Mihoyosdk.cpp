@@ -2,6 +2,7 @@
 #include "HmacSha256.hpp"
 #include "Json.h"
 #include "Parser.h"
+
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
 	std::cout << "verify with uid=" << uid << std::endl;
@@ -61,7 +62,7 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	check["ts"] = u.getCurrentUnixTime();
 	std::string postBody = makeSign(check.str());
 	std::string feedback;
-	u.PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);
+	u.PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);//É¨ÂëÇëÇó
 	check.parse(feedback);
 
 	if ((int)check["retcode"] != 0)
@@ -72,7 +73,7 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	}
 	else
 	{
-		scanConfirm(ticket, bhInfo);
+		scanConfirm(ticket, bhInfo);//É¨ÂëÈ·ÈÏ
 	}
 	check.clear();
 }
