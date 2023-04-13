@@ -109,7 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>..//SSL/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,9 +166,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Scan\Scan.vcxproj">
       <Project>{46134dc5-8a6e-420c-a99a-3ab3c89f7abb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SSL\SSL.vcxproj">
-      <Project>{e3eb3982-c14d-4181-a9fe-7c5083c9879c}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

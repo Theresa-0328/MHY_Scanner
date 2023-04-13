@@ -5,7 +5,10 @@
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
 #include <openssl/hmac.h>
+#include <openssl/md5.h>
 //#include <openssl/rand.h>
+#include <sstream>
+#include <iomanip>
 #include "Core.h"
 #include "CryptoKit.h"
 using namespace std;
@@ -52,7 +55,7 @@ std::string CryptoKit::rsaEncrypt(std::string message, std::string public_key)
     return cipher_text;
 }
 
-std::string CryptoKit::formatRsaPublicKey(const std::string& key)
+std::string CryptoKit::FormatRsaPublicKey(const std::string& key)
 {
     std::string formattedKey = "-----BEGIN PUBLIC KEY-----\n";
     size_t beginPos = key.find("-----BEGIN PUBLIC KEY-----");
@@ -82,4 +85,17 @@ std::string CryptoKit::HmacSha256(std::string message, std::string key)
         output += hex;
     }
     return output;
+}
+
+std::string CryptoKit::Md5(const string& str)
+{
+    unsigned char md[MD5_DIGEST_LENGTH];
+    MD5(reinterpret_cast<const unsigned char*>(str.c_str()), str.size(), md);
+
+    stringstream ss;
+    for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+        ss << hex << setw(2) << setfill('0') << static_cast<int>(md[i]);
+    }
+
+    return ss.str();
 }
