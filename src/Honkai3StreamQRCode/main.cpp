@@ -25,8 +25,8 @@ extern "C"
 
 #include "v2api.h"
 #include "Download.h"
-#include"Bsgsdk.h"
-#include"Mihoyosdk.h"
+#include "Bsgsdk.h"
+#include "Mihoyosdk.h"
 
 void scanMain(std::promise<std::string> url)
 {

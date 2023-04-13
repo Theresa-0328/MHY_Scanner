@@ -28,15 +28,15 @@ std::string Bsgsdk::setSign(std::map<std::string, std::string> data)
         it->second = value;
     }
 
-    data["timestamp"] = std::to_string(u.getCurrentUnixTime());
-    data["client_timestamp"] = std::to_string(u.getCurrentUnixTime());
+    data["timestamp"] = std::to_string(getCurrentUnixTime());
+    data["client_timestamp"] = std::to_string(getCurrentUnixTime());
     std::string sign;
     std::string data2;
     for (std::pair<std::string, std::string> c : data)
     {
         if (c.first == "pwd")
         {
-            std::string pwd = u.urlEncode(c.second);
+            std::string pwd = urlEncode(c.second);
             data2 += c.first+"="+pwd + "&";
         }
         data2 += c.first + "=" + c.second + "&";
@@ -66,8 +66,8 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
         a.second = remove_quotes(a.second);
     }
     s = setSign(m);
-    u.PostRequest(t,bililogin + "api/client/user.info", s, headers);
-    t = u.UTF8_To_string(t);
+    PostRequest(t,bililogin + "api/client/user.info", s, headers);
+    t = UTF8_To_string(t);
     std::cout <<"BiliBili验证成功：" << t << std::endl;
     return j;
 }
@@ -92,7 +92,7 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     std::map < std::string, std::string> dataM= data.objToMap();
     std::string p1 = setSign(dataM);
     std::string re;
-    u.PostRequest(re, bililogin + "api/client/rsa", p1,headers);
+    PostRequest(re, bililogin + "api/client/rsa", p1,headers);
     std::cout << re<< std::endl;
     data.clear();
     data.parse(loginParam);
@@ -113,7 +113,7 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     std::map < std::string, std::string> dataR = data.objToMap();
     std::string p2 = setSign(dataR);
     re.clear(); 
-    u.PostRequest(re, bililogin + "api/client/login", p2, headers);
+    PostRequest(re, bililogin + "api/client/login", p2, headers);
     data.clear();
     re1J.clear();
     return re;

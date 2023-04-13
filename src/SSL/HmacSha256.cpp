@@ -1,5 +1,5 @@
-#include "hmacsha256.h" 
 #include <string.h>
+#include "hmacsha256.h" 
 
 //#define ROR(n,k) ((n >> k) | (n << (32 - k)))
 

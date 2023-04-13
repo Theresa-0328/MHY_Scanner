@@ -142,7 +142,7 @@
     <ClCompile Include="CryptoKit.cpp" />
     <ClCompile Include="Download.cpp" />
     <ClCompile Include="Json.cpp" />
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp" />
@@ -150,7 +150,7 @@
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="Core.cpp" />
     <ClCompile Include="v2api.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,7 +160,7 @@
     <ClInclude Include="Json.h" />
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="v2api.h" />
   </ItemGroup>
   <ItemGroup>

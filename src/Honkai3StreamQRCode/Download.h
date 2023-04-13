@@ -1,5 +1,5 @@
 #pragma once
-#include<curl/curl.h>
+#include <curl/curl.h>
 #include <mutex>
 #include <iostream>
 class Download

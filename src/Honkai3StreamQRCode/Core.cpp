@@ -1,7 +1,8 @@
-﻿#include "utils.h"
-#include <iomanip>
+﻿#include <iomanip>
+#include "Core.h"
 
-std::string utils::string_To_UTF8(const std::string& str)
+
+std::string Core::string_To_UTF8(const std::string& str)
 {
 	int nwLen = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
 	wchar_t* pwBuf = new wchar_t[nwLen + 1];//一定要加1，不然会出现尾巴
@@ -24,7 +25,7 @@ std::string utils::string_To_UTF8(const std::string& str)
 	return retStr;
 }
 
-std::string utils::UTF8_To_string(const std::string& str)
+std::string Core::UTF8_To_string(const std::string& str)
 {
 	int nwLen = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
 
@@ -48,7 +49,7 @@ std::string utils::UTF8_To_string(const std::string& str)
 	return retStr;
 }
 
-std::string utils::Url(std::string url, std::map<std::string, std::string> params)
+std::string Core::Url(std::string url, std::map<std::string, std::string> params)
 {
 	std::ostringstream paramsTemp;
 	bool first = true;
@@ -64,7 +65,7 @@ std::string utils::Url(std::string url, std::map<std::string, std::string> param
 	return url + "?" + paramsTemp.str();//url拼接完成
 }
 
-size_t utils::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get请求和post请求数据响应函数
+size_t Core::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get请求和post请求数据响应函数
 {
 	//在注释的里面可以打印请求流，cookie的信息
 	//std::cout << "----->reply" << std::endl;
@@ -74,7 +75,7 @@ size_t utils::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get
 	return size * nmemb;
 }
 
-CURLcode utils::GetRequest(std::string& response, std::string address, std::map<std::string, std::string> headers)
+CURLcode Core::GetRequest(std::string& response, std::string address, std::map<std::string, std::string> headers)
 {
 	CURL* curl = curl_easy_init(); // 初始化 cURL 库;
 	CURLcode res{};
@@ -98,7 +99,7 @@ CURLcode utils::GetRequest(std::string& response, std::string address, std::map<
 	return res;
 }
 
-CURLcode utils::PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers)
+CURLcode Core::PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers)
 {
 	// curl初始化  
 	CURL* curl = curl_easy_init();
@@ -145,12 +146,12 @@ CURLcode utils::PostRequest(std::string& response, const std::string& url, const
 	return res;
 }
 
-int utils::getCurrentUnixTime()
+int Core::getCurrentUnixTime()
 {
 	return (int)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-std::string utils::urlEncode(const std::string& str)
+std::string Core::urlEncode(const std::string& str)
 {
 	std::ostringstream escaped;
 	escaped.fill('0');
@@ -175,7 +176,7 @@ std::string utils::urlEncode(const std::string& str)
 	return escaped.str();
 }
 
-std::string utils::unicodeEncode(const std::string& str)
+std::string Core::unicodeEncode(const std::string& str)
 {
 	std::string result;
 	for (auto& ch : str)
@@ -188,7 +189,7 @@ std::string utils::unicodeEncode(const std::string& str)
 	return result;
 }
 
-std::string utils::replaceQuotes(const std::string& str) 
+std::string Core::replaceQuotes(const std::string& str)
 {
 	std::string newStr;
 	for (int i = 0; i < str.length(); i++) 

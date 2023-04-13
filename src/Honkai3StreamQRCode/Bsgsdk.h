@@ -2,22 +2,21 @@
 #include <algorithm>
 #include <map>
 #include "Json.h"
-#include "utils.h"
+#include "Core.h"
 #include "CryptoKit.h"
 
-class Bsgsdk
+class Bsgsdk :public Core
 {
 public:
 	//Bsgsdk();
 	//~Bsgsdk();
 	std::string setSign(std::map<std::string, std::string> data1);
 	json::Json getUserInfo(std::string, std::string);
-	std::string login1(const std::string&,const std::string&,bool = false);
+	std::string login1(const std::string&, const std::string&, bool = false);
 	std::string login2(const std::string& biliAccount, const std::string& biliPwd);//µÇÂ¼ÕËºÅ
 private:
 	std::string remove_quotes(std::string str);
 	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";
-	utils u;
 	CryptoKit kit;
 	const std::map<std::string, std::string> headers =
 	{

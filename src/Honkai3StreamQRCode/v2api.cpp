@@ -42,7 +42,7 @@ std::string v2api::Initialize()
         {"ts" , "1676498963"}
     };
     std::string playurl = GetHttpStream(V2API,params);
-	playurl = utils.string_To_UTF8(playurl);
+	playurl = string_To_UTF8(playurl);
 	return playurl;
 }
 
@@ -52,10 +52,10 @@ int v2api::GetRealRoomID()
 	std::string roomID;
 	std::cin >> roomID;
 	std::map<std::string, std::string> params = { {"id", roomID} };
-	std::string addres = utils.Url(address, params);
+	std::string addres = Url(address, params);
 	std::string result;
-	utils.GetRequest(result,addres);
-	result = utils.UTF8_To_string(result);
+	GetRequest(result,addres);
+	result = UTF8_To_string(result);
 	int realRoomID = HandlerLiveStatus(result);
 	return realRoomID;
 }
@@ -94,10 +94,10 @@ int v2api::HandlerLiveStatus(std::string string)
 
 std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::string> param)
 {
-	std::string address = utils.Url(api, param);
+	std::string address = Url(api, param);
 	
 	std::string str;
-	utils.GetRequest(str,address);
+	GetRequest(str,address);
 
 	json::Json j;
 	j.parse(str);

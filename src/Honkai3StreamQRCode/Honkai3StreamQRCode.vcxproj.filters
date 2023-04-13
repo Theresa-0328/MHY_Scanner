@@ -21,13 +21,13 @@
     <ClCompile Include="Json.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Parser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="utils.cpp">
+    <ClCompile Include="Core.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="v2api.cpp">
@@ -56,7 +56,7 @@
     <ClInclude Include="Parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
+    <ClInclude Include="Core.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="v2api.h">
