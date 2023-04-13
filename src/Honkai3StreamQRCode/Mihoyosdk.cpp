@@ -184,10 +184,8 @@ std::string Mihoyosdk::makeSign(const std::string data)
 
 std::string Mihoyosdk::bh3Sign(std::string data)
 {
-	std::cout << data << std::endl;
-	std::string key = "0ebc517adb1b62c6b408df153331f9aa";
+	const std::string key = "0ebc517adb1b62c6b408df153331f9aa";
 	data.erase(std::remove(data.begin(), data.end(), '\\'), data.end());
-	std::cout << data << std::endl;
 	std::string sign = CryptoKit::HmacSha256(data,key);
 	std::cout << "Hmac_Sha256Ç©ÃûÍê³É" << std::endl;
 	return sign;

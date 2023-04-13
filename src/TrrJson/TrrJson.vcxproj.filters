@@ -15,48 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Download.cpp">
+    <ClCompile Include="Json.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Core.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="V2api.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Bsgsdk.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Mihoyosdk.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CryptoKit.cpp">
+    <ClCompile Include="Parser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Download.h">
+    <ClInclude Include="Json.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Core.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="V2api.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Bsgsdk.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Mihoyosdk.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CryptoKit.h">
+    <ClInclude Include="Parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

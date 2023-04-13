@@ -10,10 +10,8 @@
 #include <condition_variable>
 #include <opencv2/opencv.hpp>
 #include <zbar.h>
-#include "..//Scan/Scan.h"
 #include <Windows.h>
 #include <future>
-
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -22,11 +20,11 @@ extern "C"
 #include <libavutil/time.h>
 #include <libswscale/swscale.h>
 }
-
 #include "V2api.h"
 #include "Download.h"
 #include "Bsgsdk.h"
 #include "Mihoyosdk.h"
+#include "Scan.h"
 
 void scanMain(std::promise<std::string> url)
 {
