@@ -17,7 +17,8 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
     BIO* bio = BIO_new_mem_buf(public_key.c_str(), (int)public_key.length());
     rsa = PEM_read_bio_RSA_PUBKEY(bio, &rsa, nullptr, nullptr);
     BIO_free(bio);
-    if (!rsa) {
+    if (!rsa) 
+    {
         cerr << "Failed to load public key" << endl;
         return "";
     }
@@ -26,7 +27,8 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
     const int RSA_PADDING = RSA_PKCS1_PADDING;
     unsigned char* encrypted = new unsigned char[RSA_size(rsa)];
     int len = RSA_public_encrypt((int)message.length(), (unsigned char*)message.c_str(), encrypted, rsa, RSA_PADDING);
-    if (len < 0) {
+    if (len < 0) 
+    {
         cerr << "Failed to encrypt message" << endl;
         RSA_free(rsa);
         delete[] encrypted;
@@ -53,18 +55,35 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
     return cipher_text;
 }
 
-std::string CryptoKit::FormatRsaPublicKey(const std::string& key)
+void CryptoKit::FormatRsaPublicKey(std::string& key)
 {
-    std::string formattedKey = "-----BEGIN PUBLIC KEY-----\n";
-    size_t beginPos = key.find("-----BEGIN PUBLIC KEY-----");
-    size_t endPos = key.find("-----END PUBLIC KEY-----");
-    std::string publicKey = key.substr(beginPos+26, endPos-26);
-    for (size_t i = 0; i < publicKey.length(); i += 64) 
+    // 检查输入参数合法性
+    if (key.empty()) 
     {
-        formattedKey += publicKey.substr(i, 64) + "\n";
+        throw std::invalid_argument("input key is empty");
     }
-    formattedKey += "-----END PUBLIC KEY-----";
-    return formattedKey;
+    size_t beginPos = key.find("-----BEGIN PUBLIC KEY-----");
+    if (beginPos == std::string::npos) 
+    {
+        throw std::invalid_argument("input key does not contain BEGIN PUBLIC KEY marker");
+    }
+    size_t endPos = key.find("-----END PUBLIC KEY-----");
+    if (endPos == std::string::npos) 
+    {
+        throw std::invalid_argument("input key does not contain END PUBLIC KEY marker");
+    }
+
+    std::string publicKey = key.substr(beginPos + 26, endPos - 26);
+    std::stringstream ss;
+
+    ss << "-----BEGIN PUBLIC KEY-----\n";
+    for (size_t i = 0; i < publicKey.length(); i += 64)
+    {
+        ss << publicKey.substr(i, 64) << "\n";
+    }
+    ss << "-----END PUBLIC KEY-----";
+    key = ss.str();
+    return;
 }
 
 std::string CryptoKit::HmacSha256(const std::string& message, const std::string& key)
@@ -86,7 +105,7 @@ std::string CryptoKit::HmacSha256(const std::string& message, const std::string&
     return output;
 }
 
-std::string CryptoKit::Md5(const string& str)
+void CryptoKit::Md5(string& str)
 {
     unsigned char md[MD5_DIGEST_LENGTH];
     MD5(reinterpret_cast<const unsigned char*>(str.c_str()), str.size(), md);
@@ -95,6 +114,6 @@ std::string CryptoKit::Md5(const string& str)
     for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
         ss << hex << setw(2) << setfill('0') << static_cast<int>(md[i]);
     }
-
-    return ss.str();
+    str = ss.str();
+    return;
 }

@@ -45,7 +45,7 @@ std::string Bsgsdk::setSign(std::map<std::string, std::string> data)
         sign += c.second;
     }
     sign = sign + "dbf8f1b4496f430b8a3c0f436a35b931";
-    sign = CryptoKit::Md5(sign);
+    CryptoKit::Md5(sign);
     data2 += "sign=" + sign;
     return data2;
 }
@@ -98,7 +98,7 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     json::Json re1J;
     re1J.parse(re);
     std::string publicKey = re1J["rsa_key"];
-    publicKey = CryptoKit::FormatRsaPublicKey(publicKey);
+    CryptoKit::FormatRsaPublicKey(publicKey);
     data["access_key"] = "";
     data["gt_user_id"] = "";
     data["uid"] = "";
