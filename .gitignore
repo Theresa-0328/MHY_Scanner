@@ -363,4 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 *.flv
-/notes.txt
+notes.txt
+config_private.json
