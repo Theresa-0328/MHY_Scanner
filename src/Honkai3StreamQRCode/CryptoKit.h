@@ -3,6 +3,6 @@
 class CryptoKit
 {
 public:
-	std::string rsaEncrypt(std::string message, std::string public_key);
-	std::string formatRsaPublicKey(const std::string& key);
+	static std::string rsaEncrypt(std::string message, std::string public_key);
+	static std::string formatRsaPublicKey(const std::string& key);
 };

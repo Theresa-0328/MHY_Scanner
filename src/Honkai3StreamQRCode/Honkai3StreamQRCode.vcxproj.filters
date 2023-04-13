@@ -30,13 +30,13 @@
     <ClCompile Include="Core.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="v2api.cpp">
+    <ClCompile Include="V2api.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Bsgsdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp">
@@ -59,7 +59,7 @@
     <ClInclude Include="Core.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="v2api.h">
+    <ClInclude Include="V2api.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Bsgsdk.h">

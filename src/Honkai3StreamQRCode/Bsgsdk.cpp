@@ -1,7 +1,7 @@
 #include "Bsgsdk.h"
 #include "Md5.h"
 #include "Parser.h"
-
+#include "CryptoKit.h"
 std::string Bsgsdk::remove_quotes(std::string str)
 {
     std::string result = "";
@@ -76,7 +76,7 @@ std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& bil
 {
     if (cap)
     {
-        //C4715
+        return "";//ÑéÖ¤Âë
     }
     else
     {
@@ -99,7 +99,7 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     json::Json re1J;
     re1J.parse(re);
     std::string publicKey = re1J["rsa_key"];
-    publicKey = kit.formatRsaPublicKey(publicKey);
+    publicKey = CryptoKit::formatRsaPublicKey(publicKey);
     data["access_key"] = "";
     data["gt_user_id"] = "";
     data["uid"] = "";
@@ -107,7 +107,7 @@ std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& bi
     data["user_id"] = biliAccount;
     data["validate"] = "";
     std::string hash1 =  re1J["hash"];
-    std::string rekit = kit.rsaEncrypt(hash1 + biliPwd, publicKey);
+    std::string rekit = CryptoKit::rsaEncrypt(hash1 + biliPwd, publicKey);
     data["pwd"] = rekit;
     std::cout << data.str() << std::endl;
     std::map < std::string, std::string> dataR = data.objToMap();

@@ -3,7 +3,7 @@
 #include <map>
 #include "Json.h"
 #include "Core.h"
-#include "CryptoKit.h"
+//#include "CryptoKit.h"
 
 class Bsgsdk :public Core
 {
@@ -17,7 +17,7 @@ public:
 private:
 	std::string remove_quotes(std::string str);
 	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";
-	CryptoKit kit;
+	//CryptoKit kit;
 	const std::map<std::string, std::string> headers =
 	{
 		{"User-Agent","Mozilla/5.0 BSGameSDK"},
