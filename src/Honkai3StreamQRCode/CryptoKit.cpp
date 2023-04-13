@@ -1,12 +1,14 @@
 #pragma warning(disable : 4996)
-#include "CryptoKit.h"
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/evp.h>
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
+#include <openssl/hmac.h>
+#include <openssl/rand.h>
 #include <iostream>
-
+#include "Core.h"
+#include "CryptoKit.h"
 using namespace std;
 
 std::string CryptoKit::rsaEncrypt(std::string message, std::string public_key)
@@ -63,4 +65,22 @@ std::string CryptoKit::formatRsaPublicKey(const std::string& key)
     }
     formattedKey += "-----END PUBLIC KEY-----";
     return formattedKey;
+}
+
+std::string CryptoKit::HmacSha256(std::string message, std::string key)
+{
+    const EVP_MD* evp_md = EVP_sha256();
+    unsigned int md_len = EVP_MD_size(evp_md);
+    unsigned char md[1024];
+    unsigned int hmac_len;
+    unsigned char* hmac = HMAC(evp_md, key.c_str(), key.length(), (const unsigned char*)message.c_str(), message.length(), md, &hmac_len);
+    std::string result((char*)hmac, hmac_len);
+    std::string output = "";
+    char hex[3] = { 0 };
+    for (unsigned char c : result)
+    {
+        sprintf_s(hex, "%02x", c);
+        output += hex;
+    }
+    return output;
 }

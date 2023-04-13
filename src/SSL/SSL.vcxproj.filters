@@ -18,30 +18,9 @@
     <ClCompile Include="Md5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="HmacSha256.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Sha256.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Hmac.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HmacSha256.hpp">
-      <Filter>头文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Md5.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="HmacSha256.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Sha256.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Hmac.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

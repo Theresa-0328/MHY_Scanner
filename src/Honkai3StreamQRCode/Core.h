@@ -3,8 +3,6 @@
 #include <map>
 #include <curl/curl.h>
 #include <iostream>
-#include <chrono>
-#include <sstream>
 class Core
 {
 public:

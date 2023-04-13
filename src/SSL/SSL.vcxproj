@@ -127,19 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Hmac.cpp" />
-    <ClCompile Include="HmacSha256.cpp" />
-    <ClCompile Include="HmacSha256.hpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Md5.cpp" />
-    <ClCompile Include="Sha256.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Hmac.h" />
-    <ClInclude Include="HmacSha256.h" />
     <ClInclude Include="Md5.h" />
-    <ClInclude Include="Sha256.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

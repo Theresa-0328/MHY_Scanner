@@ -3,13 +3,10 @@
 #include <map>
 #include "Json.h"
 #include "Core.h"
-//#include "CryptoKit.h"
 
 class Bsgsdk :public Core
 {
 public:
-	//Bsgsdk();
-	//~Bsgsdk();
 	std::string setSign(std::map<std::string, std::string> data1);
 	json::Json getUserInfo(std::string, std::string);
 	std::string login1(const std::string&, const std::string&, bool = false);
@@ -17,7 +14,6 @@ public:
 private:
 	std::string remove_quotes(std::string str);
 	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";
-	//CryptoKit kit;
 	const std::map<std::string, std::string> headers =
 	{
 		{"User-Agent","Mozilla/5.0 BSGameSDK"},
