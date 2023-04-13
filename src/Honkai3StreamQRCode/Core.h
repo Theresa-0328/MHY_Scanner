@@ -5,7 +5,7 @@
 #include <iostream>
 #include <chrono>
 #include <sstream>
-class utils
+class Core
 {
 public:
 	std::string Url(std::string url, std::map<std::string, std::string> params);
