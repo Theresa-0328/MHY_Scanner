@@ -23,7 +23,7 @@ extern "C"
 #include <libswscale/swscale.h>
 }
 
-#include "v2api.h"
+#include "V2api.h"
 #include "Download.h"
 #include "Bsgsdk.h"
 #include "Mihoyosdk.h"

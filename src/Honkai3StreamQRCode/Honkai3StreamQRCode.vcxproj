@@ -147,11 +147,11 @@
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="Test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Core.cpp" />
-    <ClCompile Include="v2api.cpp" />
+    <ClCompile Include="V2api.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bsgsdk.h" />
@@ -161,7 +161,7 @@
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Core.h" />
-    <ClInclude Include="v2api.h" />
+    <ClInclude Include="V2api.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Scan\Scan.vcxproj">
