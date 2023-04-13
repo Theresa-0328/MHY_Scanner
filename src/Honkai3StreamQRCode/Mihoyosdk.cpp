@@ -8,16 +8,16 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	std::cout << "verify with uid=" << uid << std::endl;
 	verifyData["uid"] = std::to_string(uid);
 	verifyData["access_key"] = access_key;
-	std::string ssd = "{\\\"access_key\\\":\\\"" + verifyData["access_key"] + "\\\""",\\\"uid\\\":" + verifyData["uid"] + "}";
+	const std::string bodyDataS = "{\\\"access_key\\\":\\\"" + verifyData["access_key"] + "\\\""",\\\"uid\\\":" + verifyData["uid"] + "}";
 	json::Json body;
 	body.parse(verifyBody);
-	body["data"] = ssd;
+	body["data"] = bodyDataS;
 	const std::string sBody = body.str();
 	body.clear();
 	std::string s;
 	PostRequest(s, loginV2Url, makeSign(sBody));
-	std::cout << "±À»µ3ÑéÖ¤Íê³É£¬µÇÂ¼³É¹¦" << std::endl;
 	s = UTF8_To_string(s);
+	std::cout << "±À»µ3ÑéÖ¤Íê³É£¬µÇÂ¼³É¹¦ : " <<s<<std::endl;
 	return s;
 }
 
@@ -67,8 +67,7 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 
 	if ((int)check["retcode"] != 0)
 	{
-		std::cout << "É¨ÂëÊ§°Ü" << std::endl;
-		std::cout << feedback << std::endl;
+		std::cout << "É¨ÂëÊ§°Ü : " << feedback << std::endl;
 		return;
 	}
 	else
@@ -100,9 +99,7 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	//std::cout << scanDataJ.str() << std::endl;
 	json::Json scanExtJ;
 	scanExtJ.parse(scanExtR);
-	//std::cout << scanExtJ.str() << std::endl;
 	scanExtJ["data"] = scanDataJ;
-
 	json::Json scanRawJ;
 	scanRawJ.parse(scanRawR);
 	scanRawJ["open_id"] = bhInFo["open_id"];
@@ -133,8 +130,9 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	if ((int)postBodyJ["retcode"] == 0)
 		std::cout << "É¨Âë³É¹¦" << std::endl;
 	else
-		std::cout << "É¨ÂëÊ§°Ü" << std::endl;
-		std::cout << postBodyJ.str() << std::endl;
+	{
+		std::cout << "É¨ÂëÊ§°Ü :" <<postBodyJ.str()<<std::endl;
+	}
 	return;
 }
 
