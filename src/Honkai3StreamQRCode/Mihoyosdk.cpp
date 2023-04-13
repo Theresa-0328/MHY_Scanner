@@ -190,5 +190,5 @@ std::string Mihoyosdk::bh3Sign(std::string data)
 	std::cout << data << std::endl;
 	std::string sign = CryptoKit::HmacSha256(data,key);
 	std::cout << "Hmac_Sha256Ç©ÃûÍê³É" << std::endl;
-	return "sign";
+	return sign;
 }
