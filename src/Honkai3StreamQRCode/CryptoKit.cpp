@@ -11,7 +11,7 @@
 #include "CryptoKit.h"
 using namespace std;
 
-std::string CryptoKit::rsaEncrypt(std::string message, std::string public_key)
+std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string& public_key)
 {
     RSA* rsa = nullptr;
     BIO* bio = BIO_new_mem_buf(public_key.c_str(), (int)public_key.length());
