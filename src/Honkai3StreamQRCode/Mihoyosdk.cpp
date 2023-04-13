@@ -1,7 +1,7 @@
 #include "Mihoyosdk.h"
-#include "HmacSha256.hpp"
 #include "Json.h"
 #include "Parser.h"
+#include "CryptoKit.h"
 
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
@@ -188,7 +188,7 @@ std::string Mihoyosdk::bh3Sign(std::string data)
 	std::string key = "0ebc517adb1b62c6b408df153331f9aa";
 	data.erase(std::remove(data.begin(), data.end(), '\\'), data.end());
 	std::cout << data << std::endl;
-	std::string sign = hmac_sha256(key, data);
+	std::string sign = CryptoKit::HmacSha256(data,key);
 	std::cout << "Hmac_Sha256Ç©ÃûÍê³É" << std::endl;
-	return sign;
+	return "sign";
 }
