@@ -1,12 +1,11 @@
 #pragma warning(disable : 4996)
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
-#include <openssl/evp.h>
+//#include <openssl/evp.h>
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
 #include <openssl/hmac.h>
-#include <openssl/rand.h>
-#include <iostream>
+//#include <openssl/rand.h>
 #include "Core.h"
 #include "CryptoKit.h"
 using namespace std;
@@ -14,7 +13,7 @@ using namespace std;
 std::string CryptoKit::rsaEncrypt(std::string message, std::string public_key)
 {
     RSA* rsa = nullptr;
-    BIO* bio = BIO_new_mem_buf(public_key.c_str(), public_key.length());
+    BIO* bio = BIO_new_mem_buf(public_key.c_str(), (int)public_key.length());
     rsa = PEM_read_bio_RSA_PUBKEY(bio, &rsa, nullptr, nullptr);
     BIO_free(bio);
     if (!rsa) {
@@ -25,7 +24,7 @@ std::string CryptoKit::rsaEncrypt(std::string message, std::string public_key)
     // Encrypt message
     const int RSA_PADDING = RSA_PKCS1_PADDING;
     unsigned char* encrypted = new unsigned char[RSA_size(rsa)];
-    int len = RSA_public_encrypt(message.length(), (unsigned char*)message.c_str(), encrypted, rsa, RSA_PADDING);
+    int len = RSA_public_encrypt((int)message.length(), (unsigned char*)message.c_str(), encrypted, rsa, RSA_PADDING);
     if (len < 0) {
         cerr << "Failed to encrypt message" << endl;
         RSA_free(rsa);
@@ -73,7 +72,7 @@ std::string CryptoKit::HmacSha256(std::string message, std::string key)
     unsigned int md_len = EVP_MD_size(evp_md);
     unsigned char md[1024];
     unsigned int hmac_len;
-    unsigned char* hmac = HMAC(evp_md, key.c_str(), key.length(), (const unsigned char*)message.c_str(), message.length(), md, &hmac_len);
+    unsigned char* hmac = HMAC(evp_md, key.c_str(), (int)key.length(), (const unsigned char*)message.c_str(), message.length(), md, &hmac_len);
     std::string result((char*)hmac, hmac_len);
     std::string output = "";
     char hex[3] = { 0 };
