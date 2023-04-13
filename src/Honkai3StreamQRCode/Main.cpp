@@ -12,14 +12,6 @@
 #include <zbar.h>
 #include <Windows.h>
 #include <future>
-extern "C"
-{
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/time.h>
-#include <libswscale/swscale.h>
-}
 #include "V2api.h"
 #include "Download.h"
 #include "Bsgsdk.h"
