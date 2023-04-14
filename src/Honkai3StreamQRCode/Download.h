@@ -15,5 +15,5 @@ private:
 	static size_t write_data(void* ptr, size_t size, size_t nmemb, void* stream);
 	std::atomic<bool> stop_download;
 	std::mutex mux;
-	HANDLE fp;
+	HANDLE fp = NULL;
 };

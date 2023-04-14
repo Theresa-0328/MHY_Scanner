@@ -2,7 +2,6 @@
 
 Download::Download() /*:input_thread(&Download::check_input, this) */
 {
-    CURL* curl = curl_easy_init();
     stop_download.store(false);
 }
 
@@ -63,7 +62,6 @@ void Download::curlDownlod(std::string url)
             //std::this_thread::sleep_for(std::chrono::seconds(1));
             CURLcode res = curl_easy_perform(curl);
             //res = CURLE_OK;
-            std::cout << "++++++++++++++++++++++++++++++++" << std::endl;
             if (res == CURLE_OK)
             {
                 std::cout << "Download completed successfully." << std::endl;

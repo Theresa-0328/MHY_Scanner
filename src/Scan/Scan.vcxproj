@@ -136,9 +136,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Scan.cpp" />
+    <ClCompile Include="ScreenScan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scan.h" />
+    <ClInclude Include="ScreenScan.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
