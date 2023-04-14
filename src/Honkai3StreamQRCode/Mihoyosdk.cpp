@@ -142,6 +142,7 @@ void Mihoyosdk::setUserName(const std::string& name)
 	setName.parse(scanRawR);
 	setName["asterisk_name"] = string_To_UTF8(name);
 	scanRawR = setName.str();
+	setName.clear();
 }
 
 std::string Mihoyosdk::makeSign(const std::string data)
