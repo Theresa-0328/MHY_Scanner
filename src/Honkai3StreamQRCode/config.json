@@ -1,7 +1,10 @@
 {
-  "room_id": [
-    6,
-    14047,
-    7734200
-  ]
+	"access_key": "",
+  	"account": "",
+  	"bh_ver": "",
+  	"clip_check": true,
+  	"last_login_succ": true,
+  	"password": "",
+  	"uid": 0,
+  	"uname": "名称name1"
 }
