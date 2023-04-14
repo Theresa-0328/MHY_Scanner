@@ -4,8 +4,8 @@ using cv::Mat;
 ScreenScan::ScreenScan()
 {
     double zoom = getZoom();
-    m_width = GetSystemMetrics(SM_CXSCREEN) * zoom;
-    m_height = GetSystemMetrics(SM_CYSCREEN) * zoom;
+    m_width = GetSystemMetrics(SM_CXSCREEN) * (int)zoom;
+    m_height = GetSystemMetrics(SM_CYSCREEN) * (int)zoom;
     m_screenshotData = new char[m_width * m_height * 4];
     memset(m_screenshotData, 0, m_width);
 

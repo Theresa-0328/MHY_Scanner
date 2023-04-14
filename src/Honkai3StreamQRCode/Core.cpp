@@ -159,13 +159,16 @@ std::string Core::urlEncode(const std::string& str)
 	escaped.fill('0');
 	escaped << std::hex;
 
-	for (auto itr = str.begin(), end = str.end(); itr != end; ++itr) {
+	for (auto itr = str.begin(), end = str.end(); itr != end; ++itr) 
+	{
 		const unsigned char c = *itr;
 
 		if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~'
 			|| c == '!' || c == '*' || c == '\'' || c == '(' || c == ')'
-			|| c == ';' || c == ':' || c == '@' || c == '&' || c == '='|| c == '$' || c == ',' || c == '/' || c == '?'
-			|| c == '#' || c == '[' || c == ']') {
+			|| c == ';' || c == ':' || c == '@' || c == '&' || c == '='
+			|| c == '$' || c == ',' || c == '/' || c == '?'
+			|| c == '#' || c == '[' || c == ']') 
+		{
 			escaped << c;
 			continue;
 		}

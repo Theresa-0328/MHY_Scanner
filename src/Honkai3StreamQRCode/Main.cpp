@@ -1,9 +1,4 @@
-﻿//reference
-//https://github.com/ikexing-cn/bilibili-live-stream
-//https://github.com/HonkaiScanner/scannerHelper
-//https://www.bilibili.com/video/BV1TP411p7cC
-//https://github.com/yespon/yazi
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <thread>
 #include <mutex>
@@ -17,6 +12,7 @@
 #include "Bsgsdk.h"
 #include "Mihoyosdk.h"
 #include "Scan.h"
+
 
 void scanMain(std::promise<std::string> url)
 {
@@ -110,13 +106,11 @@ int main(int argc, char* argv[])
 	Mihoyosdk m;
 	json::Json loginJ;
 
-	loginJ.parse(b.login1("13731873115", "graphics"));
+	loginJ.parse(b.login1("", ""));
 	std::string a1 = loginJ["uid"].str();
 	std::string a2 = loginJ["access_key"];
 	loginJ.clear();
 	j = b.getUserInfo(a1, a2);
-	//j = b.getUserInfo("96023077","c464665eb3f8462957b71d9e65a48923_sh");
-	//cout << j.str()<< endl;
 	int uid = std::stoi(j["uid"]);
 	std::string access_key = j["access_key"];
 	j.clear();
@@ -125,7 +119,7 @@ int main(int argc, char* argv[])
 	//登录成功！
 	m.getOAServer();
 	//开始扫码
-	m.setUserName("中无");
+	m.setUserName("爱莉希雅");
 
 	Download down;
 	std::thread th([&down, playurl]() 
@@ -147,21 +141,7 @@ int main(int argc, char* argv[])
 	}
 
 	m.scanCheck(qrCode, bhInfo);
-	
-	
-	
-	//getchar();
-	
-	//std::ifstream fin("./config.json");
-	//std::stringstream ss;
-	//ss << fin.rdbuf();
-	//const std::string& str = ss.str();
-	//json::Json v;
-	//v.parse(str);
-	//json::Json a;
-	//a = v["quality_description"][0];
-	//std::cout << a.str() <<std::endl;
-	////！！！！！v.clear();
+
 	std::cout << "Exit" << std::endl;
 	return 0;
 }
