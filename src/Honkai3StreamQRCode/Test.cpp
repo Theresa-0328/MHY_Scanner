@@ -50,7 +50,6 @@ int main()
 	loginJ.clear();
 	j.clear();
 	
-	
 	deCode.clear();
 	ScreenScan screenshot;
 	zbar::ImageScanner scanner;
