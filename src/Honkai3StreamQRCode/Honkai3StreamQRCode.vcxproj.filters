@@ -60,4 +60,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="config.json">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="config_private.json">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="config_private_1.json">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>
