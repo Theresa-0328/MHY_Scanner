@@ -365,3 +365,5 @@ FodyWeavers.xsd
 *.flv
 notes.txt
 config_private.json
+*.dll
+/src/Honkai3StreamQRCode/config_private_1.json

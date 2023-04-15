@@ -7,33 +7,70 @@
 using namespace json;
 using namespace std;
 
+void putconfigFile(const std::string& output)//临时先用着
+{
+	std::ofstream outFile("config_private_1.json");
+	std::stringstream outStr;
+	bool isInPair = false;
+	for (int i = 0; i < output.size(); i++) 
+	{
+		if (output[i] == '{') 
+		{
+			outStr << "{\n";
+			continue;
+		}
+		if (output[i] == '}') 
+		{
+			outStr << "\n}";
+			isInPair = false;
+			continue;
+		}
+		if (output[i] == ',') 
+		{
+			outStr << ",\n";
+			isInPair = false;
+			continue;
+		}
+		if (!isInPair) 
+		{
+			outStr << "  ";
+			isInPair = true;
+		}
+		outStr << output[i];
+	}
+	outFile << outStr.str();
+	outFile.close();
+}
 
 int main()
 {
 	
 	std::ifstream inFile;
-	json::Json config;
+	json::Json configJson;
 	std::stringstream configStringStream;
 	inFile.open("config_private.json");
 	if (inFile) 
 	{ 
 		configStringStream << inFile.rdbuf();
 		const std::string& configString = configStringStream.str();
-		config.parse(configString);
+		configJson.parse(configString);
 	}
 	else 
 	{
 		inFile.open("config.json");
 		configStringStream << inFile.rdbuf();
 		const std::string& configString = configStringStream.str();
-		config.parse(configString);
+		configJson.parse(configString);
 	}
-
+	
+	configJson["signed_in"] = false;
+	putconfigFile(configJson.str());
+	
 	Bsgsdk b;
 	Json j;
 	Mihoyosdk m;
 	Json loginJ;
-	loginJ.parse(b.login1(config["account"], config["password"]));
+	loginJ.parse(b.login1(configJson["account"], configJson["password"]));
 	string a1 = loginJ["uid"].str();
 	string a2 = loginJ["access_key"];
 	loginJ.clear();
@@ -43,7 +80,16 @@ int main()
 	std::string bhInfo = m.verify(uid, access_key);
 	//登录成功！
 	m.getOAServer();
-	m.setUserName("测试名称test001");
+	
+	if (configJson["setname"] == "")
+	{
+		m.setUserName(configJson["account"]);
+	}
+	else
+	{
+		m.setUserName(configJson["setname"]);
+	}
+	
 	//开始扫码
 	std::string deCode = R"(https://user.mihoyo.com/qr_code_in_game.html?app_id=1&app_name=%E5%B4%A9%E5%9D%8F3&bbs=true&biz_key=bh3_cn&expire=1677936279&ticket=6437b1eafd72a209bb1e9ca5)";
 	m.scanCheck(deCode,bhInfo);
@@ -57,7 +103,7 @@ int main()
 	cv::Mat img;
 	cv::Mat img_;
 
-	cout << "检测屏幕上的二维码中" << endl;
+	std::cout << "检测屏幕上的二维码中" << endl;
 	while(1)
 	{
 
