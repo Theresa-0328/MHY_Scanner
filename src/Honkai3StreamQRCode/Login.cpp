@@ -1,7 +1,7 @@
 #include "Bsgsdk.h"
-#include "Config.h"
+#include "Login.h"
 
-Config::Config(std::string output)
+Login::Login(std::string output)
 {
 	inFile.open(output);
 	if (inFile)
@@ -19,16 +19,20 @@ Config::Config(std::string output)
 	}
 	signed_in = configJson["signed_in"];
 }
-Config::~Config()
+Login::~Login()
 {
+	userInfo.clear();
+	configJson.clear();
+	putconfigFile();
 }
-void Config::bh3Info()
+void Login::bh3Info()
 {
 	Info = m.verify(uid, access_key);
 
 }
-void Config::putconfigFile(const std::string& output)//临时先用着
+void Login::putconfigFile()//临时先用着
 {
+	const std::string output = configJson.str();
 	std::ofstream outFile("config_private_1.json");
 	std::stringstream outStr;
 	bool isInPair = false;
@@ -62,7 +66,7 @@ void Config::putconfigFile(const std::string& output)//临时先用着
 	outFile.close();
 }
 
-void Config::setName()
+void Login::setName()
 {
 	std::string realName = userInfo["uname"];
 	configJson["realname"] = string_To_UTF8(realName);
@@ -77,12 +81,12 @@ void Config::setName()
 
 }
 
-void Config::scanQRCode(std::string& qrCode)
+void Login::scanQRCode(std::string& qrCode)
 {
 	m.scanCheck(qrCode, Info);
 }
 
-void Config::signedIn()
+void Login::signedIn()
 {
 	bool signed_in = configJson["signed_in"];
 	json::Json loginJ;
