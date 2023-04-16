@@ -5,16 +5,17 @@
 #include "Core.h"
 #include "Parser.h"
 #include "Mihoyosdk.h"
-class Config:Core
+class Login :Core
 {
 public:
-	Config(std::string output);
-	~Config();
+	Login(std::string output);
+	~Login();
 	void bh3Info();
-	void putconfigFile(const std::string& output);//临时先用着
+	void putconfigFile();//临时先用着
 	void setName();
 	void scanQRCode(std::string& qrCode);
-//private:
+	void signedIn();
+private:
 	std::ifstream inFile;
 	json::Json configJson;
 	json::Json userInfo;
@@ -24,6 +25,4 @@ public:
 	std::string Info;
 	Mihoyosdk m;
 	bool signed_in;
-//private:
-	void signedIn();
 };

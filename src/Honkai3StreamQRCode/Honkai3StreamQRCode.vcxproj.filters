@@ -39,7 +39,7 @@
     <ClCompile Include="CryptoKit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp">
+    <ClCompile Include="Login.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,7 +62,7 @@
     <ClInclude Include="CryptoKit.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
+    <ClInclude Include="Login.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

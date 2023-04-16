@@ -1,6 +1,6 @@
 #include <zbar.h>
 #include <fstream>
-#include "Config.h"
+#include "Login.h"
 #include "Bsgsdk.h"
 #include "Mihoyosdk.h"
 #include "CryptoKit.h"
@@ -10,10 +10,11 @@ using namespace std;
 
 int main()
 {
-	Config config("config_private.json");
-	config.signedIn();
-	config.setName();
-	config.bh3Info();
+	Login login("config_private.json");
+	login.signedIn();
+	login.setName();
+	login.bh3Info();
+	login.putconfigFile();
 
 	//configJson["setname"] = c.string_To_UTF8("∞Æ¿Úœ£—≈");
 	//string configString = c.UTF8_To_string(configJson.str());
@@ -21,11 +22,10 @@ int main()
 	//cout << configJson.str()<< endl;
 	//config.putconfigFile(configJson.str());
 	
-	
-	//ø™ º…®¬Î
 	std::string deCode = R"(https://user.mihoyo.com/qr_code_in_game.html?app_id=1&app_name=%E5%B4%A9%E5%9D%8F3&bbs=true&biz_key=bh3_cn&expire=1677936279&ticket=6437b1eafd72a209bb1e9ca5)";
 	deCode.clear();
 	
+	//ø™ º…®¬Î
 	ScreenScan screenshot;
 	zbar::ImageScanner scanner;
 	cv::Mat gray;
@@ -50,7 +50,7 @@ int main()
 		}
 		if (deCode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			config.scanQRCode(deCode);
+			login.scanQRCode(deCode);
 		}
 		cv::waitKey(16);
 	}
