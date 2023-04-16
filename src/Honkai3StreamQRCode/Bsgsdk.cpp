@@ -50,7 +50,7 @@ std::string Bsgsdk::setSign(std::map<std::string, std::string> data)
     return data2;
 }
 
-json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
+json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
 {
     std::string s;
     std::string t;
@@ -68,6 +68,8 @@ json::Json Bsgsdk::getUserInfo(std::string uid,std::string accessKey)
     PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = UTF8_To_string(t);
     std::cout <<"BiliBili验证成功：" << t << std::endl;
+    j.clear();
+    j.parse(t);
     return j;
 }
 
