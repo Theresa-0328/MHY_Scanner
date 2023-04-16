@@ -7,6 +7,8 @@
 #include <zbar.h>
 #include <Windows.h>
 #include <future>
+#include <fstream>
+
 #include "V2api.h"
 #include "Download.h"
 #include "Bsgsdk.h"
@@ -105,8 +107,27 @@ int main(int argc, char* argv[])
 	std::string res;
 	Mihoyosdk m;
 	json::Json loginJ;
-
-	loginJ.parse(b.login1("", ""));
+	
+	std::ifstream inFile;
+	json::Json configJson;
+	std::stringstream configStringStream;
+	inFile.open("config_private.json");
+	if (inFile)
+	{
+		configStringStream << inFile.rdbuf();
+		const std::string& configString = configStringStream.str();
+		configJson.parse(configString);
+	}
+	else
+	{
+		inFile.open("config.json");
+		configStringStream << inFile.rdbuf();
+		const std::string& configString = configStringStream.str();
+		configJson.parse(configString);
+	}
+	
+	
+	loginJ.parse(b.login1(configJson["account"], configJson["password"]));
 	std::string a1 = loginJ["uid"].str();
 	std::string a2 = loginJ["access_key"];
 	loginJ.clear();

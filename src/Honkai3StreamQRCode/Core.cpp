@@ -150,7 +150,7 @@ CURLcode Core::PostRequest(std::string& response, const std::string& url, const 
 
 int Core::getCurrentUnixTime()
 {
-	return (int)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
 std::string Core::urlEncode(const std::string& str)

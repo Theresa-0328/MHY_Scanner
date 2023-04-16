@@ -1,7 +1,5 @@
 ﻿#include <sstream>
 #include <stdexcept>
-
-#include "Json.h"
 #include "Parser.h"
 
 json::Json::Json():m_type(json_null)
