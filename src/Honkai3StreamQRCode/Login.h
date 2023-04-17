@@ -11,7 +11,7 @@ public:
 	Login(std::string output);
 	~Login();
 	void bh3Info();
-	void putconfigFile();//临时先用着
+	void putConfigFile();//临时先用着
 	void setName();
 	void scanQRCode(std::string& qrCode);
 	void signedIn();
@@ -22,7 +22,7 @@ private:
 	std::stringstream configStringStream;
 	int uid = 0;
 	std::string access_key;
-	std::string Info;
-	Mihoyosdk m;
+	std::string loginData;
+	Mihoyosdk mihoyosdk;
 	bool signed_in;
 };

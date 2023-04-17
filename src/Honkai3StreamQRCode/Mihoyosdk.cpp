@@ -26,7 +26,7 @@ std::string Mihoyosdk::getBHVer()
 	return "6.5.0";
 }
 
-std::string Mihoyosdk::getOAServer()
+std::string Mihoyosdk::getOAServer()//¿¼ÂÇÌáÇ°Ö´ÐÐ
 {
 
 	std::string bhVer = getBHVer();
@@ -140,7 +140,7 @@ void Mihoyosdk::setUserName(const std::string& name)
 {
 	json::Json setName;
 	setName.parse(scanRawR);
-	setName["asterisk_name"] = string_To_UTF8(name);
+	setName["asterisk_name"] = name;
 	scanRawR = setName.str();
 	setName.clear();
 }

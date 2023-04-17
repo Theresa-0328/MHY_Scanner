@@ -1,17 +1,17 @@
 #pragma once
 #include <algorithm>
 #include <map>
-#include "Json.h"
+#include "Parser.h"
 #include "Core.h"
 
 class Bsgsdk :public Core
 {
 public:
-	std::string setSign(std::map<std::string, std::string> data1);
 	json::Json getUserInfo(const int uid, const std::string accessKey);
 	std::string login1(const std::string&, const std::string&, bool = false);
-	std::string login2(const std::string& biliAccount, const std::string& biliPwd);//µÇÂ¼ÕËºÅ
 private:
+	std::string loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd);//µÇÂ¼ÕËºÅ
+	std::string setSign(std::map<std::string, std::string> data1);
 	std::string remove_quotes(std::string str);
 	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";
 	const std::map<std::string, std::string> headers =

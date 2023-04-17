@@ -26,7 +26,7 @@ Mat ScreenScan::getScreenshot()
     GetBitmapBits(m_hBitmap, m_width * m_height * 4, m_screenshotData);
 
     // ´´½¨Í¼Ïñ
-    Mat screenshot(m_height, m_width, CV_8UC4, m_screenshotData);
+    Mat screenshot(m_height, m_width, CV_8UC4, m_screenshotData);//»Ò¶È
 
     return screenshot;
 }
