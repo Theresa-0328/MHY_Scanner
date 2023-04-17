@@ -1,5 +1,4 @@
 #include "Bsgsdk.h"
-#include "Parser.h"
 #include "CryptoKit.h"
 std::string Bsgsdk::remove_quotes(std::string str)
 {
@@ -67,7 +66,7 @@ json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
     s = setSign(m);
     PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = UTF8_To_string(t);
-    std::cout <<"BiliBili验证成功：" << t << std::endl;
+    std::cout <<"BiliBili验证：" << t << std::endl;
     j.clear();
     j.parse(t);
     return j;
@@ -77,16 +76,16 @@ std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& bil
 {
     if (cap)
     {
-        return "";//验证码
+        return "";//loginWithCaptcha
     }
     else
     {
-        return login2(biliAccoun, biliPwd);
+        return loginWithoutCaptcha(biliAccoun, biliPwd);
     }
     
 }
 
-std::string Bsgsdk::login2(const std::string& biliAccount, const std::string& biliPwd)
+std::string Bsgsdk::loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd)
 {
     json::Json data;
     data.parse(rsaParam);

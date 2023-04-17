@@ -13,7 +13,6 @@ public:
 	int getCurrentUnixTime();
 	std::string urlEncode(const std::string& str);
 	std::string unicodeEncode(const std::string& str);
-	std::string toHexStr(int num);
 	std::string replaceQuotes(const std::string& str);
 	std::string UTF8_To_string(const std::string& str);
 	std::string string_To_UTF8(const std::string& str);

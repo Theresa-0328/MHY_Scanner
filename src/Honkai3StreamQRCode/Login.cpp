@@ -21,16 +21,16 @@ Login::Login(std::string output)
 }
 Login::~Login()
 {
+	putConfigFile();
 	userInfo.clear();
 	configJson.clear();
-	putconfigFile();
 }
 void Login::bh3Info()
 {
-	Info = m.verify(uid, access_key);
+	loginData = mihoyosdk.verify(uid, access_key);
 
 }
-void Login::putconfigFile()//临时先用着
+void Login::putConfigFile()//临时先用着
 {
 	const std::string output = configJson.str();
 	std::ofstream outFile("config_private_1.json");
@@ -68,22 +68,21 @@ void Login::putconfigFile()//临时先用着
 
 void Login::setName()
 {
-	std::string realName = userInfo["uname"];
-	configJson["realname"] = string_To_UTF8(realName);
-	if (configJson["setname"] != "")
+	std::string realName = string_To_UTF8(userInfo["uname"]);
+	configJson["realname"] = realName;
+	if (configJson["setname"] == "")
 	{
-		m.setUserName(configJson["realname"]);
+		mihoyosdk.setUserName(realName);
 	}
 	else
 	{
-		m.setUserName(configJson["setname"]);
+		mihoyosdk.setUserName(configJson["setname"]);
 	}
-
 }
 
 void Login::scanQRCode(std::string& qrCode)
 {
-	m.scanCheck(qrCode, Info);
+	mihoyosdk.scanCheck(qrCode, loginData);
 }
 
 void Login::signedIn()
@@ -95,14 +94,19 @@ void Login::signedIn()
 	{
 		uid = configJson["uid"];
 		access_key = configJson["access_key"];
+		userInfo = b.getUserInfo(uid, access_key);
 	}
-	else
+	if(signed_in == false||(int)userInfo["code"] != 0)//access_key失效，尝试重新登录
 	{
 		loginJ.parse(b.login1(configJson["account"], configJson["password"]));
+		//if (/*500002密码错误*/)
+		//{
+
+		//}
 		uid = loginJ["uid"];
 		access_key = loginJ["access_key"];
 		loginJ.clear();
+		configJson["signed_in"] = true;
+		userInfo = b.getUserInfo(uid, access_key);
 	}
-	userInfo = b.getUserInfo(uid, access_key);
-	m.getOAServer();
 }
