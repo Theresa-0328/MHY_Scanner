@@ -53,7 +53,7 @@ int Scan::read(AVPacket* avPacket)
 
 int Scan::GetStreamIndex(enum AVMediaType type)
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(2500));
+	std::this_thread::sleep_for(std::chrono::milliseconds(4500));
 	return av_find_best_stream(avformatContext, type, -1, -1, nullptr, 0);
 }
 

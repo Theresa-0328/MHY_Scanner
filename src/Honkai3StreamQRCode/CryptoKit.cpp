@@ -1,8 +1,8 @@
 #pragma warning(disable : 4996)
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
-#include <openssl/bio.h>
-#include <openssl/buffer.h>
+//#include <openssl/bio.h>
+//#include <openssl/buffer.h>
 #include <openssl/hmac.h>
 #include <openssl/md5.h>
 #include <sstream>

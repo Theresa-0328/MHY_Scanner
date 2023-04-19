@@ -2,14 +2,37 @@
 #include <fstream>
 #include "Login.h"
 #include "Bsgsdk.h"
-#include "Mihoyosdk.h"
 #include "CryptoKit.h"
 #include "ScreenScan.h"
-using namespace json;
-using namespace std;
+#include <windows.h>
+#include <opencv2/opencv.hpp>
+
 //https://user.mihoyo.com/qr_code_in_game.html?app_id=1&app_name=%E5%B4%A9%E5%9D%8F3&bbs=true&biz_key=bh3_cn&expire=1677936279&ticket=6437b1eafd72a209bb1e9ca5
 int main()
 {
+	//{
+	//	std::string str = ".\\dll\\opencv_world460.dll";
+	//	std::wstring wstr = std::wstring(str.begin(), str.end());
+	//	//MessageBox(NULL, wstr.c_str(), L"Title", MB_OK);
+	//	// º”‘ÿOpenCVø‚
+	//	HINSTANCE hInst = LoadLibrary(wstr.c_str());
+	//	if (!hInst)
+	//	{
+	//		MessageBox(NULL, (LPCWSTR)"Could not load opencv_world460.dll!", (LPCWSTR)"Error", MB_OK | MB_ICONERROR);
+	//		return -1;
+	//	}
+
+	//	cv::Mat img = cv::imread("screenshot.jpg");
+	//	if (img.empty())
+	//		return -1;
+
+	//	cv::imshow("image", img);
+	//	cv::waitKey(0);
+
+	//	//  Õ∑≈OpenCVø‚
+	//	FreeLibrary(hInst);
+	//}
+	
 	Login login("config_private.json");
 	login.signedIn();
 	login.setName();
@@ -24,7 +47,7 @@ int main()
 	cv::Mat img;
 	cv::Mat img_;
 
-	std::cout << "ºÏ≤‚∆¡ƒª…œµƒ∂˛Œ¨¬Î÷–" << endl;
+	std::cout << "ºÏ≤‚∆¡ƒª…œµƒ∂˛Œ¨¬Î÷–" << std::endl;
 	while(true)
 	{
 

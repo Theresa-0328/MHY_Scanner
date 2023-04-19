@@ -2,7 +2,7 @@
 
 Download::Download() /*:input_thread(&Download::check_input, this) */
 {
-    stop_download.store(false);
+    //stop_download.store(false);
 }
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
@@ -22,8 +22,7 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
 void Download::stopDownloadAfterDelay()
 {
     //std::this_thread::sleep_for(std::chrono::seconds(3)); // 停止下载任务的等待时间
-    
-    stop_download.store(true);
+    //stop_download.store(true);
     curl_easy_pause(curl, CURLPAUSE_ALL);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
