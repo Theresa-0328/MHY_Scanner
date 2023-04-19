@@ -70,7 +70,7 @@ void Login::setName()
 {
 	std::string realName = string_To_UTF8(userInfo["uname"]);
 	configJson["realname"] = realName;
-	if (configJson["setname"] == "")
+	if (configJson["setname"] != "")
 	{
 		mihoyosdk.setUserName(realName);
 	}

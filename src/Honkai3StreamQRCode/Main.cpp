@@ -128,14 +128,14 @@ int main(int argc, char* argv[])
 	
 	
 	loginJ.parse(b.login1(configJson["account"], configJson["password"]));
-	std::string a1 = loginJ["uid"].str();
+	int a1 = loginJ["uid"];
 	std::string a2 = loginJ["access_key"];
 	loginJ.clear();
 	j = b.getUserInfo(a1, a2);
-	int uid = std::stoi(j["uid"]);
-	std::string access_key = j["access_key"];
+	//int uid = j["uid"];
+	//std::string access_key = j["access_key"];
 	j.clear();
-	std::string bhInfo = m.verify(uid, access_key);
+	std::string bhInfo = m.verify(a1, a2);
 	std::cout << bhInfo << std::endl;
 	//登录成功！
 	m.getOAServer();
