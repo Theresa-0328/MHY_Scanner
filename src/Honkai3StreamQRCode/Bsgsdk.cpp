@@ -66,7 +66,9 @@ json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
     s = setSign(m);
     PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = UTF8_To_string(t);
-    std::cout <<"BiliBili验证：" << t << std::endl;
+#ifdef _DEBUG
+    std::cout << "BiliBili验证：" << t << std::endl;
+#endif // _DEBUG
     j.clear();
     j.parse(t);
     return j;
@@ -93,7 +95,9 @@ std::string Bsgsdk::loginWithoutCaptcha(const std::string& biliAccount, const st
     std::string p1 = setSign(dataM);
     std::string re;
     PostRequest(re, bililogin + "api/client/rsa", p1,headers);
-    std::cout << re<< std::endl;
+#ifdef _DEBUG
+    std::cout << re << std::endl;
+#endif // _DEBUG
     data.clear();
     data.parse(loginParam);
     json::Json re1J;
@@ -109,7 +113,9 @@ std::string Bsgsdk::loginWithoutCaptcha(const std::string& biliAccount, const st
     std::string hash1 =  re1J["hash"];
     std::string rekit = CryptoKit::rsaEncrypt(hash1 + biliPwd, publicKey);
     data["pwd"] = rekit;
+#ifdef _DEBUG
     std::cout << data.str() << std::endl;
+#endif // _DEBUG
     std::map < std::string, std::string> dataR = data.objToMap();
     std::string p2 = setSign(dataR);
     re.clear(); 

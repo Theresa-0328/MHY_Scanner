@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <map>
-#include "Parser.h"
+#include "json.h"
 #include "Core.h"
 
 class Bsgsdk :public Core

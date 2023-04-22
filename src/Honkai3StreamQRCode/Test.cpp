@@ -11,14 +11,13 @@
 int main()
 {
 	//{
-	//	std::string str = ".\\dll\\opencv_world460.dll";
-	//	std::wstring wstr = std::wstring(str.begin(), str.end());
+	//	std::wstring wstr = L".\\dll\\opencv_world460.dll";
 	//	//MessageBox(NULL, wstr.c_str(), L"Title", MB_OK);
 	//	// º”‘ÿOpenCVø‚
 	//	HINSTANCE hInst = LoadLibrary(wstr.c_str());
 	//	if (!hInst)
 	//	{
-	//		MessageBox(NULL, (LPCWSTR)"Could not load opencv_world460.dll!", (LPCWSTR)"Error", MB_OK | MB_ICONERROR);
+	//		MessageBox(NULL, L"Could not load opencv_world460.dll!", L"Error", MB_OK | MB_ICONERROR);
 	//		return -1;
 	//	}
 

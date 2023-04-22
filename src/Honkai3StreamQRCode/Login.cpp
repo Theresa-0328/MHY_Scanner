@@ -33,7 +33,7 @@ void Login::bh3Info()
 void Login::putConfigFile()//¡Ÿ ±œ»”√◊≈
 {
 	const std::string output = configJson.str();
-	std::ofstream outFile("config_private_1.json");
+	std::ofstream outFile("config_private.json");
 	std::stringstream outStr;
 	bool isInPair = false;
 	for (int i = 0; i < output.size(); i++)
@@ -92,21 +92,28 @@ void Login::signedIn()
 	Bsgsdk b;
 	if (signed_in == true)
 	{
+		std::cout << "bilibiliª∫¥Ê’À∫≈µ«¬º÷–"<<std::endl;
 		uid = configJson["uid"];
 		access_key = configJson["access_key"];
 		userInfo = b.getUserInfo(uid, access_key);
 	}
 	if(signed_in == false||(int)userInfo["code"] != 0)//access_key ß–ß£¨≥¢ ‘÷ÿ–¬µ«¬º
 	{
+		std::cout << "bilibiliª∫¥Ê’À∫≈Œﬁ–ß£¨≥¢ ‘√‹¬Îµ«¬º÷–" << std::endl;
 		loginJ.parse(b.login1(configJson["account"], configJson["password"]));
-		//if (/*500002√‹¬Î¥ÌŒÛ*/)
-		//{
-
-		//}
+		if ((int)loginJ["code"] != 0)
+		{
+			std::cout << "’À∫≈ªÚ√‹¬Î¥ÌŒÛ£¨µ«¬º ß∞‹£¨»Œ“‚º¸ÕÀ≥ˆ" << std::endl;
+			system("pause");
+			exit(-1);
+		}
 		uid = loginJ["uid"];
 		access_key = loginJ["access_key"];
+		configJson["uid"] = uid;
+		configJson["access_key"] = access_key;
 		loginJ.clear();
 		configJson["signed_in"] = true;
 		userInfo = b.getUserInfo(uid, access_key);
 	}
+	std::cout << "bilibiliµ«¬ºÕÍ≥…£°" << std::endl;
 }
