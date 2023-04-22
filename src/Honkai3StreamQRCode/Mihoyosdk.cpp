@@ -5,7 +5,9 @@
 
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
+#ifdef _DEBUG
 	std::cout << "verify with uid=" << uid << std::endl;
+#endif // _DEBUG
 	verifyData["uid"] = std::to_string(uid);
 	verifyData["access_key"] = access_key;
 	const std::string bodyDataS = "{\\\"access_key\\\":\\\"" + verifyData["access_key"] + "\\\""",\\\"uid\\\":" + verifyData["uid"] + "}";
@@ -17,13 +19,16 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	std::string s;
 	PostRequest(s, loginV2Url, makeSign(sBody));
 	s = UTF8_To_string(s);
-	std::cout << "崩坏3验证完成，登录成功 : " <<s<<std::endl;
+	std::cout << "崩坏3验证完成，登录成功" << std::endl;
+#ifdef _DEBUG
+	std::cout << s << std::endl;
+#endif // ——DEBUG
 	return s;
 }
 
 std::string Mihoyosdk::getBHVer()
 {
-	return "6.5.0";
+	return "6.6.0";
 }
 
 std::string Mihoyosdk::getOAServer()//考虑提前执行
@@ -42,7 +47,9 @@ std::string Mihoyosdk::getOAServer()//考虑提前执行
 	std::string dispatch;
 	PostRequest(dispatch, dispatch_url + param, "");
 	dispatch = UTF8_To_string(dispatch);
+#ifdef _DEBUG
 	std::cout << "获得OA服务器成功 : " << dispatch << std::endl;
+#endif // DEBUG
 	j.clear();
 	return dispatch;
 }
@@ -123,12 +130,16 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	a2 = replaceQuotes(a2);
 	postBodyJ["payload"]["raw"] = a2;
 	postBody = postBodyJ.str();
-	std::cout << postBody<< std::endl;
+#ifdef _DEBUG
+	std::cout << postBody << std::endl;
+#endif // _DEBUG
 	std::string response;
 	PostRequest(response, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm", postBody);
 	postBodyJ.parse(response);
 	if ((int)postBodyJ["retcode"] == 0)
+	{
 		std::cout << "扫码成功" << std::endl;
+	}
 	else
 	{
 		std::cout << "扫码失败 :" <<postBodyJ.str()<<std::endl;
@@ -156,24 +167,34 @@ std::string Mihoyosdk::makeSign(const std::string data)
 	{
 		if (it.first == "sign")
 			continue;
-		if (it.first == "data")
+		if (it.first == "data")//需要优化
 		{
 			if (it.second.front() == '\"')
+			{
 				it.second.erase(0, 1);
+			}
 			if (it.second.back() == '\"')
+			{
 				it.second.pop_back();
+			}
 		}
 		if (it.first == "device")
 		{
 			if (it.second.front() == '\"')
+			{
 				it.second.erase(0, 1);
+			}
 			if (it.second.back() == '\"')
+			{
 				it.second.pop_back();
+			}
 		}
 		data2 += it.first + "=" + it.second + "&";
 	}
 	data2.erase(data2.length() - 1);
+#ifdef _DEBUG
 	std::cout << "data2=" << data2 << std::endl;
+#endif // DEBUG
 	sign = bh3Sign(data2);
 	p["sign"] = sign;
 	sign = p.str();

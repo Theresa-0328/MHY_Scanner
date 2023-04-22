@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include <string>
-#include "Json.h"
 
 namespace json
 {
+	class Json;
 	class Parser
 	{
 	public:
