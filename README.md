@@ -12,6 +12,7 @@
 
 ## 支持的崩坏3服务器
 - b服
+
 ## 依赖
 - curl
 - opencv
@@ -25,6 +26,7 @@
 - 支持更多崩坏3服务器
 - 同时抢多个直播间
 - 优化cpu占用
+
 ## 参考和感谢
 - [BililiveRecorder/BililiveRecorder](https://github.com/BililiveRecorder/BililiveRecorder)
 

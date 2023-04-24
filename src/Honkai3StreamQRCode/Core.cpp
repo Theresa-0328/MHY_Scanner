@@ -69,7 +69,6 @@ std::string Core::Url(std::string url, std::map<std::string, std::string> params
 
 size_t Core::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get请求和post请求数据响应函数
 {
-	//打印请求流，cookie的信息
 	//std::cout << "----->reply" << std::endl;
 	std::string* str = (std::string*)stream;
 	//cout << *str << endl;
@@ -179,19 +178,6 @@ std::string Core::urlEncode(const std::string& str)
 	}
 
 	return escaped.str();
-}
-
-std::string Core::unicodeEncode(const std::string& str)
-{
-	std::string result;
-	for (auto& ch : str)
-	{
-		result += "\\u" + std::to_string((int)ch / 16 / 16 / 16 % 16) +
-			std::to_string((int)ch / 16 / 16 % 16) +
-			std::to_string((int)ch / 16 % 16) +
-			std::to_string((int)ch % 16);
-	}
-	return result;
 }
 
 std::string Core::replaceQuotes(const std::string& str)

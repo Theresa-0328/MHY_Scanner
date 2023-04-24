@@ -185,7 +185,6 @@
   <ItemGroup>
     <None Include="config.json" />
     <None Include="config_private.json" />
-    <None Include="config_private_1.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
