@@ -69,7 +69,7 @@ int main()
 			login.scanQRCode(deCode);
 			break;
 		}
-		cv::waitKey(16);
+		cv::waitKey(30);
 	}
 	getchar();
 	return 0;
