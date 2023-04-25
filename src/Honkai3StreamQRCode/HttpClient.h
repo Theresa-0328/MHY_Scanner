@@ -3,7 +3,7 @@
 #include <map>
 #include <curl/curl.h>
 #include <iostream>
-class Core
+class HttpClient
 {
 public:
 	std::string Url(std::string url, std::map<std::string, std::string> params);

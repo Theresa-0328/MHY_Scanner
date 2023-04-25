@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include <string>
 #include <map>
-#include"Core.h"
+#include"HttpClient.h"
 #include"Json.h"
 
-class v2api:public Core
+class v2api:public HttpClient
 {
 public:
 	v2api();

@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <iostream>
-#include "Core.h"
+#include "HttpClient.h"
 
-class Mihoyosdk :public Core
+class Mihoyosdk :public HttpClient
 {
 public:
 	std::string verify(const int uid, const std::string access_key);

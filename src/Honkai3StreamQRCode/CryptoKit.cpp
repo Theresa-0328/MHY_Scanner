@@ -7,8 +7,8 @@
 #include <openssl/md5.h>
 #include <sstream>
 #include <iomanip>
-#include "Core.h"
 #include "CryptoKit.h"
+#include <iostream>
 using namespace std;
 
 std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string& public_key)

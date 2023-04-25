@@ -2,10 +2,10 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Core.h"
+#include "HttpClient.h"
 #include "json.h"
 #include "Mihoyosdk.h"
-class Login :Core
+class Login :HttpClient
 {
 public:
 	Login(std::string output);

@@ -14,6 +14,7 @@
 #include "Bsgsdk.h"
 #include "Mihoyosdk.h"
 #include "Scan.h"
+#include "Login.h"
 
 
 void scanMain(std::promise<std::string> url)
@@ -100,69 +101,31 @@ int main(int argc, char* argv[])
 {
 	v2api v2api;
 	std::string playurl = v2api.Initialize();
-	std::string qrCode;
 
-	Bsgsdk b;
-	json::Json j;
-	std::string res;
-	Mihoyosdk m;
-	json::Json loginJ;
-	
-	std::ifstream inFile;
-	json::Json configJson;
-	std::stringstream configStringStream;
-	inFile.open("config_private.json");
-	if (inFile)
-	{
-		configStringStream << inFile.rdbuf();
-		const std::string& configString = configStringStream.str();
-		configJson.parse(configString);
-	}
-	else
-	{
-		inFile.open("config.json");
-		configStringStream << inFile.rdbuf();
-		const std::string& configString = configStringStream.str();
-		configJson.parse(configString);
-	}
-	
-	
-	loginJ.parse(b.login1(configJson["account"], configJson["password"]));
-	int a1 = loginJ["uid"];
-	std::string a2 = loginJ["access_key"];
-	loginJ.clear();
-	j = b.getUserInfo(a1, a2);
-	//int uid = j["uid"];
-	//std::string access_key = j["access_key"];
-	j.clear();
-	std::string bhInfo = m.verify(a1, a2);
-	std::cout << bhInfo << std::endl;
-	//登录成功！
-	m.getOAServer();
-	//开始扫码
-	m.setUserName("爱莉希雅");
+	Login login("config_private.json");
+	login.signedIn();
+	login.setName();
+	login.bh3Info();
+	login.putConfigFile();
 
 	Download down;
 	std::thread th([&down, playurl]() 
 	{
 		down.curlDownlod(playurl);
 	}); 
-	
+
 	std::promise<std::string> QRcodeUrl;
 	std::future<std::string> future_result = QRcodeUrl.get_future();
 	std::thread th1(scanMain, std::move(QRcodeUrl));
 	th1.join();
-	qrCode = future_result.get();
+	std::string qrCode = future_result.get();
 	std::cout << qrCode << std::endl;
-	//down.getstop();
+	login.scanQRCode(qrCode);
 	if(qrCode !="")
 	{
-		down.stopDownloadAfterDelay();
+		down.stopDownload();
 		th.join();
 	}
-
-	m.scanCheck(qrCode, bhInfo);
-
 	std::cout << "Exit" << std::endl;
 	return 0;
 }

@@ -2,9 +2,9 @@
 #include <algorithm>
 #include <map>
 #include "json.h"
-#include "Core.h"
+#include "HttpClient.h"
 
-class Bsgsdk :public Core
+class Bsgsdk :public HttpClient
 {
 public:
 	json::Json getUserInfo(const int uid, const std::string accessKey);

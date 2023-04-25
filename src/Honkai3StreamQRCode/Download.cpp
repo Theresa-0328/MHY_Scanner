@@ -1,8 +1,12 @@
 #include "Download.h"
 
-Download::Download() /*:input_thread(&Download::check_input, this) */
+Download::Download()
 {
-    //stop_download.store(false);
+    curl_global_init(CURL_GLOBAL_ALL);
+}
+
+Download::~Download()
+{
 }
 
 size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
@@ -11,6 +15,7 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
     BOOL result = WriteFile((HANDLE)stream, ptr, (DWORD)(size * nmemb), &bytes_written, NULL);
     if (result)
     {
+
         return bytes_written / size;
     }
     else
@@ -19,25 +24,22 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
     }
 }
 
-void Download::stopDownloadAfterDelay()
+void Download::stopDownload()
 {
     //std::this_thread::sleep_for(std::chrono::seconds(3)); // 停止下载任务的等待时间
-    //stop_download.store(true);
     curl_easy_pause(curl, CURLPAUSE_ALL);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    std::cout << "清理curl" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
     curl_easy_cleanup(curl);
+    std::cout << "下载已停止" << std::endl;
 }
 
 void Download::curlDownlod(std::string url)
 {
-    curl_global_init(CURL_GLOBAL_ALL);
-
     // 使用curl下载直播流
     if (curl)
     {
-        //fopen_s下载时打不开
+        //占用问题
         HANDLE fp = CreateFile(
             L".\\cache\\output.flv",            // 文件名
             GENERIC_WRITE,                      // 访问权限
@@ -57,10 +59,7 @@ void Download::curlDownlod(std::string url)
             curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000L);
             curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 
-            //std::thread stop_thread(&Download::stopDownloadAfterDelay, this);
-            //std::this_thread::sleep_for(std::chrono::seconds(1));
             CURLcode res = curl_easy_perform(curl);
-            //res = CURLE_OK;
             if (res == CURLE_OK)
             {
                 std::cout << "Download completed successfully." << std::endl;
@@ -69,16 +68,13 @@ void Download::curlDownlod(std::string url)
             {
                 std::cout << "Error downloading: " << curl_easy_strerror(res) << std::endl;
             }
-            //stop_thread.join();
             // 暂停下载操作
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-            curl_easy_pause(curl, CURLPAUSE_ALL);
-            // 关闭文件句柄并释放CURL对象
-            CloseHandle(fp);
+            //curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+            //curl_easy_pause(curl, CURLPAUSE_ALL);
             //curl_easy_cleanup(curl);
+            CloseHandle(fp);
         }
     }
-
 #ifdef _DEBUG
     std::cout << "Exiting Down." << std::endl;
 #endif
