@@ -67,7 +67,7 @@ json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
     PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = UTF8_To_string(t);
 #ifdef _DEBUG
-    std::cout << "BiliBili验证：" << t << std::endl;
+    std::cout << "BiliBili用户信息：" << t << std::endl;
 #endif // _DEBUG
     j.clear();
     j.parse(t);

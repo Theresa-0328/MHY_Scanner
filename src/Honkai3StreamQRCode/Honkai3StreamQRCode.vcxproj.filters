@@ -21,7 +21,7 @@
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Core.cpp">
+    <ClCompile Include="HttpClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="V2api.cpp">
@@ -47,7 +47,7 @@
     <ClInclude Include="Download.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Core.h">
+    <ClInclude Include="HttpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="V2api.h">
