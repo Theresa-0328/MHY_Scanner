@@ -4,7 +4,6 @@
 #include <mutex>
 #include <condition_variable>
 #include <opencv2/opencv.hpp>
-#include <zbar.h>
 #include "Scan.h"
 
 extern "C"

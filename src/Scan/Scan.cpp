@@ -4,7 +4,6 @@ Scan::Scan()
 {
 	//av_log_set_level(AV_LOG_FATAL);
 	avformatContext = avformat_alloc_context();
-	scanner.set_config(zbar::ZBAR_QRCODE, zbar::ZBAR_CFG_ENABLE, 1);
 }
 
 Scan::~Scan()

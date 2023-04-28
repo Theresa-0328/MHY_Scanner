@@ -4,7 +4,6 @@
 #include <thread>
 #include <mutex>
 #include <opencv2/opencv.hpp>
-#include <zbar.h>
 
 extern "C"
 {
@@ -29,8 +28,6 @@ public:
 	AVFrame* avframe = av_frame_alloc();
 	AVFrame* pFrameBGR = av_frame_alloc();
 	struct SwsContext* swsCtx = 0;
-	
-	zbar::ImageScanner scanner;
 public:
 	Scan();
 	~Scan();

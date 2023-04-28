@@ -42,6 +42,9 @@
     <ClCompile Include="Login.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="QRScanner.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Download.h">
@@ -63,6 +66,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Login.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="QRScanner.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

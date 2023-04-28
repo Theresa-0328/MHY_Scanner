@@ -15,14 +15,12 @@
 
 ## 依赖
 - curl
-- opencv
+- opencv v4.70
 - openssl v3.10
-- cbar-64
 - ffmpeg
 
 ## 计划
 - GUI
-- 去除cbar-64依赖
 - 支持更多崩坏3服务器
 - 同时抢多个直播间
 - 优化cpu占用

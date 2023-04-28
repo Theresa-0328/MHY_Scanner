@@ -21,7 +21,7 @@ void scanMain(std::promise<std::string> url)
 {
 	Sleep(1500);
 	Scan scan;
-	scan.OpenVideo("..\\Honkai3StreamQRCode\\cache\\output.flv");
+	scan.OpenVideo("../Honkai3StreamQRCode/cache/output.flv");
 	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
 	scan.FFmpegDecoder(index);
