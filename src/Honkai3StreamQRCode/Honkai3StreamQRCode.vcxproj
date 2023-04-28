@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;D:\Dev\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\opencv\build\x64\vc15\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;E:\.Github\opencv_build\install\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;D:\Dev\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\x64\vc17\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;C:\Program Files (x86)\ZBar\include;D:\Dev\opencv\build\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\opencv\build\x64\vc15\lib;C:\Program Files (x86)\ZBar\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;E:\.Github\opencv_build\install\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\x64\vc17\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460d.lib;libzbar64-0.lib;libssl_static.lib;libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;opencv_core470d.lib;opencv_wechat_qrcode470d.lib;opencv_highgui470d.lib;opencv_imgcodecs470d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -141,7 +141,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libzbar-0.lib;opencv_world460.lib;libzbar64-0.lib;libssl_static.lib;libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;opencv_core470.lib;opencv_wechat_qrcode470.lib;opencv_highgui470.lib;opencv_imgcodecs470.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -152,14 +152,15 @@
     <ClCompile Include="CryptoKit.cpp" />
     <ClCompile Include="Download.cpp" />
     <ClCompile Include="Main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="QRScanner.cpp" />
     <ClCompile Include="Test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HttpClient.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Download.h" />
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
+    <ClInclude Include="QRScanner.h" />
     <ClInclude Include="V2api.h" />
   </ItemGroup>
   <ItemGroup>
