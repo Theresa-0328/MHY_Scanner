@@ -4,7 +4,6 @@
 #include <mutex>
 #include <condition_variable>
 #include <opencv2/opencv.hpp>
-#include <zbar.h>
 #include <Windows.h>
 #include <future>
 #include <fstream>
@@ -15,6 +14,7 @@
 #include "Mihoyosdk.h"
 #include "Scan.h"
 #include "Login.h"
+#include "QRScanner.h"
 
 
 void scanMain(std::promise<std::string> url)
@@ -45,58 +45,44 @@ void scanMain(std::promise<std::string> url)
 	}
 
 	//av_seek_frame(scan.avformatContext, index, 10 * AV_TIME_BASE, 1);
+	QRScanner s;
 	while (/*scan.read(scan.avPacket) >= 0*/true)
 	{
 		scan.read(scan.avPacket);
-		if (scan.avPacket->stream_index == index)
+		if (scan.avPacket->stream_index != index)
 		{
-			avcodec_send_packet(scan.avCodecContext, scan.avPacket);
-			while (scan.ReceiveFrame(scan.avframe) == 0)
-			{
-				av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-				// 转换像素格式
-				sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
-					scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
+			break;
+		}
+		avcodec_send_packet(scan.avCodecContext, scan.avPacket);
+		while (scan.ReceiveFrame(scan.avframe) == 0)
+		{
+			av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+			// 转换像素格式
+			sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
+				scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
 
-				if (frameCount % 15 == 0)
-				{
-
-					// 显示视频帧
-					cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
-
-					cv::Mat gray;
-					cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);
-					zbar::Image image(gray.cols, gray.rows, "Y800", gray.data, gray.cols * gray.rows);
-					scan.scanner.scan(image);
-					// 遍历扫描结果，输出二维码信息
-					for (zbar::Image::SymbolIterator symbol = image.symbol_begin(); symbol != image.symbol_end(); ++symbol)
-					{
-						std::cout << "Decoded: " << symbol->get_type_name() << std::endl;
-						std::cout << symbol->get_data() << std::endl;
-						qrCode = symbol->get_data();
-					}
-					image.set_data(nullptr, 0);
-					imshow("Video", img);
-					if (cv::waitKey(1) == 'q')
-					{
-						break;
-					}
-				}
-				frameCount++;
-			}
-			if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
+			if (frameCount % 15 == 0)
 			{
-				url.set_value(qrCode);
-				break;
+				cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
+				qrCode = s.Decode(img);
+				imshow("Video", img);
+				cv::waitKey(1);
 			}
-			if (qrCode != "")
-			{
-				std::cout << "非崩坏3三二维码" << std::endl;
-			}
+			frameCount++;
+		}
+		if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
+		{
+			url.set_value(qrCode);
+			break;
+		}
+		if (qrCode != "")
+		{
+			std::cout << "非崩坏3三二维码" << std::endl;
 		}
 		av_packet_unref(scan.avPacket);
 	}
 }
+
 int main(int argc, char* argv[])
 {
 	v2api v2api;
@@ -109,10 +95,10 @@ int main(int argc, char* argv[])
 	login.putConfigFile();
 
 	Download down;
-	std::thread th([&down, playurl]() 
+	std::thread th([&down, playurl]()
 	{
 		down.curlDownlod(playurl);
-	}); 
+	});
 
 	std::promise<std::string> QRcodeUrl;
 	std::future<std::string> future_result = QRcodeUrl.get_future();
@@ -121,7 +107,7 @@ int main(int argc, char* argv[])
 	std::string qrCode = future_result.get();
 	std::cout << qrCode << std::endl;
 	login.scanQRCode(qrCode);
-	if(qrCode !="")
+	if (qrCode != "")
 	{
 		down.stopDownload();
 		th.join();
