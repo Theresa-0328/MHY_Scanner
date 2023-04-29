@@ -15,3 +15,11 @@ private:
 	std::string sr_prototxt = "./ScanModel/sr.prototxt";
 	std::string sr_caffe_model = "./ScanModel/sr.caffemodel";
 };
+//{
+//	std::wstring wstr = L"./dll/opencv_world460.dll";
+//	//MessageBox(NULL, wstr.c_str(), L"Title", MB_OK);
+//	// º”‘ÿOpenCVø‚
+//	HINSTANCE hInst = LoadLibrary(wstr.c_str());
+//	//  Õ∑≈OpenCVø‚
+//	FreeLibrary(hInst);
+//}

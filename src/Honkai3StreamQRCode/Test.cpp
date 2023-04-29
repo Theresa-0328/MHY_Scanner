@@ -1,6 +1,4 @@
-﻿#include <fstream>
-#include <windows.h>
-#include "Login.h"
+﻿#include "Login.h"
 #include "Bsgsdk.h"
 #include "CryptoKit.h"
 #include "ScreenScan.h"
@@ -9,14 +7,6 @@
 //https://user.mihoyo.com/qr_code_in_game.html?app_id=1&app_name=%E5%B4%A9%E5%9D%8F3&bbs=true&biz_key=bh3_cn&expire=1677936279&ticket=6437b1eafd72a209bb1e9ca5
 int main()
 {
-	//{
-	//	std::wstring wstr = L"./dll/opencv_world460.dll";
-	//	//MessageBox(NULL, wstr.c_str(), L"Title", MB_OK);
-	//	// 加载OpenCV库
-	//	HINSTANCE hInst = LoadLibrary(wstr.c_str());
-	//	// 释放OpenCV库
-	//	FreeLibrary(hInst);
-	//}
 	Login login("config_private.json");
 	login.signedIn();
 	login.setName();
@@ -31,13 +21,14 @@ int main()
 	{
 		std::string deCode;
 		img = screenshot.getScreenshot();
+		//img = screenshot.getScreenshot(600,250,600,600);
 		deCode = s.Decode(img);
 		if (deCode.find("biz_key=bh3_cn") != std::string::npos)
 		{
 			login.scanQRCode(deCode);
 			break;
 		}
-		cv::waitKey(60);
+		cv::waitKey(100);
 	}
 	getchar();
 	return 0;

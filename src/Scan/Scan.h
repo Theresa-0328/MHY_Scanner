@@ -16,10 +16,7 @@ extern "C"
 
 class Scan
 {
-public:
-	//std::string path;
-	//int numBytes = 0;
-	
+public:	
 	AVCodecContext* avCodecContext = nullptr;
 	const AVCodec* avCodec = nullptr;
 	AVFormatContext* avformatContext = nullptr;
