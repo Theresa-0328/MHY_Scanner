@@ -41,7 +41,6 @@ public:
 	int ReceiveFrame(AVFrame* avframe);
 	int buffer(AVFrame* pFrameBGR);// ´´½¨Ö¡»º³åÇø
 	int swsctx(struct SwsContext** swsCtx);
-	int opencvinit();
 private:
 
 

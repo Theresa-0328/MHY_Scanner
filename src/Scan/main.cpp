@@ -26,8 +26,10 @@ int main()
 	scan.buffer(scan.pFrameBGR);
 	scan.swsctx(&scan.swsCtx);
 	std::string qrCode;
-
-	scan.opencvinit();
+	
+	namedWindow("Video", cv::WINDOW_NORMAL);
+	cv::namedWindow("Video", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Video", 1280, 720);
 
 	int64_t latestTimestamp = av_gettime_relative();
 

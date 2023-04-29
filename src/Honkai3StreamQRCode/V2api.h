@@ -8,10 +8,10 @@ class v2api:public HttpClient
 {
 public:
 	v2api();
-	std::string Initialize();
-	std::string GetHttpStream(std::string api, std::map<std::string, std::string> param);
+	std::string GetAddress();
 private:
 	int GetRealRoomID();
+	std::string GetStreamUrl(std::string api, std::map<std::string, std::string> param);
 	int HandlerLiveStatus(std::string string);
 private:
 	//const std::string V1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";

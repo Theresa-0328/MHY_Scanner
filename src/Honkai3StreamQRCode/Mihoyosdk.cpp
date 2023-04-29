@@ -3,10 +3,15 @@
 #include "Parser.h"
 #include "CryptoKit.h"
 
+Mihoyosdk::Mihoyosdk()
+{
+	oaString = getOAServer();
+}
+
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
 #ifdef _DEBUG
-	std::cout << "verify with uid=" << uid << std::endl;
+	std::cout << "verify with uid = " << uid << std::endl;
 #endif // _DEBUG
 	verifyData["uid"] = std::to_string(uid);
 	verifyData["access_key"] = access_key;
@@ -19,9 +24,8 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	std::string s;
 	PostRequest(s, loginV2Url, makeSign(sBody));
 	s = UTF8_To_string(s);
-	std::cout << "崩坏3验证完成" << std::endl;
 #ifdef _DEBUG
-	std::cout << s << std::endl;
+	std::cout << "崩坏3验证完成 : " << s << std::endl;
 #endif // ——DEBUG
 	return s;
 }
@@ -31,7 +35,7 @@ std::string Mihoyosdk::getBHVer()
 	return "6.6.0";
 }
 
-std::string Mihoyosdk::getOAServer()//考虑提前执行
+std::string Mihoyosdk::getOAServer()
 {
 
 	std::string bhVer = getBHVer();
@@ -48,7 +52,7 @@ std::string Mihoyosdk::getOAServer()//考虑提前执行
 	PostRequest(dispatch, dispatch_url + param, "");
 	dispatch = UTF8_To_string(dispatch);
 #ifdef _DEBUG
-	std::cout << "获得OA服务器成功 : " << dispatch << std::endl;
+	std::cout << "获得OA服务器 : " << dispatch << std::endl;
 #endif // DEBUG
 	j.clear();
 	return dispatch;
@@ -79,7 +83,7 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	}
 	else
 	{
-		scanConfirm(ticket, bhInfo);//扫码确认
+		scanConfirm(ticket, bhInfo);
 	}
 	check.clear();
 }
@@ -99,7 +103,7 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	scanDataJ.parse(scanData);
 	
 	json::Json oa;
-	oa.parse(getOAServer());
+	oa.parse(oaString);
 	scanDataJ["dispatch"] = oa;
 	scanDataJ["accountID"] = bhInFo["open_id"];
 	scanDataJ["accountToken"] = bhInFo["combo_token"];
@@ -193,7 +197,7 @@ std::string Mihoyosdk::makeSign(const std::string data)
 	}
 	data2.erase(data2.length() - 1);
 #ifdef _DEBUG
-	std::cout << "data2=" << data2 << std::endl;
+	std::cout << "makeSign = " << data2 << std::endl;
 #endif // DEBUG
 	sign = bh3Sign(data2);
 	p["sign"] = sign;
@@ -207,6 +211,8 @@ std::string Mihoyosdk::bh3Sign(std::string data)
 	const std::string key = "0ebc517adb1b62c6b408df153331f9aa";
 	data.erase(std::remove(data.begin(), data.end(), '\\'), data.end());
 	std::string sign = CryptoKit::HmacSha256(data,key);
+#ifdef _DEBUG
 	std::cout << "Hmac_Sha256签名完成" << std::endl;
+#endif // DEBUG
 	return sign;
 }

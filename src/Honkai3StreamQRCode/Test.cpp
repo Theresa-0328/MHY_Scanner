@@ -22,7 +22,7 @@ int main()
 		std::string deCode;
 		img = screenshot.getScreenshot();
 		//img = screenshot.getScreenshot(600,250,600,600);
-		deCode = s.Decode(img);
+		s.Decode(img, deCode);
 		if (deCode.find("biz_key=bh3_cn") != std::string::npos)
 		{
 			login.scanQRCode(deCode);

@@ -7,7 +7,6 @@
 #include <Windows.h>
 #include <future>
 #include <fstream>
-
 #include "V2api.h"
 #include "Download.h"
 #include "Bsgsdk.h"
@@ -17,20 +16,22 @@
 #include "QRScanner.h"
 
 
+void worker(QRScanner& s, cv::Mat img, std::string& qrCode) 
+{
+	s.Decode(img, qrCode);
+}
+
 void scanMain(std::promise<std::string> url)
 {
 	Sleep(1500);
 	Scan scan;
-	scan.OpenVideo("../Honkai3StreamQRCode/cache/output.flv");
+	scan.OpenVideo("./cache/output.flv");
 	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
 	scan.FFmpegDecoder(index);
 	scan.OpenDecoder(index);
 	scan.buffer(scan.pFrameBGR);
 	scan.swsctx(&scan.swsCtx);
-	std::string qrCode;
-
-	scan.opencvinit();
 
 	int64_t latestTimestamp = av_gettime_relative();
 
@@ -44,31 +45,50 @@ void scanMain(std::promise<std::string> url)
 		}
 	}
 
-	//av_seek_frame(scan.avformatContext, index, 10 * AV_TIME_BASE, 1);
+	av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+	//namedWindow("Video", cv::WINDOW_NORMAL);
+	//cv::namedWindow("Video", cv::WINDOW_NORMAL);
+	//cv::resizeWindow("Video", 1280, 720);
 	QRScanner s;
-	while (/*scan.read(scan.avPacket) >= 0*/true)
+	std::string qrCode;
+	int fff = 0;
+	while (true)
 	{
-		scan.read(scan.avPacket);
+		//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+		//av_seek_frame(scan.avformatContext, -1, 60, AVSEEK_FLAG_FRAME);
+		int op1 = scan.read(scan.avPacket);
+		fff++;
 		if (scan.avPacket->stream_index != index)
 		{
-			break;
+			continue;
 		}
-		avcodec_send_packet(scan.avCodecContext, scan.avPacket);
-		while (scan.ReceiveFrame(scan.avframe) == 0)
+		int op2 = avcodec_send_packet(scan.avCodecContext, scan.avPacket);
+		if(op2!=0)
 		{
-			av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+			//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+			cv::waitKey(1000);
+		}
+		while (/*scan.ReceiveFrame(scan.avframe) == 0*/true)
+		{
+			if (scan.ReceiveFrame(scan.avframe) != 0)
+			{
+				cv::waitKey(1000);
+				break;
+			}
+
 			// 转换像素格式
 			sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
 				scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
-
-			if (frameCount % 15 == 0)
+			cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
+			if (fff > 150)
 			{
-				cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
-				qrCode = s.Decode(img);
-				imshow("Video", img);
-				cv::waitKey(1);
+				s.Decode(img, qrCode);
+				fff = 0;
+				//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			}
-			frameCount++;
+			imshow("Video", img);
+			cv::waitKey(1);
+			break;
 		}
 		if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
 		{
@@ -86,18 +106,18 @@ void scanMain(std::promise<std::string> url)
 int main(int argc, char* argv[])
 {
 	v2api v2api;
-	std::string playurl = v2api.Initialize();
+	std::string streamAddress = v2api.GetAddress();
 
-	Login login("config_private.json");
-	login.signedIn();
-	login.setName();
-	login.bh3Info();
-	login.putConfigFile();
+	//Login login("config_private.json");
+	//login.signedIn();
+	//login.setName();
+	//login.bh3Info();
+	//login.putConfigFile();
 
 	Download down;
-	std::thread th([&down, playurl]()
+	std::thread th([&down, streamAddress]()
 	{
-		down.curlDownlod(playurl);
+		down.curlDownlod(streamAddress);
 	});
 
 	std::promise<std::string> QRcodeUrl;
@@ -106,7 +126,7 @@ int main(int argc, char* argv[])
 	th1.join();
 	std::string qrCode = future_result.get();
 	std::cout << qrCode << std::endl;
-	login.scanQRCode(qrCode);
+	//login.scanQRCode(qrCode);
 	if (qrCode != "")
 	{
 		down.stopDownload();

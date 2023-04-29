@@ -6,16 +6,18 @@
 class Mihoyosdk :public HttpClient
 {
 public:
+	Mihoyosdk();
 	std::string verify(const int uid, const std::string access_key);
-	std::string getBHVer();
-	std::string getOAServer();
 	void scanCheck(const std::string& qrCode, const std::string& bhInfo);
-	void scanConfirm(const std::string&, const std::string&);
 	void setUserName(const std::string& name);
 private:
 	std::string makeSign(const std::string);
+	void scanConfirm(const std::string&, const std::string&);
 	std::string bh3Sign(std::string);
+	std::string getOAServer();
+	std::string getBHVer();
 private:
+	std::string oaString;
 	std::map<std::string, std::string> verifyData = { {"uid","1"},{"access_key","590"} };
 	const std::string loginV2Url = "https://api-sdk.mihoyo.com/bh3_cn/combo/granter/login/v2/login";
 	const std::string verifyBody = "{\"device\":\"0000000000000000\",\"app_id\":1,\"channel_id\":14,\"data\":\"\",\"sign\":\"\"}";

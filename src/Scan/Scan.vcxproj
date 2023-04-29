@@ -75,8 +75,8 @@
     <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;D:\Dev\opencv\build\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\opencv\build\x64\vc15\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;E:\.Github\opencv_build\install\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
