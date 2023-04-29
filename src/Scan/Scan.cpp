@@ -103,11 +103,3 @@ int Scan::swsctx(struct SwsContext** swsCtx)
 		avCodecContext->width, avCodecContext->height, AV_PIX_FMT_BGR24, SWS_BILINEAR, nullptr, nullptr, nullptr);
 	return 0;
 }
-
-int Scan::opencvinit()
-{
-	namedWindow("Video", cv::WINDOW_NORMAL);
-	cv::namedWindow("Video", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Video", 1280, 720);
-	return 0;
-}

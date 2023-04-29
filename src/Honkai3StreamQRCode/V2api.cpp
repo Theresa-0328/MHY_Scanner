@@ -4,7 +4,7 @@ v2api::v2api()
 {
 }
 
-std::string v2api::Initialize()
+std::string v2api::GetAddress()
 {
     int realRoomID = GetRealRoomID();
     while (realRoomID == -1)
@@ -41,7 +41,7 @@ std::string v2api::Initialize()
         //statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
         {"ts" , "1676498963"}
     };
-    std::string playurl = GetHttpStream(V2API,params);
+    std::string playurl = GetStreamUrl(V2API,params);
 	playurl = string_To_UTF8(playurl);
 	return playurl;
 }
@@ -92,7 +92,7 @@ int v2api::HandlerLiveStatus(std::string string)
 	return -1;
 }
 
-std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::string> param)
+std::string v2api::GetStreamUrl(std::string api,std::map<std::string, std::string> param)
 {
 	std::string address = Url(api, param);
 	
@@ -116,6 +116,5 @@ std::string v2api::GetHttpStream(std::string api,std::map<std::string, std::stri
 #ifdef _DEBUG
 	std::cout << streamUrl << std::endl;
 #endif // _DEBUG
-	
 	return streamUrl;
 }
