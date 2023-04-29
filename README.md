@@ -14,7 +14,7 @@
 - b服
 
 ## 依赖
-- curl
+- curl v7.87.0
 - opencv v4.70
 - openssl v3.10
 - ffmpeg
