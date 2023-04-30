@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>..\Scan;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
@@ -153,15 +153,17 @@
     <ClCompile Include="Download.cpp" />
     <ClCompile Include="Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="QRScanner.cpp" />
+    <ClCompile Include="Scan.cpp" />
+    <ClCompile Include="ScreenScan.cpp" />
     <ClCompile Include="Test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HttpClient.cpp" />
     <ClCompile Include="V2api.cpp" />
@@ -174,12 +176,11 @@
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
     <ClInclude Include="QRScanner.h" />
+    <ClInclude Include="Scan.h" />
+    <ClInclude Include="ScreenScan.h" />
     <ClInclude Include="V2api.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Scan\Scan.vcxproj">
-      <Project>{46134dc5-8a6e-420c-a99a-3ab3c89f7abb}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\TrrJson\TrrJson.vcxproj">
       <Project>{afd024ae-d595-4c03-9535-847b116bb59f}</Project>
     </ProjectReference>
