@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Honkai3StreamQRCode", "Honkai3StreamQRCode\Honkai3StreamQRCode.vcxproj", "{39000E21-282F-436B-BF58-BA0DE18B942B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB} = {46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scan", "Scan\Scan.vcxproj", "{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrrJson", "TrrJson\TrrJson.vcxproj", "{AFD024AE-D595-4C03-9535-847B116BB59F}"
 EndProject
@@ -28,14 +23,6 @@ Global
 		{39000E21-282F-436B-BF58-BA0DE18B942B}.Release|x64.Build.0 = Release|x64
 		{39000E21-282F-436B-BF58-BA0DE18B942B}.Release|x86.ActiveCfg = Release|Win32
 		{39000E21-282F-436B-BF58-BA0DE18B942B}.Release|x86.Build.0 = Release|Win32
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Debug|x64.ActiveCfg = Debug|x64
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Debug|x64.Build.0 = Debug|x64
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Debug|x86.ActiveCfg = Debug|Win32
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Debug|x86.Build.0 = Debug|Win32
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x64.ActiveCfg = Release|x64
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x64.Build.0 = Release|x64
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x86.ActiveCfg = Release|Win32
-		{46134DC5-8A6E-420C-A99A-3AB3C89F7ABB}.Release|x86.Build.0 = Release|Win32
 		{AFD024AE-D595-4C03-9535-847B116BB59F}.Debug|x64.ActiveCfg = Debug|x64
 		{AFD024AE-D595-4C03-9535-847B116BB59F}.Debug|x64.Build.0 = Debug|x64
 		{AFD024AE-D595-4C03-9535-847B116BB59F}.Debug|x86.ActiveCfg = Debug|Win32

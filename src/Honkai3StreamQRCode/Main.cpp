@@ -65,10 +65,9 @@ void scanMain(std::promise<std::string> url)
 		int op2 = avcodec_send_packet(scan.avCodecContext, scan.avPacket);
 		if(op2!=0)
 		{
-			//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			cv::waitKey(1000);
 		}
-		while (/*scan.ReceiveFrame(scan.avframe) == 0*/true)
+		while (true)
 		{
 			if (scan.ReceiveFrame(scan.avframe) != 0)
 			{
@@ -80,10 +79,11 @@ void scanMain(std::promise<std::string> url)
 			sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
 				scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
 			cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
-			if (fff > 150)
+			if (fff > 60)
 			{
 				s.Decode(img, qrCode);
 				fff = 0;
+				std::cout << "已命中" << std::endl;
 				//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			}
 			imshow("Video", img);
