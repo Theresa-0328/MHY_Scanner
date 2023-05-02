@@ -159,7 +159,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="QRScanner.cpp" />
-    <ClCompile Include="Scan.cpp" />
+    <ClCompile Include="VideoProcessor.cpp" />
     <ClCompile Include="ScreenScan.cpp" />
     <ClCompile Include="Test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -176,7 +176,7 @@
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
     <ClInclude Include="QRScanner.h" />
-    <ClInclude Include="Scan.h" />
+    <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="ScreenScan.h" />
     <ClInclude Include="V2api.h" />
   </ItemGroup>

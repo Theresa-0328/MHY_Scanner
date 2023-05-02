@@ -1,12 +1,12 @@
-#include "Scan.h"
+#include "VideoProcessor.h"
 //Video Snap
-Scan::Scan()
+VideoProcessor::VideoProcessor()
 {
 	//av_log_set_level(AV_LOG_FATAL);
 	avformatContext = avformat_alloc_context();
 }
 
-Scan::~Scan()
+VideoProcessor::~VideoProcessor()
 {
 	if (avformatContext == avformat_alloc_context())
 	{
@@ -17,7 +17,7 @@ Scan::~Scan()
 	}
 }
 
-int Scan::OpenVideo(std::string path)
+int VideoProcessor::OpenVideo(std::string path)
 {
 	if (avformatContext == nullptr)
 	{
@@ -39,24 +39,24 @@ int Scan::OpenVideo(std::string path)
 	return 0;
 }
 
-int Scan::Close()
+int VideoProcessor::Close()
 {
 	avformat_close_input(&avformatContext);
 	return 0;
 }
 
-int Scan::read(AVPacket* avPacket)
+int VideoProcessor::read(AVPacket* avPacket)
 {
 	return av_read_frame(avformatContext, avPacket);
 }
 
-int Scan::GetStreamIndex(enum AVMediaType type)
+int VideoProcessor::GetStreamIndex(enum AVMediaType type)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(4500));
 	return av_find_best_stream(avformatContext, type, -1, -1, nullptr, 0);
 }
 
-int Scan::FFmpegDecoder(int i) //获得视频解码器
+int VideoProcessor::FFmpegDecoder(int i) //获得视频解码器
 {
 	//avCodecContext = avcodec_alloc_context3(nullptr);
 	//if (avcodec_parameters_to_context(avCodecContext, avCodecParameters) < 0)
@@ -68,14 +68,14 @@ int Scan::FFmpegDecoder(int i) //获得视频解码器
 	return 0;
 }
 
-int Scan::OpenDecoder(int i)// 打开解码器
+int VideoProcessor::OpenDecoder(int i)// 打开解码器
 {
 	avCodecContext = avcodec_alloc_context3(avCodec);
 	avcodec_parameters_to_context(avCodecContext, avformatContext->streams[i]->codecpar);
 	return avcodec_open2(avCodecContext, avCodec, nullptr);
 }
 
-int Scan::SendPacket(AVPacket avPacket)
+int VideoProcessor::SendPacket(AVPacket avPacket)
 {
 	if (&avPacket == nullptr)
 	{
@@ -84,12 +84,12 @@ int Scan::SendPacket(AVPacket avPacket)
 	return avcodec_send_packet(avCodecContext, &avPacket);
 }
 
-int Scan::ReceiveFrame(AVFrame* avframe)
+int VideoProcessor::ReceiveFrame(AVFrame* avframe)
 {
 	return avcodec_receive_frame(avCodecContext, avframe);
 }
 
-int Scan::buffer(AVFrame* avframe)
+int VideoProcessor::buffer(AVFrame* avframe)
 {
 	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, avCodecContext->width, avCodecContext->height, 1);
 	uint8_t* buffer = (uint8_t*)av_malloc(numBytes * sizeof(uint8_t));
@@ -97,7 +97,7 @@ int Scan::buffer(AVFrame* avframe)
 		AV_PIX_FMT_RGB24, avCodecContext->width, avCodecContext->height, 1);
 }
 
-int Scan::swsctx(struct SwsContext** swsCtx)
+int VideoProcessor::swsctx(struct SwsContext** swsCtx)
 {
 	*swsCtx = sws_getContext(avCodecContext->width, avCodecContext->height, avCodecContext->pix_fmt,
 		avCodecContext->width, avCodecContext->height, AV_PIX_FMT_BGR24, SWS_BILINEAR, nullptr, nullptr, nullptr);
