@@ -11,20 +11,14 @@
 #include "Download.h"
 #include "Bsgsdk.h"
 #include "Mihoyosdk.h"
-#include "Scan.h"
+#include "VideoProcessor.h"
 #include "Login.h"
 #include "QRScanner.h"
-
-
-void worker(QRScanner& s, cv::Mat img, std::string& qrCode) 
-{
-	s.Decode(img, qrCode);
-}
 
 void scanMain(std::promise<std::string> url)
 {
 	Sleep(1500);
-	Scan scan;
+	VideoProcessor scan;
 	scan.OpenVideo("./cache/output.flv");
 	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
@@ -79,7 +73,7 @@ void scanMain(std::promise<std::string> url)
 			sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
 				scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
 			cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
-			if (fff > 60)
+			if (fff > 90)
 			{
 				s.Decode(img, qrCode);
 				fff = 0;

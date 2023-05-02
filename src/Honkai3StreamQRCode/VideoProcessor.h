@@ -14,7 +14,7 @@ extern "C"
 #include <libswscale/swscale.h>
 }
 
-class Scan
+class VideoProcessor
 {
 public:	
 	AVCodecContext* avCodecContext = nullptr;
@@ -26,8 +26,8 @@ public:
 	AVFrame* pFrameBGR = av_frame_alloc();
 	struct SwsContext* swsCtx = 0;
 public:
-	Scan();
-	~Scan();
+	VideoProcessor();
+	~VideoProcessor();
 
 	int OpenVideo(std::string);
 	int Close();
