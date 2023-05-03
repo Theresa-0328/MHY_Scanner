@@ -20,19 +20,14 @@ void scanMain(std::promise<std::string> url)
 	Sleep(1500);
 	VideoProcessor scan;
 	scan.OpenVideo("./cache/output.flv");
-	int index = scan.GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	int frameCount = 0;
-	scan.FFmpegDecoder(index);
-	scan.OpenDecoder(index);
-	scan.buffer(scan.pFrameBGR);
-	scan.swsctx(&scan.swsCtx);
 
 	int64_t latestTimestamp = av_gettime_relative();
 
-	if (scan.avformatContext->streams[index]->start_time != AV_NOPTS_VALUE)
+	if (scan.avformatContext->streams[scan.index]->start_time != AV_NOPTS_VALUE)
 	{
-		int64_t streamTimestamp = av_rescale_q(scan.avformatContext->streams[index]->start_time,
-			scan.avformatContext->streams[index]->time_base, { 1, AV_TIME_BASE });
+		int64_t streamTimestamp = av_rescale_q(scan.avformatContext->streams[scan.index]->start_time,
+			scan.avformatContext->streams[scan.index]->time_base, { 1, AV_TIME_BASE });
 		if (streamTimestamp > latestTimestamp)
 		{
 			latestTimestamp = streamTimestamp;
@@ -48,40 +43,36 @@ void scanMain(std::promise<std::string> url)
 	int fff = 0;
 	while (true)
 	{
-		//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-		//av_seek_frame(scan.avformatContext, -1, 60, AVSEEK_FLAG_FRAME);
 		int op1 = scan.read(scan.avPacket);
+		//if (scan.avPacket->flags & AV_PKT_FLAG_KEY)
+		//{
+		//	std::cout << "关键帧" << std::endl;
+		//}
 		fff++;
-		if (scan.avPacket->stream_index != index)
+		if (scan.avPacket->stream_index != scan.index)
 		{
 			continue;
 		}
-		int op2 = avcodec_send_packet(scan.avCodecContext, scan.avPacket);
-		if(op2!=0)
-		{
-			cv::waitKey(1000);
-		}
+		int op2 = scan.SendPacket(scan.avPacket);
 		while (true)
 		{
-			if (scan.ReceiveFrame(scan.avframe) != 0)
+			int op3 = scan.ReceiveFrame(scan.avframe);
+			if (op3 != 0)
 			{
 				cv::waitKey(1000);
 				break;
 			}
-
 			// 转换像素格式
 			sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
 				scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
 			cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
 			if (fff > 90)
 			{
-				s.Decode(img, qrCode);
+				//s.Decode(img, qrCode);
 				fff = 0;
-				std::cout << "已命中" << std::endl;
-				//av_seek_frame(scan.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			}
 			imshow("Video", img);
-			cv::waitKey(1);
+			cv::waitKey(4);
 			break;
 		}
 		if (qrCode.find("biz_key=bh3_cn") != std::string::npos)

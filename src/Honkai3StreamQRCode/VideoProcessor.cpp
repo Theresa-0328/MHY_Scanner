@@ -35,7 +35,12 @@ int VideoProcessor::OpenVideo(std::string path)
 		std::cerr << "Error finding the stream information" << std::endl;
 		return -1;
 	}
-
+	index = GetStreamIndex(AVMEDIA_TYPE_VIDEO);
+	FFmpegDecoder(index);
+	OpenDecoder(index);
+	buffer(pFrameBGR);
+	swsctx(&swsCtx);
+	double fps = av_q2d(avformatContext->streams[index]->r_frame_rate);
 	return 0;
 }
 
@@ -47,7 +52,13 @@ int VideoProcessor::Close()
 
 int VideoProcessor::read(AVPacket* avPacket)
 {
-	return av_read_frame(avformatContext, avPacket);
+	av_read_frame(avformatContext, avPacket);
+	//while(this->avPacket->size==0)
+	//{
+	//	//cv::waitKey(200);
+	//	av_read_frame(avformatContext, avPacket);
+	//}
+	return 0;
 }
 
 int VideoProcessor::GetStreamIndex(enum AVMediaType type)
@@ -75,18 +86,24 @@ int VideoProcessor::OpenDecoder(int i)// ´ò¿ª½âÂëÆ÷
 	return avcodec_open2(avCodecContext, avCodec, nullptr);
 }
 
-int VideoProcessor::SendPacket(AVPacket avPacket)
+int VideoProcessor::SendPacket(AVPacket* avPacket)
 {
 	if (&avPacket == nullptr)
 	{
 		return avcodec_send_packet(avCodecContext, nullptr);
 	}
-	return avcodec_send_packet(avCodecContext, &avPacket);
+	return avcodec_send_packet(avCodecContext, avPacket);
 }
 
 int VideoProcessor::ReceiveFrame(AVFrame* avframe)
 {
-	return avcodec_receive_frame(avCodecContext, avframe);
+	avcodec_receive_frame(avCodecContext, avframe);
+	//while (this->avPacket->size == 0)
+	//{
+	//	cv::waitKey(200);
+	//	avcodec_receive_frame(avCodecContext, avframe);
+	//}
+	return 0;
 }
 
 int VideoProcessor::buffer(AVFrame* avframe)
