@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <algorithm>
 #include <map>
 #include "json.h"
@@ -10,7 +10,7 @@ public:
 	json::Json getUserInfo(const int uid, const std::string accessKey);
 	std::string login1(const std::string&, const std::string&, bool = false);
 private:
-	std::string loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd);//µÇÂ¼ÕËºÅ
+	std::string loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd);//ç™»å½•è´¦å·
 	std::string setSign(std::map<std::string, std::string> data1);
 	std::string remove_quotes(std::string str);
 	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";

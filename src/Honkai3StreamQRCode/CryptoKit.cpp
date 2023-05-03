@@ -1,4 +1,4 @@
-#pragma warning(disable : 4996)
+ï»¿#pragma warning(disable : 4996)
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 //#include <openssl/bio.h>
@@ -57,7 +57,7 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
 
 void CryptoKit::FormatRsaPublicKey(std::string& key)
 {
-    // ¼ì²éÊäÈë²ÎÊıºÏ·¨ĞÔ
+    // æ£€æŸ¥è¾“å…¥å‚æ•°åˆæ³•æ€§
     if (key.empty()) 
     {
         throw std::invalid_argument("input key is empty");

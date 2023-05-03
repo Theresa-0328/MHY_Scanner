@@ -1,4 +1,4 @@
-#include "Bsgsdk.h"
+ï»¿#include "Bsgsdk.h"
 #include "Login.h"
 
 Login::Login(std::string output)
@@ -30,7 +30,7 @@ void Login::bh3Info()
 	loginData = mihoyosdk.verify(uid, access_key);
 
 }
-void Login::putConfigFile()//ÁÙÊ±ÏÈÓÃ×Å
+void Login::putConfigFile()//ä¸´æ—¶å…ˆç”¨ç€
 {
 	const std::string output = configJson.str();
 	std::ofstream outFile("config_private.json");
@@ -92,18 +92,18 @@ void Login::signedIn()
 	Bsgsdk b;
 	if (signed_in == true)
 	{
-		std::cout << "bilibili»º´æÕËºÅµÇÂ¼ÖĞ"<<std::endl;
+		std::cout << "bilibiliç¼“å­˜è´¦å·ç™»å½•ä¸­"<<std::endl;
 		uid = configJson["uid"];
 		access_key = configJson["access_key"];
 		userInfo = b.getUserInfo(uid, access_key);
 	}
-	if(signed_in == false||(int)userInfo["code"] != 0)//access_keyÊ§Ğ§£¬³¢ÊÔÖØĞÂµÇÂ¼
+	if(signed_in == false||(int)userInfo["code"] != 0)//access_keyå¤±æ•ˆï¼Œå°è¯•é‡æ–°ç™»å½•
 	{
-		std::cout << "bilibili»º´æÕËºÅÎŞĞ§£¬³¢ÊÔÃÜÂëµÇÂ¼ÖĞ" << std::endl;
+		std::cout << "bilibiliç¼“å­˜è´¦å·æ— æ•ˆï¼Œå°è¯•å¯†ç ç™»å½•ä¸­" << std::endl;
 		loginJ.parse(b.login1(configJson["account"], configJson["password"]));
 		if ((int)loginJ["code"] != 0)
 		{
-			std::cout << "ÕËºÅ»òÃÜÂë´íÎó£¬µÇÂ¼Ê§°Ü£¬ÈÎÒâ¼üÍË³ö" << std::endl;
+			std::cout << "è´¦å·æˆ–å¯†ç é”™è¯¯ï¼Œç™»å½•å¤±è´¥ï¼Œä»»æ„é”®é€€å‡º" << std::endl;
 			system("pause");
 			exit(-1);
 		}
@@ -115,5 +115,5 @@ void Login::signedIn()
 		configJson["signed_in"] = true;
 		userInfo = b.getUserInfo(uid, access_key);
 	}
-	std::cout << "bilibiliµÇÂ¼Íê³É£¡" << std::endl;
+	std::cout << "bilibiliç™»å½•å®Œæˆï¼" << std::endl;
 }

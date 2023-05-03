@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -11,7 +11,7 @@ public:
 	Login(std::string output);
 	~Login();
 	void bh3Info();
-	void putConfigFile();//ÁÙÊ±ÏÈÓÃ×Å
+	void putConfigFile();//ä¸´æ—¶å…ˆç”¨ç€
 	void setName();
 	void scanQRCode(std::string& qrCode);
 	void signedIn();
