@@ -26,6 +26,7 @@ public:
 	AVFrame* pFrameBGR = av_frame_alloc();
 	struct SwsContext* swsCtx = 0;
 public:
+	int index;
 	VideoProcessor();
 	~VideoProcessor();
 
@@ -37,7 +38,7 @@ public:
 
 	int FFmpegDecoder(int);
 	int OpenDecoder(int);
-	int SendPacket(AVPacket avPacket);
+	int SendPacket(AVPacket* avPacket);
 	int ReceiveFrame(AVFrame* avframe);
 	int buffer(AVFrame* pFrameBGR);// ´´½¨Ö¡»º³åÇø
 	int swsctx(struct SwsContext** swsCtx);
