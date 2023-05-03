@@ -1,4 +1,4 @@
-#include "ScreenScan.h"
+ï»¿#include "ScreenScan.h"
 using cv::Mat;
 
 ScreenScan::ScreenScan()
@@ -9,33 +9,33 @@ ScreenScan::ScreenScan()
     m_screenshotData = new char[m_width * m_height * 4];
     memset(m_screenshotData, 0, m_width);
 
-    // »ñÈ¡ÆÁÄ» DC
+    // è·å–å±å¹• DC
     m_screenDC = GetDC(NULL);
     m_compatibleDC = CreateCompatibleDC(m_screenDC);
 
-    // ´´½¨Î»Í¼
+    // åˆ›å»ºä½å›¾
     m_hBitmap = CreateCompatibleBitmap(m_screenDC, m_width, m_height);
     SelectObject(m_compatibleDC, m_hBitmap);
 }
 
-/* »ñÈ¡Õû¸öÆÁÄ»µÄ½ØÍ¼ */
+/* è·å–æ•´ä¸ªå±å¹•çš„æˆªå›¾ */
 Mat ScreenScan::getScreenshot()
 {
-    // µÃµ½Î»Í¼µÄÊı¾İ
+    // å¾—åˆ°ä½å›¾çš„æ•°æ®
     BitBlt(m_compatibleDC, 0, 0, m_width, m_height, m_screenDC, 0, 0, SRCCOPY);
     GetBitmapBits(m_hBitmap, m_width * m_height * 4, m_screenshotData);
 
-    // ´´½¨Í¼Ïñ
+    // åˆ›å»ºå›¾åƒ
     Mat screenshot(m_height, m_width, CV_8UC4, m_screenshotData);
 
     return screenshot;
 }
 
-/** @brief »ñÈ¡Ö¸¶¨·¶Î§µÄÆÁÄ»½ØÍ¼
- * @param x Í¼Ïñ×óÉÏ½ÇµÄ X ×ø±ê
- * @param y Í¼Ïñ×óÉÏ½ÇµÄ Y ×ø±ê
- * @param width Í¼Ïñ¿í¶È
- * @param height Í¼Ïñ¸ß¶È
+/** @brief è·å–æŒ‡å®šèŒƒå›´çš„å±å¹•æˆªå›¾
+ * @param x å›¾åƒå·¦ä¸Šè§’çš„ X åæ ‡
+ * @param y å›¾åƒå·¦ä¸Šè§’çš„ Y åæ ‡
+ * @param width å›¾åƒå®½åº¦
+ * @param height å›¾åƒé«˜åº¦
  */
 Mat ScreenScan::getScreenshot(int x, int y, int width, int height)
 {
@@ -43,20 +43,20 @@ Mat ScreenScan::getScreenshot(int x, int y, int width, int height)
     return screenshot(cv::Rect(x, y, width, height));
 }
 
-/* »ñÈ¡ÆÁÄ»Ëõ·ÅÖµ */
+/* è·å–å±å¹•ç¼©æ”¾å€¼ */
 double ScreenScan::getZoom()
 {
-    // »ñÈ¡´°¿Úµ±Ç°ÏÔÊ¾µÄ¼àÊÓÆ÷
+    // è·å–çª—å£å½“å‰æ˜¾ç¤ºçš„ç›‘è§†å™¨
     HWND hWnd = GetDesktopWindow();
     HMONITOR hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
 
-    // »ñÈ¡¼àÊÓÆ÷Âß¼­¿í¶È
+    // è·å–ç›‘è§†å™¨é€»è¾‘å®½åº¦
     MONITORINFOEX monitorInfo;
     monitorInfo.cbSize = sizeof(monitorInfo);
     GetMonitorInfo(hMonitor, &monitorInfo);
     int cxLogical = (monitorInfo.rcMonitor.right - monitorInfo.rcMonitor.left);
 
-    // »ñÈ¡¼àÊÓÆ÷ÎïÀí¿í¶È
+    // è·å–ç›‘è§†å™¨ç‰©ç†å®½åº¦
     DEVMODE dm;
     dm.dmSize = sizeof(dm);
     dm.dmDriverExtra = 0;

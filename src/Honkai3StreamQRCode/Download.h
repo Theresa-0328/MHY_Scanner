@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <curl/curl.h>
 #include <mutex>
 #include <iostream>

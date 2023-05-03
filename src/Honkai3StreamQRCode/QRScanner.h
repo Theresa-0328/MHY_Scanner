@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <opencv2/wechat_qrcode.hpp>
 #include <opencv2/opencv.hpp>
@@ -18,8 +18,8 @@ private:
 //{
 //	std::wstring wstr = L"./dll/opencv_world460.dll";
 //	//MessageBox(NULL, wstr.c_str(), L"Title", MB_OK);
-//	// ¼ÓÔØOpenCV¿â
+//	// åŠ è½½OpenCVåº“
 //	HINSTANCE hInst = LoadLibrary(wstr.c_str());
-//	// ÊÍ·ÅOpenCV¿â
+//	// é‡Šæ”¾OpenCVåº“
 //	FreeLibrary(hInst);
 //}

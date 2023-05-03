@@ -1,4 +1,4 @@
-#include "Download.h"
+ï»¿#include "Download.h"
 
 Download::Download()
 {
@@ -9,7 +9,7 @@ Download::~Download()
 {
 }
 
-size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// ¶¨Òå»Øµ÷º¯Êı£¬½«curlÏÂÔØµÄÊı¾İĞ´Èë»º³åÇø
+size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)// å®šä¹‰å›è°ƒå‡½æ•°ï¼Œå°†curlä¸‹è½½çš„æ•°æ®å†™å…¥ç¼“å†²åŒº
 {
     DWORD bytes_written = 0;
     BOOL result = WriteFile((HANDLE)stream, ptr, (DWORD)(size * nmemb), &bytes_written, NULL);
@@ -26,28 +26,28 @@ size_t Download::write_data(void* ptr, size_t size, size_t nmemb, void* stream)/
 
 void Download::stopDownload()
 {
-    //std::this_thread::sleep_for(std::chrono::seconds(3)); // Í£Ö¹ÏÂÔØÈÎÎñµÄµÈ´ıÊ±¼ä
+    //std::this_thread::sleep_for(std::chrono::seconds(3)); // åœæ­¢ä¸‹è½½ä»»åŠ¡çš„ç­‰å¾…æ—¶é—´
     curl_easy_pause(curl, CURLPAUSE_ALL);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
     std::this_thread::sleep_for(std::chrono::milliseconds(300));
     curl_easy_cleanup(curl);
-    std::cout << "ÏÂÔØÒÑÍ£Ö¹" << std::endl;
+    std::cout << "ä¸‹è½½å·²åœæ­¢" << std::endl;
 }
 
 void Download::curlDownlod(std::string url)
 {
-    // Ê¹ÓÃcurlÏÂÔØÖ±²¥Á÷
+    // ä½¿ç”¨curlä¸‹è½½ç›´æ’­æµ
     if (curl)
     {
-        //Õ¼ÓÃÎÊÌâ
+        //å ç”¨é—®é¢˜
         HANDLE fp = CreateFile(
-            L".\\cache\\output.flv",            // ÎÄ¼şÃû
-            GENERIC_WRITE,                      // ·ÃÎÊÈ¨ÏŞ
-            FILE_SHARE_READ | FILE_SHARE_WRITE, // ¹²ÏíÄ£Ê½
-            NULL,                               // °²È«ÊôĞÔ
-            CREATE_ALWAYS,                      // ´ò¿ªÄ£Ê½
-            FILE_ATTRIBUTE_NORMAL,              // ÎÄ¼şÊôĞÔ
-            NULL                                // Ä£°åÎÄ¼ş¾ä±ú
+            L".\\cache\\output.flv",            // æ–‡ä»¶å
+            GENERIC_WRITE,                      // è®¿é—®æƒé™
+            FILE_SHARE_READ | FILE_SHARE_WRITE, // å…±äº«æ¨¡å¼
+            NULL,                               // å®‰å…¨å±æ€§
+            CREATE_ALWAYS,                      // æ‰“å¼€æ¨¡å¼
+            FILE_ATTRIBUTE_NORMAL,              // æ–‡ä»¶å±æ€§
+            NULL                                // æ¨¡æ¿æ–‡ä»¶å¥æŸ„
         );
         if (fp)
         {
@@ -68,7 +68,7 @@ void Download::curlDownlod(std::string url)
             {
                 std::cout << "Error downloading: " << curl_easy_strerror(res) << std::endl;
             }
-            // ÔİÍ£ÏÂÔØ²Ù×÷
+            // æš‚åœä¸‹è½½æ“ä½œ
             //curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
             //curl_easy_pause(curl, CURLPAUSE_ALL);
             //curl_easy_cleanup(curl);

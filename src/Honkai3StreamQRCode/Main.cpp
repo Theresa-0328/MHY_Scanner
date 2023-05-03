@@ -44,10 +44,6 @@ void scanMain(std::promise<std::string> url)
 	while (true)
 	{
 		int op1 = scan.read(scan.avPacket);
-		//if (scan.avPacket->flags & AV_PKT_FLAG_KEY)
-		//{
-		//	std::cout << "关键帧" << std::endl;
-		//}
 		fff++;
 		if (scan.avPacket->stream_index != scan.index)
 		{

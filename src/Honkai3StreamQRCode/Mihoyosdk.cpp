@@ -1,4 +1,4 @@
-#include "Mihoyosdk.h"
+ï»¿#include "Mihoyosdk.h"
 #include "Json.h"
 #include "Parser.h"
 #include "CryptoKit.h"
@@ -25,8 +25,8 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	PostRequest(s, loginV2Url, makeSign(sBody));
 	s = UTF8_To_string(s);
 #ifdef _DEBUG
-	std::cout << "±À»µ3ÑéÖ¤Íê³É : " << s << std::endl;
-#endif // ¡ª¡ªDEBUG
+	std::cout << "å´©å3éªŒè¯å®Œæˆ : " << s << std::endl;
+#endif // â€”â€”DEBUG
 	return s;
 }
 
@@ -52,7 +52,7 @@ std::string Mihoyosdk::getOAServer()
 	PostRequest(dispatch, dispatch_url + param, "");
 	dispatch = UTF8_To_string(dispatch);
 #ifdef _DEBUG
-	std::cout << "»ñµÃOA·þÎñÆ÷ : " << dispatch << std::endl;
+	std::cout << "èŽ·å¾—OAæœåŠ¡å™¨ : " << dispatch << std::endl;
 #endif // DEBUG
 	j.clear();
 	return dispatch;
@@ -73,12 +73,12 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	check["ts"] = getCurrentUnixTime();
 	std::string postBody = makeSign(check.str());
 	std::string feedback;
-	PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);//É¨ÂëÇëÇó
+	PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);//æ‰«ç è¯·æ±‚
 	check.parse(feedback);
 
 	if ((int)check["retcode"] != 0)
 	{
-		std::cout << "É¨ÂëÊ§°Ü : " << feedback << std::endl;
+		std::cout << "æ‰«ç å¤±è´¥ : " << feedback << std::endl;
 		return;
 	}
 	else
@@ -142,11 +142,11 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	postBodyJ.parse(response);
 	if ((int)postBodyJ["retcode"] == 0)
 	{
-		std::cout << "É¨Âë³É¹¦" << std::endl;
+		std::cout << "æ‰«ç æˆåŠŸ" << std::endl;
 	}
 	else
 	{
-		std::cout << "É¨ÂëÊ§°Ü :" <<postBodyJ.str()<<std::endl;
+		std::cout << "æ‰«ç å¤±è´¥ :" <<postBodyJ.str()<<std::endl;
 	}
 	return;
 }
@@ -171,7 +171,7 @@ std::string Mihoyosdk::makeSign(const std::string data)
 	{
 		if (it.first == "sign")
 			continue;
-		if (it.first == "data")//ÐèÒªÓÅ»¯
+		if (it.first == "data")//éœ€è¦ä¼˜åŒ–
 		{
 			if (it.second.front() == '\"')
 			{
@@ -212,7 +212,7 @@ std::string Mihoyosdk::bh3Sign(std::string data)
 	data.erase(std::remove(data.begin(), data.end(), '\\'), data.end());
 	std::string sign = CryptoKit::HmacSha256(data,key);
 #ifdef _DEBUG
-	std::cout << "Hmac_Sha256Ç©ÃûÍê³É" << std::endl;
+	std::cout << "Hmac_Sha256ç­¾åå®Œæˆ" << std::endl;
 #endif // DEBUG
 	return sign;
 }

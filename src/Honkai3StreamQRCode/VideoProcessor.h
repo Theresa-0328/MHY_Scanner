@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <iostream>
 #include <string>
 #include <thread>
@@ -40,7 +40,7 @@ public:
 	int OpenDecoder(int);
 	int SendPacket(AVPacket* avPacket);
 	int ReceiveFrame(AVFrame* avframe);
-	int buffer(AVFrame* pFrameBGR);// ´´½¨Ö¡»º³åÇø
+	int buffer(AVFrame* pFrameBGR);// åˆ›å»ºå¸§ç¼“å†²åŒº
 	int swsctx(struct SwsContext** swsCtx);
 private:
 

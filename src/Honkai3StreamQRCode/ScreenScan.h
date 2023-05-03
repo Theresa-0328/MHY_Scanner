@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <windows.h>
 #include <opencv2/core.hpp>
 class ScreenScan

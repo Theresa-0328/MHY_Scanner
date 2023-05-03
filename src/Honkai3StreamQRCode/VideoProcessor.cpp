@@ -1,4 +1,4 @@
-#include "VideoProcessor.h"
+ï»¿#include "VideoProcessor.h"
 //Video Snap
 VideoProcessor::VideoProcessor()
 {
@@ -67,7 +67,7 @@ int VideoProcessor::GetStreamIndex(enum AVMediaType type)
 	return av_find_best_stream(avformatContext, type, -1, -1, nullptr, 0);
 }
 
-int VideoProcessor::FFmpegDecoder(int i) //»ñµÃÊÓÆµ½âÂëÆ÷
+int VideoProcessor::FFmpegDecoder(int i) //è·å¾—è§†é¢‘è§£ç å™¨
 {
 	//avCodecContext = avcodec_alloc_context3(nullptr);
 	//if (avcodec_parameters_to_context(avCodecContext, avCodecParameters) < 0)
@@ -79,7 +79,7 @@ int VideoProcessor::FFmpegDecoder(int i) //»ñµÃÊÓÆµ½âÂëÆ÷
 	return 0;
 }
 
-int VideoProcessor::OpenDecoder(int i)// ´ò¿ª½âÂëÆ÷
+int VideoProcessor::OpenDecoder(int i)// æ‰“å¼€è§£ç å™¨
 {
 	avCodecContext = avcodec_alloc_context3(avCodec);
 	avcodec_parameters_to_context(avCodecContext, avformatContext->streams[i]->codecpar);

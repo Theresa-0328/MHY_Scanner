@@ -1,4 +1,4 @@
-#include "Bsgsdk.h"
+ï»¿#include "Bsgsdk.h"
 #include "CryptoKit.h"
 std::string Bsgsdk::remove_quotes(std::string str)
 {
@@ -67,7 +67,7 @@ json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
     PostRequest(t,bililogin + "api/client/user.info", s, headers);
     t = UTF8_To_string(t);
 #ifdef _DEBUG
-    std::cout << "BiliBiliÓÃ»§ÐÅÏ¢£º" << t << std::endl;
+    std::cout << "BiliBiliç”¨æˆ·ä¿¡æ¯ï¼š" << t << std::endl;
 #endif // _DEBUG
     j.clear();
     j.parse(t);
