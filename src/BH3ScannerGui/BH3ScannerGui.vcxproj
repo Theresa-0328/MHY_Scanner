@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -105,6 +105,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="ThreadGetScreen.cpp" />
     <QtRcc Include="BH3ScannerGui.qrc" />
     <QtUic Include="BH3ScannerGui.ui" />
@@ -113,10 +114,12 @@
     <ClCompile Include="LoginBili.cpp" />
     <ClCompile Include="main.cpp" />
     <None Include="BH3ScannerGui.ico" />
+    <QtUic Include="LoginWindow.ui" />
     <ResourceCompile Include="BH3ScannerGui.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoginBili.h" />
+    <QtMoc Include="LoginWindow.h" />
     <QtMoc Include="ThreadGetScreen.h" />
   </ItemGroup>
   <ItemGroup>

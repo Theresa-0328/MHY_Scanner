@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>BH3ScannerGui</string>
+   <string>崩坏3抢码器</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="pBtLoginAccount">
@@ -49,7 +49,49 @@
      </rect>
     </property>
     <property name="text">
-     <string>开始获取屏幕二维码</string>
+     <string>开始监视屏幕</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxAutoScreen">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>90</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>启动时自动监视屏幕</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxAutoExit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>120</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>扫码成功后自动退出</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBtStream">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>20</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始监视直播间</string>
     </property>
    </widget>
   </widget>
