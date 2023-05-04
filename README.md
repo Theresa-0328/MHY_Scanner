@@ -14,6 +14,7 @@
 - b服
 
 ## 依赖
+- qtmsvc v6.2.3
 - curl v7.87.0
 - opencv v4.70
 - openssl v3.10

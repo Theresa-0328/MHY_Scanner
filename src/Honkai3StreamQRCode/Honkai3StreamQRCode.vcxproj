@@ -191,10 +191,6 @@
       <Project>{afd024ae-d595-4c03-9535-847b116bb59f}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="config.json" />
-    <None Include="config_private.json" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

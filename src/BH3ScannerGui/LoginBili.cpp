@@ -44,32 +44,79 @@ void LoginBili::updateConfig()
     outFile.close();
 }
 
-void LoginBili::scanQRCode(std::string qrCode)
+void LoginBili::setAutoStart(bool state)
 {
-    scanCheck(qrCode, loginData);
+    if (state)
+    {
+        configJson["is_auto_start"] = true;
+    }
+    else
+    {
+        configJson["is_auto_start"] = false;
+    }
+    updateConfig();
 }
 
-int LoginBili::loginBiliBiliKey()
+bool LoginBili::getAutoStart()
+{
+    return (bool)configJson["is_auto_start"];
+}
+
+void LoginBili::setAutoExit(bool Exit)
+{
+    
+    if (Exit)
+    {
+        configJson["is_auto_exit"] = true;
+    }
+    else
+    {
+        configJson["is_auto_exit"] = false;
+    }
+    updateConfig();
+}
+
+bool LoginBili::getAutoExit()
+{
+    return (bool)configJson["is_auto_exit"];;
+}
+
+int LoginBili::loginBiliKey(std::string& realName)
 {
     uid = configJson["uid"];
     access_key = configJson["access_key"];
     json::Json userInfo = getUserInfo(uid, access_key);
-    std::string realName = HttpClient::string_To_UTF8(userInfo["uname"]);
-    setUserName(realName);
+    int code = (int)userInfo["code"];
+    if (code != 0)
+    {
+        return code;
+    }
+    realName = HttpClient::string_To_UTF8(userInfo["uname"]);
     return 0;
 }
 
-int LoginBili::loginBiliBiliPwd(std::string Account, std::string Pwd, std::string& message)
+int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& message)
 {
     std::string a = login1(Account, Pwd);
-    json::Json j;
-    j.parse(a);
-    //access_key" uid"
-    message = HttpClient::UTF8_To_string(j["message"]);//code!=0
-    return (int)j["code"];
-}
-
-void LoginBili::loginHonkai3()
-{
-    loginData = verify(uid, access_key);
+    a = HttpClient::UTF8_To_string(a);
+    json::Json loginJ;
+    loginJ.parse(a);
+    int code = (int)loginJ["code"];
+    if (code != 0)
+    {
+        message = loginJ["message"];
+        return code;
+    }
+    configJson["account"] = Account;
+    configJson["password"] = Pwd;
+    uid = loginJ["uid"];
+    access_key = loginJ["access_key"];
+    configJson["uid"] = uid;
+    configJson["access_key"] = access_key;
+    loginJ.clear();
+    configJson["signed_in"] = true;
+    userInfo = getUserInfo(uid, access_key);
+    configJson["realname"] = HttpClient::string_To_UTF8(userInfo["uname"]);
+    updateConfig();
+    return code;
 }

@@ -6,7 +6,7 @@
 Mihoyosdk::Mihoyosdk()
 {
 	oaString = getOAServer();
-}
+} 
 
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
@@ -26,7 +26,7 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	s = UTF8_To_string(s);
 #ifdef _DEBUG
 	std::cout << "崩坏3验证完成 : " << s << std::endl;
-#endif // ——DEBUG
+#endif // _DEBUG
 	return s;
 }
 
@@ -62,7 +62,7 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 {
 	int pos = (int)qrCode.find("ticket=");
 	std::string ticket;
-	int i = (int)qrCode.size();
+	int i = (int)qrCode.size();//debug
 	if (pos != std::string::npos)
 	{
 		ticket = qrCode.substr(pos + 7);
