@@ -4,7 +4,11 @@
 #include "ui_BH3ScannerGui.h"
 #include "LoginBili.h"
 #include "ThreadGetScreen.h"
+#include "ThreadDownload.h"
 #include "LoginWindow.h"
+#include "ThreadStreamProcess.h"
+#include "V2api.h"
+
 class BH3ScannerGui 
     : public QMainWindow
 {
@@ -25,6 +29,9 @@ public slots:
 private:
     Ui::BH3ScannerGuiClass ui;
     ThreadGetScreen t1;
+    ThreadDownload t2;
+    ThreadStreamProcess t3;
     LoginBili loginbili;
     LoginWindow l;
+    int liveIdError(int code);
 };

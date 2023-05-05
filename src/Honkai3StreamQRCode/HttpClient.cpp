@@ -82,7 +82,7 @@ CURLcode HttpClient::GetRequest(std::string& response, std::string address, std:
 	CURLcode res{};
 	if (curl)
 	{
-		struct curl_slist* headerList = NULL; // 定义 headerList 变量
+		struct curl_slist* headerList = NULL;
 		for (const auto& kv : headers)
 		{
 			std::string header = kv.first + ": " + kv.second;

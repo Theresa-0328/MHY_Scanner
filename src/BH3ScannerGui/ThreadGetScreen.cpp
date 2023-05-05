@@ -1,8 +1,4 @@
 ﻿#include "ThreadGetScreen.h"
-#include "Bsgsdk.h"
-#include "ScreenScan.h"
-#include "QRScanner.h"
-#include "Mihoyosdk.cpp"
 
 ThreadGetScreen::ThreadGetScreen(QObject* parent)
 	: QThread(parent)
@@ -21,7 +17,7 @@ ThreadGetScreen::~ThreadGetScreen()
 	this->wait();
 }
 
-void ThreadGetScreen::biliInit(int uid, std::string access_key, std::string uname)
+void ThreadGetScreen::biliInitScreen(int uid, std::string access_key, std::string uname)
 {
 
 	LoginData = m.verify(uid, access_key);

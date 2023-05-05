@@ -1,8 +1,9 @@
 ﻿#pragma once
-
 #include <QThread>
 #include <QMutex>
-#include "LoginBili.h"
+#include "ScreenScan.h"
+#include "QRScanner.h"
+#include "Mihoyosdk.h"
 class ThreadGetScreen
 	: public QThread
 {
@@ -12,7 +13,7 @@ public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
 	bool isExit = true;
-	void biliInit(int uid, std::string access_key, std::string uname);
+	void biliInitScreen(int uid, std::string access_key, std::string uname);
 	void run();
 signals:
 	void loginResults(const bool& b);

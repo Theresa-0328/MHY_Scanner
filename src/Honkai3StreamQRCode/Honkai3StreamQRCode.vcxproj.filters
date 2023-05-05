@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Download.cpp">
+    <ClCompile Include="test_Download.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="test_Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="HttpClient.cpp">
@@ -30,7 +30,7 @@
     <ClCompile Include="Bsgsdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Test.cpp">
+    <ClCompile Include="test_Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp">
@@ -39,7 +39,7 @@
     <ClCompile Include="CryptoKit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Login.cpp">
+    <ClCompile Include="test_Login.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="QRScanner.cpp">
@@ -53,7 +53,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Download.h">
+    <ClInclude Include="test_Download.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="HttpClient.h">
@@ -71,7 +71,7 @@
     <ClInclude Include="CryptoKit.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Login.h">
+    <ClInclude Include="test_Login.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="QRScanner.h">

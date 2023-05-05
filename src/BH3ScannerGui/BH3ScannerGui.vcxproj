@@ -106,7 +106,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="LoginWindow.cpp" />
+    <ClCompile Include="ThreadDownload.cpp" />
     <ClCompile Include="ThreadGetScreen.cpp" />
+    <ClCompile Include="ThreadStreamProcess.cpp" />
     <QtRcc Include="BH3ScannerGui.qrc" />
     <QtUic Include="BH3ScannerGui.ui" />
     <QtMoc Include="BH3ScannerGui.h" />
@@ -119,6 +121,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoginBili.h" />
+    <QtMoc Include="ThreadStreamProcess.h" />
+    <QtMoc Include="ThreadDownload.h" />
     <QtMoc Include="LoginWindow.h" />
     <QtMoc Include="ThreadGetScreen.h" />
   </ItemGroup>

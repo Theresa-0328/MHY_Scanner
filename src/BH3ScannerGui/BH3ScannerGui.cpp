@@ -1,16 +1,19 @@
 ﻿#include "BH3ScannerGui.h"
 #include <QMessageBox>
 #include <QWindow>
+#include <QRegularExpressionValidator>
 
 BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
+	, t2(this)
+	, t3(this)
 {
 	ui.setupUi(this);
 	bool b1 = connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	bool b2 = connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
 	bool b3 = connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
-	bool b4 = connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged,this, &BH3ScannerGui::checkBoxAutoScreen);
+	bool b4 = connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoScreen);
 	bool b5 = connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoExit);
 	bool b6 = connect(ui.pBtStream, &QPushButton::clicked, this, &BH3ScannerGui::pBtStream);
 	loginbili.openConfig();
@@ -25,10 +28,10 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 		msgBox.exec();
 		return;
 	}
-	else 
+	else
 	{
 		ui.pBtLoginAccount->setText("bilibili已登录");
-		QString uname= QString::fromStdString(readName);
+		QString uname = QString::fromStdString(readName);
 		ui.lineEditUname->setText(uname);
 	}
 	if (loginbili.getAutoStart())
@@ -44,6 +47,8 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	{
 		ui.checkBoxAutoExit->setChecked(true);
 	}
+	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
+	ui.lineEditLiveId->setClearButtonEnabled(true);
 }
 
 BH3ScannerGui::~BH3ScannerGui()
@@ -99,7 +104,7 @@ void BH3ScannerGui::pBtstartScreen()
 		msgBox.exec();
 		return;
 	}
-	t1.biliInit(loginbili.uid, loginbili.access_key, uName);
+	t1.biliInitScreen(loginbili.uid, loginbili.access_key, uName);
 	ui.pBtstartScreen->setText("监视屏幕二维码中");
 	t1.start();
 }
@@ -165,9 +170,68 @@ void BH3ScannerGui::pBtStream()
 	if (t1.isExit == false)
 	{
 		t1.isExit = true;
-		ui.pBtstartScreen->setText("开始监视直播间");
+		ui.pBtstartScreen->setText("开始监视屏幕");
 		return;
 	}
+	if (t2.isRunning())
+	{
+		t3.stop();
+		t2.stopDownload();
+		ui.pBtStream->setText("开始监视直播间");
+		return;
+	}
+	t2.restartDownload();
+	QString liveRoomId = ui.lineEditLiveId->text();
+	std::string n = liveRoomId.toStdString();
+	v2api v;
+	int id = v.GetRealRoomID(n);
+	int readId = liveIdError(id);
+	if (readId == 0)
+		return;
+	std::string streamAddress = v.GetAddress(readId);
+	t2.downloadInit(streamAddress);
+	ui.pBtStream->setText("监视直播二维码中");
+	t2.start();
+	//选择和检查账号可用性
+	std::string uName;
+	if (loginbili.loginBiliKey(uName) != 0)
+	{
+		QMessageBox msgBox(QMessageBox::Information,
+			"提示",
+			"登录状态失效，\n请重新登录账号！",
+			QMessageBox::Yes,
+			this);
+		msgBox.exec();
+		return;
+	}
+	//t3.biliInitStream(loginbili.uid, loginbili.access_key, uName);
+	t3.start();
+}
 
-	
+int BH3ScannerGui::liveIdError(int code)
+{
+	switch (code)
+	{
+	case -1:
+	{
+		QMessageBox type1(QMessageBox::Information, "提示", "直播间不存在", QMessageBox::Yes, this);
+		type1.exec();
+	}
+		return 0;
+	case -2:
+	{
+		QMessageBox type2(QMessageBox::Information, "提示", "直播间未开播！", QMessageBox::Yes, this);
+		type2.exec();
+	}
+		return 0;
+	case -3:
+	{
+		QMessageBox type3(QMessageBox::Information, "提示", "未知错误", QMessageBox::Yes, this);
+		type3.exec();
+	}
+		return 0;
+	default:
+		return code;
+	}
+
 }
