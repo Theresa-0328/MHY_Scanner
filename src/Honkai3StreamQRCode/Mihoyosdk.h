@@ -8,7 +8,7 @@ class Mihoyosdk :public HttpClient
 public:
 	Mihoyosdk();
 	std::string verify(const int uid, const std::string access_key);
-	void scanCheck(const std::string& qrCode, const std::string& bhInfo);
+	int scanCheck(const std::string& qrCode, const std::string& bhInfo);
 	void setUserName(const std::string& name);
 private:
 	std::string makeSign(const std::string);

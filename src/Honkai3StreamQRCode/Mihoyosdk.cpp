@@ -58,7 +58,7 @@ std::string Mihoyosdk::getOAServer()
 	return dispatch;
 }
 
-void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
+int Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 {
 	int pos = (int)qrCode.find("ticket=");
 	std::string ticket;
@@ -75,17 +75,18 @@ void Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
 	std::string feedback;
 	PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);//扫码请求
 	check.parse(feedback);
-
-	if ((int)check["retcode"] != 0)
+	int retcode = (int)check["retcode"];
+	check.clear();
+	if (retcode != 0)
 	{
 		std::cout << "扫码失败 : " << feedback << std::endl;
-		return;
+		return 1;
 	}
 	else
 	{
 		scanConfirm(ticket, bhInfo);
 	}
-	check.clear();
+	return 0;
 }
 
 void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR)

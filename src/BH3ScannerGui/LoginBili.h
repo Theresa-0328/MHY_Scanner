@@ -9,6 +9,7 @@ class LoginBili
 public:
 	int loginBiliKey(std::string& realName);
 	int loginBiliPwd(std::string Account, std::string Pwd, std::string& message);
+	std::string getUName();
 	void openConfig();
 	void updateConfig();
 	void setAutoStart(bool state);

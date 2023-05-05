@@ -121,3 +121,8 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
     updateConfig();
     return code;
 }
+
+std::string LoginBili::getUName()
+{
+    return configJson["realname"];
+}

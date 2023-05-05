@@ -9,16 +9,13 @@ ThreadStreamProcess::ThreadStreamProcess(QObject *parent)
 
 ThreadStreamProcess::~ThreadStreamProcess()
 {
-
+	cv::destroyAllWindows();
 }
 
 void ThreadStreamProcess::biliInitStream(int uid, std::string access_key, std::string uName)
 {
 	LoginData = m1.verify(uid, access_key);
 	m1.setUserName(uName);
-	//namedWindow("Video", cv::WINDOW_NORMAL);
-	//cv::namedWindow("Video", cv::WINDOW_NORMAL);
-	//cv::resizeWindow("Video", 1280, 720);
 }
 
 void ThreadStreamProcess::stop()
@@ -28,7 +25,8 @@ void ThreadStreamProcess::stop()
 static int a = 1;
 void ThreadStreamProcess::run()
 {
-	QThread::msleep(2500);
+	QThread::msleep(3000);
+	stopStream = false;
 	VideoProcessor vp;
 	vp.OpenVideo("./cache/output.flv");//错误判断
 	int64_t latestTimestamp = av_gettime_relative();
@@ -51,7 +49,7 @@ void ThreadStreamProcess::run()
 		f++;
 		if (stopStream)
 		{
-			cv::destroyWindow("Video");
+			//cv::destroyWindow("Video");
 			break;
 		}
 		int op1 = vp.read(vp.avPacket);
@@ -60,7 +58,7 @@ void ThreadStreamProcess::run()
 			continue;
 		}
 		int op2 = vp.SendPacket(vp.avPacket);
-		if (a % 10 == 0)
+		if (a % 5 == 0)
 		{
 			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 		}
@@ -81,16 +79,17 @@ void ThreadStreamProcess::run()
 			{
 				s.Decode(img, qrCode);
 				//imshow("Video", imageTemp.back());
-				f=0;
+				//cv::waitKey(1);
+				//std::cout << "测试命中" << a++ << std::endl;
+				f = 0;
 				imageTemp.clear();
-				cv::waitKey(1);
-				std::cout << "测试命中" <<a++<< std::endl;
 			}
 			break;
 		}
 		if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			m1.scanCheck(qrCode, LoginData);
+			int retcode = m1.scanCheck(qrCode, LoginData);
+			emit loginSResults(retcode == 0);
 			break;
 		}
 		if (qrCode != "")
