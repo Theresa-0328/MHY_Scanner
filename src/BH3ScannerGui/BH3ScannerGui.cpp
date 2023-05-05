@@ -10,14 +10,13 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	bool b1 = connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	bool b2 = connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
 	bool b3 = connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
-	bool b4 = connect(ui.checkBoxAutoScreen, SIGNAL(stateChanged(int)),this, SLOT(checkBoxAutoScreen(int)));
-	bool b5 = connect(ui.checkBoxAutoExit, SIGNAL(stateChanged(int)), this, SLOT(checkBoxAutoExit(int)));
+	bool b4 = connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged,this, &BH3ScannerGui::checkBoxAutoScreen);
+	bool b5 = connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoExit);
 	bool b6 = connect(ui.pBtStream, &QPushButton::clicked, this, &BH3ScannerGui::pBtStream);
 	loginbili.openConfig();
 	std::string readName;
 	if (loginbili.loginBiliKey(readName) != 0)
 	{
-		ui.pBtstartScreen->setText("开始监视屏幕");
 		QMessageBox msgBox(QMessageBox::Information,
 			"提示",
 			"登录状态失效，\n请重新登录账号！",
@@ -29,6 +28,8 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	else 
 	{
 		ui.pBtLoginAccount->setText("bilibili已登录");
+		QString uname= QString::fromStdString(readName);
+		ui.lineEditUname->setText(uname);
 	}
 	if (loginbili.getAutoStart())
 	{
@@ -56,19 +57,21 @@ void BH3ScannerGui::pBtLoginAccount()
 	{
 		return;
 	}
-	std::string a1;
-	std::string a2;
-	std::string a3;
-	l.getAccountPwd(a1, a2);
-	int c = loginbili.loginBiliPwd(a1, a2, a3);
+	std::string account;
+	std::string pwd;
+	std::string uName;
+	l.getAccountPwd(account, pwd);
+	int c = loginbili.loginBiliPwd(account, pwd, uName);
 	if (c == 0)
 	{
 		ui.pBtLoginAccount->setText("bilibili已登录");
 		l.ClearInputBox();
+		QString uNameq = QString::fromStdString(uName);
+		ui.lineEditUname->setText(uNameq);
 	}
 	else
 	{
-		QString myStr = QString::fromLocal8Bit(a3);
+		QString myStr = QString::fromLocal8Bit(uName);
 		std::wstring wlpstr = myStr.toStdWString();
 		LPCWSTR lpcWStr = wlpstr.c_str();
 		MessageBoxW(NULL, lpcWStr, L"bilibili登录失败", NULL);
@@ -81,14 +84,13 @@ void BH3ScannerGui::pBtstartScreen()
 	if (t1.isExit == false)
 	{
 		t1.isExit = true;
-		ui.pBtstartScreen->setText("开始");
+		ui.pBtstartScreen->setText("开始监视屏幕");
 		return;
 	}
-	//选择账号
-	std::string readName;
-	if (loginbili.loginBiliKey(readName) != 0)
+	//选择和检查账号可用性
+	std::string uName;
+	if (loginbili.loginBiliKey(uName) != 0)
 	{
-		ui.pBtstartScreen->setText("开始监视屏幕");
 		QMessageBox msgBox(QMessageBox::Information,
 			"提示",
 			"登录状态失效，\n请重新登录账号！",
@@ -97,11 +99,7 @@ void BH3ScannerGui::pBtstartScreen()
 		msgBox.exec();
 		return;
 	}
-	else
-	{
-		ui.pBtLoginAccount->setText("bilibili已登录");
-	}
-	t1.biliInit(loginbili.uid, loginbili.access_key, readName);
+	t1.biliInit(loginbili.uid, loginbili.access_key, uName);
 	ui.pBtstartScreen->setText("监视屏幕二维码中");
 	t1.start();
 }
@@ -129,12 +127,12 @@ void BH3ScannerGui::islogin(const bool& b)
 			"扫码成功！",
 			QMessageBox::Yes,
 			this);
-		ui.pBtstartScreen->setText("开始获取屏幕二维码");
+		ui.pBtstartScreen->setText("开始监视屏幕");
 		msgBox.exec();
 	}
 	else
 	{
-		ui.pBtstartScreen->setText("开始获取屏幕二维码");
+		ui.pBtstartScreen->setText("开始监视屏幕");
 	}
 }
 
@@ -164,5 +162,12 @@ void BH3ScannerGui::checkBoxAutoExit(int state)
 
 void BH3ScannerGui::pBtStream()
 {
+	if (t1.isExit == false)
+	{
+		t1.isExit = true;
+		ui.pBtstartScreen->setText("开始监视直播间");
+		return;
+	}
 
+	
 }

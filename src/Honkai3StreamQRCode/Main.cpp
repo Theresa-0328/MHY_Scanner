@@ -62,13 +62,13 @@ void scanMain(std::promise<std::string> url)
 			sws_scale(scan.swsCtx, scan.avframe->data, scan.avframe->linesize, 0,
 				scan.avCodecContext->height, scan.pFrameBGR->data, scan.pFrameBGR->linesize);
 			cv::Mat img(scan.avCodecContext->height, scan.avCodecContext->width, CV_8UC3, scan.pFrameBGR->data[0]);
-			if (fff > 90)
+			if (fff > 120)
 			{
-				//s.Decode(img, qrCode);
+				s.Decode(img, qrCode);
 				fff = 0;
 			}
 			imshow("Video", img);
-			cv::waitKey(4);
+			cv::waitKey(1);
 			break;
 		}
 		if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
@@ -89,11 +89,11 @@ int main(int argc, char* argv[])
 	v2api v2api;
 	std::string streamAddress = v2api.GetAddress();
 
-	//Login login("config_private.json");
-	//login.signedIn();
-	//login.setName();
-	//login.bh3Info();
-	//login.putConfigFile();
+	Login login("config_private.json");
+	login.signedIn();
+	login.setName();
+	login.bh3Info();
+	login.putConfigFile();
 
 	Download down;
 	std::thread th([&down, streamAddress]()
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 	th1.join();
 	std::string qrCode = future_result.get();
 	std::cout << qrCode << std::endl;
-	//login.scanQRCode(qrCode);
+	login.scanQRCode(qrCode);
 	if (qrCode != "")
 	{
 		down.stopDownload();
