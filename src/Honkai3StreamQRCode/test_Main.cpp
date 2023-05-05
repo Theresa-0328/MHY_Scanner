@@ -87,7 +87,7 @@ void scanMain(std::promise<std::string> url)
 int main(int argc, char* argv[])
 {
 	v2api v2api;
-	std::string streamAddress = v2api.GetAddress();
+	std::string streamAddress = v2api.GetAddress(6);
 
 	Login login("config_private.json");
 	login.signedIn();

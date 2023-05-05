@@ -8,9 +8,9 @@ class v2api:public HttpClient
 {
 public:
 	v2api();
-	std::string GetAddress();
+	std::string GetAddress(int realRoomID);
+	int GetRealRoomID(std::string roomID);
 private:
-	int GetRealRoomID();
 	std::string GetStreamUrl(std::string api, std::map<std::string, std::string> param);
 	int HandlerLiveStatus(std::string string);
 private:

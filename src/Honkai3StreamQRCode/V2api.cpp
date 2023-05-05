@@ -4,13 +4,8 @@ v2api::v2api()
 {
 }
 
-std::string v2api::GetAddress()
+std::string v2api::GetAddress(int realRoomID)
 {
-    int realRoomID = GetRealRoomID();
-    while (realRoomID == -1)
-    {
-        realRoomID = GetRealRoomID();
-    }
 #ifdef _DEBUG
 	std::cout << "realRoomID:" << realRoomID << std::endl;
 #endif
@@ -46,11 +41,8 @@ std::string v2api::GetAddress()
 	return playurl;
 }
 
-int v2api::GetRealRoomID()
+int v2api::GetRealRoomID(std::string roomID)
 {
-	std::cout << "请输入BiliBili直播间房间号：";
-	std::string roomID;
-	std::cin >> roomID;
 	std::map<std::string, std::string> params = { {"id", roomID} };
 	std::string addres = Url(address, params);
 	std::string result;
@@ -79,7 +71,7 @@ int v2api::HandlerLiveStatus(std::string string)
 		{
 			std::cout << "直播间未开播" << std::endl;
 			a.clear();
-			return -1;
+			return -2;
 		}
 		else
 		{
@@ -89,7 +81,7 @@ int v2api::HandlerLiveStatus(std::string string)
 		}
 	}
 	std::cout << "未知错误" << std::endl;
-	return -1;
+	return -3;
 }
 
 std::string v2api::GetStreamUrl(std::string api,std::map<std::string, std::string> param)
