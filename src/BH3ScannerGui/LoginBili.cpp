@@ -8,7 +8,7 @@ void LoginBili::openConfig()
     configJson.parse(configString);
 }
 
-void LoginBili::updateConfig()
+void LoginBili::updateConfig()//先放这里
 {
     const std::string output = configJson.str();
     std::ofstream outFile("./Config/config_private.json");
@@ -81,6 +81,7 @@ bool LoginBili::getAutoExit()
     return (bool)configJson["is_auto_exit"];;
 }
 
+//检查access_key和uid是否有效
 int LoginBili::loginBiliKey(std::string& realName)
 {
     uid = configJson["uid"];

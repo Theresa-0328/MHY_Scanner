@@ -1,4 +1,5 @@
 ﻿#include "LoginWindow.h"
+#include <QRegularExpressionValidator>
 
 LoginWindow::LoginWindow(QDialog* Dialog)
 {
@@ -10,6 +11,7 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 	ui.lineEditPwd->setClearButtonEnabled(true);
 	//ui.lineEditPwd->setEchoMode(QLineEdit::Password);
 	ui.lineEditPwd->setFont(QFont("宋体", 13));
+	ui.lineEditPwd->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9]+$"), this));
 }
 
 void LoginWindow::accept()

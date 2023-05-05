@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>BH3ScannerGuiClass</class>
  <widget class="QMainWindow" name="BH3ScannerGuiClass">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,7 +33,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>20</y>
+      <y>60</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -43,7 +46,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>20</y>
+      <y>60</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -59,7 +62,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>90</y>
+      <y>130</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -72,7 +75,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>120</y>
+      <y>160</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -85,13 +88,74 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>20</y>
+      <y>60</y>
       <width>141</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>开始监视直播间</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditUname">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>20</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>未登录</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelUname">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>当前用户名：</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelLiveName">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>20</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>当前直播间：</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditLiveId">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>20</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
     </property>
    </widget>
   </widget>

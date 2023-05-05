@@ -76,6 +76,6 @@ void Download::curlDownlod(std::string url)
         }
     }
 #ifdef _DEBUG
-    std::cout << "Exiting Down." << std::endl;
+    std::cout << "===== Downlod Exiting =====" << std::endl;
 #endif
 }

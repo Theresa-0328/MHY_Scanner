@@ -14,7 +14,6 @@ public:
 	bool isExit = true;
 	void biliInit(int uid, std::string access_key, std::string uname);
 	void run();
-
 signals:
 	void loginResults(const bool& b);
 private:
