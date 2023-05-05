@@ -39,8 +39,8 @@ void ThreadGetScreen::run()
 		s.Decode(img, deCode);
 		if (deCode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			m.scanCheck(deCode, LoginData);
-			emit loginResults(b);
+			int code = m.scanCheck(deCode, LoginData);
+			emit loginResults(code == 0);
 			break;
 		}
 		cv::waitKey(200);

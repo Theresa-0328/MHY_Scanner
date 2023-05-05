@@ -15,7 +15,7 @@ public:
 	void stop();
 	void run();
 signals:
-	void sendCurImg(const QImage& img);
+	void loginSResults(const bool& b);
 private:
 	std::string LoginData;
 	bool stopStream =false;

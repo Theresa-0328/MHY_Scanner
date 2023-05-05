@@ -12,8 +12,8 @@ void QRScanner::Decode(cv::Mat img, std::string& qrCode)
 	for (int i = 0; i < strDecoded.size(); i++)
 	{
 		qrCode = strDecoded[i];
-//#ifdef _DEBUG
+#ifdef _DEBUG
 		std::cout << "decode:" << strDecoded[i] << std::endl;
-//#endif // DEBUG
+#endif // DEBUG
 	}
 }
