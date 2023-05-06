@@ -1,7 +1,7 @@
 ﻿#include "ThreadStreamProcess.h"
 #include <QImage>
 
-ThreadStreamProcess::ThreadStreamProcess(QObject *parent)
+ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
 {
 
@@ -22,7 +22,9 @@ void ThreadStreamProcess::stop()
 {
 	stopStream = true;
 }
+
 static int a = 1;
+
 void ThreadStreamProcess::run()
 {
 	QThread::msleep(3000);
@@ -75,12 +77,14 @@ void ThreadStreamProcess::run()
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
 			imageTemp.push_back(img);
-			if (f > 30)
+			if (f > 20)
 			{
 				s.Decode(img, qrCode);
-				//imshow("Video", imageTemp.back());
-				//cv::waitKey(1);
-				//std::cout << "测试命中" << a++ << std::endl;
+#ifdef _DEBUG
+				imshow("Video", imageTemp.back());
+				cv::waitKey(1);
+				std::cout << "测试命中" << a++ << std::endl;
+#endif // _DEBUG
 				f = 0;
 				imageTemp.clear();
 			}
@@ -91,10 +95,6 @@ void ThreadStreamProcess::run()
 			int retcode = m1.scanCheck(qrCode, LoginData);
 			emit loginSResults(retcode == 0);
 			break;
-		}
-		if (qrCode != "")
-		{
-			std::cout << "非崩坏3三二维码" << std::endl;
 		}
 		av_packet_unref(vp.avPacket);
 	}
