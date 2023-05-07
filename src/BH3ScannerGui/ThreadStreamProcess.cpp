@@ -83,7 +83,7 @@ void ThreadStreamProcess::run()
 #ifdef _DEBUG
 				imshow("Video", imageTemp.back());
 				cv::waitKey(1);
-				std::cout << "测试命中" << a++ << std::endl;
+				std::cout << "命中次数" << a++ << std::endl;
 #endif // _DEBUG
 				f = 0;
 				imageTemp.clear();
