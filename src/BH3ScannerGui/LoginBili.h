@@ -16,7 +16,7 @@ public:
 	bool getAutoStart();
 	void setAutoExit(bool Exit);
 	bool getAutoExit();
-	int uid;
+	int uid = 0;
 	std::string access_key;
 private:
 	std::ifstream inFile;

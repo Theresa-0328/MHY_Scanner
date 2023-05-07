@@ -24,8 +24,10 @@ public:
 	AVPacket* avPacket = av_packet_alloc();;
 	AVFrame* avframe = av_frame_alloc();
 	AVFrame* pFrameBGR = av_frame_alloc();
+	AVStream* avstream;
 	struct SwsContext* swsCtx = 0;
 public:
+	int fps;
 	int index;
 	VideoProcessor();
 	~VideoProcessor();

@@ -3,6 +3,7 @@
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
+	,ts1(this)
 {
 
 }
@@ -23,7 +24,7 @@ void ThreadStreamProcess::stop()
 	stopStream = true;
 }
 
-static int a = 1;
+static int a = 0;
 
 void ThreadStreamProcess::run()
 {
@@ -42,16 +43,16 @@ void ThreadStreamProcess::run()
 		}
 	}
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-	QRScanner s;
-	std::string qrCode;
-	std::vector<cv::Mat> imageTemp;
 	int f = 0;
 	while (true)
 	{
+		
+		//int64_t video_duration_sec = vp.avformatContext->duration / AV_TIME_BASE;
+		//size_t timeInSeconds = av_q2d(vp.avstream->time_base);
 		f++;
 		if (stopStream)
 		{
-			//cv::destroyWindow("Video");
+			cv::destroyWindow("Video");
 			break;
 		}
 		int op1 = vp.read(vp.avPacket);
@@ -60,9 +61,10 @@ void ThreadStreamProcess::run()
 			continue;
 		}
 		int op2 = vp.SendPacket(vp.avPacket);
-		if (a % 5 == 0)
+		if(op2!=0)
 		{
 			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+			QThread::msleep(300);
 		}
 		while (true)
 		{
@@ -76,23 +78,25 @@ void ThreadStreamProcess::run()
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-			imageTemp.push_back(img);
-			if (f > 20)
+			if (f > vp.fps)//0.8
 			{
-				s.Decode(img, qrCode);
+				ts1.getImg(img);
+				if (!ts1.isRunning())
+				{
+					ts1.start();
+				}
 #ifdef _DEBUG
-				imshow("Video", imageTemp.back());
+				imshow("Video", img);
 				cv::waitKey(1);
 				std::cout << "命中次数" << a++ << std::endl;
 #endif // _DEBUG
 				f = 0;
-				imageTemp.clear();
 			}
 			break;
 		}
-		if (qrCode.find("biz_key=bh3_cn") != std::string::npos)
+		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int retcode = m1.scanCheck(qrCode, LoginData);
+			int retcode = m1.scanCheck(ts1.uqrcode,LoginData);
 			emit loginSResults(retcode == 0);
 			break;
 		}

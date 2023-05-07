@@ -40,7 +40,8 @@ int VideoProcessor::OpenVideo(std::string path)
 	OpenDecoder(index);
 	buffer(pFrameBGR);
 	swsctx(&swsCtx);
-	double fps = av_q2d(avformatContext->streams[index]->r_frame_rate);
+	avstream = avformatContext->streams[index];
+	fps = av_q2d(avformatContext->streams[index]->r_frame_rate);
 	return 0;
 }
 
@@ -53,11 +54,6 @@ int VideoProcessor::Close()
 int VideoProcessor::read(AVPacket* avPacket)
 {
 	av_read_frame(avformatContext, avPacket);
-	//while(this->avPacket->size==0)
-	//{
-	//	//cv::waitKey(200);
-	//	av_read_frame(avformatContext, avPacket);
-	//}
 	return 0;
 }
 
@@ -98,11 +94,6 @@ int VideoProcessor::SendPacket(AVPacket* avPacket)
 int VideoProcessor::ReceiveFrame(AVFrame* avframe)
 {
 	avcodec_receive_frame(avCodecContext, avframe);
-	//while (this->avPacket->size == 0)
-	//{
-	//	cv::waitKey(200);
-	//	avcodec_receive_frame(avCodecContext, avframe);
-	//}
 	return 0;
 }
 
@@ -117,6 +108,6 @@ int VideoProcessor::buffer(AVFrame* avframe)
 int VideoProcessor::swsctx(struct SwsContext** swsCtx)
 {
 	*swsCtx = sws_getContext(avCodecContext->width, avCodecContext->height, avCodecContext->pix_fmt,
-		avCodecContext->width, avCodecContext->height, AV_PIX_FMT_BGR24, SWS_BILINEAR, nullptr, nullptr, nullptr);
+		avCodecContext->width/1.5, avCodecContext->height/1.5, AV_PIX_FMT_BGR24, SWS_BILINEAR, nullptr, nullptr, nullptr);
 	return 0;
 }

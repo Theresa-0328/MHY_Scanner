@@ -9,8 +9,8 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	, t2(this)
 	, t3(this)
 {
-	mutex = CreateMutex(NULL, TRUE, TEXT("T08lJ8CJmJiyoxdV"));
-	if (mutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS) 
+	processMutex = CreateMutex(NULL, TRUE, TEXT("T08lJ8CJmJiyoxdV"));
+	if (processMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		// 互斥体已经存在，程序已经启动
 		QMessageBox msgBox(QMessageBox::Information,
@@ -19,8 +19,8 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 			QMessageBox::Yes,
 			this);
 		msgBox.exec();
-		CloseHandle(mutex);
-		exit(0);
+		CloseHandle(processMutex);
+		exit(-1);
 	}
 
 	ui.setupUi(this);
@@ -70,7 +70,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 
 BH3ScannerGui::~BH3ScannerGui()
 {
-	CloseHandle(mutex);
+	CloseHandle(processMutex);
 }
 
 void BH3ScannerGui::pBtLoginAccount()
@@ -225,7 +225,7 @@ void BH3ScannerGui::pBtStream()
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
-	t2.restartDownload();
+	//t2.restartDownload();
 	//选择和检查账号可用性
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)

@@ -34,5 +34,5 @@ private:
     LoginBili loginbili;
     LoginWindow l;
     int liveIdError(int code);
-    HANDLE mutex;
+    HANDLE processMutex;
 };
