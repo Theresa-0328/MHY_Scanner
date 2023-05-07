@@ -13,7 +13,6 @@ public:
 	static size_t DownloadCallback(void* ptr, size_t size, size_t nmemb, void* stream);
 	void downloadInit(std::string url);
 	void stopDownload();
-	void restartDownload();
 	void run();
 private:
 	std::string url;

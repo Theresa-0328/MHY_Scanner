@@ -61,6 +61,9 @@
     <ClCompile Include="ThreadStreamProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadSacn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoginBili.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ThreadStreamProcess.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ThreadSacn.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

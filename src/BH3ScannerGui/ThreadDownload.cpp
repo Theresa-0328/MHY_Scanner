@@ -40,10 +40,10 @@ void ThreadDownload::stopDownload()
 	std::cout << L"下载已停止" << std::endl;
 }
 
-void ThreadDownload::restartDownload()
-{
-	m_ExitThread = false;
-}
+//void ThreadDownload::restartDownload()
+//{
+//	m_ExitThread = false;
+//}
 
 void ThreadDownload::downloadInit(std::string url)
 {
@@ -52,6 +52,7 @@ void ThreadDownload::downloadInit(std::string url)
 
 void ThreadDownload::run()
 {
+	m_ExitThread = false;
 	// 使用curl下载直播流
 	if (!curl)
 	{
