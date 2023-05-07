@@ -9,6 +9,20 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	, t2(this)
 	, t3(this)
 {
+	mutex = CreateMutex(NULL, TRUE, TEXT("T08lJ8CJmJiyoxdV"));
+	if (mutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS) 
+	{
+		// 互斥体已经存在，程序已经启动
+		QMessageBox msgBox(QMessageBox::Information,
+			"提示",
+			"程序正在运行，\n请不要重复启动！",
+			QMessageBox::Yes,
+			this);
+		msgBox.exec();
+		CloseHandle(mutex);
+		exit(0);
+	}
+
 	ui.setupUi(this);
 	bool b1 = connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	bool b2 = connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
@@ -56,6 +70,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 
 BH3ScannerGui::~BH3ScannerGui()
 {
+	CloseHandle(mutex);
 }
 
 void BH3ScannerGui::pBtLoginAccount()

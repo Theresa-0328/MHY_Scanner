@@ -8,6 +8,7 @@ ThreadDownload::ThreadDownload(QObject* parent)
 
 ThreadDownload::~ThreadDownload()
 {
+	//增加判断。。
 	stopDownload();
 	QThread::msleep(300);
 	curl_easy_cleanup(curl);
@@ -73,7 +74,7 @@ void ThreadDownload::run()
 		curl_easy_setopt(curl, CURLOPT_REFERER, "https://live.bilibili.com");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DownloadCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)this);
-		//指定ssl版本，防止SSL connect error
+		//指定ssl版本，否则可能出现SSL connect error
 		curl_easy_setopt(curl, CURLOPT_SSLVERSION, 3);
 		//curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000L);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);

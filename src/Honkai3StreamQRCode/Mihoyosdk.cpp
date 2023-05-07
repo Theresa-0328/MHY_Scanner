@@ -38,8 +38,8 @@ std::string Mihoyosdk::getBHVer()
 std::string Mihoyosdk::getOAServer()
 {
 
-	std::string bhVer = getBHVer();
-	std::string oaMainUrl = "https://global2.bh3.com/query_dispatch?";
+	const std::string bhVer = getBHVer();
+	const std::string oaMainUrl = "https://global2.bh3.com/query_dispatch?";
 	std::string param = "version=" + bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	std::string feedback;
 	PostRequest(feedback, oaMainUrl + param, "");
