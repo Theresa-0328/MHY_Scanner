@@ -3,6 +3,8 @@
 #include <QThread>
 #include <opencv2/opencv.hpp>
 #include <string>
+#include "QRScanner.h"
+
 class ThreadSacn  : public QThread
 {
 	Q_OBJECT
@@ -16,4 +18,5 @@ public:
 public slots:
 private:
 	cv::Mat tImg;
+	QRScanner qs;
 };

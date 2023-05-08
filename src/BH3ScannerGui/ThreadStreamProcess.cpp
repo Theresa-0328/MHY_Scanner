@@ -44,6 +44,7 @@ void ThreadStreamProcess::run()
 	}
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
+	cv::namedWindow("Video");
 	while (true)
 	{
 		
@@ -78,26 +79,29 @@ void ThreadStreamProcess::run()
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-			if (f > vp.fps)//0.8
+			cv::Rect roi(0, 0, 1280, 720);
+			cv::Mat crop_img = img(roi);
+			//if (f > vp.fps)//0.8
 			{
-				ts1.getImg(img);
 				if (!ts1.isRunning())
 				{
+					ts1.getImg(crop_img);
+#ifdef _DEBUG
+					imshow("Video", crop_img);
+					std::cout << "命中次数" << a++ << std::endl;
+#endif // _DEBUG
 					ts1.start();
 				}
-#ifdef _DEBUG
-				imshow("Video", img);
-				cv::waitKey(1);
-				std::cout << "命中次数" << a++ << std::endl;
-#endif // _DEBUG
+				cv::waitKey(5);
 				f = 0;
 			}
 			break;
 		}
-		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
+		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)//ts1.uqrcode is private
 		{
 			int retcode = m1.scanCheck(ts1.uqrcode,LoginData);
 			emit loginSResults(retcode == 0);
+			ts1.uqrcode.clear();
 			break;
 		}
 		av_packet_unref(vp.avPacket);
