@@ -20,4 +20,5 @@ void ThreadSacn::getImg(cv::Mat img)
 void ThreadSacn::run()
 {
 	qs.Decode(tImg, uqrcode);
+	QThread::msleep(100);
 }

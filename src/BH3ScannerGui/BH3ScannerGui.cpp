@@ -225,7 +225,6 @@ void BH3ScannerGui::pBtStream()
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
-	//t2.restartDownload();
 	//选择和检查账号可用性
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)
