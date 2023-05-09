@@ -79,12 +79,12 @@ void ThreadStreamProcess::run()
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-			cv::Rect roi(0, 0, 1280, 720);
-			cv::Mat crop_img = img(roi);
 			//if (f > vp.fps)//0.8
 			{
 				if (!ts1.isRunning())
 				{
+					cv::Rect roi(0, 0, 1280, 720);
+					cv::Mat crop_img = img(roi);
 					ts1.getImg(crop_img);
 #ifdef _DEBUG
 					imshow("Video", crop_img);
@@ -92,7 +92,7 @@ void ThreadStreamProcess::run()
 #endif // _DEBUG
 					ts1.start();
 				}
-				cv::waitKey(5);
+				cv::waitKey(1);
 				f = 0;
 			}
 			break;
