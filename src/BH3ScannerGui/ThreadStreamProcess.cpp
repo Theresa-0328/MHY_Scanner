@@ -44,16 +44,19 @@ void ThreadStreamProcess::run()
 	}
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
+#ifdef _DEBUG
 	cv::namedWindow("Video");
+#endif // _DEBUG
 	while (true)
 	{
-		
 		//int64_t video_duration_sec = vp.avformatContext->duration / AV_TIME_BASE;
 		//size_t timeInSeconds = av_q2d(vp.avstream->time_base);
 		f++;
 		if (stopStream)
 		{
+#ifdef _DEBUG
 			cv::destroyWindow("Video");
+#endif // _DEBUG
 			break;
 		}
 		int op1 = vp.read(vp.avPacket);
@@ -72,27 +75,29 @@ void ThreadStreamProcess::run()
 			int op3 = vp.ReceiveFrame(vp.avframe);
 			if (op3 != 0)
 			{
-				cv::waitKey(1000);
+				QThread::msleep(800);
 				break;
 			}
 			// 转换像素格式
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
+			cv::Rect roi(0, 0, 1280, 720);
+			cv::Mat crop_img = img(roi);
+			ts1.setImg(crop_img);
 			//if (f > vp.fps)//0.8
 			{
 				if (!ts1.isRunning())
 				{
-					cv::Rect roi(0, 0, 1280, 720);
-					cv::Mat crop_img = img(roi);
-					ts1.getImg(crop_img);
 #ifdef _DEBUG
-					imshow("Video", crop_img);
 					std::cout << "命中次数" << a++ << std::endl;
 #endif // _DEBUG
 					ts1.start();
 				}
+#ifdef _DEBUG
+				imshow("Video", crop_img);
 				cv::waitKey(1);
+#endif // _DEBUG
 				f = 0;
 			}
 			break;
@@ -100,7 +105,7 @@ void ThreadStreamProcess::run()
 		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)//ts1.uqrcode is private
 		{
 			int retcode = m1.scanCheck(ts1.uqrcode,LoginData);
-			emit loginSResults(retcode == 0);
+			emit loginSResults(retcode==0);
 			ts1.uqrcode.clear();
 			break;
 		}

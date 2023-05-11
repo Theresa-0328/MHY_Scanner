@@ -11,7 +11,7 @@ ThreadSacn::~ThreadSacn()
 	
 }
 
-void ThreadSacn::getImg(cv::Mat img)
+void ThreadSacn::setImg(cv::Mat img)
 {
 	tImg = img;
 }
