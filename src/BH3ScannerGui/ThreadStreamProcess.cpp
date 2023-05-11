@@ -84,6 +84,7 @@ void ThreadStreamProcess::run()
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
 			cv::Rect roi(0, 0, 1280, 720);
 			cv::Mat crop_img = img(roi);
+			//待增加优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
 			ts1.setImg(crop_img);
 			//if (f > vp.fps)//0.8
 			{
@@ -105,7 +106,7 @@ void ThreadStreamProcess::run()
 		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)//ts1.uqrcode is private
 		{
 			int retcode = m1.scanCheck(ts1.uqrcode,LoginData);
-			emit loginSResults(retcode==0);
+			emit loginSResults(retcode == 0);
 			ts1.uqrcode.clear();
 			break;
 		}

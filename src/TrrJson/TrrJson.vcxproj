@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Json.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="TrrJson.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
