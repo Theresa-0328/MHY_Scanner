@@ -12,7 +12,7 @@ class ThreadSacn  : public QThread
 public:
 	ThreadSacn(QObject *parent);
 	~ThreadSacn();
-	void getImg(cv::Mat img);
+	void setImg(cv::Mat img);
 	void run();
 	std::string uqrcode;
 public slots:
