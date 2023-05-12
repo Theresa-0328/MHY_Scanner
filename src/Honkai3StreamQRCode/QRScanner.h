@@ -10,10 +10,10 @@ public:
 	void Decode(cv::Mat img, std::string& qrCode);
 private:
 	cv::Ptr<cv::wechat_qrcode::WeChatQRCode> detector;
-	std::string detect_prototxt = "./ScanModel/detect.prototxt";
-	std::string detect_caffe_model = "./ScanModel/detect.caffemodel";
-	std::string sr_prototxt = "./ScanModel/sr.prototxt";
-	std::string sr_caffe_model = "./ScanModel/sr.caffemodel";
+	const std::string detect_prototxt = "./ScanModel/detect.prototxt";
+	const std::string detect_caffe_model = "./ScanModel/detect.caffemodel";
+	const std::string sr_prototxt = "./ScanModel/sr.prototxt";
+	const std::string sr_caffe_model = "./ScanModel/sr.caffemodel";
 };
 //{
 //	std::wstring wstr = L"./dll/opencv_world460.dll";
