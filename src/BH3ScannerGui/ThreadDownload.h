@@ -10,7 +10,7 @@ class ThreadDownload  : public QThread
 public:
 	ThreadDownload(QObject *parent);
 	~ThreadDownload();
-	static size_t DownloadCallback(void* ptr, size_t size, size_t nmemb, void* stream);
+	static size_t DownloadCallback(void* ptr, size_t size, size_t nmemb, void* vThisPtr);
 	void downloadInit(std::string url);
 	void stopDownload();
 	void run();

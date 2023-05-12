@@ -17,9 +17,9 @@ ThreadDownload::~ThreadDownload()
 	this->wait();
 }
 
-size_t ThreadDownload::DownloadCallback(void* ptr, size_t size, size_t nmemb, void* stream)// 定义回调函数，将curl下载的数据写入缓冲区
+size_t ThreadDownload::DownloadCallback(void* ptr, size_t size, size_t nmemb, void* vThisPtr)// 定义回调函数，将curl下载的数据写入缓冲区
 {
-	ThreadDownload* pThis = (ThreadDownload*)stream;
+	ThreadDownload* pThis = (ThreadDownload*)vThisPtr;
 	QMutexLocker lock(&pThis->m_mux);
 	DWORD bytes_written = 0;
 	if (pThis->m_ExitThread)
@@ -39,11 +39,6 @@ void ThreadDownload::stopDownload()
 	m_ExitThread = true;
 	std::cout << L"下载已停止" << std::endl;
 }
-
-//void ThreadDownload::restartDownload()
-//{
-//	m_ExitThread = false;
-//}
 
 void ThreadDownload::downloadInit(std::string url)
 {

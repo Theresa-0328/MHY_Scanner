@@ -84,21 +84,19 @@ void ThreadStreamProcess::run()
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
 			cv::Rect roi(0, 0, 1280, 720);
 			cv::Mat crop_img = img(roi);
-			//待增加优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
-			ts1.setImg(crop_img);
+			//待优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
 			//if (f > vp.fps)//0.8
 			{
 				if (!ts1.isRunning())
 				{
+					ts1.setImg(crop_img);
 #ifdef _DEBUG
 					std::cout << "命中次数" << a++ << std::endl;
+					imshow("Video", crop_img);
+					cv::waitKey(1);
 #endif // _DEBUG
 					ts1.start();
 				}
-#ifdef _DEBUG
-				imshow("Video", crop_img);
-				cv::waitKey(1);
-#endif // _DEBUG
 				f = 0;
 			}
 			break;
