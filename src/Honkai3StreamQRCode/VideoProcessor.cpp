@@ -8,7 +8,7 @@ VideoProcessor::VideoProcessor()
 
 VideoProcessor::~VideoProcessor()
 {
-	if (avformatContext == avformat_alloc_context())
+	if (avformatContext != avformat_alloc_context())
 	{
 		avformat_free_context(avformatContext);
 		avformatContext = nullptr;
