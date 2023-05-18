@@ -278,5 +278,4 @@ int BH3ScannerGui::liveIdError(int code)
 	default:
 		return code;
 	}
-
 }
