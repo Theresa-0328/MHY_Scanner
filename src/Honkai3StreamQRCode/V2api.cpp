@@ -60,7 +60,7 @@ int v2api::HandlerLiveStatus(std::string string)
 	int code = a["code"];
 	if (code == 60004)
 	{
-		std::cout << "直播间不存在" << std::endl;
+		//直播间不存在
 		a.clear();
 		return -1;
 	}
@@ -69,7 +69,7 @@ int v2api::HandlerLiveStatus(std::string string)
 		int liveStatus = a["data"]["live_status"];
 		if (liveStatus != 1)
 		{
-			std::cout << "直播间未开播" << std::endl;
+			//直播间未开播
 			a.clear();
 			return -2;
 		}
@@ -80,7 +80,7 @@ int v2api::HandlerLiveStatus(std::string string)
 			return room_id;
 		}
 	}
-	std::cout << "未知错误" << std::endl;
+	//未知错误
 	return -3;
 }
 

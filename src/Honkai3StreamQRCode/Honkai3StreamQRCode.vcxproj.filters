@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_Download.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test_Main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="HttpClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -30,16 +24,10 @@
     <ClCompile Include="Bsgsdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="test_Test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CryptoKit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test_Login.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="QRScanner.cpp">

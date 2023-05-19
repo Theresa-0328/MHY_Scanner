@@ -17,7 +17,7 @@ private:
 	std::string getOAServer();
 	std::string getBHVer();
 private:
-	std::string oaString;
+	static std::string oaString;
 	std::map<std::string, std::string> verifyData = { {"uid","1"},{"access_key","590"} };
 	const std::string loginV2Url = "https://api-sdk.mihoyo.com/bh3_cn/combo/granter/login/v2/login";
 	const std::string verifyBody = "{\"device\":\"0000000000000000\",\"app_id\":1,\"channel_id\":14,\"data\":\"\",\"sign\":\"\"}";

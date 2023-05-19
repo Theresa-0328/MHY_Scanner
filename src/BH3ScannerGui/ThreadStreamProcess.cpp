@@ -15,8 +15,8 @@ ThreadStreamProcess::~ThreadStreamProcess()
 
 void ThreadStreamProcess::biliInitStream(int uid, std::string access_key, std::string uName)
 {
-	LoginData = m1.verify(uid, access_key);
-	m1.setUserName(uName);
+	LoginData = m.verify(uid, access_key);
+	m.setUserName(uName);
 }
 
 void ThreadStreamProcess::stop()
@@ -103,7 +103,7 @@ void ThreadStreamProcess::run()
 		}
 		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)//ts1.uqrcode is private
 		{
-			int retcode = m1.scanCheck(ts1.uqrcode,LoginData);
+			int retcode = m.scanCheck(ts1.uqrcode,LoginData);
 			emit loginSResults(retcode == 0);
 			ts1.uqrcode.clear();
 			break;
