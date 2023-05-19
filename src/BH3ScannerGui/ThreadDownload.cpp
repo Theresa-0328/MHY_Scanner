@@ -8,7 +8,7 @@ ThreadDownload::ThreadDownload(QObject* parent)
 
 ThreadDownload::~ThreadDownload()
 {
-	//增加判断。。
+	//需要增加判断。。
 	stopDownload();
 	QThread::msleep(300);
 	curl_easy_cleanup(curl);

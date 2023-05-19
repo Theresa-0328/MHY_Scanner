@@ -20,6 +20,6 @@ signals:
 private:
 	std::string LoginData;
 	bool stopStream =false;
-	Mihoyosdk m1;
+	Mihoyosdk m;
 	ThreadSacn ts1;
 };
