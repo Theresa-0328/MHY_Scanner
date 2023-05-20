@@ -7,8 +7,11 @@ std::string Mihoyosdk::oaString;
 
 Mihoyosdk::Mihoyosdk()
 {
-	oaString = getOAServer();
-} 
+	if (oaString == "")
+	{
+		oaString = getOAServer();
+	}
+}
 
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 {
@@ -39,10 +42,6 @@ std::string Mihoyosdk::getBHVer()
 
 std::string Mihoyosdk::getOAServer()
 {
-	if (oaString != "")
-	{
-		return oaString;
-	}
 	const std::string bhVer = getBHVer();
 	const std::string oaMainUrl = "https://global2.bh3.com/query_dispatch?";
 	std::string param = "version=" + bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
