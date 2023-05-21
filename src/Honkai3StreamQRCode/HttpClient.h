@@ -7,7 +7,6 @@ class HttpClient
 {
 public:
 	std::string Url(std::string url, std::map<std::string, std::string> params);
-	//https://blog.csdn.net/weixin_44122235/article/details/128969128
 	CURLcode GetRequest(std::string& response, std::string address, std::map<std::string, std::string> headers = {});
 	CURLcode PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers={});
 	int getCurrentUnixTime();
