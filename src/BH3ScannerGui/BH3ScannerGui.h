@@ -7,7 +7,7 @@
 #include "ThreadDownload.h"
 #include "LoginWindow.h"
 #include "ThreadStreamProcess.h"
-#include "V2api.h"
+#include "BiliLiveApi.h"
 
 class BH3ScannerGui 
     : public QMainWindow

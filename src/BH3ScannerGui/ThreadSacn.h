@@ -17,6 +17,6 @@ public:
 	std::string uqrcode;
 public slots:
 private:
-	cv::Mat tImg;
+	cv::Mat img;
 	QRScanner qs;
 };

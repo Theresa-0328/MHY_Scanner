@@ -13,12 +13,12 @@ ThreadSacn::~ThreadSacn()
 
 void ThreadSacn::setImg(cv::Mat img)
 {
-	tImg = img;
+	this->img = img;
 }
 
 
 void ThreadSacn::run()
 {
-	qs.Decode(tImg, uqrcode);
+	qs.Decode(img, uqrcode);
 	QThread::msleep(100);
 }
