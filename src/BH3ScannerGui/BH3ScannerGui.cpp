@@ -136,7 +136,7 @@ void BH3ScannerGui::pBtstartScreen()
 		msgBox.exec();
 		return;
 	}
-	t1.biliInitScreen(loginbili.uid, loginbili.access_key, uName);
+	t1.InitScreen(loginbili.uid, loginbili.access_key, uName);
 	ui.pBtstartScreen->setText("监视屏幕二维码中");
 	t1.start();
 }

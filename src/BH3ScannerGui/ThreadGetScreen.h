@@ -13,7 +13,7 @@ public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
 	bool isExit = true;
-	void biliInitScreen(int uid, std::string access_key, std::string uname);
+	void InitScreen(int uid, std::string access_key, std::string uname);
 	void run();
 signals:
 	void loginResults(const bool& b);

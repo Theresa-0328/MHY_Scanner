@@ -18,7 +18,7 @@
     <ClCompile Include="HttpClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="V2api.cpp">
+    <ClCompile Include="BiliLiveApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Bsgsdk.cpp">
@@ -41,13 +41,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test_Download.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="HttpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="V2api.h">
+    <ClInclude Include="BiliLiveApi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Bsgsdk.h">
@@ -57,9 +54,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CryptoKit.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="test_Login.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="QRScanner.h">

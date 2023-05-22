@@ -156,25 +156,17 @@
     <ClCompile Include="VideoProcessor.cpp" />
     <ClCompile Include="ScreenScan.cpp" />
     <ClCompile Include="HttpClient.cpp" />
-    <ClCompile Include="V2api.cpp" />
+    <ClCompile Include="BiliLiveApi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bsgsdk.h" />
-    <ClInclude Include="test_Login.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="CryptoKit.h" />
-    <ClInclude Include="test_Download.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
     <ClInclude Include="QRScanner.h" />
     <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="ScreenScan.h" />
-    <ClInclude Include="V2api.h" />
+    <ClInclude Include="BiliLiveApi.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrrJson\TrrJson.vcxproj">

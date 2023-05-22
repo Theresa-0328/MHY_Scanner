@@ -366,5 +366,3 @@ FodyWeavers.xsd
 notes.txt
 config_private.json
 *.dll
-/src/Honkai3StreamQRCode/config_private_1.json
-/src/Honkai3StreamQRCode/screenshot.jpg

@@ -17,7 +17,7 @@ ThreadGetScreen::~ThreadGetScreen()
 	this->wait();
 }
 
-void ThreadGetScreen::biliInitScreen(int uid, std::string access_key, std::string uname)
+void ThreadGetScreen::InitScreen(int uid, std::string access_key, std::string uname)
 {
 
 	LoginData = m.verify(uid, access_key);
@@ -30,7 +30,6 @@ void ThreadGetScreen::run()
 	cv::Mat img;
 	QRScanner s;
 	isExit = false;
-	bool b = true;
 	while (!isExit)
 	{
 		std::string deCode;
