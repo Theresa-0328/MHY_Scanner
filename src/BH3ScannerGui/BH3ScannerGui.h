@@ -32,7 +32,6 @@ private:
     ThreadDownload t2;
     ThreadStreamProcess t3;
     LoginBili loginbili;
-    LoginWindow l;
+    LoginWindow loginwindow;
     int liveIdError(int code);
-    HANDLE processMutex;
 };
