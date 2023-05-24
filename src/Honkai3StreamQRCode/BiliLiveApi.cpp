@@ -34,7 +34,6 @@ std::string v2api::GetAddress(int realRoomID)
         {"room_id" , std::to_string(realRoomID)},
         //s_locale:zh_CN
         //statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
-        {"ts" , "1676498963"}
     };
     std::string playurl = GetStreamUrl(V2API,params);
 	playurl = string_To_UTF8(playurl);

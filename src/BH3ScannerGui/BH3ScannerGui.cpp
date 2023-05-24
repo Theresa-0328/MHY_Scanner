@@ -9,20 +9,6 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	, t2(this)
 	, t3(this)
 {
-	processMutex = CreateMutex(NULL, TRUE, TEXT("T08lJ8CJmJiyoxdV"));
-	if (processMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
-	{
-		// 互斥体已经存在，程序已经启动
-		QMessageBox msgBox(QMessageBox::Information,
-			"提示",
-			"程序正在运行，\n请不要重复启动！",
-			QMessageBox::Yes,
-			this);
-		msgBox.exec();
-		CloseHandle(processMutex);
-		exit(-1);
-	}
-
 	ui.setupUi(this);
 	bool b1 = connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	bool b2 = connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
@@ -38,12 +24,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	if (loginbili.loginBiliKey(readName) != 0)
 	{
 		repeat = true;
-		QMessageBox msgBox(QMessageBox::Information,
-			"提示",
-			"登录状态失效，\n请重新登录账号！",
-			QMessageBox::Yes,
-			this);
-		msgBox.exec();
+		QMessageBox::information(this,"提示","登录状态失效，\n请重新登录账号！",QMessageBox::Yes);
 	}
 	else
 	{
@@ -70,7 +51,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 
 BH3ScannerGui::~BH3ScannerGui()
 {
-	CloseHandle(processMutex);
+	
 }
 
 void BH3ScannerGui::pBtLoginAccount()
@@ -83,20 +64,20 @@ void BH3ScannerGui::pBtLoginAccount()
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
 	}
-	l.exec();
-	if (l.getIsReject())
+	loginwindow.exec();
+	if (loginwindow.getIsReject())
 	{
 		return;
 	}
 	std::string account;
 	std::string pwd;
 	std::string message;
-	l.getAccountPwd(account, pwd);
+	loginwindow.getAccountPwd(account, pwd);
 	int c = loginbili.loginBiliPwd(account, pwd, message);
 	if (c == 0)
 	{
 		ui.pBtLoginAccount->setText("bilibili已登录");
-		l.ClearInputBox();
+		loginwindow.ClearInputBox();
 		QString QName = QString::fromStdString(loginbili.getUName());
 		ui.lineEditUname->setText(QName);
 	}
@@ -106,7 +87,7 @@ void BH3ScannerGui::pBtLoginAccount()
 		std::wstring wlpstr = Qmessage.toStdWString();
 		LPCWSTR lpcWStr = wlpstr.c_str();
 		MessageBoxW(NULL, lpcWStr, L"bilibili登录失败", NULL);
-		l.ClearInputBox();
+		loginwindow.ClearInputBox();
 	}
 }
 
@@ -128,12 +109,7 @@ void BH3ScannerGui::pBtstartScreen()
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
-		QMessageBox msgBox(QMessageBox::Information,
-			"提示",
-			"登录状态失效，\n请重新登录账号！",
-			QMessageBox::Yes,
-			this);
-		msgBox.exec();
+		QMessageBox::information(this, "提示", "登录状态失效，\n请重新登录账号！", QMessageBox::Yes);
 		return;
 	}
 	t1.InitScreen(loginbili.uid, loginbili.access_key, uName);
@@ -159,31 +135,21 @@ void BH3ScannerGui::islogin(const bool& b)
 		{
 			exit(0);
 		}
-		QMessageBox msgBox(QMessageBox::Information,
-			"提示",
-			"扫码成功！",
-			QMessageBox::Yes,
-			this);
 		t1.isExit = true;
 		t2.stopDownload();
 		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
-		msgBox.exec();
+		QMessageBox::information(this, "提示", "扫码成功！", QMessageBox::Yes);
 	}
 	else
 	{
-		QMessageBox msgBox(QMessageBox::Information,
-			"提示",
-			"扫码失败！",
-			QMessageBox::Yes,
-			this);
 		t1.isExit = true;
 		t2.stopDownload();
 		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
-		msgBox.exec();
+		QMessageBox::information(this, "提示", "扫码失败", QMessageBox::Yes);
 	}
 }
 
@@ -229,12 +195,7 @@ void BH3ScannerGui::pBtStream()
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
-		QMessageBox msgBox(QMessageBox::Information,
-			"提示",
-			"登录状态失效，\n请重新登录账号！",
-			QMessageBox::Yes,
-			this);
-		msgBox.exec();
+		QMessageBox::information(this, "提示", "登录状态失效，\n请重新登录账号！", QMessageBox::Yes);
 		return;
 	}
 	//检查直播间状态
@@ -259,20 +220,19 @@ int BH3ScannerGui::liveIdError(int code)
 	{
 	case -1:
 	{
-		QMessageBox type1(QMessageBox::Information, "提示", "直播间不存在!", QMessageBox::Yes, this);
-		type1.exec();
+		QMessageBox::information(this,"提示", "直播间不存在!", QMessageBox::Yes);
+
 	}
 		return 0;
 	case -2:
 	{
-		QMessageBox type2(QMessageBox::Information, "提示", "直播间未开播！", QMessageBox::Yes, this);
-		type2.exec();
+		QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
+
 	}
 		return 0;
 	case -3:
 	{
-		QMessageBox type3(QMessageBox::Information, "提示", "未知错误!", QMessageBox::Yes, this);
-		type3.exec();
+		QMessageBox::information(this,"提示", "未知错误!", QMessageBox::Yes);
 	}
 		return 0;
 	default:

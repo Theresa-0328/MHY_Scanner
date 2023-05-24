@@ -14,6 +14,8 @@ private:
 	int HandlerLiveStatus(std::string string);
 private:
 	//const std::string V1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";
+	//获取直播间信息
+	//https ://api.live.bilibili.com/room/v1/Room/get_info?room_id=6&from=room
 	const std::string V2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
 	const std::string address = "https://api.live.bilibili.com/room/v1/Room/room_init";
 };
