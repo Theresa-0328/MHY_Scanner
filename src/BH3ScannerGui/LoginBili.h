@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "Mihoyosdk.h"
-#include "Bsgsdk.h"
+#include "BiliGameApi.h"
 #include <sstream>
 #include <fstream>
 class LoginBili 
-	: public Bsgsdk
+	: public BiliGameApi
 {
 public:
 	int loginBiliKey(std::string& realName);
