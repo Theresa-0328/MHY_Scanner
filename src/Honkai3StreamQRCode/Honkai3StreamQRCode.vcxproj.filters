@@ -21,7 +21,7 @@
     <ClCompile Include="BiliLiveApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Bsgsdk.cpp">
+    <ClCompile Include="BiliGameApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Mihoyosdk.cpp">
@@ -47,7 +47,7 @@
     <ClInclude Include="BiliLiveApi.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Bsgsdk.h">
+    <ClInclude Include="BiliGameApi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Mihoyosdk.h">

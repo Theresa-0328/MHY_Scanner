@@ -98,11 +98,17 @@ int LoginBili::loginBiliKey(std::string& realName)
 
 int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& message)
 {
-    std::string a = login1(Account, Pwd);
-    a = HttpClient::UTF8_To_string(a);
     json::Json loginJ;
-    loginJ.parse(a);
+    std::string loginInfo = biliLogin(Account, Pwd);
+    loginInfo = HttpClient::UTF8_To_string(loginInfo);
+    loginJ.parse(loginInfo);
     int code = (int)loginJ["code"];
+    
+    if (code == 200000)
+    {
+        biliLogin(Account, Pwd, true);
+    }
+    
     if (code != 0)
     {
         message = loginJ["message"];

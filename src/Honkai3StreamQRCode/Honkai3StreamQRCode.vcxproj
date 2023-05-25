@@ -145,7 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bsgsdk.cpp">
+    <ClCompile Include="BiliGameApi.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="CryptoKit.cpp" />
@@ -159,7 +159,7 @@
     <ClCompile Include="BiliLiveApi.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bsgsdk.h" />
+    <ClInclude Include="BiliGameApi.h" />
     <ClInclude Include="CryptoKit.h" />
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />

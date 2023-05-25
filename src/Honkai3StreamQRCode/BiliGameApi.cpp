@@ -1,6 +1,6 @@
-﻿#include "Bsgsdk.h"
+﻿#include "BiliGameApi.h"
 #include "CryptoKit.h"
-std::string Bsgsdk::remove_quotes(std::string str)
+std::string BiliGameApi::remove_quotes(std::string str)
 {
     std::string result = "";
     char* p = &str[0];
@@ -15,7 +15,7 @@ std::string Bsgsdk::remove_quotes(std::string str)
     return result;
 }
 
-std::string Bsgsdk::setSign(std::map<std::string, std::string> data)
+std::string BiliGameApi::setSign(std::map<std::string, std::string> data)
 {
     for (auto it = data.begin(); it != data.end(); ++it)
     {
@@ -49,7 +49,7 @@ std::string Bsgsdk::setSign(std::map<std::string, std::string> data)
     return data2;
 }
 
-json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
+json::Json BiliGameApi::getUserInfo(const int uid,const std::string accessKey)
 {
     std::string s;
     std::string t;
@@ -57,8 +57,7 @@ json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
     j.parse(userinfoParam);
     j["uid"] = uid;
     j["access_key"] = accessKey;
-    std::map < std::string, std::string > m;
-    m = j.objToMap();
+    std::map < std::string, std::string > m = j.objToMap();
     for (auto& a : m)
     {
         a.second = remove_quotes(a.second);
@@ -74,10 +73,12 @@ json::Json Bsgsdk::getUserInfo(const int uid,const std::string accessKey)
     return j;
 }
 
-std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& biliPwd, bool cap)
+std::string BiliGameApi::biliLogin(const std::string& biliAccoun, const std::string& biliPwd, bool cap)
 {
     if (cap)
     {
+        captcha();
+        make_captch();
         return "";//loginWithCaptcha
     }
     else
@@ -87,7 +88,28 @@ std::string Bsgsdk::login1(const std::string& biliAccoun, const std::string& bil
     
 }
 
-std::string Bsgsdk::loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd)
+std::string BiliGameApi::captcha()
+{
+    json::Json data;
+    data.parse(captchaParam);
+    std::map < std::string, std::string > info = data.objToMap();
+    std::string data1 = setSign(info);
+    std::string data2;
+    HttpClient::PostRequest(data2, bililogin + "api/client/start_captcha", data1, headers);
+    captchaJ.parse(data2);
+    return std::string();
+}
+
+std::string BiliGameApi::make_captch()
+{
+    std::string gt = captchaJ["gt"];
+    std::string challenge = captchaJ["challenge"];
+    std::string gt_user = captchaJ["gt_user_id"];
+    std::string capurl = "http://127.0.0.1:12983/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1";
+    return std::string();
+}
+
+std::string BiliGameApi::loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd)
 {
     json::Json data;
     data.parse(rsaParam);
