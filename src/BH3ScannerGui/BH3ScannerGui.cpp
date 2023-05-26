@@ -137,13 +137,13 @@ void BH3ScannerGui::islogin(const bool& b)
 {
 	if (b)
 	{
+		t1.isExit = true;
+		t2.stopDownload();
+		t3.stop();
 		if (loginbili.getAutoExit())
 		{
 			exit(0);
 		}
-		t1.isExit = true;
-		t2.stopDownload();
-		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
 		QMessageBox::information(this, "提示", "扫码成功！", QMessageBox::Yes);
