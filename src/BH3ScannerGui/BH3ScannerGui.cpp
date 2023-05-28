@@ -16,13 +16,13 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	//QDesktopServices::openUrl(QUrl(URL.toLatin1()));
 
 	ui.setupUi(this);
-	bool b1 = connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
-	bool b2 = connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
-	bool b3 = connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
-	bool b4 = connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoScreen);
-	bool b5 = connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoExit);
-	bool b6 = connect(ui.pBtStream, &QPushButton::clicked, this, &BH3ScannerGui::pBtStream);
-	bool b7 = connect(&t3, &ThreadStreamProcess::loginSResults, this, &BH3ScannerGui::islogin);
+	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
+	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
+	connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
+	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoScreen);
+	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoExit);
+	connect(ui.pBtStream, &QPushButton::clicked, this, &BH3ScannerGui::pBtStream);
+	connect(&t3, &ThreadStreamProcess::loginSResults, this, &BH3ScannerGui::islogin);
 
 	loginbili.openConfig();
 	std::string readName;
@@ -135,11 +135,11 @@ void BH3ScannerGui::showEvent(QShowEvent* event)
 
 void BH3ScannerGui::islogin(const bool& b)
 {
+	t1.isExit = true;
+	t2.stopDownload();
+	t3.stop();
 	if (b)
 	{
-		t1.isExit = true;
-		t2.stopDownload();
-		t3.stop();
 		if (loginbili.getAutoExit())
 		{
 			exit(0);
@@ -150,9 +150,6 @@ void BH3ScannerGui::islogin(const bool& b)
 	}
 	else
 	{
-		t1.isExit = true;
-		t2.stopDownload();
-		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
 		QMessageBox::information(this, "提示", "扫码失败", QMessageBox::Yes);

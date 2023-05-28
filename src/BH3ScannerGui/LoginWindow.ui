@@ -7,8 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>172</height>
+    <height>180</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>180</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>300</width>
+    <height>180</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>登录</string>
@@ -17,7 +29,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>130</y>
+     <y>140</y>
      <width>75</width>
      <height>24</height>
     </rect>
@@ -30,7 +42,7 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>130</y>
+     <y>140</y>
      <width>81</width>
      <height>24</height>
     </rect>
@@ -60,6 +72,19 @@
      <width>200</width>
      <height>30</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBoxShowPw">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>110</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>显示密码</string>
    </property>
   </widget>
  </widget>
