@@ -7,7 +7,7 @@
 
 ### **版本 - V0.0.1-bate**
 
-### [国内蓝奏云下载链接](https://wwru.lanzouf.com/i2gwj0uyok0j)
+### [国内蓝奏云下载链接](https://wwru.lanzouf.com/isMM40xk1u8d)
 
 ## 功能和特性
 - 用于崩坏3扫码和抢码登录。
