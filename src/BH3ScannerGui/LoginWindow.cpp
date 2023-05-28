@@ -9,9 +9,10 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 	ui.lineEditAccount->setFont(QFont("宋体", 13));
 	ui.lineEditPwd->setPlaceholderText("请输入密码...");
 	ui.lineEditPwd->setClearButtonEnabled(true);
-	//ui.lineEditPwd->setEchoMode(QLineEdit::Password);
 	ui.lineEditPwd->setFont(QFont("宋体", 13));
-	ui.lineEditPwd->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9]+$"), this));
+	ui.lineEditPwd->setEchoMode(QLineEdit::Password);
+	ui.lineEditPwd->setInputMethodHints(Qt::ImhHiddenText);
+	connect(ui.checkBoxShowPw, &QCheckBox::stateChanged, this, &LoginWindow::showPassword);
 }
 
 void LoginWindow::accept()
@@ -46,4 +47,16 @@ void LoginWindow::getAccountPwd(std::string& Account, std::string& Pwd)
 bool LoginWindow::getIsReject()
 {
 	return isReject;
+}
+
+void LoginWindow::showPassword(int state)
+{
+	if (state == Qt::Checked)
+	{
+		ui.lineEditPwd->setEchoMode(QLineEdit::Normal);
+	}
+	else if (state == Qt::Unchecked)
+	{
+		ui.lineEditPwd->setEchoMode(QLineEdit::Password);
+	}
 }
