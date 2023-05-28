@@ -11,7 +11,6 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 	ui.lineEditPwd->setClearButtonEnabled(true);
 	ui.lineEditPwd->setFont(QFont("宋体", 13));
 	ui.lineEditPwd->setEchoMode(QLineEdit::Password);
-	ui.lineEditPwd->setInputMethodHints(Qt::ImhHiddenText);
 	connect(ui.checkBoxShowPw, &QCheckBox::stateChanged, this, &LoginWindow::showPassword);
 }
 
@@ -54,6 +53,7 @@ void LoginWindow::showPassword(int state)
 	if (state == Qt::Checked)
 	{
 		ui.lineEditPwd->setEchoMode(QLineEdit::Normal);
+		ui.lineEditPwd->setInputMethodHints(Qt::ImhHiddenText);
 	}
 	else if (state == Qt::Unchecked)
 	{
