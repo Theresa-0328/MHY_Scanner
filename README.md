@@ -39,7 +39,7 @@ cache文件夹里的output.flv是缓存的直播视频，程序退出后可以�
 
 如果启动失败建议检查网络链接是否正常，Config文件夹里是否存在config_private.json
 
-目前没有进行大量测试，如果有任何建议和发现的问题欢迎提Issues或发送邮件到CrystalWhisperer@outlook.com
+目前没有进行大量测试，如果有任何建议和发现的问题欢迎提Issues
 
 ## 依赖
 - qtmsvc v6.2.3
