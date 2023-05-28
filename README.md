@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
 </div>
 
-### **版本 - V0.0.1-bate**
+### **版本 - V0.0.2-bate**
 
 ### [国内蓝奏云下载链接](https://wwru.lanzouf.com/isMM40xk1u8d)
 
