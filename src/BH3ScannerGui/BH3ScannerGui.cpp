@@ -123,6 +123,43 @@ void BH3ScannerGui::pBtstartScreen()
 	t1.start();
 }
 
+void BH3ScannerGui::pBtStream()
+{
+	if (t1.isExit == false)
+	{
+		t1.isExit = true;
+		ui.pBtstartScreen->setText("开始监视屏幕");
+	}
+	if (t2.isRunning())
+	{
+		t3.stop();
+		t2.stopDownload();
+		ui.pBtStream->setText("开始监视直播间");
+		return;
+	}
+	//选择和检查账号可用性
+	std::string uName;
+	if (loginbili.loginBiliKey(uName) != 0)
+	{
+		QMessageBox::information(this, "提示", "登录状态失效，\n请重新登录账号！", QMessageBox::Yes);
+		return;
+	}
+	//检查直播间状态
+	QString liveRoomId = ui.lineEditLiveId->text();
+	std::string n = liveRoomId.toStdString();
+	v2api v;
+	int id = v.GetRealRoomID(n);
+	int readId = liveIdError(id);
+	if (readId == 0)
+		return;
+	std::string streamAddress = v.GetAddress(readId);
+	t2.downloadInit(streamAddress);
+	ui.pBtStream->setText("监视直播二维码中");
+	t2.start();
+	t3.biliInitStream(loginbili.uid, loginbili.access_key, uName);
+	t3.start();
+}
+
 void BH3ScannerGui::closeEvent(QCloseEvent* event)
 {
 
@@ -178,43 +215,6 @@ void BH3ScannerGui::checkBoxAutoExit(int state)
 	{
 		loginbili.setAutoExit(false);
 	}
-}
-
-void BH3ScannerGui::pBtStream()
-{
-	if (t1.isExit == false)
-	{
-		t1.isExit = true;
-		ui.pBtstartScreen->setText("开始监视屏幕");
-	}
-	if (t2.isRunning())
-	{
-		t3.stop();
-		t2.stopDownload();
-		ui.pBtStream->setText("开始监视直播间");
-		return;
-	}
-	//选择和检查账号可用性
-	std::string uName;
-	if (loginbili.loginBiliKey(uName) != 0)
-	{
-		QMessageBox::information(this, "提示", "登录状态失效，\n请重新登录账号！", QMessageBox::Yes);
-		return;
-	}
-	//检查直播间状态
-	QString liveRoomId = ui.lineEditLiveId->text();
-	std::string n = liveRoomId.toStdString();
-	v2api v;
-	int id = v.GetRealRoomID(n);
-	int readId = liveIdError(id);
-	if (readId == 0)
-		return;
-	std::string streamAddress = v.GetAddress(readId);
-	t2.downloadInit(streamAddress);
-	ui.pBtStream->setText("监视直播二维码中");
-	t2.start();
-	t3.biliInitStream(loginbili.uid, loginbili.access_key, uName);
-	t3.start();
 }
 
 int BH3ScannerGui::liveIdError(int code)
