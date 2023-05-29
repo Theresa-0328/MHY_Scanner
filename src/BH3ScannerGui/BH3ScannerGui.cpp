@@ -26,10 +26,10 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 
 	loginbili.openConfig();
 	std::string readName;
-	bool repeat = false;
+	bool repeat = true;
 	if (loginbili.loginBiliKey(readName) != 0)
 	{
-		repeat = true;
+		repeat = false;
 		QMessageBox::information(this,"提示","登录状态失效，\n请重新登录账号！",QMessageBox::Yes);
 	}
 	else
@@ -38,7 +38,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 		QString uname = QString::fromStdString(readName);
 		ui.lineEditUname->setText(uname);
 	}
-	if (loginbili.getAutoStart()&&!repeat)
+	if (loginbili.getAutoStart()&&repeat)
 	{
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);

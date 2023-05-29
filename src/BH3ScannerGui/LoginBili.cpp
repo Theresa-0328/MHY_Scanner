@@ -81,7 +81,7 @@ bool LoginBili::getAutoExit()
     return (bool)configJson["is_auto_exit"];;
 }
 
-//检查access_key和uid是否有效
+//获取用户名,检查access_key是否有效并更新配置文件
 int LoginBili::loginBiliKey(std::string& realName)
 {
     uid = configJson["uid"];
@@ -90,9 +90,14 @@ int LoginBili::loginBiliKey(std::string& realName)
     int code = (int)userInfo["code"];
     if (code != 0)
     {
+        configJson["signed_in"] = false;
         return code;
     }
+    uid = (int)userInfo["uid"];
+    configJson["uid"] = uid;
     realName = HttpClient::string_To_UTF8(userInfo["uname"]);
+    configJson["realname"] = realName;
+    updateConfig();
     return 0;
 }
 
