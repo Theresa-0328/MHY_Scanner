@@ -1,4 +1,10 @@
 ﻿#include "LoginBili.h"
+
+LoginBili::~LoginBili()
+{
+    inFile.close();
+}
+
 void LoginBili::openConfig()
 {
     inFile.open("./Config/config_private.json");
