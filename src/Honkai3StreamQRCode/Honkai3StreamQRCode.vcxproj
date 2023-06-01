@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;E:\.Github\opencv_build\install\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;D:\Dev\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\x64\vc17\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;D:\Github\opencv\build\install\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;D:\Dev\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Dev\ffmpeg\include;E:\.Github\opencv_build\install\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\x64\vc17\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dev\ffmpeg\include;D:\Github\opencv\build\install\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;D:\Dev\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,7 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Scan;..\TrrJson</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\TrrJson</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -164,6 +164,7 @@
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
     <ClInclude Include="QRScanner.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="ScreenScan.h" />
     <ClInclude Include="BiliLiveApi.h" />
@@ -172,6 +173,445 @@
     <ProjectReference Include="..\TrrJson\TrrJson.vcxproj">
       <Project>{afd024ae-d595-4c03-9535-847b116bb59f}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\ade.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\IlmImf.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\IlmImfd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\ittnotify.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\ittnotifyd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libjpeg-turbo.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libjpeg-turbod.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libopenjp2.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libopenjp2d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libpng.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libpngd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libprotobuf.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libprotobufd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libtiff.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libtiffd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libwebp.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\libwebpd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_aruco470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_aruco470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_barcode470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_barcode470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_bgsegm470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_bgsegm470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_bioinspired470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_bioinspired470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_calib3d470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_calib3d470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_ccalib470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_ccalib470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_core470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_core470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_datasets470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_datasets470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dnn470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dnn470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dnn_objdetect470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dnn_objdetect470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dnn_superres470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dnn_superres470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dpm470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_dpm470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_face470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_face470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_features2d470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_features2d470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_flann470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_flann470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_fuzzy470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_fuzzy470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_gapi470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_gapi470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_hfs470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_hfs470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_highgui470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_highgui470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_imgcodecs470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_imgcodecs470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_imgproc470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_imgproc470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_img_hash470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_img_hash470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_intensity_transform470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_intensity_transform470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_line_descriptor470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_line_descriptor470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_mcc470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_mcc470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_ml470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_ml470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_objdetect470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_objdetect470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_optflow470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_optflow470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_phase_unwrapping470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_phase_unwrapping470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_photo470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_photo470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_plot470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_plot470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_quality470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_quality470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_rapid470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_rapid470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_reg470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_reg470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_rgbd470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_rgbd470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_saliency470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_saliency470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_shape470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_shape470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_stereo470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_stereo470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_stitching470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_stitching470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_structured_light470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_structured_light470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_superres470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_superres470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_surface_matching470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_surface_matching470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_text470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_text470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_tracking470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_tracking470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_video470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_video470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_videoio470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_videoio470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_videostab470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_videostab470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_wechat_qrcode470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_wechat_qrcode470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_xfeatures2d470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_xfeatures2d470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_ximgproc470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_ximgproc470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_xobjdetect470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_xobjdetect470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_xphoto470.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\opencv_xphoto470d.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\quirc.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\quircd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\zlib.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\zlibd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Library>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

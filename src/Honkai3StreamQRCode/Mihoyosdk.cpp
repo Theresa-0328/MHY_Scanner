@@ -36,18 +36,18 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 
 std::string Mihoyosdk::getBHVer()
 {
-	return "6.6.0";
+	return "6.7.0";
 }
 
 std::string Mihoyosdk::getOAServer()
 {
 	const std::string bhVer = getBHVer();
-	const std::string oaMainUrl = "https://global2.bh3.com/query_dispatch?";
-	std::string param = "version=" + bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
+	const std::string oaMainUrl = "https://dispatch.scanner.hellocraft.xyz/v1/query_dispatch/?version=";
+	std::string param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	std::string feedback;
-	PostRequest(feedback, oaMainUrl + param, "");
-	//std::cout << u.UTF8_To_string(feedback) << std::endl;
-	param = "?version=" + bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
+	GetRequest(feedback, oaMainUrl + param);
+	return feedback;
+	param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	json::Json j;
 	j.parse(feedback);
 	std::string dispatch_url = j["region_list"][0]["dispatch_url"];
@@ -106,10 +106,10 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	json::Json scanDataJ;
 	scanDataJ.parse(scanData);
 	
-	json::Json oa;
-	oa.parse(oaString);
-	scanDataJ["dispatch"] = oa;
-	scanDataJ["accountID"] = bhInFo["open_id"];
+	//json::Json oa;
+	//oa.parse(oaString);
+	scanDataJ["dispatch"] = oaString;
+	scanDataJ["c"] = bhInFo["open_id"];
 	scanDataJ["accountToken"] = bhInFo["combo_token"];
 	//std::cout << scanDataJ.str() << std::endl;
 	json::Json scanExtJ;

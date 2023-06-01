@@ -55,12 +55,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <ExternalIncludePath>E:\.Github\opencv_build\install\include;D:\Dev\ffmpeg\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\x64\vc17\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>D:\Github\opencv\build\install\include;D:\Dev\ffmpeg\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <ExternalIncludePath>E:\.Github\opencv_build\install\include;D:\Dev\ffmpeg\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>D:\Dev\ffmpeg\lib;E:\.Github\opencv_build\install\x64\vc17\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>D:\Github\opencv\build\install\include;D:\Dev\ffmpeg\include;D:\Dev\OpenSSL-Win64\include;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>D:\Dev\ffmpeg\lib;D:\Dev\curl-7.87.0\builds\libcurl-vc15-x64-release-static-ipv6-sspi-schannel\lib;D:\Dev\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -68,7 +68,7 @@
       <PreprocessorDefinitions>BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;opencv_core470d.lib;opencv_wechat_qrcode470d.lib;opencv_highgui470d.lib;opencv_imgcodecs470d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;opencv_core470.lib;opencv_wechat_qrcode470.lib;opencv_highgui470.lib;opencv_imgcodecs470.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
