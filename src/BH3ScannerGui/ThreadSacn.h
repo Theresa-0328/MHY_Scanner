@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QThread>
-#include <opencv2/opencv.hpp>
 #include <string>
 #include "QRScanner.h"
 
