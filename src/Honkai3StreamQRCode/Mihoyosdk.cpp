@@ -46,7 +46,11 @@ std::string Mihoyosdk::getOAServer()
 	std::string param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	std::string feedback;
 	GetRequest(feedback, oaMainUrl + param);
+#ifdef _DEBUG
+	std::cout << "获得OA服务器 : " << feedback << std::endl;
+#endif // DEBUG
 	return feedback;
+
 	param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	json::Json j;
 	j.parse(feedback);

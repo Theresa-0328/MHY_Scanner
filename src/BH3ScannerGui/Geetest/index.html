@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <script>
+            function IEContentLoaded (w, fn) {
+            var d = w.document, done = false,
+            // only fire once
+            init = function () {
+                if (!done) {
+                    done = true;
+                    fn();
+                }
+            };
+            // polling for no errors
+            (function () {
+                try {
+                    // throws errors until after ondocumentready
+                    d.documentElement.doScroll('left');
+                } catch (e) {
+                    setTimeout(arguments.callee, 50);
+                    return;
+                }
+                // no errors, fire
+                init();
+            })();
+            // trying to always fire before onload
+            d.onreadystatechange = function() {
+                if (d.readyState == 'complete') {
+                    d.onreadystatechange = null;
+                    init();
+                }
+            };
+            }
+            function CloseWebPage(){
+            if (navigator.userAgent.indexOf("MSIE") > 0) {
+                if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+                    window.opener = null;
+                    window.close();
+                } else {
+                    window.open('', '_top');
+                    window.top.close();
+                }
+            } else if (navigator.userAgent.indexOf("Firefox") > 0) {
+                window.location.href = 'about:blank ';
+            } else {
+                window.opener = null;
+                window.open('', '_self', '');
+                window.close();
+            }
+            }
+            function checkClose() {
+                if(localStorage.getItem('scanner_data') == null) return;
+                var data = JSON.parse(localStorage.getItem('scanner_data'));
+                if (data.needClose) {
+                    CloseWebPage()
+                }
+            }
+            IEContentLoaded(window,function () {
+                var data = {
+                        needClose: false,
+                        needCap: true,
+                }
+                localStorage.setItem('scanner_data',JSON.stringify(data));
+                console.log(window.location.href);
+                target_url = window.location.href.replace("/?","/geetest?")
+                console.log(target_url);
+                document.getElementsByClassName("geetest_frame")[0].src=target_url;
+                
+	            setInterval('checkClose()',500);
+            });
+
+
+        </script>
+        <title>Geetest Local Page</title>
+    </head>
+    <body>
+        <iframe class="geetest_frame" style="width: 500px;height: 700px"></iframe>
+    </body>
+</html>
