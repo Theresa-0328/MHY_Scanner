@@ -75,7 +75,7 @@ json::Json BiliGameApi::getUserInfo(const int uid,const std::string accessKey)
 
 std::string BiliGameApi::biliLogin(const std::string& biliAccoun, const std::string& biliPwd, bool cap)
 {
-    if (cap)
+    if (!cap)
     {
         captcha();
         make_captch();
@@ -106,6 +106,7 @@ std::string BiliGameApi::make_captch()
     std::string challenge = captchaJ["challenge"];
     std::string gt_user = captchaJ["gt_user_id"];
     std::string capurl = "http://127.0.0.1:12983/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1";
+    //capurl = "https://game.bilibili.com/sdk/geetest/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1";
     return std::string();
 }
 
