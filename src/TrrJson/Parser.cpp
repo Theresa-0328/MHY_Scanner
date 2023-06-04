@@ -61,7 +61,7 @@ json::Json json::Parser::parse()
 	default:
 		break;
 	}
-	throw new std::logic_error("unexpected char");
+	throw std::logic_error("unexpected char");
 }
 
 json::Json json::Parser::parse_null()
@@ -71,7 +71,7 @@ json::Json json::Parser::parse_null()
 		m_idx += 4;
 		return Json();
 	}
-	throw new std::logic_error("parse null error");
+	throw std::logic_error("parse null error");
 }
 
 json::Json json::Parser::parse_bool()
@@ -86,7 +86,7 @@ json::Json json::Parser::parse_bool()
 		m_idx += 5;
 		return Json(false);
 	}
-	throw new std::logic_error("parse bool error");
+	throw std::logic_error("parse bool error");
 }
 
 json::Json json::Parser::parse_number() 
@@ -98,7 +98,7 @@ json::Json json::Parser::parse_number()
 	}
 	if (m_str[m_idx] < '0' || m_str[m_idx]>'9')
 	{
-		throw new std::logic_error("parse number error");
+		throw std::logic_error("parse number error");
 	}
 	while(m_str[m_idx] >= '0' && m_str[m_idx] <= '9')
 	{
@@ -112,7 +112,7 @@ json::Json json::Parser::parse_number()
 	m_idx++;
 	if (m_str[m_idx] < '0' || m_str[m_idx]>'9')
 	{
-		throw new std::logic_error("parse number error");
+		throw std::logic_error("parse number error");
 	}
 	while (m_str[m_idx] >= '0' && m_str[m_idx] <= '9')
 	{
@@ -196,7 +196,7 @@ json::Json json::Parser::parse_array()
 		}
 		if (ch != ',')
 		{
-			throw new std::logic_error("parse array error");
+			throw std::logic_error("parse array error");
 		}
 		skip_white_space(); //BV1TP411p7cC 38:00
 	}
@@ -217,13 +217,13 @@ json::Json json::Parser::parse_object()
 		ch = get_next_token();
 		if (ch != '"')
 		{
-			throw new std::logic_error("parse object error");
+			throw std::logic_error("parse object error");
 		}
 		std::string key = parse_string();
 		ch = get_next_token();
 		if (ch != ':')
 		{
-			throw new std::logic_error("parse object error");
+			throw std::logic_error("parse object error");
 		}
 		obj[key] = parse();
 		ch = get_next_token();
@@ -233,7 +233,7 @@ json::Json json::Parser::parse_object()
 		}
 		if (ch != ',')
 		{
-			throw new std::logic_error("parse object error");
+			throw std::logic_error("parse object error");
 		}
 		skip_white_space();
 	}

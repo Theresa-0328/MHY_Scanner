@@ -71,9 +71,6 @@
     <ClInclude Include="ScreenScan.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\..\opencv\build\install\x64\vc17\staticlib\ade.lib">

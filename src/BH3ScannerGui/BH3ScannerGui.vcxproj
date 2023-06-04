@@ -66,6 +66,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\Honkai3StreamQRCode;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -75,6 +76,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\Honkai3StreamQRCode;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Wldap32.lib;winmm.lib;Crypt32.lib;Normaliz.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libssl_static.lib;libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
