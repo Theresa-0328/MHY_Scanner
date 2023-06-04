@@ -1,5 +1,4 @@
 ﻿#include "ThreadStreamProcess.h"
-#include <QImage>
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
@@ -31,7 +30,7 @@ void ThreadStreamProcess::run()
 	QThread::msleep(3000);
 	stopStream = false;
 	VideoProcessor vp;
-	vp.OpenVideo("./cache/output.flv");//错误判断
+	vp.OpenVideo("./Cache/output.flv");//错误判断
 	int64_t latestTimestamp = av_gettime_relative();
 	if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
 	{

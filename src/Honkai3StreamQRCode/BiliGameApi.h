@@ -9,10 +9,11 @@ class BiliGameApi :public HttpClient
 public:
 	json::Json getUserInfo(const int uid, const std::string accessKey);
 	std::string biliLogin(const std::string&, const std::string&, bool = false);
-	std::string captcha();
-	std::string make_captch();
+	std::string login(const std::string& biliAccount, const std::string& biliPwd);
+	std::string login(const std::string& biliAccount, const std::string& biliPwd, const std::string challenge, const std::string gt_user, const std::string validate);
+	std::string makeCaptchUrl();
 private:
-	std::string loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd);//登录账号
+	void captcha();
 	std::string setSign(std::map<std::string, std::string> data1);
 	std::string remove_quotes(std::string str);
 	json::Json captchaJ;

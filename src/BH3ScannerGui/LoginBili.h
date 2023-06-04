@@ -7,6 +7,7 @@ class LoginBili
 	: public BiliGameApi
 {
 public:
+	LoginBili();
 	~LoginBili();
 	int loginBiliKey(std::string& realName);
 	int loginBiliPwd(std::string Account, std::string Pwd, std::string& message);
