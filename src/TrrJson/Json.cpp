@@ -69,7 +69,7 @@ json::Json::operator bool()
 {
 	if (m_type != json_bool)
 	{
-		throw new std::logic_error("type_error,not bool value");
+		throw std::logic_error("type_error,not bool value");
 	}
 	return m_value.m_bool;
 }
@@ -78,7 +78,7 @@ json::Json::operator int()
 {
 	if (m_type != json_int)
 	{
-		throw new std::logic_error("type_error,not int value");
+		throw std::logic_error("type_error,not int value");
 	}
 	return m_value.m_int;
 }
@@ -87,7 +87,7 @@ json::Json::operator double()
 {
 	if (m_type != json_double)
 	{
-		throw new std::logic_error("type_error,not double value");
+		throw std::logic_error("type_error,not double value");
 	}
 	return m_value.m_double;
 }
@@ -96,7 +96,7 @@ json::Json::operator std::string()
 {
 	if (m_type != json_string)
 	{
-		throw new std::logic_error("type_error,not string value");
+		throw std::logic_error("type_error,not string value");
 	}
 	return *(m_value.m_string);
 }
@@ -110,7 +110,7 @@ json::Json& json::Json::operator [] (int index)
 	}
 	if (index < 0)
 	{
-		throw new std::logic_error("array[] index < 0");
+		throw std::logic_error("array[] index < 0");
 	}
 	int size = (int)(m_value.m_array)->size();
 	if (index >= size) 
@@ -336,7 +336,7 @@ bool json::Json::asBool() const
 {
 	if (m_type != json_bool)
 	{
-		throw new std::logic_error("type error,not bool value");
+		throw std::logic_error("type error,not bool value");
 	}
 	return m_value.m_bool;
 }
@@ -345,7 +345,7 @@ int json::Json::asInt() const
 {
 	if (m_type != json_int)
 	{
-		throw new std::logic_error("type error,not int value");
+		throw std::logic_error("type error,not int value");
 	}
 	return m_value.m_int;
 }
@@ -354,7 +354,7 @@ double json::Json::asDouble() const
 {
 	if (m_type != json_double)
 	{
-		throw new std::logic_error("type error,not int value");
+		throw std::logic_error("type error,not int value");
 	}
 	return m_value.m_int;
 }
@@ -363,7 +363,7 @@ std::string json::Json::asString() const
 {
 	if (m_type != json_string)
 	{
-		throw new std::logic_error("type error,not string value");
+		throw std::logic_error("type error,not string value");
 	}
 	return *(m_value.m_string);
 }

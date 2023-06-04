@@ -114,7 +114,7 @@
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\TrrJson</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -164,7 +164,6 @@
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
     <ClInclude Include="QRScanner.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="ScreenScan.h" />
     <ClInclude Include="BiliLiveApi.h" />
