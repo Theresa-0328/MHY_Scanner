@@ -34,7 +34,7 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	return s;
 }
 
-std::string Mihoyosdk::getBHVer()
+std::string Mihoyosdk::getBHVer() const
 {
 	return "6.7.0";
 }

@@ -55,7 +55,7 @@ void ThreadDownload::run()
 	}
 	//占用问题
 	fp = CreateFile(
-		L".\\cache\\output.flv",            // 文件名
+		L".\\Cache\\output.flv",            // 文件名
 		GENERIC_WRITE,                      // 访问权限
 		FILE_SHARE_READ | FILE_SHARE_WRITE, // 共享模式
 		NULL,                               // 安全属性

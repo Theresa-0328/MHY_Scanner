@@ -15,7 +15,7 @@ private:
 	void scanConfirm(const std::string&, const std::string&);
 	std::string bh3Sign(std::string);
 	std::string getOAServer();
-	std::string getBHVer();
+	std::string getBHVer() const;
 private:
 	static std::string oaString;
 	std::map<std::string, std::string> verifyData = { {"uid","1"},{"access_key","590"} };

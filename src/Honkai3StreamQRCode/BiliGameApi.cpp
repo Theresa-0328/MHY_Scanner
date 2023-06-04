@@ -1,5 +1,6 @@
 ﻿#include "BiliGameApi.h"
 #include "CryptoKit.h"
+
 std::string BiliGameApi::remove_quotes(std::string str)
 {
     std::string result = "";
@@ -73,22 +74,7 @@ json::Json BiliGameApi::getUserInfo(const int uid,const std::string accessKey)
     return j;
 }
 
-std::string BiliGameApi::biliLogin(const std::string& biliAccoun, const std::string& biliPwd, bool cap)
-{
-    if (!cap)
-    {
-        captcha();
-        make_captch();
-        return "";//loginWithCaptcha
-    }
-    else
-    {
-        return loginWithoutCaptcha(biliAccoun, biliPwd);
-    }
-    
-}
-
-std::string BiliGameApi::captcha()
+void BiliGameApi::captcha()
 {
     json::Json data;
     data.parse(captchaParam);
@@ -97,20 +83,20 @@ std::string BiliGameApi::captcha()
     std::string data2;
     HttpClient::PostRequest(data2, bililogin + "api/client/start_captcha", data1, headers);
     captchaJ.parse(data2);
-    return std::string();
 }
 
-std::string BiliGameApi::make_captch()
+std::string BiliGameApi::makeCaptchUrl()
 {
+    captcha();
     std::string gt = captchaJ["gt"];
     std::string challenge = captchaJ["challenge"];
     std::string gt_user = captchaJ["gt_user_id"];
+    //official https://game.bilibili.com/sdk/geetest/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1
     std::string capurl = "http://127.0.0.1:12983/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1";
-    //capurl = "https://game.bilibili.com/sdk/geetest/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1";
-    return std::string();
+    return capurl;
 }
 
-std::string BiliGameApi::loginWithoutCaptcha(const std::string& biliAccount, const std::string& biliPwd)
+std::string BiliGameApi::login(const std::string& biliAccount, const std::string& biliPwd)
 {
     json::Json data;
     data.parse(rsaParam);
@@ -142,6 +128,45 @@ std::string BiliGameApi::loginWithoutCaptcha(const std::string& biliAccount, con
     std::map < std::string, std::string> dataR = data.objToMap();
     std::string p2 = setSign(dataR);
     re.clear(); 
+    PostRequest(re, bililogin + "api/client/login", p2, headers);
+    data.clear();
+    re1J.clear();
+    return re;
+}
+
+std::string BiliGameApi::login(const std::string& biliAccount, const std::string& biliPwd, const std::string challenge, const std::string gt_user, const std::string validate)
+{
+    json::Json data;
+    data.parse(rsaParam);
+    std::map < std::string, std::string> dataM = data.objToMap();
+    std::string p1 = setSign(dataM);
+    std::string re;
+    PostRequest(re, bililogin + "api/client/rsa", p1, headers);
+#ifdef _DEBUG
+    std::cout << re << std::endl;
+#endif // _DEBUG
+    data.clear();
+    data.parse(loginParam);
+    json::Json re1J;
+    re1J.parse(re);
+    std::string publicKey = re1J["rsa_key"];
+    CryptoKit::FormatRsaPublicKey(publicKey);
+    data["access_key"] = "";
+    data["gt_user_id"] = gt_user;
+    data["uid"] = "";
+    data["challenge"] = challenge;
+    data["user_id"] = biliAccount;
+    data["validate"] = validate;
+    data["seccode"] = validate + "|jordan";
+    std::string hash1 = re1J["hash"];
+    std::string rekit = CryptoKit::rsaEncrypt(hash1 + biliPwd, publicKey);
+    data["pwd"] = rekit;
+#ifdef _DEBUG
+    std::cout << data.str() << std::endl;
+#endif // _DEBUG
+    std::map < std::string, std::string> dataR = data.objToMap();
+    std::string p2 = setSign(dataR);
+    re.clear();
     PostRequest(re, bililogin + "api/client/login", p2, headers);
     data.clear();
     re1J.clear();

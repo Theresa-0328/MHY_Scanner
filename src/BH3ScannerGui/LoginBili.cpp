@@ -1,4 +1,13 @@
 ﻿#include "LoginBili.h"
+#include "ThreadLocalServer.h"
+#include <qdesktopservices.h>
+#include <QUrl>
+#include <QMessageBox>
+
+LoginBili::LoginBili()
+{
+
+}
 
 LoginBili::~LoginBili()
 {
@@ -116,16 +125,29 @@ int LoginBili::loginBiliKey(std::string& realName)
 int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& message)
 {
     json::Json loginJ;
-    std::string loginInfo = biliLogin(Account, Pwd);
+    std::string loginInfo = login(Account, Pwd);
     loginInfo = HttpClient::UTF8_To_string(loginInfo);
     loginJ.parse(loginInfo);
     int code = (int)loginJ["code"];
-    
     if (code == 200000)
     {
-        //biliLogin(Account, Pwd, true);
+        const std::string capUrl = makeCaptchUrl();
+        ThreadLocalServer t;
+        t.start();
+        QString URL = QString::fromStdString(capUrl);
+        QDesktopServices::openUrl(QUrl(URL.toLatin1()));
+
+        t.stop();
+        json::Json captcha;
+        captcha.parse(t.reCaptcha());
+        std::string challenge = captcha["challenge"];
+        std::string gt_user = captcha["userid"];
+        std::string validate = captcha["validate"];
+        loginInfo = login(Account, Pwd,challenge, gt_user, validate);
+        loginInfo = HttpClient::UTF8_To_string(loginInfo);
+        loginJ.parse(loginInfo);
+        code = (int)loginJ["code"];
     }
-    
     if (code != 0)
     {
         message = loginJ["message"];

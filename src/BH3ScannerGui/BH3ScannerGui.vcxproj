@@ -110,6 +110,7 @@
     <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="ThreadDownload.cpp" />
     <ClCompile Include="ThreadGetScreen.cpp" />
+    <ClCompile Include="ThreadLocalServer.cpp" />
     <ClCompile Include="ThreadSacn.cpp" />
     <ClCompile Include="ThreadStreamProcess.cpp" />
     <QtRcc Include="BH3ScannerGui.qrc" />
@@ -123,7 +124,9 @@
     <ResourceCompile Include="BH3ScannerGui.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="httplib.h" />
     <ClInclude Include="LoginBili.h" />
+    <QtMoc Include="ThreadLocalServer.h" />
     <QtMoc Include="ThreadSacn.h" />
     <QtMoc Include="ThreadStreamProcess.h" />
     <QtMoc Include="ThreadDownload.h" />

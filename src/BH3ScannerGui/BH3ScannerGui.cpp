@@ -3,18 +3,12 @@
 #include <QWindow>
 #include <QRegularExpressionValidator>
 
-#include <qdesktopservices.h>
-#include <QUrl>
-
 BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
 	, t2(this)
 	, t3(this)
 {
-	//QString URL = "www.baidu.com";
-	//QDesktopServices::openUrl(QUrl(URL.toLatin1()));
-
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
