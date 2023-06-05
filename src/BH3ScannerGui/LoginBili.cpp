@@ -136,8 +136,18 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
         const std::string capUrl = makeCaptchUrl();
         QString URL = QString::fromStdString(capUrl);
         QDesktopServices::openUrl(QUrl(URL.toLatin1()));
-        QMessageBox::information(nullptr, "提示", "完成验证码后再点击OK。");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("提示");
+        msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse);
+        msgBox.setText("如果没有自动打开浏览器，请手动复制下面的链接并进行验证"+URL+ "完成验证码后再点击OK。");
+        msgBox.exec();
         thserver.stop();
+        if (thserver.reCaptcha() == "")
+        {
+            message = loginJ["message"];
+            updateConfig();
+            return code;
+        }
         json::Json captcha;
         captcha.parse(thserver.reCaptcha());
         std::string challenge = captcha["challenge"];
