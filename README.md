@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
 </div>
 
-### **版本 - v0.0.3-bate**
+### **版本 - v0.0.3**
 
 ### [国内蓝奏云下载链接](https://wwru.lanzouc.com/b04e121qj) 密码:afph
 
