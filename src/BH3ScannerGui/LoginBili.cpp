@@ -1,10 +1,10 @@
 ﻿#include "LoginBili.h"
+#include <QMessageBox>
 #include "ThreadLocalServer.h"
 #include <qdesktopservices.h>
 #include <QUrl>
-#include <QMessageBox>
-
-LoginBili::LoginBili()
+LoginBili::LoginBili(QObject* parent)
+    : QObject(parent)
 {
 
 }
@@ -131,15 +131,15 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
     int code = (int)loginJ["code"];
     if (code == 200000)
     {
+        ThreadLocalServer thserver;
+        thserver.start();
         const std::string capUrl = makeCaptchUrl();
-        ThreadLocalServer t;
-        t.start();
         QString URL = QString::fromStdString(capUrl);
         QDesktopServices::openUrl(QUrl(URL.toLatin1()));
-
-        t.stop();
+        QMessageBox::information(nullptr, "提示", "完成验证码后再点击OK。");
+        thserver.stop();
         json::Json captcha;
-        captcha.parse(t.reCaptcha());
+        captcha.parse(thserver.reCaptcha());
         std::string challenge = captcha["challenge"];
         std::string gt_user = captcha["userid"];
         std::string validate = captcha["validate"];

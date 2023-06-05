@@ -8,6 +8,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	, t1(this)
 	, t2(this)
 	, t3(this)
+	, loginbili(parent)
 {
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
@@ -56,6 +57,9 @@ BH3ScannerGui::~BH3ScannerGui()
 
 void BH3ScannerGui::pBtLoginAccount()
 {
+	ui.pBtLoginAccount->setEnabled(false);
+	ui.pBtstartScreen->setEnabled(false);
+	ui.pBtStream->setEnabled(false);
 	if (t1.isRunning() || t2.isRunning() || t3.isRunning())
 	{
 		t1.isExit = true;
@@ -67,14 +71,17 @@ void BH3ScannerGui::pBtLoginAccount()
 	loginwindow.exec();
 	if (loginwindow.getIsReject())
 	{
+		ui.pBtLoginAccount->setEnabled(true);
+		ui.pBtstartScreen->setEnabled(true);
+		ui.pBtStream->setEnabled(true);
 		return;
 	}
 	std::string account;
 	std::string pwd;
 	std::string message;
 	loginwindow.getAccountPwd(account, pwd);
-	int c = loginbili.loginBiliPwd(account, pwd, message);
-	if (c == 0)
+	int code = loginbili.loginBiliPwd(account, pwd, message);
+	if (code == 0)
 	{
 		ui.pBtLoginAccount->setText("bilibili已登录");
 		loginwindow.ClearInputBox();
@@ -89,6 +96,9 @@ void BH3ScannerGui::pBtLoginAccount()
 		MessageBoxW(NULL, lpcWStr, L"bilibili登录失败", NULL);
 		loginwindow.ClearInputBox();
 	}
+	ui.pBtLoginAccount->setEnabled(true);
+	ui.pBtstartScreen->setEnabled(true);
+	ui.pBtStream->setEnabled(true);
 }
 
 void BH3ScannerGui::pBtstartScreen()

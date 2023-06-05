@@ -125,7 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="httplib.h" />
-    <ClInclude Include="LoginBili.h" />
+    <QtMoc Include="LoginBili.h" />
     <QtMoc Include="ThreadLocalServer.h" />
     <QtMoc Include="ThreadSacn.h" />
     <QtMoc Include="ThreadStreamProcess.h" />
