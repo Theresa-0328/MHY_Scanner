@@ -1,13 +1,16 @@
 ﻿#pragma once
+#include <QObject>
 #include "Mihoyosdk.h"
 #include "BiliGameApi.h"
 #include <sstream>
 #include <fstream>
-class LoginBili 
-	: public BiliGameApi
+class LoginBili
+	: public QObject
+	, public BiliGameApi
 {
+	Q_OBJECT
 public:
-	LoginBili();
+	LoginBili(QObject* parent);
 	~LoginBili();
 	int loginBiliKey(std::string& realName);
 	int loginBiliPwd(std::string Account, std::string Pwd, std::string& message);
@@ -20,6 +23,7 @@ public:
 	bool getAutoExit();
 	int uid = 0;
 	std::string access_key;
+	std::string capUrl;
 private:
 	std::ifstream inFile;
 	json::Json configJson;

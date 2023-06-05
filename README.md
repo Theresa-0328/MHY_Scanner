@@ -5,9 +5,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
 </div>
 
-### **版本 - V0.0.2-bate**
+### **版本 - v0.0.2-bate**
 
-### [国内蓝奏云下载链接](https://wwru.lanzouf.com/iWQLC0xk6qqh)
+### [国内蓝奏云下载链接](https://wwru.lanzouc.com/b04e121qj) 密码:afph
 
 ## 功能和特性
 - 用于在Windows上扫码和抢码登录崩坏3游戏账号。
@@ -19,7 +19,7 @@
 ## 支持的崩坏3服务器
 - b服
 
-## 简易使用指导
+## 使用说明
 运行 BH3ScannerGui.exe
 
 登录账号。
@@ -27,9 +27,9 @@
 首次使用登录后，用户信息会保存在config/config_private.json
 ,后续会在启动时自动登录。
 
-登陆后点击 **开始监视屏幕** 就可以自动识别任意显示在屏幕上的崩坏3二维码，再次点击可以主动停止，在发生登录后也会停止。
+登陆后点击 **开始监视屏幕** 就可以自动识别任意显示在屏幕上的崩坏3二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
 
-在当前直播间输入框输入需要抢二维码的直播间号，点击 **开始监视直播间** 就可以获取指定直播间显示的崩坏3二维码，再次点击可以主动停止，在发生登录后也会停止。
+在当前直播间输入框输入需要抢二维码的直播间号，点击 **开始监视直播间** 就可以自动识别该直播间显示的崩坏3二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
 
 直播间号是一串纯数字，比如你想抢的直播间的链接是 https://live.bilibili.com/6, 那么直播间号为6。
 
@@ -37,17 +37,17 @@
 
 Config文件夹里的config_private.json是用户信息文件，没有充分理解不要随意手动更改，随意更改会导致无法启动。
 
-cache文件夹里的output.flv是缓存的直播视频，程序退出后可以手动删除。
+Cache文件夹里的output.flv是缓存的直播视频，程序退出后可以手动删除。
 
 如果启动失败建议检查网络链接是否正常，Config文件夹里是否存在config_private.json
 
 目前没有进行大量测试，如果有任何建议和发现的问题欢迎提Issues
 
 ## 已知问题
-登录时可能遇到验证码，导致登录失败并报错：trigger account secondary verify.
+登录时游戏客户端内用户名不显示。
 
 ## 依赖
-- qtmsvc v6.2.3
+- qt v6.2.3
 - curl v7.87.0
 - opencv v4.70
 - openssl v3.10
