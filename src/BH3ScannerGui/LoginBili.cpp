@@ -11,16 +11,18 @@ LoginBili::LoginBili(QObject* parent)
 
 LoginBili::~LoginBili()
 {
-    inFile.close();
+
 }
 
 void LoginBili::openConfig()
 {
+    std::ifstream inFile;
     inFile.open("./Config/config_private.json");
     std::stringstream configStringStream;
     configStringStream << inFile.rdbuf();
     const std::string& configString = configStringStream.str();
     configJson.parse(configString);
+    inFile.close();
 }
 
 void LoginBili::updateConfig()//先放这里
@@ -137,7 +139,7 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
         QString URL = QString::fromStdString(capUrl);
         QDesktopServices::openUrl(QUrl(URL.toLatin1()));
         QMessageBox msgBox;
-        msgBox.setWindowTitle("提示");
+        msgBox.setWindowTitle("验证提示");
         msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse);
         msgBox.setText("如果没有自动打开浏览器，请手动复制下面的链接并进行验证"+URL+ "完成验证码后再点击OK。");
         msgBox.exec();

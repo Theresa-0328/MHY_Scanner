@@ -25,7 +25,6 @@ public:
 	std::string access_key;
 	std::string capUrl;
 private:
-	std::ifstream inFile;
 	json::Json configJson;
 	std::string loginData;
 	json::Json userInfo;
