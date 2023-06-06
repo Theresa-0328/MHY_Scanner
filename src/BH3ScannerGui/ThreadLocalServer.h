@@ -12,7 +12,6 @@ public:
 	void run();
 	void stop();
 	std::string reCaptcha();
-	bool server_running = true;
 private:
 	httplib::Server svr;
 	std::string body;

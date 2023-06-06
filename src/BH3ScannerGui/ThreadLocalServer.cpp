@@ -16,8 +16,9 @@ void ThreadLocalServer::run()
     svr.Post("/ret", [&](const httplib::Request& req, httplib::Response& resp) 
         {
         body = req.body;
+#ifdef _DEBUG
         std::cout << "验证码：" << body << std::endl;
-        server_running = false;
+#endif //_DEBUG
         });
 
     svr.Get("/", [](const httplib::Request& req, httplib::Response& res) 
