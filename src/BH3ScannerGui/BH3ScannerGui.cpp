@@ -169,7 +169,6 @@ void BH3ScannerGui::closeEvent(QCloseEvent* event)
 	t1.isExit = true;
 	t3.stop();
 	t2.stopDownload();
-
 }
 
 void BH3ScannerGui::showEvent(QShowEvent* event)

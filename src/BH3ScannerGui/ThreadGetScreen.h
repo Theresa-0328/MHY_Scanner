@@ -2,7 +2,6 @@
 #include <QThread>
 #include <QMutex>
 #include "ScreenScan.h"
-#include "QRScanner.h"
 #include "Mihoyosdk.h"
 class ThreadGetScreen
 	: public QThread
