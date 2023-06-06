@@ -166,6 +166,9 @@ void BH3ScannerGui::pBtStream()
 
 void BH3ScannerGui::closeEvent(QCloseEvent* event)
 {
+	t1.isExit = true;
+	t3.stop();
+	t2.stopDownload();
 
 }
 

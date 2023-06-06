@@ -2,7 +2,7 @@
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
-	,ts1(this)
+	,ts1 (parent)
 {
 
 }

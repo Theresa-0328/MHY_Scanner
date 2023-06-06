@@ -8,7 +8,10 @@ ThreadSacn::ThreadSacn(QObject *parent)
 
 ThreadSacn::~ThreadSacn()
 {
-	
+	while (isRunning())
+	{
+		QThread::msleep(250);
+	}
 }
 
 void ThreadSacn::setImg(cv::Mat img)
