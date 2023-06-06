@@ -8,13 +8,8 @@ ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 
 ThreadStreamProcess::~ThreadStreamProcess()
 {
-#ifdef _DEBUG
-	//cv::destroyAllWindows();
-#endif // _DEBUG
-	while (isRunning())
-	{
-		QThread::msleep(150);
-	}
+	this->requestInterruption();
+	this->wait();
 }
 
 void ThreadStreamProcess::biliInitStream(int uid, std::string access_key, std::string uName)

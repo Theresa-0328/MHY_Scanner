@@ -8,10 +8,8 @@ ThreadSacn::ThreadSacn()
 
 ThreadSacn::~ThreadSacn()
 {
-	while (isRunning())
-	{
-		QThread::msleep(150);
-	}
+	this->requestInterruption();
+	this->wait();
 }
 
 void ThreadSacn::setImg(cv::Mat img)
