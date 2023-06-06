@@ -1,7 +1,7 @@
 #include "ThreadSacn.h"
 
-ThreadSacn::ThreadSacn(QObject *parent)
-	: QThread(parent)
+ThreadSacn::ThreadSacn()
+	: QThread()
 {
 
 }
@@ -10,7 +10,7 @@ ThreadSacn::~ThreadSacn()
 {
 	while (isRunning())
 	{
-		QThread::msleep(250);
+		QThread::msleep(150);
 	}
 }
 

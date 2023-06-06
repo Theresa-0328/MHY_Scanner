@@ -1,4 +1,5 @@
 ﻿#include "ThreadGetScreen.h"
+#include "ThreadSacn.h"
 
 ThreadGetScreen::ThreadGetScreen(QObject* parent)
 	: QThread(parent)
@@ -28,17 +29,17 @@ void ThreadGetScreen::run()
 {
 	ScreenScan screenshot;
 	cv::Mat img;
-	QRScanner s;
+	ThreadSacn ts1;
 	isExit = false;
 	while (!isExit)
 	{
-		std::string deCode;
 		img = screenshot.getScreenshot();
 		//img = screenshot.getScreenshot(600,250,600,600);
-		s.Decode(img, deCode);
-		if (deCode.find("biz_key=bh3_cn") != std::string::npos)
+		ts1.setImg(img);
+		ts1.run();
+		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int code = m.scanCheck(deCode, LoginData);
+			int code = m.scanCheck(ts1.uqrcode, LoginData);
 			emit loginResults(code == 0);
 			break;
 		}

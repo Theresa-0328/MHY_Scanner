@@ -1,15 +1,20 @@
 ﻿#include "ThreadStreamProcess.h"
-
+#include "ThreadSacn.h"
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
-	,ts1 (parent)
 {
 
 }
 
 ThreadStreamProcess::~ThreadStreamProcess()
 {
-	cv::destroyAllWindows();
+#ifdef _DEBUG
+	//cv::destroyAllWindows();
+#endif // _DEBUG
+	while (isRunning())
+	{
+		QThread::msleep(150);
+	}
 }
 
 void ThreadStreamProcess::biliInitStream(int uid, std::string access_key, std::string uName)
@@ -27,6 +32,7 @@ static int a = 0;
 
 void ThreadStreamProcess::run()
 {
+	ThreadSacn ts1;
 	QThread::msleep(3000);
 	stopStream = false;
 	VideoProcessor vp;
@@ -64,7 +70,7 @@ void ThreadStreamProcess::run()
 			continue;
 		}
 		int op2 = vp.SendPacket(vp.avPacket);
-		if(op2!=0)
+		if (op2 != 0)
 		{
 			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			QThread::msleep(300);
@@ -84,25 +90,21 @@ void ThreadStreamProcess::run()
 			cv::Rect roi(0, 0, 1280, 720);
 			cv::Mat crop_img = img(roi);
 			//待优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
-			//if (f > vp.fps)//0.8
+			if (!ts1.isRunning())
 			{
-				if (!ts1.isRunning())
-				{
-					ts1.setImg(crop_img);
+				ts1.setImg(crop_img);
 #ifdef _DEBUG
-					std::cout << "命中次数" << a++ << std::endl;
-					imshow("Video", crop_img);
-					cv::waitKey(1);
+				std::cout << "命中次数" << a++ << std::endl;
+				imshow("Video", crop_img);
+				cv::waitKey(1);
 #endif // _DEBUG
-					ts1.start();
-				}
-				f = 0;
+				ts1.start();
 			}
 			break;
 		}
-		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)//ts1.uqrcode is private
+		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int retcode = m.scanCheck(ts1.uqrcode,LoginData);
+			int retcode = m.scanCheck(ts1.uqrcode, LoginData);
 			emit loginSResults(retcode == 0);
 			ts1.uqrcode.clear();
 			break;
