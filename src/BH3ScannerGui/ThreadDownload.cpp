@@ -1,7 +1,7 @@
 ﻿#include "ThreadDownload.h"
 
 ThreadDownload::ThreadDownload(QObject* parent)
-	: QThread(parent)
+	: QThread()
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 }
@@ -9,12 +9,9 @@ ThreadDownload::ThreadDownload(QObject* parent)
 ThreadDownload::~ThreadDownload()
 {
 	//需要增加判断。。
-	stopDownload();
-	QThread::msleep(300);
-	curl_easy_cleanup(curl);
 	CloseHandle(fp);
-	this->quit();
 	this->wait();
+	curl_easy_cleanup(curl);
 }
 
 size_t ThreadDownload::DownloadCallback(void* ptr, size_t size, size_t nmemb, void* vThisPtr)// 定义回调函数，将curl下载的数据写入缓冲区
@@ -33,11 +30,13 @@ size_t ThreadDownload::DownloadCallback(void* ptr, size_t size, size_t nmemb, vo
 	return bytes_written / size;
 }
 
-void ThreadDownload::stopDownload()
+void ThreadDownload::stop()
 {
 	QMutexLocker lock(&m_mux);
 	m_ExitThread = true;
-	std::cout << L"下载已停止" << std::endl;
+#ifdef _DEBUG
+	std::cout << "发送停止下载命令" << std::endl;
+#endif // DEBUG
 }
 
 void ThreadDownload::downloadInit(std::string url)

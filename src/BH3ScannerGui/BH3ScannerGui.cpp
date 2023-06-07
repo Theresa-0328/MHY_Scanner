@@ -6,7 +6,7 @@
 BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
-	, t2(this)
+	, t2(parent)
 	, t3(this)
 	, loginbili(parent)
 {
@@ -63,7 +63,7 @@ void BH3ScannerGui::pBtLoginAccount()
 	if (t1.isRunning() || t2.isRunning() || t3.isRunning())
 	{
 		t1.isExit = true;
-		t2.stopDownload();
+		t2.stop();
 		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
@@ -112,7 +112,7 @@ void BH3ScannerGui::pBtstartScreen()
 	if (t3.isRunning())
 	{
 		t3.stop();
-		t2.stopDownload();
+		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 	}
 	//选择和检查账号可用性
@@ -134,10 +134,10 @@ void BH3ScannerGui::pBtStream()
 		t1.isExit = true;
 		ui.pBtstartScreen->setText("开始监视屏幕");
 	}
-	if (t2.isRunning())
+	if (t3.isRunning())
 	{
 		t3.stop();
-		t2.stopDownload();
+		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
@@ -168,7 +168,7 @@ void BH3ScannerGui::closeEvent(QCloseEvent* event)
 {
 	t1.isExit = true;
 	t3.stop();
-	t2.stopDownload();
+	t2.stop();
 }
 
 void BH3ScannerGui::showEvent(QShowEvent* event)
@@ -179,7 +179,7 @@ void BH3ScannerGui::showEvent(QShowEvent* event)
 void BH3ScannerGui::islogin(const bool& b)
 {
 	t1.isExit = true;
-	t2.stopDownload();
+	t2.stop();
 	t3.stop();
 	if (b)
 	{

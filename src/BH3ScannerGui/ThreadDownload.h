@@ -11,7 +11,7 @@ public:
 	ThreadDownload(QObject *parent);
 	~ThreadDownload();
 	void downloadInit(std::string url);
-	void stopDownload();
+	void stop();
 	void run();
 private:
 	static size_t DownloadCallback(void* ptr, size_t size, size_t nmemb, void* vThisPtr);
