@@ -14,6 +14,7 @@ public:
 	bool isExit = true;
 	void InitScreen(int uid, std::string access_key, std::string uname);
 	void run();
+	void stop();
 signals:
 	void loginResults(const bool& b);
 private:

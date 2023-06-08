@@ -46,3 +46,8 @@ void ThreadGetScreen::run()
 		cv::waitKey(200);
 	}
 }
+
+void ThreadGetScreen::stop()
+{
+	isExit = true;
+}

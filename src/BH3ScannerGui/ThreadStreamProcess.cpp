@@ -27,7 +27,7 @@ static int a = 0;
 
 void ThreadStreamProcess::run()
 {
-	ThreadSacn ts1;
+	ThreadSacn threadsacn;
 	QThread::msleep(3000);
 	stopStream = false;
 	VideoProcessor vp;
@@ -85,23 +85,23 @@ void ThreadStreamProcess::run()
 			cv::Rect roi(0, 0, 1280, 720);
 			cv::Mat crop_img = img(roi);
 			//待优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
-			if (!ts1.isRunning())
+			if (!threadsacn.isRunning())
 			{
-				ts1.setImg(crop_img);
+				threadsacn.setImg(crop_img);
 #ifdef _DEBUG
 				std::cout << "命中次数" << a++ << std::endl;
 				imshow("Video", crop_img);
 				cv::waitKey(1);
 #endif // _DEBUG
-				ts1.start();
+				threadsacn.start();
 			}
 			break;
 		}
-		if (ts1.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
+		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int retcode = m.scanCheck(ts1.uqrcode, LoginData);
+			int retcode = m.scanCheck(threadsacn.uqrcode, LoginData);
 			emit loginSResults(retcode == 0);
-			ts1.uqrcode.clear();
+			threadsacn.uqrcode.clear();
 			break;
 		}
 		av_packet_unref(vp.avPacket);
