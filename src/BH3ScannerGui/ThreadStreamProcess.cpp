@@ -1,5 +1,7 @@
 ﻿#include "ThreadStreamProcess.h"
 #include "ThreadSacn.h"
+#include "ThreadDownload.h"
+
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
 {
@@ -27,6 +29,9 @@ static int a = 0;
 
 void ThreadStreamProcess::run()
 {
+	ThreadDownload td;
+	td.downloadInit(url);
+	td.start();
 	ThreadSacn threadsacn;
 	QThread::msleep(3000);
 	stopStream = false;
@@ -106,4 +111,5 @@ void ThreadStreamProcess::run()
 		}
 		av_packet_unref(vp.avPacket);
 	}
+	td.stop();
 }

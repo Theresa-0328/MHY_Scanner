@@ -8,7 +8,7 @@ class ThreadDownload  : public QThread
 {
 	Q_OBJECT
 public:
-	ThreadDownload(QObject *parent);
+	ThreadDownload();
 	~ThreadDownload();
 	void downloadInit(std::string url);
 	void stop();

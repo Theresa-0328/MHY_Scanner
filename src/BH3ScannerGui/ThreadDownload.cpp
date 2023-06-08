@@ -1,6 +1,6 @@
 ﻿#include "ThreadDownload.h"
 
-ThreadDownload::ThreadDownload(QObject* parent)
+ThreadDownload::ThreadDownload()
 	: QThread()
 {
 	curl_global_init(CURL_GLOBAL_ALL);

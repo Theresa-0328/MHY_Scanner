@@ -6,7 +6,6 @@
 BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
-	, t2(parent)
 	, t3(this)
 	, loginbili(parent)
 {
@@ -60,10 +59,9 @@ void BH3ScannerGui::pBtLoginAccount()
 	ui.pBtLoginAccount->setEnabled(false);
 	ui.pBtstartScreen->setEnabled(false);
 	ui.pBtStream->setEnabled(false);
-	if (t1.isRunning() || t2.isRunning() || t3.isRunning())
+	if (t1.isRunning() || t3.isRunning())
 	{
 		t1.stop();
-		t2.stop();
 		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
@@ -112,7 +110,6 @@ void BH3ScannerGui::pBtstartScreen()
 	if (t3.isRunning())
 	{
 		t3.stop();
-		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 	}
 	//选择和检查账号可用性
@@ -137,7 +134,6 @@ void BH3ScannerGui::pBtStream()
 	if (t3.isRunning())
 	{
 		t3.stop();
-		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
@@ -157,9 +153,8 @@ void BH3ScannerGui::pBtStream()
 	if (readId == 0)
 		return;
 	std::string streamAddress = v.GetAddress(readId);
-	t2.downloadInit(streamAddress);
+	t3.url = streamAddress;
 	ui.pBtStream->setText("监视直播二维码中");
-	t2.start();
 	t3.biliInitStream(loginbili.uid, loginbili.access_key, uName);
 	t3.start();
 }
@@ -168,7 +163,6 @@ void BH3ScannerGui::closeEvent(QCloseEvent* event)
 {
 	t1.stop();
 	t3.stop();
-	t2.stop();
 }
 
 void BH3ScannerGui::showEvent(QShowEvent* event)
@@ -179,7 +173,6 @@ void BH3ScannerGui::showEvent(QShowEvent* event)
 void BH3ScannerGui::islogin(const bool& b)
 {
 	t1.stop();
-	t2.stop();
 	t3.stop();
 	if (b)
 	{

@@ -13,10 +13,12 @@ public:
 	void biliInitStream(int uid, std::string access_key, std::string uName);
 	void stop();
 	void run();
+	std::string url;
 signals:
 	void loginSResults(const bool& b);
 private:
 	std::string LoginData;
 	bool stopStream =false;
 	Mihoyosdk m;
+
 };
