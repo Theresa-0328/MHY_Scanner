@@ -32,10 +32,6 @@ jobs:
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
-      with:
-        version: '6.2.3'
-        host: 'windows'
-        arch: 'win64_msvc2019_64'
         
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
