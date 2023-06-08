@@ -30,6 +30,13 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.2.3'
+        host: 'windows'
+        arch: 'win64_msvc2019_64'
+        
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
