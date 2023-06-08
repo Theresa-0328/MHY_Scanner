@@ -13,10 +13,10 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
-	connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
 	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &BH3ScannerGui::pBtStream);
+	connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
 	connect(&t3, &ThreadStreamProcess::loginSResults, this, &BH3ScannerGui::islogin);
 
 	loginbili.openConfig();
@@ -62,7 +62,7 @@ void BH3ScannerGui::pBtLoginAccount()
 	ui.pBtStream->setEnabled(false);
 	if (t1.isRunning() || t2.isRunning() || t3.isRunning())
 	{
-		t1.isExit = true;
+		t1.stop();
 		t2.stop();
 		t3.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
@@ -105,7 +105,7 @@ void BH3ScannerGui::pBtstartScreen()
 {
 	if (t1.isRunning())
 	{
-		t1.isExit = true;
+		t1.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		return;
 	}
@@ -129,9 +129,9 @@ void BH3ScannerGui::pBtstartScreen()
 
 void BH3ScannerGui::pBtStream()
 {
-	if (t1.isExit == false)
+	if (t1.isRunning())
 	{
-		t1.isExit = true;
+		t1.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 	}
 	if (t3.isRunning())
@@ -166,7 +166,7 @@ void BH3ScannerGui::pBtStream()
 
 void BH3ScannerGui::closeEvent(QCloseEvent* event)
 {
-	t1.isExit = true;
+	t1.stop();
 	t3.stop();
 	t2.stop();
 }
@@ -178,7 +178,7 @@ void BH3ScannerGui::showEvent(QShowEvent* event)
 
 void BH3ScannerGui::islogin(const bool& b)
 {
-	t1.isExit = true;
+	t1.stop();
 	t2.stop();
 	t3.stop();
 	if (b)

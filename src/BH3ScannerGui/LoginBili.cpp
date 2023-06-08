@@ -141,7 +141,7 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
         QMessageBox msgBox;
         msgBox.setWindowTitle("验证提示");
         msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse);
-        msgBox.setText("如果没有自动打开浏览器，请手动复制下面的链接并进行验证"+URL+ "完成验证码后再点击OK。");
+        msgBox.setText("如果没有自动打开浏览器，请手动复制并打开后面的链接并进行验证"+URL+ "完成验证码后点击OK");
         msgBox.exec();
         thserver.stop();
         if (thserver.reCaptcha() == "")
