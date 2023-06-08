@@ -4,7 +4,6 @@
 #include "ui_BH3ScannerGui.h"
 #include "LoginBili.h"
 #include "ThreadGetScreen.h"
-#include "ThreadDownload.h"
 #include "LoginWindow.h"
 #include "ThreadStreamProcess.h"
 #include "BiliLiveApi.h"
@@ -29,7 +28,6 @@ public slots:
 private:
     Ui::BH3ScannerGuiClass ui;
     ThreadGetScreen t1;
-    ThreadDownload t2;
     ThreadStreamProcess t3;
     LoginBili loginbili;
     LoginWindow loginwindow;
