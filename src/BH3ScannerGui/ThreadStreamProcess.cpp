@@ -94,7 +94,7 @@ void ThreadStreamProcess::run()
 			{
 				threadsacn.setImg(crop_img);
 #ifdef _DEBUG
-				std::cout << "命中次数" << a++ << std::endl;
+				std::cout << "scan count "<< a++ << std::endl;
 				imshow("Video", crop_img);
 				cv::waitKey(1);
 #endif // _DEBUG
