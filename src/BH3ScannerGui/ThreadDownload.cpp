@@ -47,12 +47,10 @@ void ThreadDownload::downloadInit(std::string url)
 void ThreadDownload::run()
 {
 	m_ExitThread = false;
-	// 使用curl下载直播流
 	if (!curl)
 	{
 		return;
 	}
-	//占用问题
 	fp = CreateFile(
 		L".\\Cache\\output.flv",            // 文件名
 		GENERIC_WRITE,                      // 访问权限
