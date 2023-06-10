@@ -35,7 +35,7 @@ void ThreadDownload::stop()
 	QMutexLocker lock(&m_mux);
 	m_ExitThread = true;
 #ifdef _DEBUG
-	std::cout << "发送停止下载命令" << std::endl;
+	std::cout << "send stop download" << std::endl;
 #endif // DEBUG
 }
 
