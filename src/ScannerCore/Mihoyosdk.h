@@ -10,13 +10,14 @@ public:
 	std::string verify(const int uid, const std::string access_key);
 	int scanCheck(const std::string& qrCode, const std::string& bhInfo);
 	void setUserName(const std::string& name);
+	void setBHVer(std::string s);
+	void setOAServer();
 private:
 	std::string makeSign(const std::string);
 	void scanConfirm(const std::string&, const std::string&);
 	std::string bh3Sign(std::string);
 	std::string getOAServer();
-	std::string getBHVer() const;
-private:
+	static std::string bh3Ver;
 	static std::string oaString;
 	std::map<std::string, std::string> verifyData = { {"uid","1"},{"access_key","590"} };
 	const std::string loginV2Url = "https://api-sdk.mihoyo.com/bh3_cn/combo/granter/login/v2/login";

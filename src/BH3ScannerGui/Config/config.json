@@ -1,10 +1,8 @@
 {
   "access_key":"",
-  "account":"",
-  "bh_ver":"6.5.0",
+  "bh_ver":"6.7.0",
   "is_auto_exit":false,
   "is_auto_start":false,
-  "password":"",
   "realname":"",
   "signed_in":false,
   "uid":0
