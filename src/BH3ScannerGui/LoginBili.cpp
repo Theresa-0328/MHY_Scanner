@@ -3,6 +3,7 @@
 #include "ThreadLocalServer.h"
 #include <qdesktopservices.h>
 #include <QUrl>
+#include "Mihoyosdk.h"
 LoginBili::LoginBili(QObject* parent)
     : QObject(parent)
 {
@@ -22,6 +23,9 @@ void LoginBili::openConfig()
     configStringStream << inFile.rdbuf();
     const std::string& configString = configStringStream.str();
     configJson.parse(configString);
+    Mihoyosdk m;
+    m.setBHVer(configJson["bh_ver"]);
+    m.setOAServer();
     inFile.close();
 }
 
@@ -141,7 +145,7 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
         QMessageBox msgBox;
         msgBox.setWindowTitle("验证提示");
         msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse);
-        msgBox.setText("如果没有自动打开浏览器，请手动复制并打开后面的链接并进行验证"+URL+ "完成验证码后点击OK");
+        msgBox.setText("如果没有自动打开浏览器，请手动复制并打开后面的链接并进行验证"+URL+ "如果你完成了验证码，点击OK");
         msgBox.exec();
         thserver.stop();
         if (thserver.reCaptcha() == "")
@@ -166,8 +170,6 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd, std::string& m
         updateConfig();
         return code;
     }
-    configJson["account"] = Account;
-    configJson["password"] = Pwd;
     uid = loginJ["uid"];
     access_key = loginJ["access_key"];
     configJson["uid"] = uid;

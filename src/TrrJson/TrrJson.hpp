@@ -1,8 +1,8 @@
 #pragma once
 
-namespace trrjson
+namespace trr
 {
-	class json
+	class Json
 	{
 
 	};

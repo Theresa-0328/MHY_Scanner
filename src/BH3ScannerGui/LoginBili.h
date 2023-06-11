@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <QObject>
-#include "Mihoyosdk.h"
 #include "BiliGameApi.h"
 #include <sstream>
 #include <fstream>

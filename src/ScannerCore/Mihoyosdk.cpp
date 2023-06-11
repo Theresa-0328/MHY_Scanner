@@ -3,13 +3,11 @@
 #include "CryptoKit.h"
 
 std::string Mihoyosdk::oaString;
+std::string Mihoyosdk::bh3Ver;
 
 Mihoyosdk::Mihoyosdk()
 {
-	if (oaString == "")
-	{
-		oaString = getOAServer();
-	}
+	
 }
 
 std::string Mihoyosdk::verify(const int uid, const std::string access_key)
@@ -34,20 +32,25 @@ std::string Mihoyosdk::verify(const int uid, const std::string access_key)
 	return s;
 }
 
-std::string Mihoyosdk::getBHVer() const
+void Mihoyosdk::setBHVer(std::string s)
 {
-	return "6.7.0";
+	bh3Ver = s;
+}
+
+void Mihoyosdk::setOAServer()
+{
+	oaString = getOAServer();
 }
 
 std::string Mihoyosdk::getOAServer()
 {
-	const std::string bhVer = getBHVer();
+	const std::string bhVer = bh3Ver;
 	const std::string oaMainUrl = "https://dispatch.scanner.hellocraft.xyz/v1/query_dispatch/?version=";
 	std::string param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	std::string feedback;
 	GetRequest(feedback, oaMainUrl + param);
 #ifdef _DEBUG
-	std::cout << "获得OA服务器 : " << feedback << std::endl;
+	std::cout << "获得OA服务器 : " << UTF8_To_string(feedback) << std::endl;
 #endif // DEBUG
 	return feedback;
 
