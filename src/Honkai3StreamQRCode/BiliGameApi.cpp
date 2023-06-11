@@ -134,7 +134,8 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
     return re;
 }
 
-std::string BiliGameApi::login(const std::string& biliAccount, const std::string& biliPwd, const std::string challenge, const std::string gt_user, const std::string validate)
+std::string BiliGameApi::login(const std::string& biliAccount, const std::string& biliPwd, 
+    const std::string challenge, const std::string gt_user, const std::string validate)
 {
     json::Json data;
     data.parse(rsaParam);
