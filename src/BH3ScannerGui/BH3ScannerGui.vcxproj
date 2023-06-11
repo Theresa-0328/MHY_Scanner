@@ -64,7 +64,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Honkai3StreamQRCode;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ScannerCore;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -74,7 +74,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Honkai3StreamQRCode;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ScannerCore;..\TrrJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -134,7 +134,7 @@
     <QtMoc Include="ThreadGetScreen.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Honkai3StreamQRCode\Honkai3StreamQRCode.vcxproj">
+    <ProjectReference Include="..\ScannerCore\ScannerCore.vcxproj">
       <Project>{39000e21-282f-436b-bf58-ba0de18b942b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\TrrJson\TrrJson.vcxproj">
