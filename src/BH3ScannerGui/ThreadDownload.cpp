@@ -8,13 +8,12 @@ ThreadDownload::ThreadDownload()
 
 ThreadDownload::~ThreadDownload()
 {
-	//需要增加判断。。
 	CloseHandle(fp);
 	this->wait();
 	curl_easy_cleanup(curl);
 }
 
-size_t ThreadDownload::DownloadCallback(void* ptr, size_t size, size_t nmemb, void* vThisPtr)// 定义回调函数，将curl下载的数据写入缓冲区
+size_t ThreadDownload::DownloadCallback(void* ptr, size_t size, size_t nmemb, void* vThisPtr)
 {
 	ThreadDownload* pThis = (ThreadDownload*)vThisPtr;
 	QMutexLocker lock(&pThis->m_mux);
