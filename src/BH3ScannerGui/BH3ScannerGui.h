@@ -25,6 +25,7 @@ public slots:
     void checkBoxAutoScreen(int state);
     void checkBoxAutoExit(int state);
     void pBtStream();
+    void failure();
 private:
     Ui::BH3ScannerGuiClass ui;
     ThreadGetScreen t1;
