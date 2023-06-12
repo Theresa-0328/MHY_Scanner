@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QWindow>
 #include <QRegularExpressionValidator>
+#include <qtimer.h>
 
 BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -24,7 +25,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	if (loginbili.loginBiliKey(readName) != 0)
 	{
 		repeat = false;
-		QMessageBox::information(this,"提示","登录状态失效，\n请重新登录账号！",QMessageBox::Yes);
+		//QMessageBox::information(this,"提示","登录状态失效，\n请重新登录账号！",QMessageBox::Yes);
 	}
 	else
 	{
@@ -47,6 +48,10 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	}
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
+	if (!repeat)
+	{
+		QTimer::singleShot(0, this, SLOT(failure()));
+	}
 }
 
 BH3ScannerGui::~BH3ScannerGui()
@@ -116,7 +121,7 @@ void BH3ScannerGui::pBtstartScreen()
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
-		QMessageBox::information(this, "提示", "登录状态失效，\n请重新登录账号！", QMessageBox::Yes);
+		failure();
 		return;
 	}
 	t1.InitScreen(loginbili.uid, loginbili.access_key, uName);
@@ -141,7 +146,7 @@ void BH3ScannerGui::pBtStream()
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
-		QMessageBox::information(this, "提示", "登录状态失效，\n请重新登录账号！", QMessageBox::Yes);
+		failure();
 		return;
 	}
 	//检查直播间状态
@@ -240,4 +245,14 @@ int BH3ScannerGui::liveIdError(int code)
 	default:
 		return code;
 	}
+}
+
+void BH3ScannerGui::failure()
+{
+	QMessageBox* messageBox = new QMessageBox(this);
+	messageBox->setAttribute(Qt::WA_DeleteOnClose);
+	messageBox->setText("登录状态失效，\n请重新登录账号！");
+	messageBox->setWindowTitle("提示");
+	messageBox->setIcon(QMessageBox::Information);
+	messageBox->show();
 }
