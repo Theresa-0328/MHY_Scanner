@@ -25,7 +25,6 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	if (loginbili.loginBiliKey(readName) != 0)
 	{
 		repeat = false;
-		//QMessageBox::information(this,"提示","登录状态失效，\n请重新登录账号！",QMessageBox::Yes);
 	}
 	else
 	{
