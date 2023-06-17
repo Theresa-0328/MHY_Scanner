@@ -45,6 +45,9 @@
     <ClCompile Include="ScreenScan.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="OfficialApi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpClient.h">
@@ -69,6 +72,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ScreenScan.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="OfficialApi.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
