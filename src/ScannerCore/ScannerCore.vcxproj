@@ -98,6 +98,7 @@
     <ClCompile Include="Mihoyosdk.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="OfficialApi.cpp" />
     <ClCompile Include="QRScanner.cpp" />
     <ClCompile Include="VideoProcessor.cpp" />
     <ClCompile Include="ScreenScan.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="CryptoKit.h" />
     <ClInclude Include="Mihoyosdk.h" />
     <ClInclude Include="HttpClient.h" />
+    <ClInclude Include="OfficialApi.h" />
     <ClInclude Include="QRScanner.h" />
     <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="ScreenScan.h" />
