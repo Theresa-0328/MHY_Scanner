@@ -75,14 +75,8 @@ void ThreadStreamProcess::run()
 			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			QThread::msleep(300);
 		}
-		while (true)
 		{
-			int op3 = vp.ReceiveFrame(vp.avframe);
-			if (op3 != 0)
-			{
-				QThread::msleep(800);
-				break;
-			}
+			vp.ReceiveFrame(vp.avframe);
 			// 转换像素格式
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
@@ -92,15 +86,14 @@ void ThreadStreamProcess::run()
 			//待优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
 			if (!threadsacn.isRunning())
 			{
-				threadsacn.setImg(crop_img);
-#ifdef _DEBUG
-				std::cout << "scan count "<< a++ << std::endl;
+				//threadsacn.setImg(crop_img);
+//#ifdef _DEBUG
+				//std::cout << "scan count "<< a++ << std::endl;
 				imshow("Video", crop_img);
-				cv::waitKey(1);
-#endif // _DEBUG
-				threadsacn.start();
+				cv::waitKey(2);
+//#endif // _DEBUG
+				//threadsacn.start();
 			}
-			break;
 		}
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
