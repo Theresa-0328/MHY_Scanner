@@ -3,6 +3,7 @@
 #include <QWindow>
 #include <QRegularExpressionValidator>
 #include <qtimer.h>
+#include <OfficialApi.h>
 
 BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -10,6 +11,11 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	, t3(this)
 	, loginbili(parent)
 {
+	OfficialApi o;
+	o.gameType = 8;
+	o.ticket = "6484472959a1066e0648ae67";
+	o.request();
+
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
