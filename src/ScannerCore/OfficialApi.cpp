@@ -31,8 +31,8 @@ std::string OfficialApi::generateUUID()
 //…®¬Î«Î«Û
 void OfficialApi::request()
 {
-	json::Json payload;
-	payload["app_id"] = 8;
+    json::Json payload;
+    payload["app_id"] = 8;
     payload["device"] = generateUUID();
     payload["ticket"] = ticket;
     std::string s;
@@ -43,7 +43,10 @@ void OfficialApi::request()
 void OfficialApi::ConfirmRequest()
 {
     std::string s;
-    GetRequest(s, hkrpgFirst, headers);
+    std::string getToken = "https://api-takumi.miyoushe.com/auth/api/getGameToken";
+    std::map<std::string, std::string> headers = { {"cookie", ""} };
+    GetRequest(s, getToken, headers);
+    s = UTF8_To_string(s);
     json::Json j;
     j.parse(s);
 }

@@ -15,6 +15,7 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	o.gameType = 8;
 	o.ticket = "6484472959a1066e0648ae67";
 	o.request();
+	o.ConfirmRequest();
 
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
