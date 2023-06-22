@@ -1,21 +1,21 @@
 ﻿#pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_BH3ScannerGui.h"
+#include "ui_ScannerGui.h"
 #include "LoginBili.h"
 #include "ThreadGetScreen.h"
 #include "LoginWindow.h"
 #include "ThreadStreamProcess.h"
 #include "BiliLiveApi.h"
 
-class BH3ScannerGui 
+class ScannerGui 
     : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    BH3ScannerGui(QWidget *parent = nullptr);
-    ~BH3ScannerGui();
+    ScannerGui(QWidget *parent = nullptr);
+    ~ScannerGui();
     virtual void closeEvent(QCloseEvent* event);
     virtual void showEvent(QShowEvent* event);
 public slots:
@@ -27,7 +27,7 @@ public slots:
     void pBtStream();
     void failure();
 private:
-    Ui::BH3ScannerGuiClass ui;
+    Ui::ScannerGuiClass ui;
     ThreadGetScreen t1;
     ThreadStreamProcess t3;
     LoginBili loginbili;

@@ -23,22 +23,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="BH3ScannerGui.qrc">
+    <QtRcc Include="ScannerGui.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="BH3ScannerGui.ui">
+    <QtUic Include="ScannerGui.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtMoc Include="BH3ScannerGui.h">
+    <QtMoc Include="ScannerGui.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClCompile Include="BH3ScannerGui.cpp">
+    <ClCompile Include="ScannerGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <None Include="BH3ScannerGui.ico">
+    <None Include="ScannerGui.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <ResourceCompile Include="BH3ScannerGui.rc">
+    <ResourceCompile Include="ScannerGui.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

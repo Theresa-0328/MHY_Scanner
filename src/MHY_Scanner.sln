@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BH3ScannerGui", "BH3ScannerGui\BH3ScannerGui.vcxproj", "{D7224030-D2F1-47A3-B786-C33B6F309D3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScannerGui", "ScannerGui\ScannerGui.vcxproj", "{D7224030-D2F1-47A3-B786-C33B6F309D3B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScannerCore", "ScannerCore\ScannerCore.vcxproj", "{39000E21-282F-436B-BF58-BA0DE18B942B}"
 EndProject

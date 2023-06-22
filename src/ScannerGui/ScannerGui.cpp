@@ -1,11 +1,11 @@
-﻿#include "BH3ScannerGui.h"
+﻿#include "ScannerGui.h"
 #include <QMessageBox>
 #include <QWindow>
 #include <QRegularExpressionValidator>
 #include <qtimer.h>
 #include <OfficialApi.h>
 
-BH3ScannerGui::BH3ScannerGui(QWidget* parent)
+ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
 	, t3(this)
@@ -13,18 +13,17 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 {
 	OfficialApi o;
 	o.gameType = 8;
-	o.ticket = "6484472959a1066e0648ae67";
-	o.request();
-	o.ConfirmRequest();
+	o.ticket = "6494cf4b333e9f2fcbc610b5";
+	o.scanLogin();
 
 	ui.setupUi(this);
-	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &BH3ScannerGui::pBtLoginAccount);
-	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &BH3ScannerGui::pBtstartScreen);
-	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoScreen);
-	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &BH3ScannerGui::checkBoxAutoExit);
-	connect(ui.pBtStream, &QPushButton::clicked, this, &BH3ScannerGui::pBtStream);
-	connect(&t1, &ThreadGetScreen::loginResults, this, &BH3ScannerGui::islogin);
-	connect(&t3, &ThreadStreamProcess::loginSResults, this, &BH3ScannerGui::islogin);
+	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
+	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
+	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoScreen);
+	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
+	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
+	connect(&t1, &ThreadGetScreen::loginResults, this, &ScannerGui::islogin);
+	connect(&t3, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
 
 	loginbili.openConfig();
 	std::string readName;
@@ -60,12 +59,12 @@ BH3ScannerGui::BH3ScannerGui(QWidget* parent)
 	}
 }
 
-BH3ScannerGui::~BH3ScannerGui()
+ScannerGui::~ScannerGui()
 {
 	
 }
 
-void BH3ScannerGui::pBtLoginAccount()
+void ScannerGui::pBtLoginAccount()
 {
 	ui.pBtLoginAccount->setEnabled(false);
 	ui.pBtstartScreen->setEnabled(false);
@@ -110,7 +109,7 @@ void BH3ScannerGui::pBtLoginAccount()
 	ui.pBtStream->setEnabled(true);
 }
 
-void BH3ScannerGui::pBtstartScreen()
+void ScannerGui::pBtstartScreen()
 {
 	if (t1.isRunning())
 	{
@@ -135,7 +134,7 @@ void BH3ScannerGui::pBtstartScreen()
 	t1.start();
 }
 
-void BH3ScannerGui::pBtStream()
+void ScannerGui::pBtStream()
 {
 	if (t1.isRunning())
 	{
@@ -170,18 +169,18 @@ void BH3ScannerGui::pBtStream()
 	t3.start();
 }
 
-void BH3ScannerGui::closeEvent(QCloseEvent* event)
+void ScannerGui::closeEvent(QCloseEvent* event)
 {
 	t1.stop();
 	t3.stop();
 }
 
-void BH3ScannerGui::showEvent(QShowEvent* event)
+void ScannerGui::showEvent(QShowEvent* event)
 {
 
 }
 
-void BH3ScannerGui::islogin(const bool& b)
+void ScannerGui::islogin(const bool& b)
 {
 	t1.stop();
 	t3.stop();
@@ -203,7 +202,7 @@ void BH3ScannerGui::islogin(const bool& b)
 	}
 }
 
-void BH3ScannerGui::checkBoxAutoScreen(int state)
+void ScannerGui::checkBoxAutoScreen(int state)
 {
 	if (state == Qt::Checked)
 	{
@@ -215,7 +214,7 @@ void BH3ScannerGui::checkBoxAutoScreen(int state)
 	}
 }
 
-void BH3ScannerGui::checkBoxAutoExit(int state)
+void ScannerGui::checkBoxAutoExit(int state)
 {
 	if (state == Qt::Checked)
 	{
@@ -227,7 +226,7 @@ void BH3ScannerGui::checkBoxAutoExit(int state)
 	}
 }
 
-int BH3ScannerGui::liveIdError(int code)
+int ScannerGui::liveIdError(int code)
 {
 	switch (code)
 	{
@@ -253,7 +252,7 @@ int BH3ScannerGui::liveIdError(int code)
 	}
 }
 
-void BH3ScannerGui::failure()
+void ScannerGui::failure()
 {
 	QMessageBox* messageBox = new QMessageBox(this);
 	messageBox->setAttribute(Qt::WA_DeleteOnClose);
