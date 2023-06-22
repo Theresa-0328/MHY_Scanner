@@ -16,6 +16,7 @@
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <ProjectName>ScannerGui</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -113,15 +114,15 @@
     <ClCompile Include="ThreadLocalServer.cpp" />
     <ClCompile Include="ThreadSacn.cpp" />
     <ClCompile Include="ThreadStreamProcess.cpp" />
-    <QtRcc Include="BH3ScannerGui.qrc" />
-    <QtUic Include="BH3ScannerGui.ui" />
-    <QtMoc Include="BH3ScannerGui.h" />
-    <ClCompile Include="BH3ScannerGui.cpp" />
+    <QtRcc Include="ScannerGui.qrc" />
+    <QtUic Include="ScannerGui.ui" />
+    <QtMoc Include="ScannerGui.h" />
+    <ClCompile Include="ScannerGui.cpp" />
     <ClCompile Include="LoginBili.cpp" />
     <ClCompile Include="main.cpp" />
-    <None Include="BH3ScannerGui.ico" />
+    <None Include="ScannerGui.ico" />
     <QtUic Include="LoginWindow.ui" />
-    <ResourceCompile Include="BH3ScannerGui.rc" />
+    <ResourceCompile Include="ScannerGui.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="httplib.h" />
