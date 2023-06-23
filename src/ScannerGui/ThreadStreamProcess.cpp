@@ -97,7 +97,7 @@ void ThreadStreamProcess::run()
 		}
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int retcode = m.scanCheck(threadsacn.uqrcode, LoginData);
+			int retcode = m.scanCheck(threadsacn.getTicket(), LoginData);
 			emit loginSResults(retcode == 0);
 			threadsacn.uqrcode.clear();
 			break;

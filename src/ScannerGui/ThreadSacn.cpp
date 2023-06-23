@@ -17,6 +17,15 @@ void ThreadSacn::setImg(cv::Mat img)
 	this->img = img;
 }
 
+std::string ThreadSacn::getTicket()
+{
+	size_t pos = uqrcode.find("ticket=");
+	if (pos != std::string::npos)
+	{
+		return uqrcode.substr(pos + 7);
+	}
+	return "";
+}
 
 void ThreadSacn::run()
 {

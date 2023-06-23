@@ -3,15 +3,18 @@
 class OfficialApi :public HttpClient
 {
 public:
-	void scanLogin();
 	void getRole();
+	void cookieParser(const std::string& cookieString);
+	int scanRequest();
 	int gameType;
 	std::string ticket;
 private:
-	void scanRequest(std::string UUID);
-	void confirmRequest(std::string UUID);
+	std::string getGameToken();
+	std::string getMultiTokenByLoginTicket();
+	int confirmRequest(std::string UUID);
 	std::string generateUUID();
 	std::string getDS();
+	std::map<std::string, std::string> cookieMap;
 	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string app_version = "2.38.1";
 	std::map<std::string, std::string> headers = 

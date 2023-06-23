@@ -68,15 +68,8 @@ std::string Mihoyosdk::getOAServer()
 	return dispatch;
 }
 
-int Mihoyosdk::scanCheck(const std::string& qrCode, const std::string& bhInfo)
+int Mihoyosdk::scanCheck(const std::string& ticket, const std::string& bhInfo)
 {
-	int pos = (int)qrCode.find("ticket=");
-	std::string ticket;
-	int i = (int)qrCode.size();//debug
-	if (pos != std::string::npos)
-	{
-		ticket = qrCode.substr(pos + 7);
-	}
 	json::Json check;
 	check.parse(scanCheckS);
 	check["ticket"] = ticket;

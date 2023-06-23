@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <QThread>
-#include "httplib.h"
+#include <httplib.h>
 
 class ThreadLocalServer  : public QThread
 {
