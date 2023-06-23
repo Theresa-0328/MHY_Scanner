@@ -1,8 +1,8 @@
-# Honkai3StreamQRCode
+# MHY_Scanner
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/Honkai3StreamQRCode?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/Honkai3StreamQRCode/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/MHY_Scanner?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/MHY_Scanner/stargazers)
 </div>
 
 ### **版本 - v0.0.3**
@@ -10,11 +10,11 @@
 ### [国内蓝奏云下载链接](https://wwru.lanzouc.com/b04e121qj) 密码:afph
 
 ## 功能和特性
-- 用于在Windows上扫码和抢码登录崩坏3游戏账号。
-- GUI界面
+- 崩坏3，原神，星穹铁道的Windows平台的扫码和抢码登录器。
+- GUI界面。
 - 从屏幕自动获取二维码登录，适用于大部分登录情景，不适用于在竞争激烈时抢码。
 - 从直播流获取二维码登录，适用于抢码登录情景。
-- 可选启动后自动开始识别屏幕和识别完成后自动退出。
+- 可选启动后自动开始识别屏幕和识别完成后自动退出，无需登录后手动切窗口关闭。
 
 ## 目前可用的服务器
 | 崩坏3 | 原神 | 星穹铁道 |
@@ -29,9 +29,9 @@
 首次使用登录后，用户信息会保存在config/config_private.json
 ,后续会在启动时自动登录。
 
-登陆后点击 **开始监视屏幕** 就可以自动识别任意显示在屏幕上的崩坏3二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
+登陆后点击 **开始监视屏幕** 就可以自动识别任意显示在屏幕上的二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
 
-在当前直播间输入框输入需要抢二维码的直播间号，点击 **开始监视直播间** 就可以自动识别该直播间显示的崩坏3二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
+在当前直播间输入框输入需要抢二维码的直播间号，点击 **开始监视直播间** 就可以自动识别该直播间显示的二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
 
 直播间号是一串纯数字，比如你想抢的直播间的链接是 https://live.bilibili.com/6, 那么直播间号为6。
 
@@ -56,7 +56,7 @@ Cache文件夹里的output.flv是缓存的直播视频，程序退出后可以�
 - ffmpeg v6.0
 
 ## 未来目标
-- 支持更多崩坏3服务器
+- 支持更多服务器
 - 优化cpu占用
 
 ## 参考和感谢

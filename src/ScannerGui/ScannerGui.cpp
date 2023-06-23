@@ -11,10 +11,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	, t3(this)
 	, loginbili(parent)
 {
-	OfficialApi o;
-	o.gameType = 8;
-	o.ticket = "6494cf4b333e9f2fcbc610b5";
-	o.scanLogin();
 
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
@@ -122,8 +118,8 @@ void ScannerGui::pBtstartScreen()
 		t3.stop();
 		ui.pBtStream->setText("开始监视直播间");
 	}
-	//选择和检查账号可用性
 	std::string uName;
+	//选择和检查账号可用性
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
 		failure();

@@ -69,11 +69,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="httplib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <QtMoc Include="ThreadGetScreen.h">
       <Filter>Header Files</Filter>
     </QtMoc>

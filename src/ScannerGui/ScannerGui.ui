@@ -26,7 +26,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>扫码器</string>
+   <string>MHY扫码器</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="pBtLoginAccount">
@@ -168,7 +168,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>v0.0.3-bate</string>
+     <string>v0.0.3</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -223,8 +223,8 @@
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>308</x>
-      <y>129</y>
+      <x>327</x>
+      <y>145</y>
       <width>120</width>
       <height>94</height>
      </rect>

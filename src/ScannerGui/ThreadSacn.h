@@ -12,6 +12,7 @@ public:
 	ThreadSacn();
 	~ThreadSacn();
 	void setImg(cv::Mat img);
+	std::string getTicket();
 	void run();
 	std::string uqrcode;
 private:
