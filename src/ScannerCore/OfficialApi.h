@@ -1,5 +1,6 @@
 #pragma once
 #include "HttpClient.h"
+#include <unordered_map>
 class OfficialApi :public HttpClient
 {
 public:
@@ -14,7 +15,7 @@ private:
 	int confirmRequest(std::string UUID);
 	std::string generateUUID();
 	std::string getDS();
-	std::map<std::string, std::string> cookieMap;
+	std::unordered_map<std::string, std::string> cookieMap;
 	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string app_version = "2.38.1";
 	std::map<std::string, std::string> headers = 

@@ -65,43 +65,6 @@ void LoginBili::updateConfig()//先放这里
     outFile.close();
 }
 
-void LoginBili::setAutoStart(bool state)
-{
-    if (state)
-    {
-        configJson["is_auto_start"] = true;
-    }
-    else
-    {
-        configJson["is_auto_start"] = false;
-    }
-    updateConfig();
-}
-
-bool LoginBili::getAutoStart()
-{
-    return (bool)configJson["is_auto_start"];
-}
-
-void LoginBili::setAutoExit(bool Exit)
-{
-    
-    if (Exit)
-    {
-        configJson["is_auto_exit"] = true;
-    }
-    else
-    {
-        configJson["is_auto_exit"] = false;
-    }
-    updateConfig();
-}
-
-bool LoginBili::getAutoExit()
-{
-    return (bool)configJson["is_auto_exit"];;
-}
-
 //获取用户名,检查access_key是否有效并更新配置文件
 int LoginBili::loginBiliKey(std::string& realName)
 {

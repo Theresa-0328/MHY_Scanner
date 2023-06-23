@@ -28,9 +28,14 @@ public slots:
     void failure();
 private:
     Ui::ScannerGuiClass ui;
+    json::Json configJson;
     ThreadGetScreen t1;
-    ThreadStreamProcess t3;
+    ThreadStreamProcess t2;
     LoginBili loginbili;
     LoginWindow loginwindow;
     int liveIdError(int code);
+    std::string loadConfig();
+    std::string readConfigFile(const std::string& filePath);
+    void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
+    void updateConfig0();
 };

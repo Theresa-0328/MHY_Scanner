@@ -3,15 +3,16 @@
 #include <QWindow>
 #include <QRegularExpressionValidator>
 #include <qtimer.h>
-#include <OfficialApi.h>
+#include "OfficialApi.h"
+#include <fstream>
+#include <filesystem>
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
-	, t3(this)
+	, t2(this)
 	, loginbili(parent)
 {
-
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
@@ -19,8 +20,10 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(&t1, &ThreadGetScreen::loginResults, this, &ScannerGui::islogin);
-	connect(&t3, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
+	connect(&t2, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
 
+	std::string config0 = loadConfig();
+	configJson.parse(config0);
 	loginbili.openConfig();
 	std::string readName;
 	bool repeat = true;
@@ -34,16 +37,16 @@ ScannerGui::ScannerGui(QWidget* parent)
 		QString uname = QString::fromStdString(readName);
 		ui.lineEditUname->setText(uname);
 	}
-	if (loginbili.getAutoStart()&&repeat)
+	if (configJson["auto_start"] && repeat)
 	{
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
 	}
-	else if(loginbili.getAutoStart())
+	else if(configJson["auto_start"])
 	{
 		ui.checkBoxAutoScreen->setChecked(true);
 	}
-	if (loginbili.getAutoExit())
+	if (configJson["auto_exit"])
 	{
 		ui.checkBoxAutoExit->setChecked(true);
 	}
@@ -65,10 +68,10 @@ void ScannerGui::pBtLoginAccount()
 	ui.pBtLoginAccount->setEnabled(false);
 	ui.pBtstartScreen->setEnabled(false);
 	ui.pBtStream->setEnabled(false);
-	if (t1.isRunning() || t3.isRunning())
+	if (t1.isRunning() || t2.isRunning())
 	{
 		t1.stop();
-		t3.stop();
+		t2.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		ui.pBtStream->setText("开始监视直播间");
 	}
@@ -113,9 +116,9 @@ void ScannerGui::pBtstartScreen()
 		ui.pBtstartScreen->setText("开始监视屏幕");
 		return;
 	}
-	if (t3.isRunning())
+	if (t2.isRunning())
 	{
-		t3.stop();
+		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 	}
 	std::string uName;
@@ -137,9 +140,9 @@ void ScannerGui::pBtStream()
 		t1.stop();
 		ui.pBtstartScreen->setText("开始监视屏幕");
 	}
-	if (t3.isRunning())
+	if (t2.isRunning())
 	{
-		t3.stop();
+		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
@@ -159,16 +162,16 @@ void ScannerGui::pBtStream()
 	if (readId == 0)
 		return;
 	std::string streamAddress = v.GetAddress(readId);
-	t3.url = streamAddress;
+	t2.url = streamAddress;
 	ui.pBtStream->setText("监视直播二维码中");
-	t3.biliInitStream(loginbili.uid, loginbili.access_key, uName);
-	t3.start();
+	t2.biliInitStream(loginbili.uid, loginbili.access_key, uName);
+	t2.start();
 }
 
 void ScannerGui::closeEvent(QCloseEvent* event)
 {
 	t1.stop();
-	t3.stop();
+	t2.stop();
 }
 
 void ScannerGui::showEvent(QShowEvent* event)
@@ -179,10 +182,10 @@ void ScannerGui::showEvent(QShowEvent* event)
 void ScannerGui::islogin(const bool& b)
 {
 	t1.stop();
-	t3.stop();
+	t2.stop();
 	if (b)
 	{
-		if (loginbili.getAutoExit())
+		if (configJson["auto_exit"])
 		{
 			exit(0);
 		}
@@ -202,11 +205,13 @@ void ScannerGui::checkBoxAutoScreen(int state)
 {
 	if (state == Qt::Checked)
 	{
-		loginbili.setAutoStart(true);
+		configJson["auto_start"] = true;
+		updateConfig0();
 	}
 	else if (state == Qt::Unchecked)
 	{
-		loginbili.setAutoStart(false);
+		configJson["auto_start"] = false;
+		updateConfig0();
 	}
 }
 
@@ -214,13 +219,52 @@ void ScannerGui::checkBoxAutoExit(int state)
 {
 	if (state == Qt::Checked)
 	{
-		loginbili.setAutoExit(true);
+		configJson["auto_exit"] = true;
+		updateConfig0();
 	}
 	else if (state == Qt::Unchecked)
 	{
-		loginbili.setAutoExit(false);
+		configJson["auto_exit"] = false;
+		updateConfig0();
 	}
 }
+
+void ScannerGui::updateConfig0()//先放这里
+{
+	const std::string output = configJson.str();
+	std::ofstream outFile("./Config/config0.json");
+	std::stringstream outStr;
+	bool isInPair = false;
+	for (int i = 0; i < output.size(); i++)
+	{
+		if (output[i] == '{')
+		{
+			outStr << "{\n";
+			continue;
+		}
+		if (output[i] == '}')
+		{
+			outStr << "\n}";
+			isInPair = false;
+			continue;
+		}
+		if (output[i] == ',')
+		{
+			outStr << ",\n";
+			isInPair = false;
+			continue;
+		}
+		if (!isInPair)
+		{
+			outStr << "  ";
+			isInPair = true;
+		}
+		outStr << output[i];
+	}
+	outFile << outStr.str();
+	outFile.close();
+}
+
 
 int ScannerGui::liveIdError(int code)
 {
@@ -245,6 +289,62 @@ int ScannerGui::liveIdError(int code)
 		return 0;
 	default:
 		return code;
+	}
+}
+
+std::string ScannerGui::loadConfig()
+{
+	std::string filePath = "./Config/config0.json";
+	if (std::filesystem::exists(filePath))
+	{
+		// 文件存在，读取配置
+		std::string configContent = readConfigFile(filePath);
+		return configContent;
+	}
+	else
+	{
+		// 默认值
+std::string defaultConfig =
+R"({
+	"auto_exit": "false",
+	"auto_start": "false"
+})";
+		// 文件不存在，创建默认配置文件
+		createDefaultConfigFile(filePath,defaultConfig);
+		return defaultConfig;
+	}
+
+}	
+std::string ScannerGui::readConfigFile(const std::string& filePath)
+{
+	std::ifstream file(filePath);
+	if (file.is_open())
+	{
+		// 将文件内容读取到字符串
+		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		file.close();
+		std::cout << "读取配置文件成功。\n";
+		return content;
+	}
+	else
+	{
+		std::cout << "无法打开配置文件。\n";
+		return "";
+	}
+}
+
+void ScannerGui::createDefaultConfigFile(const std::string& filePath, std::string defaultConfig)
+{
+	std::ofstream file(filePath);
+	if (file.is_open())
+	{
+		file << defaultConfig;
+		file.close();
+		std::cout << "创建并写入默认配置文件成功。\n";
+	}
+	else
+	{
+		std::cout << "无法创建配置文件。\n";
 	}
 }
 

@@ -16,10 +16,6 @@ public:
 	std::string getUName();
 	void openConfig();
 	void updateConfig();
-	void setAutoStart(bool state);
-	bool getAutoStart();
-	void setAutoExit(bool Exit);
-	bool getAutoExit();
 	int uid = 0;
 	std::string access_key;
 	std::string capUrl;
