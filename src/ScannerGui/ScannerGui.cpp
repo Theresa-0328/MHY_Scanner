@@ -17,6 +17,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
+	connect(ui.pBtSwitch, &QPushButton::clicked, this, &ScannerGui::pBtSwitch);
 	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
@@ -30,8 +31,23 @@ ScannerGui::ScannerGui(QWidget* parent)
 	std::string config0 = loadConfig();
 	configJson.parse(config0);
 
-	//加载用户信息
+	//UI初始化
+	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
+	ui.lineEditLiveId->setClearButtonEnabled(true);
+	if (configJson["auto_start"])
+	{
+		ui.pBtstartScreen->clicked();
+		ui.checkBoxAutoScreen->setChecked(true);
+	}
+	if (configJson["auto_exit"])
+	{
+		ui.checkBoxAutoExit->setChecked(true);
+	}
 
+	//加载用户信息
+	loadUserinfo();
+	std::string readName;
+	int nUserinfo = userInfo["num"];
 	ui.tableWidget->setColumnCount(5);
 	QStringList header;
 	header << "序号" << "UID" << "用户名" << "类型" << "备注";
@@ -62,12 +78,15 @@ ScannerGui::ScannerGui(QWidget* parent)
 
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	
-	insertTableItems("114514", "测试用户名a1", "星穹铁道B服", "测试中文数据");
-	insertTableItems("114515", "测试用户名a1", "崩坏3B服", "测试中文数据");
-	insertTableItems("114516", "测试用户名a1", "星穹铁道B服", "测试中文数据");
-
+	for (int i = 0; i < nUserinfo;i++)
+	{
+		insertTableItems(
+			QString::fromStdString(userInfo["account"][i]["uid"]),
+			QString::fromStdString(userInfo["account"][i]["realname"]),
+			"星穹铁道B服",
+			"测试中文数据");
+	}
 	loginbili.openConfig();
-	std::string readName;
 	bool repeat = true;
 	if (loginbili.loginBiliKey(readName) != 0)
 	{
@@ -79,21 +98,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 		QString uname = QString::fromStdString(readName);
 		ui.lineEditUname->setText(uname);
 	}
-	if (configJson["auto_start"] && repeat)
-	{
-		ui.pBtstartScreen->clicked();
-		ui.checkBoxAutoScreen->setChecked(true);
-	}
-	else if (configJson["auto_start"])
-	{
-		ui.checkBoxAutoScreen->setChecked(true);
-	}
-	if (configJson["auto_exit"])
-	{
-		ui.checkBoxAutoExit->setChecked(true);
-	}
-	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
-	ui.lineEditLiveId->setClearButtonEnabled(true);
 	if (!repeat)
 	{
 		QTimer::singleShot(0, this, SLOT(failure()));
@@ -197,7 +201,10 @@ void ScannerGui::pBtstartScreen()
 		failure();
 		return;
 	}
-	t1.InitScreen(loginbili.uid, loginbili.access_key, uName);
+	int num = 0;
+	std::istringstream ss((std::string)userInfo["account"][countA]["uid"]);
+	ss >> num;
+	t1.InitScreen(num, userInfo["account"][countA]["access_key"], uName);
 	ui.pBtstartScreen->setText("监视屏幕二维码中");
 	t1.start();
 }
@@ -300,8 +307,8 @@ void ScannerGui::checkBoxAutoExit(int state)
 
 void ScannerGui::updateConfig0()//先放这里
 {
-	const std::string output = configJson.str();
-	std::ofstream outFile("./Config/config0.json");
+	const std::string output = userInfo.str();
+	std::ofstream outFile("./Config/user2.json");
 	std::stringstream outStr;
 	bool isInPair = false;
 	for (int i = 0; i < output.size(); i++)
@@ -334,6 +341,14 @@ void ScannerGui::updateConfig0()//先放这里
 	outFile.close();
 }
 
+void ScannerGui::loadUserinfo()
+{
+	std::vector<std::string> files;
+	const std::string& filePath = "./Config/user1.json";
+	std::string configContent = readConfigFile(filePath);
+	userInfo.parse(configContent);
+}
+
 
 int ScannerGui::liveIdError(int code)
 {
@@ -363,7 +378,7 @@ int ScannerGui::liveIdError(int code)
 
 std::string ScannerGui::loadConfig()
 {
-	std::string filePath = "./Config/config0.json";
+	const std::string filePath = "./Config/config0.json";
 	//检查路径是否存在。
 	if (std::filesystem::exists(filePath))
 	{
@@ -375,9 +390,9 @@ std::string ScannerGui::loadConfig()
 	{
 		// 默认值
 		std::string defaultConfig =
-			R"({
-	"auto_exit": "false",
-	"auto_start": "false"
+		R"({
+	"auto_exit": false,
+	"auto_start": false
 })";
 		// 文件不存在，创建默认配置文件
 		createDefaultConfigFile(filePath, defaultConfig);
@@ -432,6 +447,13 @@ void ScannerGui::getInfo(int x, int y)
 {
 	QTableWidgetItem* item = ui.tableWidget->item(x, y - 1);//溢出
 	QString cellText = item->text();
+	countA = x;
 	HttpClient h;
 	std::cout << "x=" << x << "y=" << y << " " << h.UTF8_To_string(cellText.toStdString()) << std::endl;
+}
+
+void ScannerGui::pBtSwitch()
+{
+	QTableWidgetItem* item = ui.tableWidget->item(countA, countA);
+	item->setSelected(false);
 }

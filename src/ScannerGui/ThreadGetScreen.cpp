@@ -21,7 +21,6 @@ ThreadGetScreen::~ThreadGetScreen()
 
 void ThreadGetScreen::InitScreen(int uid, std::string access_key, std::string uname)
 {
-
 	LoginData = m.verify(uid, access_key);
 	m.setUserName(uname);
 }
