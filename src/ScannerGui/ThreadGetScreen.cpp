@@ -54,7 +54,7 @@ void ThreadGetScreen::run()
 			o.ticket = threadsacn.getTicket();
 			o.scanRequest();
 		}
-		cv::waitKey(150);
+		cv::waitKey(250);
 	}
 }
 
