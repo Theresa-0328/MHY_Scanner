@@ -20,21 +20,30 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
+
+	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
+
 	connect(&t1, &ThreadGetScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t2, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
+	
+	//加载软件设置
+	std::string config0 = loadConfig();
+	configJson.parse(config0);
+
+	//加载用户信息
 
 	ui.tableWidget->setColumnCount(5);
 	QStringList header;
-	header << "序号" << "UID" << "用户名"<<"服务器"<<"备注";
+	header << "序号" << "UID" << "用户名" << "类型" << "备注";
 	ui.tableWidget->setHorizontalHeaderLabels(header);
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	ui.tableWidget->setColumnWidth(0,35);
-	ui.tableWidget->setColumnWidth(1,100);
-	ui.tableWidget->setColumnWidth(2,100);
-	ui.tableWidget->setColumnWidth(3,100);
-	ui.tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::Stretch);
+	ui.tableWidget->setColumnWidth(0, 35);
+	ui.tableWidget->setColumnWidth(1, 100);
+	ui.tableWidget->setColumnWidth(2, 100);
+	ui.tableWidget->setColumnWidth(3, 100);
+	ui.tableWidget->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
 	ui.tableWidget->verticalHeader()->setVisible(false);
-	ui.tableWidget->horizontalHeader()->setFont(QFont("楷体",11));
+	ui.tableWidget->horizontalHeader()->setFont(QFont("楷体", 11));
 	ui.tableWidget->setAlternatingRowColors(true);
 
 	ui.tableWidget->horizontalHeader()->setStyleSheet(\
@@ -44,7 +53,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 		"border-bottom: 1px solid rgb(75, 120, 154);"\
 		"border-right: 1px solid rgb(75, 120, 154);"\
 		"background-color:#e2e6e7;"\
-		"color:#db9139;"\
+		"color:#333333;"\
 		"}"\
 	);
 
@@ -52,10 +61,11 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	insertTableItems();
+	
+	insertTableItems("114514", "测试用户名a1", "星穹铁道B服", "测试中文数据");
+	insertTableItems("114515", "测试用户名a1", "崩坏3B服", "测试中文数据");
+	insertTableItems("114516", "测试用户名a1", "星穹铁道B服", "测试中文数据");
 
-	std::string config0 = loadConfig();
-	configJson.parse(config0);
 	loginbili.openConfig();
 	std::string readName;
 	bool repeat = true;
@@ -74,7 +84,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
 	}
-	else if(configJson["auto_start"])
+	else if (configJson["auto_start"])
 	{
 		ui.checkBoxAutoScreen->setChecked(true);
 	}
@@ -88,28 +98,38 @@ ScannerGui::ScannerGui(QWidget* parent)
 	{
 		QTimer::singleShot(0, this, SLOT(failure()));
 	}
+
+	//ui.tableWidget->setRowCount(16);
+	//QTableWidgetItem* item[2];
+	//item[0] = new QTableWidgetItem(QString("%1").arg(99));
+	//item[1] = new QTableWidgetItem(QString("%1").arg(999));
+	//ui.tableWidget->setItem(14, 0, item[0]);
+	//ui.tableWidget->setItem(15, 0, item[1]);
+	//ui.tableWidget->removeRow(14);
+	//ui.tableWidget->removeRow(0);
 }
 
 ScannerGui::~ScannerGui()
 {
-	
+
 }
 
-void ScannerGui::insertTableItems()
+void ScannerGui::insertTableItems(QString uid, QString userName, QString type, QString notes)
 {
-	QTableWidgetItem* item[3];
+	QTableWidgetItem* item[5];
 	int nCount = 0;
-	for (int i = 0; i < 15; i++)
-	{
-		nCount = ui.tableWidget->rowCount();
-		ui.tableWidget->insertRow(nCount);
-		item[0] = new QTableWidgetItem(QString("%1").arg(i + 1));
-		ui.tableWidget->setItem(i, 0, item[0]);
-		item[1] = new QTableWidgetItem("2022/12/10 16:40");
-		ui.tableWidget->setItem(i, 1, item[1]);
-		item[2] = new QTableWidgetItem("测试中文数据");
-		ui.tableWidget->setItem(i, 2, item[2]);
-	}
+	nCount = ui.tableWidget->rowCount();
+	ui.tableWidget->insertRow(nCount);
+	item[0] = new QTableWidgetItem(QString("%1").arg(nCount + 1));
+	ui.tableWidget->setItem(nCount, 0, item[0]);
+	item[1] = new QTableWidgetItem(uid);
+	ui.tableWidget->setItem(nCount, 1, item[1]);
+	item[2] = new QTableWidgetItem(userName);
+	ui.tableWidget->setItem(nCount, 2, item[2]);
+	item[3] = new QTableWidgetItem(type);
+	ui.tableWidget->setItem(nCount, 3, item[3]);
+	item[4] = new QTableWidgetItem(notes);
+	ui.tableWidget->setItem(nCount, 4, item[4]);
 }
 
 void ScannerGui::pBtLoginAccount()
@@ -171,7 +191,7 @@ void ScannerGui::pBtstartScreen()
 		ui.pBtStream->setText("开始监视直播间");
 	}
 	std::string uName;
-	//选择和检查账号可用性
+	//检查选择的账号可用性
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
 		failure();
@@ -321,21 +341,21 @@ int ScannerGui::liveIdError(int code)
 	{
 	case -1:
 	{
-		QMessageBox::information(this,"提示", "直播间不存在!", QMessageBox::Yes);
+		QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
 
 	}
-		return 0;
+	return 0;
 	case -2:
 	{
 		QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
 
 	}
-		return 0;
+	return 0;
 	case -3:
 	{
-		QMessageBox::information(this,"提示", "未知错误!", QMessageBox::Yes);
+		QMessageBox::information(this, "提示", "未知错误!", QMessageBox::Yes);
 	}
-		return 0;
+	return 0;
 	default:
 		return code;
 	}
@@ -344,6 +364,7 @@ int ScannerGui::liveIdError(int code)
 std::string ScannerGui::loadConfig()
 {
 	std::string filePath = "./Config/config0.json";
+	//检查路径是否存在。
 	if (std::filesystem::exists(filePath))
 	{
 		// 文件存在，读取配置
@@ -353,17 +374,17 @@ std::string ScannerGui::loadConfig()
 	else
 	{
 		// 默认值
-std::string defaultConfig =
-R"({
+		std::string defaultConfig =
+			R"({
 	"auto_exit": "false",
 	"auto_start": "false"
 })";
 		// 文件不存在，创建默认配置文件
-		createDefaultConfigFile(filePath,defaultConfig);
+		createDefaultConfigFile(filePath, defaultConfig);
 		return defaultConfig;
 	}
 
-}	
+}
 std::string ScannerGui::readConfigFile(const std::string& filePath)
 {
 	std::ifstream file(filePath);
@@ -401,8 +422,16 @@ void ScannerGui::failure()
 {
 	QMessageBox* messageBox = new QMessageBox(this);
 	messageBox->setAttribute(Qt::WA_DeleteOnClose);
-	messageBox->setText("登录状态失效，\n请重新登录账号！");
+	messageBox->setText("登录状态失效，\n请重新添加账号！");
 	messageBox->setWindowTitle("提示");
 	messageBox->setIcon(QMessageBox::Information);
 	messageBox->show();
+}
+
+void ScannerGui::getInfo(int x, int y)
+{
+	QTableWidgetItem* item = ui.tableWidget->item(x, y - 1);//溢出
+	QString cellText = item->text();
+	HttpClient h;
+	std::cout << "x=" << x << "y=" << y << " " << h.UTF8_To_string(cellText.toStdString()) << std::endl;
 }
