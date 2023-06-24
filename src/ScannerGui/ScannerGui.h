@@ -16,6 +16,7 @@ class ScannerGui
 public:
     ScannerGui(QWidget *parent = nullptr);
     ~ScannerGui();
+    void insertTableItems();
     virtual void closeEvent(QCloseEvent* event);
     virtual void showEvent(QShowEvent* event);
 public slots:

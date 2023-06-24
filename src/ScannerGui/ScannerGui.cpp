@@ -6,6 +6,7 @@
 #include "OfficialApi.h"
 #include <fstream>
 #include <filesystem>
+#include <QStringList>
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -21,6 +22,37 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(&t1, &ThreadGetScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t2, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
+
+	ui.tableWidget->setColumnCount(5);
+	QStringList header;
+	header << "序号" << "UID" << "用户名"<<"服务器"<<"备注";
+	ui.tableWidget->setHorizontalHeaderLabels(header);
+	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	ui.tableWidget->setColumnWidth(0,35);
+	ui.tableWidget->setColumnWidth(1,100);
+	ui.tableWidget->setColumnWidth(2,100);
+	ui.tableWidget->setColumnWidth(3,100);
+	ui.tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::Stretch);
+	ui.tableWidget->verticalHeader()->setVisible(false);
+	ui.tableWidget->horizontalHeader()->setFont(QFont("楷体",11));
+	ui.tableWidget->setAlternatingRowColors(true);
+
+	ui.tableWidget->horizontalHeader()->setStyleSheet(\
+		"QHeaderView::section {"\
+		"padding: 1px;"\
+		"border: none;"\
+		"border-bottom: 1px solid rgb(75, 120, 154);"\
+		"border-right: 1px solid rgb(75, 120, 154);"\
+		"background-color:#e2e6e7;"\
+		"color:#db9139;"\
+		"}"\
+	);
+
+	ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	insertTableItems();
 
 	std::string config0 = loadConfig();
 	configJson.parse(config0);
@@ -61,6 +93,23 @@ ScannerGui::ScannerGui(QWidget* parent)
 ScannerGui::~ScannerGui()
 {
 	
+}
+
+void ScannerGui::insertTableItems()
+{
+	QTableWidgetItem* item[3];
+	int nCount = 0;
+	for (int i = 0; i < 15; i++)
+	{
+		nCount = ui.tableWidget->rowCount();
+		ui.tableWidget->insertRow(nCount);
+		item[0] = new QTableWidgetItem(QString("%1").arg(i + 1));
+		ui.tableWidget->setItem(i, 0, item[0]);
+		item[1] = new QTableWidgetItem("2022/12/10 16:40");
+		ui.tableWidget->setItem(i, 1, item[1]);
+		item[2] = new QTableWidgetItem("测试中文数据");
+		ui.tableWidget->setItem(i, 2, item[2]);
+	}
 }
 
 void ScannerGui::pBtLoginAccount()
