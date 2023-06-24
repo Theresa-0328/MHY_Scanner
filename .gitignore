@@ -366,3 +366,5 @@ FodyWeavers.xsd
 notes.txt
 config_private.json
 *.dll
+/src/ScannerGui/Config/user1.json
+/src/ScannerGui/Config/user2.json

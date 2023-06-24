@@ -28,16 +28,20 @@ public slots:
     void pBtStream();
     void failure();
     void getInfo(int x, int y);
+    void pBtSwitch();
 private:
+    int countA;
     Ui::ScannerGuiClass ui;
     json::Json configJson;
     ThreadGetScreen t1;
     ThreadStreamProcess t2;
     LoginBili loginbili;
     LoginWindow loginwindow;
+    json::Json userInfo;
     int liveIdError(int code);
     std::string loadConfig();
     std::string readConfigFile(const std::string& filePath);
     void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
     void updateConfig0();
+    void loadUserinfo();
 };
