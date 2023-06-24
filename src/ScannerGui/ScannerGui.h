@@ -16,7 +16,7 @@ class ScannerGui
 public:
     ScannerGui(QWidget *parent = nullptr);
     ~ScannerGui();
-    void insertTableItems();
+    void insertTableItems(QString uid, QString userName, QString type, QString notes);
     virtual void closeEvent(QCloseEvent* event);
     virtual void showEvent(QShowEvent* event);
 public slots:
@@ -27,6 +27,7 @@ public slots:
     void checkBoxAutoExit(int state);
     void pBtStream();
     void failure();
+    void getInfo(int x, int y);
 private:
     Ui::ScannerGuiClass ui;
     json::Json configJson;

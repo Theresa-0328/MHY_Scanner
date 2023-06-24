@@ -10,19 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>500</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>500</height>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>500</width>
-    <height>500</height>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -32,8 +32,8 @@
    <widget class="QPushButton" name="pBtLoginAccount">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>300</y>
+      <x>40</x>
+      <y>400</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -45,8 +45,8 @@
    <widget class="QPushButton" name="pBtstartScreen">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>300</y>
+      <x>180</x>
+      <y>400</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -61,8 +61,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>410</y>
+      <x>50</x>
+      <y>510</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -74,8 +74,8 @@
    <widget class="QCheckBox" name="checkBoxAutoExit">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>440</y>
+      <x>50</x>
+      <y>540</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -87,8 +87,8 @@
    <widget class="QPushButton" name="pBtStream">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>300</y>
+      <x>330</x>
+      <y>400</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -103,8 +103,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>260</y>
+      <x>110</x>
+      <y>360</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -122,8 +122,8 @@
    <widget class="QLabel" name="labelUname">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>260</y>
+      <x>30</x>
+      <y>360</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -138,8 +138,8 @@
    <widget class="QLabel" name="labelLiveName">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>260</y>
+      <x>270</x>
+      <y>360</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -151,8 +151,8 @@
    <widget class="QLineEdit" name="lineEditLiveId">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>260</y>
+      <x>330</x>
+      <y>360</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -161,8 +161,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>440</y>
+      <x>300</x>
+      <y>540</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -174,8 +174,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>410</y>
+      <x>300</x>
+      <y>510</y>
       <width>118</width>
       <height>18</height>
      </rect>
@@ -207,7 +207,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>0</y>
+      <y>20</y>
       <width>481</width>
       <height>231</height>
      </rect>
@@ -240,8 +240,8 @@ QTableWidget::item:selected
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>360</y>
+      <x>210</x>
+      <y>260</y>
       <width>91</width>
       <height>24</height>
      </rect>
@@ -253,14 +253,27 @@ QTableWidget::item:selected
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>360</y>
+      <x>320</x>
+      <y>260</y>
       <width>75</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
      <string>删除账号</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>0</y>
+      <width>53</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>账号列表</string>
     </property>
    </widget>
   </widget>
