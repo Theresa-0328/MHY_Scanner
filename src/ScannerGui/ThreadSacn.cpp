@@ -30,5 +30,4 @@ std::string ThreadSacn::getTicket()
 void ThreadSacn::run()
 {
 	qs.Decode(img, uqrcode);
-	QThread::msleep(100);
 }

@@ -37,7 +37,7 @@ void ThreadGetScreen::run()
 		img = screenshot.getScreenshot();
 		//img = screenshot.getScreenshot(600,250,600,600);
 		threadsacn.setImg(img);
-		threadsacn.run();
+		threadsacn.start();
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
 			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
@@ -46,7 +46,6 @@ void ThreadGetScreen::run()
 		}
 		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
-
 			OfficialApi o;
 			o.gameType = 8;
 			std::string text = "";
