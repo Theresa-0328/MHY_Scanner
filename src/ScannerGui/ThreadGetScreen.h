@@ -19,8 +19,9 @@ public:
 signals:
 	void loginResults(const bool& b);
 private:
+	void serverType0();
 	QMutex m_mux;
-	bool signed_in = true;
+	int serverType = 0;
 	std::string LoginData;
 	Mihoyosdk m;
 	std::string uid;

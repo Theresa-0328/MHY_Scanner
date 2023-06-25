@@ -50,23 +50,38 @@ std::string OfficialApi::getDS()
 }
 
 //扫码请求
-int OfficialApi::scanRequest(std::string ticket,std::string uid,std::string token)
+int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token)
 {
-    std::string UUID = generateUUID();
+    std::string url;
+    std::string url1;
+    if (gameType == 1)
+    {
+         url = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
+         url1 = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
+    }
+    if (gameType == 4)
+    {
+
+    }
+    if (gameType == 8)
+    {
+         url = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/scan";
+         url1 = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/confirm";
+    }
+    const std::string& UUID = generateUUID();
     json::Json payload;
-    payload["app_id"] = 1;
+    payload["app_id"] = gameType;
     payload["device"] = UUID;
     payload["ticket"] = ticket;
     std::string s;
-    std::string hkrpgFirst = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
-    PostRequest(s, hkrpgFirst,payload.str());
+    PostRequest(s, url,payload.str());
     json::Json j;
     j.parse(s);
     if ((int)j["retcode"] != 0)
     {
         return -1;
     }
-    if (confirmRequest(UUID,ticket,uid,token) != 0)
+    if (confirmRequest(UUID,ticket,uid,token,url1) != 0)
     {
         return -2;
     }
@@ -74,21 +89,20 @@ int OfficialApi::scanRequest(std::string ticket,std::string uid,std::string toke
 }
 
 //扫码确认
-int OfficialApi::confirmRequest(std::string UUID, std::string ticket, std::string uid, std::string token)
+int OfficialApi::confirmRequest(const std::string& UUID, const std::string& ticket, 
+    const std::string& uid, const std::string& token,const std::string& url)
 {
     std::string s;
-    std::string getToken = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
     json::Json payload;
     payload["proto"] = "Account";
     payload["raw"] = "{\\\"uid\\\":\\\""+uid+"\\\",\\\"token\\\":\\\""+ token+"\\\"}";
     json::Json data;
-    //148
-    data["app_id"] = 1;
+    data["app_id"] = gameType;
     data["device"] = UUID;
     data["payload"] = payload;
     data["ticket"] = ticket;
     std::string d = data.str();
-    PostRequest(s, getToken, d);
+    PostRequest(s, url, d);
     s = UTF8_To_string(s);
     json::Json j;
     j.parse(s);
@@ -116,7 +130,7 @@ std::string OfficialApi::getUserName(std::string uid)
 //获取账号上所有的角色
 std::string OfficialApi::getRole()
 {
-    std::string url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
+    const std::string& url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
     headers["DS"] = getDS();
     headers["Cookie"] = "stuid=" + cookieMap["login_uid"] + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
     std::string re;

@@ -8,12 +8,13 @@ public:
 	std::string getMultiTokenByLoginTicket();
 	std::string getUserName(std::string uid);
 	void cookieParser(const std::string& cookieString);
-	int scanRequest(std::string ticket, std::string uid, std::string token);
+	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token);
 	std::string getGameToken(const std::string& stoken, const std::string& uid);
 	std::string getUid();
 	int gameType;
 private:
-	int confirmRequest(std::string UUID, std::string ticket, std::string uid, std::string token);
+	int confirmRequest(const std::string& UUID, const std::string& ticket, 
+		const std::string& uid, const std::string& token, const std::string& url);
 	std::string generateUUID();
 	std::string getDS();
 	std::string data;
