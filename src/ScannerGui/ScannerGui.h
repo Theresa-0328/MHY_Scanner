@@ -38,11 +38,12 @@ private:
     ThreadStreamProcess t2;
     LoginBili loginbili;
     LoginWindow loginwindow;
-    json::Json userInfo;
+    json::Json userinfo;
     int liveIdError(int code);
     std::string loadConfig();
     std::string readConfigFile(const std::string& filePath);
     void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
     void updateConfig0();
+    void updateUserinfo(const std::string& str);
     void loadUserinfo();
 };
