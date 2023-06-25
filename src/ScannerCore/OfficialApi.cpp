@@ -5,6 +5,11 @@
 #include <sstream>
 #include <iomanip>
 
+std::string OfficialApi::getUid()
+{
+    return cookieMap["login_uid"];
+}
+
 std::string OfficialApi::generateUUID() 
 {
     std::random_device rd;
@@ -45,7 +50,7 @@ std::string OfficialApi::getDS()
 }
 
 //扫码请求
-int OfficialApi::scanRequest()
+int OfficialApi::scanRequest(std::string ticket,std::string uid,std::string token)
 {
     std::string UUID = generateUUID();
     json::Json payload;
@@ -61,7 +66,7 @@ int OfficialApi::scanRequest()
     {
         return -1;
     }
-    if (confirmRequest(UUID) != 0)
+    if (confirmRequest(UUID,ticket,uid,token) != 0)
     {
         return -2;
     }
@@ -69,10 +74,8 @@ int OfficialApi::scanRequest()
 }
 
 //扫码确认
-int OfficialApi::confirmRequest(std::string UUID)
+int OfficialApi::confirmRequest(std::string UUID, std::string ticket, std::string uid, std::string token)
 {
-    std::string uid = "";
-    std::string token = "";
     std::string s;
     std::string getToken = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/confirm";
     json::Json payload;
@@ -95,16 +98,32 @@ int OfficialApi::confirmRequest(std::string UUID)
     return 0;
 }
 
-//获取绑定的账号
-void OfficialApi::getRole()
+//获取用户完整信息
+std::string OfficialApi::getUserName(std::string uid)
+{
+    std::string url = "https://bbs-api.miyoushe.com/user/api/getUserFullInfo";
+    std::string re;
+    url += "?uid=" + uid;
+    GetRequest(re, url);
+    json::Json j;
+    j.parse(re);
+    re = j["data"]["user_info"]["nickname"];
+    return re;
+
+}
+
+//获取账号上所有的角色
+std::string OfficialApi::getRole()
 {
     std::string url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
     headers["DS"] = getDS();
-    headers["Cookie"] = "";
+    headers["Cookie"] = "stuid=" + cookieMap["login_uid"] + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
     std::string re;
     GetRequest(re, url, headers);
     re = UTF8_To_string(re);
     string_To_UTF8(re);
+    headers.erase("Cookie");
+    return std::string();
 }
 
 void OfficialApi::cookieParser(const std::string& cookieString)
@@ -135,7 +154,6 @@ void OfficialApi::cookieParser(const std::string& cookieString)
         // 更新位置
         pos = endPos + 1;
     }
-    getMultiTokenByLoginTicket();
 }
 
 std::string OfficialApi::getMultiTokenByLoginTicket()
@@ -152,7 +170,8 @@ std::string OfficialApi::getMultiTokenByLoginTicket()
     GetRequest(s, url);
     json::Json j;
     j.parse(s);
-    return std::string();
+    data = j["data"]["list"][0]["token"];
+    return data;
 }
 
 std::string OfficialApi::getGameToken()
@@ -161,12 +180,13 @@ std::string OfficialApi::getGameToken()
     std::map<std::string, std::string> params =
     {
         {"stoken",getMultiTokenByLoginTicket()},
-        {"uid",cookieMap["1"]},
+        {"uid",cookieMap["login_uid"]},
     };
     url = Url(url, params);
     std::string s;
     GetRequest(s, url);
     json::Json j;
     j.parse(s);
-    return j["data"]["game_token"];
+    const std::string data = j["data"]["game_token"];
+    return data;
 }

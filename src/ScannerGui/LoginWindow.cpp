@@ -11,6 +11,8 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 	ui.lineEditPwd->setClearButtonEnabled(true);
 	ui.lineEditPwd->setFont(QFont("宋体", 13));
 	ui.lineEditPwd->setEchoMode(QLineEdit::Password);
+	ui.lineEditCookie->setFont(QFont("宋体", 13));
+	ui.lineEditCookie->setPlaceholderText("请输入Cookie...");;
 	connect(ui.checkBoxShowPw, &QCheckBox::stateChanged, this, &LoginWindow::showPassword);
 }
 
@@ -20,6 +22,8 @@ void LoginWindow::accept()
 	Account = a.toStdString();
 	QString b = ui.lineEditPwd->text();
 	Pwd = b.toStdString();
+	QString c = ui.lineEditCookie->text();
+	cookie = c.toStdString();
 	QDialog::accept();
 	isReject = false;
 }
@@ -35,6 +39,7 @@ void LoginWindow::ClearInputBox()
 {
 	ui.lineEditAccount->setText("");
 	ui.lineEditPwd->setText("");
+	ui.lineEditCookie->setText("");
 }
 
 void LoginWindow::getAccountPwd(std::string& Account, std::string& Pwd)

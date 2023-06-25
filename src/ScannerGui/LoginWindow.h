@@ -9,6 +9,7 @@ class LoginWindow : public QDialog
 public:
 	LoginWindow(QDialog* Dialog = nullptr);
 	void getAccountPwd(std::string& Pwd, std::string& Account);
+	std::string cookie;
 	bool getIsReject();
 	void ClearInputBox();
 public slots:
