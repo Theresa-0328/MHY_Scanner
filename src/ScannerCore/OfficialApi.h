@@ -5,14 +5,14 @@ class OfficialApi :public HttpClient
 {
 public:
 	std::string getRole();
+	std::string getMultiTokenByLoginTicket();
 	std::string getUserName(std::string uid);
 	void cookieParser(const std::string& cookieString);
 	int scanRequest(std::string ticket, std::string uid, std::string token);
-	std::string getGameToken();
+	std::string getGameToken(const std::string& stoken, const std::string& uid);
 	std::string getUid();
 	int gameType;
 private:
-	std::string getMultiTokenByLoginTicket();
 	int confirmRequest(std::string UUID, std::string ticket, std::string uid, std::string token);
 	std::string generateUUID();
 	std::string getDS();

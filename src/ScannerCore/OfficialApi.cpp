@@ -54,11 +54,11 @@ int OfficialApi::scanRequest(std::string ticket,std::string uid,std::string toke
 {
     std::string UUID = generateUUID();
     json::Json payload;
-    payload["app_id"] = 8;
+    payload["app_id"] = 1;
     payload["device"] = UUID;
     payload["ticket"] = ticket;
     std::string s;
-    std::string hkrpgFirst = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/scan";
+    std::string hkrpgFirst = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
     PostRequest(s, hkrpgFirst,payload.str());
     json::Json j;
     j.parse(s);
@@ -77,12 +77,13 @@ int OfficialApi::scanRequest(std::string ticket,std::string uid,std::string toke
 int OfficialApi::confirmRequest(std::string UUID, std::string ticket, std::string uid, std::string token)
 {
     std::string s;
-    std::string getToken = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/confirm";
+    std::string getToken = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
     json::Json payload;
     payload["proto"] = "Account";
     payload["raw"] = "{\\\"uid\\\":\\\""+uid+"\\\",\\\"token\\\":\\\""+ token+"\\\"}";
     json::Json data;
-    data["app_id"] = 8;
+    //148
+    data["app_id"] = 1;
     data["device"] = UUID;
     data["payload"] = payload;
     data["ticket"] = ticket;
@@ -174,13 +175,13 @@ std::string OfficialApi::getMultiTokenByLoginTicket()
     return data;
 }
 
-std::string OfficialApi::getGameToken()
+std::string OfficialApi::getGameToken(const std::string& stoken, const std::string& uid)
 {
     std::string url = "https://api-takumi.mihoyo.com/auth/api/getGameToken";
     std::map<std::string, std::string> params =
     {
-        {"stoken",getMultiTokenByLoginTicket()},
-        {"uid",cookieMap["login_uid"]},
+        {"stoken",stoken},
+        {"uid",uid},
     };
     url = Url(url, params);
     std::string s;

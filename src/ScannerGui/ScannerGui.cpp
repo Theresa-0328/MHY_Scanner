@@ -32,19 +32,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	std::string config0 = loadConfig();
 	configJson.parse(config0);
 
-	//UI初始化
-	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
-	ui.lineEditLiveId->setClearButtonEnabled(true);
-	if (configJson["auto_start"])
-	{
-		ui.pBtstartScreen->clicked();
-		ui.checkBoxAutoScreen->setChecked(true);
-	}
-	if (configJson["auto_exit"])
-	{
-		ui.checkBoxAutoExit->setChecked(true);
-	}
-
 	//加载用户信息
 	loadUserinfo();
 	std::string readName;
@@ -77,15 +64,29 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	
-	for (int i = 0; i < (int)userInfo["num"];i++)
+	for (int i = 0; i < (int)userinfo["num"];i++)
 	{
 		insertTableItems(
-			QString::fromStdString(userInfo["account"][i]["uid"]),
-			QString::fromStdString(userInfo["account"][i]["realname"]),
-			QString::fromStdString(userInfo["account"][i]["type"]),
+			QString::fromStdString(userinfo["account"][i]["uid"]),
+			QString::fromStdString(userinfo["account"][i]["name"]),
+			QString::fromStdString(userinfo["account"][i]["type"]),
 			"测试中文数据");
 	}
 
+	//UI初始化默认值
+	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
+	ui.lineEditLiveId->setClearButtonEnabled(true);
+	if (configJson["auto_start"])
+	{
+		ui.pBtstartScreen->clicked();
+		ui.checkBoxAutoScreen->setChecked(true);
+	}
+	if (configJson["auto_exit"])
+	{
+		ui.checkBoxAutoExit->setChecked(true);
+	}
+	
+	
 	loginbili.openConfig();
 	bool repeat = true;
 	if (loginbili.loginBiliKey(readName) != 0)
@@ -158,11 +159,17 @@ void ScannerGui::pBtLoginAccount()
 	//if(type)
 	OfficialApi o;
 	o.cookieParser(loginwindow.cookie);
-	std::string token = o.getGameToken();
+	std::string token = o.getMultiTokenByLoginTicket();
 	std::string uid = o.getUid();
 	std::string name = o.getUserName(uid);
-	insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "test11仍然");
-	userInfo["num"] = (int)userInfo["num"]+1;
+	int num = userinfo["num"];
+	insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
+	userinfo["account"][num]["access_key"] = token;
+	userinfo["account"][num]["uid"] = uid;
+	userinfo["account"][num]["name"] = name;
+	userinfo["account"][num]["type"] = "官服";
+	userinfo["num"] = num +1;
+	updateUserinfo(userinfo.str());
 	//std::string account;
 	//std::string pwd;
 	//std::string message;
@@ -201,19 +208,30 @@ void ScannerGui::pBtstartScreen()
 		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 	}
-	std::string uName;
-	//检查选择的账号可用性
-	if (loginbili.loginBiliKey(uName) != 0)
+	OfficialApi o;
+	if (1)
 	{
-		failure();
-		return;
+		std::string stoken = userinfo["account"][countA]["access_key"];
+		std::string uid = userinfo["account"][countA]["uid"];
+		//验证
+		std::string gameToken = o.getGameToken(stoken, uid);
+		t1.Init0(uid, gameToken);
+		ui.pBtstartScreen->setText("监视屏幕二维码中");
+		t1.start();
 	}
-	int num = 0;
-	std::istringstream ss((std::string)userInfo["account"][countA]["uid"]);
-	ss >> num;
-	t1.InitScreen(num, userInfo["account"][countA]["access_key"], uName);
-	ui.pBtstartScreen->setText("监视屏幕二维码中");
-	t1.start();
+	//std::string uName;
+	////检查选择的账号可用性
+	//if (loginbili.loginBiliKey(uName) != 0)
+	//{
+	//	failure();
+	//	return;
+	//}
+	//int num = 0;
+	//std::istringstream ss((std::string)userInfo["account"][countA]["uid"]);
+	//ss >> num;
+	//t1.InitScreen(num, userInfo["account"][countA]["access_key"], uName);
+	//ui.pBtstartScreen->setText("监视屏幕二维码中");
+	//t1.start();
 }
 
 void ScannerGui::pBtStream()
@@ -314,7 +332,7 @@ void ScannerGui::checkBoxAutoExit(int state)
 
 void ScannerGui::updateConfig0()//先放这里
 {
-	const std::string output = userInfo.str();
+	const std::string output = userinfo.str();
 	std::ofstream outFile("./Config/config0.json");
 	std::stringstream outStr;
 	bool isInPair = false;
@@ -348,6 +366,21 @@ void ScannerGui::updateConfig0()//先放这里
 	outFile.close();
 }
 
+void ScannerGui::updateUserinfo(const std::string& str)
+{
+	std::ofstream outputFile("./Config/userinfo.json");
+	if (outputFile.is_open())
+	{
+		outputFile << str;
+		outputFile.close();
+		std::cout << "字符串已成功写入文件" << std::endl;
+	}
+	else
+	{
+		std::cout << "无法打开文件" << std::endl;
+	}
+}
+
 int ScannerGui::liveIdError(int code)
 {
 	switch (code)
@@ -376,10 +409,9 @@ int ScannerGui::liveIdError(int code)
 
 void ScannerGui::loadUserinfo()
 {
-	std::vector<std::string> files;
-	const std::string& filePath = "./Config/user1.json";
+	const std::string& filePath = "./Config/userinfo.json";
 	std::string configContent = readConfigFile(filePath);
-	userInfo.parse(configContent);
+	userinfo.parse(configContent);
 }
 
 std::string ScannerGui::loadConfig()
@@ -479,42 +511,18 @@ void ScannerGui::pBtDeleteAccount()
 	int nCurrentRow = ui.tableWidget->row(item.at(0));
 	
 	//自动启动的问题。
-	userInfo["num"] = (int)userInfo["num"]-1;
-	userInfo["account"][nCurrentRow].clear();
-	std::string str = userInfo.str();
-	
-	//先用着，在重构trrjson后重构。
-	std::string::size_type pos = 0;
-	while ((pos = str.find("null,", pos)) != std::string::npos) 
-	{
-		str.erase(pos, 5);
-	}
-	pos = 0;
-	while ((pos = str.find(",null", pos)) != std::string::npos)
-	{
-		str.erase(pos, 5);
-	}
-	pos = 0;
-	while ((pos = str.find("null", pos)) != std::string::npos) 
-	{
-		str.erase(pos, 4);  
-	}
+	userinfo["num"] = (int)userinfo["num"]-1;
+	//临时
+	userinfo["account"].remove(nCurrentRow);
+	std::string str = userinfo.str();
+	userinfo.parse(str);
+#ifdef _DEBUG
+	std::cout << str << std::endl;
+#endif // _DEBUG
 
-	std::ofstream outputFile("./Config/user2.json");
-	if (outputFile.is_open()) 
-	{
-		outputFile << str;
-		outputFile.close();
-		std::cout << "字符串已成功写入文件" << std::endl;
-	}
-	else 
-	{
-		std::cout << "无法打开文件" << std::endl;
-	}
-	userInfo.parse(str);
-
+	updateUserinfo(str);
 	ui.tableWidget->removeRow(nCurrentRow);
-	for (int i = 0; i < (int)userInfo["num"]; i++)
+	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i+1));
 		ui.tableWidget->setItem(i, 0, item);
