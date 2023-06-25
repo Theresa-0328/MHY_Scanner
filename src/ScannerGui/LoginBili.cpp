@@ -24,7 +24,7 @@ void LoginBili::openConfig()
     const std::string& configString = configStringStream.str();
     configJson.parse(configString);
     Mihoyosdk m;
-    m.setBHVer(configJson["bh_ver"]);
+    m.setBHVer("6.7.0");
     m.setOAServer();
     inFile.close();
 }

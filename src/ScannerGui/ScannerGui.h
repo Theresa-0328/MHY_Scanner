@@ -29,6 +29,7 @@ public slots:
     void failure();
     void getInfo(int x, int y);
     void pBtSwitch();
+    void pBtDeleteAccount();
 private:
     int countA;
     Ui::ScannerGuiClass ui;

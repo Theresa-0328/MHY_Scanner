@@ -18,6 +18,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
 	connect(ui.pBtSwitch, &QPushButton::clicked, this, &ScannerGui::pBtSwitch);
+	connect(ui.pBtDeleteAccount, &QPushButton::clicked, this, &ScannerGui::pBtDeleteAccount);
 	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
@@ -47,7 +48,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	//加载用户信息
 	loadUserinfo();
 	std::string readName;
-	int nUserinfo = userInfo["num"];
 	ui.tableWidget->setColumnCount(5);
 	QStringList header;
 	header << "序号" << "UID" << "用户名" << "类型" << "备注";
@@ -75,17 +75,17 @@ ScannerGui::ScannerGui(QWidget* parent)
 
 	ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	
-	for (int i = 0; i < nUserinfo;i++)
+	for (int i = 0; i < (int)userInfo["num"];i++)
 	{
 		insertTableItems(
 			QString::fromStdString(userInfo["account"][i]["uid"]),
 			QString::fromStdString(userInfo["account"][i]["realname"]),
-			"星穹铁道B服",
+			QString::fromStdString(userInfo["account"][i]["type"]),
 			"测试中文数据");
 	}
+
 	loginbili.openConfig();
 	bool repeat = true;
 	if (loginbili.loginBiliKey(readName) != 0)
@@ -94,7 +94,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	}
 	else
 	{
-		ui.pBtLoginAccount->setText("bilibili已登录");
 		QString uname = QString::fromStdString(readName);
 		ui.lineEditUname->setText(uname);
 	}
@@ -308,7 +307,7 @@ void ScannerGui::checkBoxAutoExit(int state)
 void ScannerGui::updateConfig0()//先放这里
 {
 	const std::string output = userInfo.str();
-	std::ofstream outFile("./Config/user2.json");
+	std::ofstream outFile("./Config/config0.json");
 	std::stringstream outStr;
 	bool isInPair = false;
 	for (int i = 0; i < output.size(); i++)
@@ -341,15 +340,6 @@ void ScannerGui::updateConfig0()//先放这里
 	outFile.close();
 }
 
-void ScannerGui::loadUserinfo()
-{
-	std::vector<std::string> files;
-	const std::string& filePath = "./Config/user1.json";
-	std::string configContent = readConfigFile(filePath);
-	userInfo.parse(configContent);
-}
-
-
 int ScannerGui::liveIdError(int code)
 {
 	switch (code)
@@ -374,6 +364,14 @@ int ScannerGui::liveIdError(int code)
 	default:
 		return code;
 	}
+}
+
+void ScannerGui::loadUserinfo()
+{
+	std::vector<std::string> files;
+	const std::string& filePath = "./Config/user1.json";
+	std::string configContent = readConfigFile(filePath);
+	userInfo.parse(configContent);
 }
 
 std::string ScannerGui::loadConfig()
@@ -448,12 +446,70 @@ void ScannerGui::getInfo(int x, int y)
 	QTableWidgetItem* item = ui.tableWidget->item(x, y - 1);//溢出
 	QString cellText = item->text();
 	countA = x;
+#ifdef _DEBUG
 	HttpClient h;
 	std::cout << "x=" << x << "y=" << y << " " << h.UTF8_To_string(cellText.toStdString()) << std::endl;
+#endif // _DEBUG
 }
 
 void ScannerGui::pBtSwitch()
 {
-	QTableWidgetItem* item = ui.tableWidget->item(countA, countA);
-	item->setSelected(false);
+	QList<QTableWidgetItem*> item = ui.tableWidget->selectedItems();
+	int nCount = item.count();
+	int nCurrentRow = 0;
+	if (nCount>0)
+	{
+		nCurrentRow = ui.tableWidget->row(item.at(0));
+		ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
+	}
+}
+
+void ScannerGui::pBtDeleteAccount()
+{
+	QList<QTableWidgetItem*> item = ui.tableWidget->selectedItems();
+	//int nCount = item.count();
+	int nCurrentRow = ui.tableWidget->row(item.at(0));
+	
+	//自动启动的问题。
+	userInfo["num"] = (int)userInfo["num"]-1;
+	userInfo["account"][nCurrentRow].clear();
+	std::string str = userInfo.str();
+	std::cout << str << std::endl;
+	
+	//先用着，在重构trrjson后重构。
+	std::string::size_type pos = 0;
+	while ((pos = str.find("null,", pos)) != std::string::npos) 
+	{
+		str.erase(pos, 5);
+	}
+	pos = 0;
+	while ((pos = str.find(",null", pos)) != std::string::npos)
+	{
+		str.erase(pos, 5);
+	}
+	pos = 0;
+	while ((pos = str.find("null", pos)) != std::string::npos) 
+	{
+		str.erase(pos, 4);  
+	}
+	std::cout << str << std::endl;
+	std::ofstream outputFile("./Config/user2.json");
+	if (outputFile.is_open()) 
+	{
+		outputFile << str;
+		outputFile.close();
+		std::cout << "字符串已成功写入文件" << std::endl;
+	}
+	else 
+	{
+		std::cout << "无法打开文件" << std::endl;
+	}
+	userInfo.parse(str);
+
+	ui.tableWidget->removeRow(nCurrentRow);
+	for (int i = 0; i < (int)userInfo["num"]; i++)
+	{
+		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i+1));
+		ui.tableWidget->setItem(i, 0, item);
+	}
 }
