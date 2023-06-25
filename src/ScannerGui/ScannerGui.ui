@@ -32,14 +32,14 @@
    <widget class="QPushButton" name="pBtLoginAccount">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>270</y>
+      <x>40</x>
+      <y>260</y>
       <width>131</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>登录账号</string>
+     <string>添加账号</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pBtstartScreen">
@@ -256,7 +256,7 @@ QTableWidget::item:selected
      <string>切换账号</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="pBtDeleteAccount">
     <property name="geometry">
      <rect>
       <x>350</x>
