@@ -155,26 +155,34 @@ void ScannerGui::pBtLoginAccount()
 		ui.pBtStream->setEnabled(true);
 		return;
 	}
-	std::string account;
-	std::string pwd;
-	std::string message;
-	loginwindow.getAccountPwd(account, pwd);
-	int code = loginbili.loginBiliPwd(account, pwd, message);
-	if (code == 0)
-	{
-		ui.pBtLoginAccount->setText("bilibili已登录");
-		loginwindow.ClearInputBox();
-		QString QName = QString::fromStdString(loginbili.getUName());
-		ui.lineEditUname->setText(QName);
-	}
-	else
-	{
-		QString Qmessage = QString::fromLocal8Bit(message);
-		std::wstring wlpstr = Qmessage.toStdWString();
-		LPCWSTR lpcWStr = wlpstr.c_str();
-		MessageBoxW(NULL, lpcWStr, L"bilibili登录失败", NULL);
-		loginwindow.ClearInputBox();
-	}
+	//if(type)
+	OfficialApi o;
+	o.cookieParser(loginwindow.cookie);
+	std::string token = o.getGameToken();
+	std::string uid = o.getUid();
+	std::string name = o.getUserName(uid);
+	insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "test11仍然");
+	userInfo["num"] = (int)userInfo["num"]+1;
+	//std::string account;
+	//std::string pwd;
+	//std::string message;
+	//loginwindow.getAccountPwd(account, pwd);
+	//int code = loginbili.loginBiliPwd(account, pwd, message);
+	//if (code == 0)
+	//{
+	//	ui.pBtLoginAccount->setText("bilibili已登录");
+	//	loginwindow.ClearInputBox();
+	//	QString QName = QString::fromStdString(loginbili.getUName());
+	//	ui.lineEditUname->setText(QName);
+	//}
+	//else
+	//{
+	//	QString Qmessage = QString::fromLocal8Bit(message);
+	//	std::wstring wlpstr = Qmessage.toStdWString();
+	//	LPCWSTR lpcWStr = wlpstr.c_str();
+	//	MessageBoxW(NULL, lpcWStr, L"bilibili登录失败", NULL);
+	//	loginwindow.ClearInputBox();
+	//}
 	ui.pBtLoginAccount->setEnabled(true);
 	ui.pBtstartScreen->setEnabled(true);
 	ui.pBtStream->setEnabled(true);
@@ -474,7 +482,6 @@ void ScannerGui::pBtDeleteAccount()
 	userInfo["num"] = (int)userInfo["num"]-1;
 	userInfo["account"][nCurrentRow].clear();
 	std::string str = userInfo.str();
-	std::cout << str << std::endl;
 	
 	//先用着，在重构trrjson后重构。
 	std::string::size_type pos = 0;
@@ -492,7 +499,7 @@ void ScannerGui::pBtDeleteAccount()
 	{
 		str.erase(pos, 4);  
 	}
-	std::cout << str << std::endl;
+
 	std::ofstream outputFile("./Config/user2.json");
 	if (outputFile.is_open()) 
 	{

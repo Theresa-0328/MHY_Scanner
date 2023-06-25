@@ -4,17 +4,19 @@
 class OfficialApi :public HttpClient
 {
 public:
-	void getRole();
+	std::string getRole();
+	std::string getUserName(std::string uid);
 	void cookieParser(const std::string& cookieString);
-	int scanRequest();
-	int gameType;
-	std::string ticket;
-private:
+	int scanRequest(std::string ticket, std::string uid, std::string token);
 	std::string getGameToken();
+	std::string getUid();
+	int gameType;
+private:
 	std::string getMultiTokenByLoginTicket();
-	int confirmRequest(std::string UUID);
+	int confirmRequest(std::string UUID, std::string ticket, std::string uid, std::string token);
 	std::string generateUUID();
 	std::string getDS();
+	std::string data;
 	std::unordered_map<std::string, std::string> cookieMap;
 	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string app_version = "2.38.1";

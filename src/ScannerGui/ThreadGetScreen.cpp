@@ -45,12 +45,12 @@ void ThreadGetScreen::run()
 		}
 		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
-			OfficialApi o;
-			o.gameType = 8;
-			std::string text = "";
-			o.cookieParser(text);
-			o.ticket = threadsacn.getTicket();
-			o.scanRequest();
+			//OfficialApi o;
+			//o.gameType = 8;
+			//std::string text = "";
+			//o.cookieParser(text);
+			//o.ticket = threadsacn.getTicket();
+			//o.scanRequest();
 		}
 		cv::waitKey(250);
 	}
