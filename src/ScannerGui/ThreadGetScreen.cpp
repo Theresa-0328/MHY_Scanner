@@ -19,16 +19,18 @@ ThreadGetScreen::~ThreadGetScreen()
 	this->wait();
 }
 
-void ThreadGetScreen::InitScreen(const int& uid, const std::string& access_key, std::string uname)
-{
-	LoginData = m.verify(uid, access_key);
-	m.setUserName(uname);
-}
 
 void ThreadGetScreen::Init0(const std::string& uid, const std::string& token)
 {
 	this->uid = uid;
 	this->gameToken = token;
+}
+
+void ThreadGetScreen::Init1(const std::string& uid, const std::string& token, const std::string& uname)
+{
+	this->uid = uid;
+	this->gameToken = token;
+	this->uname = uname;
 }
 
 void ThreadGetScreen::serverType0()
@@ -69,14 +71,32 @@ void ThreadGetScreen::serverType0()
 	return;
 }
 
-void ThreadGetScreen::run()
+void ThreadGetScreen::serverType1()
 {
+	ThreadSacn threadsacn;
 	ScreenScan screenshot;
 	cv::Mat img;
-	ThreadSacn threadsacn;
-	OfficialApi o;
-	int uid;
-	std::string ticket;
+	std::string LoginData;
+	Mihoyosdk m;
+	LoginData = m.verify(std::stoi(uid), gameToken);
+	m.setUserName(uname);
+	while (!isExit)
+	{
+		img = screenshot.getScreenshot();
+		threadsacn.setImg(img);
+		threadsacn.start();
+		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
+		{
+			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
+			emit loginResults(code == 0);
+			return;
+		}
+		cv::waitKey(200);
+	}
+}
+
+void ThreadGetScreen::run()
+{
 	isExit = false;
 	if (serverType == 0)
 	{
@@ -85,7 +105,8 @@ void ThreadGetScreen::run()
 	}
 	if (serverType == 1)
 	{
-
+		serverType1();
+		return;
 	}
 	return;
 }

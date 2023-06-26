@@ -12,7 +12,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
 	, t1(this)
 	, t2(this)
-	, loginbili(parent)
 {
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
@@ -74,6 +73,10 @@ ScannerGui::ScannerGui(QWidget* parent)
 	}
 
 	//UI初始化默认值
+	Mihoyosdk m;
+	m.setBHVer(configJson["bh_ver"]);
+	m.setOAServer();
+
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	if (configJson["auto_start"])
@@ -85,22 +88,21 @@ ScannerGui::ScannerGui(QWidget* parent)
 	{
 		ui.checkBoxAutoExit->setChecked(true);
 	}
-	
-	loginbili.openConfig();
-	bool repeat = true;
-	if (loginbili.loginBiliKey(readName) != 0)
-	{
-		repeat = false;
-	}
-	else
-	{
-		QString uname = QString::fromStdString(readName);
-		ui.lineEditUname->setText(uname);
-	}
-	if (!repeat)
-	{
-		QTimer::singleShot(0, this, SLOT(failure()));
-	}
+	//loginbili.openConfig();
+	//bool repeat = true;
+	//if (loginbili.loginBiliKey(readName) != 0)
+	//{
+	//	repeat = false;
+	//}
+	//else
+	//{
+	//	QString uname = QString::fromStdString(readName);
+	//	ui.lineEditUname->setText(uname);
+	//}
+	//if (!repeat)
+	//{
+	//	QTimer::singleShot(0, this, SLOT(failure()));
+	//}
 
 	//ui.tableWidget->setRowCount(16);
 	//QTableWidgetItem* item[2];
@@ -176,42 +178,32 @@ void ScannerGui::pBtLoginAccount()
 		userinfo["account"][num]["name"] = name;
 		userinfo["account"][num]["type"] = "官服";
 		userinfo["num"] = num + 1;
-		updateUserinfo(userinfo.str());
 	}
 	if (loginwindow.type == 2)
 	{
+		LoginBili loginbili;
 		std::string account;
 		std::string pwd;
 		std::string message;
+		std::string name;
+		std::string uid;
+		std::string token;
 		loginwindow.getAccountPwd(account, pwd);
-		int code = loginbili.loginBiliPwd(account, pwd, message);
+		int code = loginbili.loginBiliPwd(account, pwd, message,uid,token,name);
 		if (code != 0)
 		{
 			QString Qmessage = QString::fromLocal8Bit(message);
 			QMessageBox::information(this, "提示", Qmessage, QMessageBox::Yes);
 		}
-		std::string name = loginbili.getUName();
-		std::string uid;
-		std::string token;
+		int num = userinfo["num"];
+		insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "测试中文数据");
+		userinfo["account"][num]["access_key"] = token;
+		userinfo["account"][num]["uid"] = uid;
+		userinfo["account"][num]["name"] = name;
+		userinfo["account"][num]["type"] = "崩坏3B服";
+		userinfo["num"] = num + 1;
 	}
-	//std::string account;
-	//std::string pwd;
-	//std::string message;
-	//loginwindow.getAccountPwd(account, pwd);
-	//int code = loginbili.loginBiliPwd(account, pwd, message);
-	//if (code == 0)
-	//{
-	//	QString QName = QString::fromStdString(loginbili.getUName());
-	//	ui.lineEditUname->setText(QName);
-	//}
-	//else
-	//{
-	//	QString Qmessage = QString::fromLocal8Bit(message);
-	//	std::wstring wlpstr = Qmessage.toStdWString();
-	//	LPCWSTR lpcWStr = wlpstr.c_str();
-	//	MessageBoxW(NULL, lpcWStr, L"bilibili登录失败", NULL);
-	//	loginwindow.ClearInputBox();
-	//}
+	updateUserinfo(userinfo.str());
 	ui.pBtLoginAccount->setEnabled(true);
 	ui.pBtstartScreen->setEnabled(true);
 	ui.pBtStream->setEnabled(true);
@@ -242,9 +234,13 @@ void ScannerGui::pBtstartScreen()
 		OfficialApi o;
 		std::string stoken = userinfo["account"][countA]["access_key"];
 		std::string uid = userinfo["account"][countA]["uid"];
-		//需要添加验证判断
 		std::string gameToken;
+		//可用性检查
 		int code = o.getGameToken(stoken, uid, gameToken);
+		if (code != 0)
+		{
+
+		}
 		t1.serverType = 0;
 		t1.Init0(uid, gameToken);
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
@@ -252,21 +248,21 @@ void ScannerGui::pBtstartScreen()
 	}
 	if (type == "崩坏3B服")
 	{
+		LoginBili b;
+		std::string stoken = userinfo["account"][countA]["access_key"];
+		std::string uid = userinfo["account"][countA]["uid"];
+		std::string name;
+		//可用性检查
+		int code = b.loginBiliKey(name, uid, stoken);
+		if (code != 0)
+		{
 
+		}
+		t1.serverType = 1;
+		t1.Init1(uid, stoken, name);
+		ui.pBtstartScreen->setText("监视屏幕二维码中");
+		t1.start();
 	}
-	//std::string uName;
-	////检查选择的账号可用性
-	//if (loginbili.loginBiliKey(uName) != 0)
-	//{
-	//	failure();
-	//	return;
-	//}
-	//int num = 0;
-	//std::istringstream ss((std::string)userInfo["account"][countA]["uid"]);
-	//ss >> num;
-	//t1.InitScreen(num, userInfo["account"][countA]["access_key"], uName);
-	//ui.pBtstartScreen->setText("监视屏幕二维码中");
-	//t1.start();
 }
 
 void ScannerGui::pBtStream()
@@ -282,26 +278,26 @@ void ScannerGui::pBtStream()
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
-	//检查账号可用性
-	std::string uName;
-	if (loginbili.loginBiliKey(uName) != 0)
-	{
-		failure();
-		return;
-	}
-	//检查直播间状态
-	QString liveRoomId = ui.lineEditLiveId->text();
-	std::string n = liveRoomId.toStdString();
-	v2api v;
-	int id = v.GetRealRoomID(n);
-	int readId = liveIdError(id);
-	if (readId == 0)
-		return;
-	std::string streamAddress = v.GetAddress(readId);
-	t2.url = streamAddress;
-	ui.pBtStream->setText("监视直播二维码中");
-	t2.biliInitStream(loginbili.uid, loginbili.access_key, uName);
-	t2.start();
+	////检查账号可用性
+	//std::string uName;
+	//if (loginbili.loginBiliKey(uName) != 0)
+	//{
+	//	failure();
+	//	return;
+	//}
+	////检查直播间状态
+	//QString liveRoomId = ui.lineEditLiveId->text();
+	//std::string n = liveRoomId.toStdString();
+	//v2api v;
+	//int id = v.GetRealRoomID(n);
+	//int readId = liveIdError(id);
+	//if (readId == 0)
+	//	return;
+	//std::string streamAddress = v.GetAddress(readId);
+	//t2.url = streamAddress;
+	//ui.pBtStream->setText("监视直播二维码中");
+	//t2.biliInitStream(loginbili.uid, loginbili.access_key, uName);
+	//t2.start();
 }
 
 void ScannerGui::closeEvent(QCloseEvent* event)

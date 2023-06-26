@@ -8,7 +8,7 @@ ThreadLocalServer::ThreadLocalServer()
 
 ThreadLocalServer::~ThreadLocalServer()
 {
-    
+    wait();
 }
 
 void ThreadLocalServer::run()
@@ -77,10 +77,6 @@ void ThreadLocalServer::run()
 void ThreadLocalServer::stop()
 {
     svr.stop();
-    while (this->isRunning())
-    {
-        QThread::msleep(250);
-    }
 }
 
 std::string ThreadLocalServer::reCaptcha()

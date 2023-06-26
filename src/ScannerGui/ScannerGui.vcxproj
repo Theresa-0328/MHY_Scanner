@@ -125,7 +125,7 @@
     <ResourceCompile Include="ScannerGui.rc" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="LoginBili.h" />
+    <ClInclude Include="LoginBili.h" />
     <QtMoc Include="ThreadLocalServer.h" />
     <QtMoc Include="ThreadSacn.h" />
     <QtMoc Include="ThreadStreamProcess.h" />
