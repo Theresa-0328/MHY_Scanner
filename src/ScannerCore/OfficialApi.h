@@ -7,7 +7,7 @@ public:
 	std::string getRole();
 	std::string getMultiTokenByLoginTicket();
 	std::string getUserName(std::string uid);
-	void cookieParser(const std::string& cookieString);
+	int cookieParser(const std::string& cookieString);
 	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token);
 	std::string getGameToken(const std::string& stoken, const std::string& uid);
 	std::string getUid();

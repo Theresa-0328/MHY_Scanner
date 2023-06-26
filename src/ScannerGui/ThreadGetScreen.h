@@ -11,7 +11,7 @@ class ThreadGetScreen
 public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
-	bool isExit = true;
+	int serverType = 0;
 	void InitScreen(const int& uid, const std::string& access_key, std::string uname);
 	void Init0(const std::string& uid, const std::string& token);
 	void run();
@@ -20,8 +20,8 @@ signals:
 	void loginResults(const bool& b);
 private:
 	void serverType0();
+	bool isExit = true;
 	QMutex m_mux;
-	int serverType = 0;
 	std::string LoginData;
 	Mihoyosdk m;
 	std::string uid;

@@ -86,7 +86,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 		ui.checkBoxAutoExit->setChecked(true);
 	}
 	
-	
 	loginbili.openConfig();
 	bool repeat = true;
 	if (loginbili.loginBiliKey(readName) != 0)
@@ -156,20 +155,36 @@ void ScannerGui::pBtLoginAccount()
 		ui.pBtStream->setEnabled(true);
 		return;
 	}
-	//if(type)
-	OfficialApi o;
-	o.cookieParser(loginwindow.cookie);
-	std::string token = o.getMultiTokenByLoginTicket();
-	std::string uid = o.getUid();
-	std::string name = o.getUserName(uid);
-	int num = userinfo["num"];
-	insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
-	userinfo["account"][num]["access_key"] = token;
-	userinfo["account"][num]["uid"] = uid;
-	userinfo["account"][num]["name"] = name;
-	userinfo["account"][num]["type"] = "官服";
-	userinfo["num"] = num +1;
-	updateUserinfo(userinfo.str());
+	if (loginwindow.type == 1)
+	{
+		OfficialApi o;
+		if (o.cookieParser(loginwindow.cookie) != 0)
+		{
+			QMessageBox::information(this, "提示", "cookie错误！", QMessageBox::Yes);
+			ui.pBtLoginAccount->setEnabled(true);
+			ui.pBtstartScreen->setEnabled(true);
+			ui.pBtStream->setEnabled(true);
+			return;
+		}
+		std::string token = o.getMultiTokenByLoginTicket();
+		std::string uid = o.getUid();
+		std::string name = o.getUserName(uid);
+		int num = userinfo["num"];
+		insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
+		userinfo["account"][num]["access_key"] = token;
+		userinfo["account"][num]["uid"] = uid;
+		userinfo["account"][num]["name"] = name;
+		userinfo["account"][num]["type"] = "官服";
+		userinfo["num"] = num + 1;
+		updateUserinfo(userinfo.str());
+	}
+	if (loginwindow.type == 2)
+	{
+		std::string account;
+		std::string pwd;
+		std::string message;
+		loginwindow.getAccountPwd(account, pwd);
+	}
 	//std::string account;
 	//std::string pwd;
 	//std::string message;
@@ -197,6 +212,12 @@ void ScannerGui::pBtLoginAccount()
 
 void ScannerGui::pBtstartScreen()
 {
+	int nCurrentRow = getSelectedRowIndex();
+	if (nCurrentRow == -1)
+	{
+		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+		return;
+	}
 	if (t1.isRunning())
 	{
 		t1.stop();
@@ -208,16 +229,22 @@ void ScannerGui::pBtstartScreen()
 		t2.stop();
 		ui.pBtStream->setText("开始监视直播间");
 	}
-	OfficialApi o;
-	if (1)
+	std::string type = userinfo["account"][countA]["type"];
+	if (type=="官服")
 	{
+		OfficialApi o;
 		std::string stoken = userinfo["account"][countA]["access_key"];
 		std::string uid = userinfo["account"][countA]["uid"];
-		//验证
+		//需要添加验证判断
 		std::string gameToken = o.getGameToken(stoken, uid);
+		t1.serverType = 0;
 		t1.Init0(uid, gameToken);
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 		t1.start();
+	}
+	if (type == "崩坏3B服")
+	{
+
 	}
 	//std::string uName;
 	////检查选择的账号可用性
@@ -414,6 +441,16 @@ void ScannerGui::loadUserinfo()
 	userinfo.parse(configContent);
 }
 
+int ScannerGui::getSelectedRowIndex()
+{
+	QList<QTableWidgetItem*> item = ui.tableWidget->selectedItems();
+	if (item.count() == 0)
+	{
+		return -1;
+	}
+	return ui.tableWidget->row(item.at(0));
+}
+
 std::string ScannerGui::loadConfig()
 {
 	const std::string filePath = "./Config/config0.json";
@@ -494,22 +531,26 @@ void ScannerGui::getInfo(int x, int y)
 
 void ScannerGui::pBtSwitch()
 {
-	QList<QTableWidgetItem*> item = ui.tableWidget->selectedItems();
-	int nCount = item.count();
-	int nCurrentRow = 0;
-	if (nCount>0)
+	int nCurrentRow = getSelectedRowIndex();
+	if (nCurrentRow != -1)
 	{
-		nCurrentRow = ui.tableWidget->row(item.at(0));
 		ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
+	}
+	else
+	{
+		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+		return;
 	}
 }
 
 void ScannerGui::pBtDeleteAccount()
 {
-	QList<QTableWidgetItem*> item = ui.tableWidget->selectedItems();
-	//int nCount = item.count();
-	int nCurrentRow = ui.tableWidget->row(item.at(0));
-	
+	int nCurrentRow = getSelectedRowIndex();
+	if (nCurrentRow == -1)
+	{
+		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+		return;
+	}
 	//自动启动的问题。
 	userinfo["num"] = (int)userinfo["num"]-1;
 	//临时
