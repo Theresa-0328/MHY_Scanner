@@ -1,7 +1,7 @@
 ﻿#include "LoginWindow.h"
 #include <QRegularExpressionValidator>
 
-#define LoginWindowReject 	ClearInputBox();isReject = true; QDialog::reject();
+#define LOGINWINDOWREJECT 	ClearInputBox();isReject = true; QDialog::reject();
 
 LoginWindow::LoginWindow(QDialog* Dialog)
 {
@@ -28,6 +28,7 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 void LoginWindow::officialLogin()
 {
 	QString c = ui.lineEditCookie->text();
+	ClearInputBox();
 	cookie = c.toStdString();
 	QDialog::accept();
 	type = 1;
@@ -35,7 +36,7 @@ void LoginWindow::officialLogin()
 
 void LoginWindow::officialreject()
 {
-	LoginWindowReject
+	LOGINWINDOWREJECT
 }
 
 void LoginWindow::accept()
@@ -43,6 +44,7 @@ void LoginWindow::accept()
 	QString a = ui.lineEditAccount->text();
 	Account = a.toStdString();
 	QString b = ui.lineEditPwd->text();
+	ClearInputBox();
 	Pwd = b.toStdString();
 	QDialog::accept();
 	isReject = false;
@@ -51,7 +53,7 @@ void LoginWindow::accept()
 
 void LoginWindow::reject()
 {
-	LoginWindowReject
+	LOGINWINDOWREJECT
 }
 
 void LoginWindow::ClearInputBox()

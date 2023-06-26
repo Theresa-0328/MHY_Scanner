@@ -184,6 +184,15 @@ void ScannerGui::pBtLoginAccount()
 		std::string pwd;
 		std::string message;
 		loginwindow.getAccountPwd(account, pwd);
+		int code = loginbili.loginBiliPwd(account, pwd, message);
+		if (code != 0)
+		{
+			QString Qmessage = QString::fromLocal8Bit(message);
+			QMessageBox::information(this, "提示", Qmessage, QMessageBox::Yes);
+		}
+		std::string name = loginbili.getUName();
+		std::string uid;
+		std::string token;
 	}
 	//std::string account;
 	//std::string pwd;
@@ -192,8 +201,6 @@ void ScannerGui::pBtLoginAccount()
 	//int code = loginbili.loginBiliPwd(account, pwd, message);
 	//if (code == 0)
 	//{
-	//	ui.pBtLoginAccount->setText("bilibili已登录");
-	//	loginwindow.ClearInputBox();
 	//	QString QName = QString::fromStdString(loginbili.getUName());
 	//	ui.lineEditUname->setText(QName);
 	//}
@@ -236,7 +243,8 @@ void ScannerGui::pBtstartScreen()
 		std::string stoken = userinfo["account"][countA]["access_key"];
 		std::string uid = userinfo["account"][countA]["uid"];
 		//需要添加验证判断
-		std::string gameToken = o.getGameToken(stoken, uid);
+		std::string gameToken;
+		int code = o.getGameToken(stoken, uid, gameToken);
 		t1.serverType = 0;
 		t1.Init0(uid, gameToken);
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
@@ -274,7 +282,7 @@ void ScannerGui::pBtStream()
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
-	//选择和检查账号可用性
+	//检查账号可用性
 	std::string uName;
 	if (loginbili.loginBiliKey(uName) != 0)
 	{
