@@ -22,7 +22,6 @@ public:
 private:
 	json::Json configJson;
 	std::string loginData;
-	json::Json userInfo;
 	bool autoExit = false;
 };
 

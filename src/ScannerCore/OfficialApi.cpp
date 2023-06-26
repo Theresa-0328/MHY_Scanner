@@ -194,7 +194,7 @@ std::string OfficialApi::getMultiTokenByLoginTicket()
     return data;
 }
 
-std::string OfficialApi::getGameToken(const std::string& stoken, const std::string& uid)
+int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid,std::string gameToken)
 {
     std::string url = "https://api-takumi.mihoyo.com/auth/api/getGameToken";
     std::map<std::string, std::string> params =
@@ -207,6 +207,6 @@ std::string OfficialApi::getGameToken(const std::string& stoken, const std::stri
     GetRequest(s, url);
     json::Json j;
     j.parse(s);
-    const std::string data = j["data"]["game_token"];
-    return data;
+    gameToken = j["data"]["game_token"];
+    return 0;
 }

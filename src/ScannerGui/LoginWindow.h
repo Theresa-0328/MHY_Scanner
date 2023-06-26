@@ -12,7 +12,6 @@ public:
 	std::string cookie;
 	int type = 0;
 	bool getIsReject();
-	void ClearInputBox();
 public slots:
 	void showPassword(int state);
 	virtual void accept();
@@ -21,6 +20,7 @@ public slots:
 	void officialreject();
 private:
 	Ui::Dialog ui;
+	void ClearInputBox();
 	std::string Pwd;
 	std::string Account;
 	bool isReject = false;
