@@ -9,7 +9,7 @@ public:
 	std::string getUserName(std::string uid);
 	int cookieParser(const std::string& cookieString);
 	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token);
-	int getGameToken(const std::string& stoken, const std::string& uid, std::string gameToken);
+	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	std::string getUid();
 	int gameType;
 private:

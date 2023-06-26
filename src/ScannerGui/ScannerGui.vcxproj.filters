@@ -87,13 +87,15 @@
     <QtMoc Include="ThreadLocalServer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="LoginBili.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="LoginWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LoginBili.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

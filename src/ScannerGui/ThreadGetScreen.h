@@ -12,18 +12,18 @@ public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
 	int serverType = 0;
-	void InitScreen(const int& uid, const std::string& access_key, std::string uname);
 	void Init0(const std::string& uid, const std::string& token);
+	void Init1(const std::string& uid, const std::string& token, const std::string& uname);
 	void run();
 	void stop();
 signals:
 	void loginResults(const bool& b);
 private:
 	void serverType0();
+	void serverType1();
 	bool isExit = true;
 	QMutex m_mux;
-	std::string LoginData;
-	Mihoyosdk m;
 	std::string uid;
 	std::string gameToken;
+	std::string uname;
 };

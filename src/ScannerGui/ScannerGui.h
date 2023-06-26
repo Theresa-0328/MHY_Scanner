@@ -36,7 +36,6 @@ private:
     json::Json configJson;
     ThreadGetScreen t1;
     ThreadStreamProcess t2;
-    LoginBili loginbili;
     LoginWindow loginwindow;
     json::Json userinfo;
     int liveIdError(int code);
