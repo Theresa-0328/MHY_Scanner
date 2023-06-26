@@ -366,4 +366,5 @@ FodyWeavers.xsd
 notes.txt
 *.dll
 /src/ScannerGui/Config/userinfo.json
-/src/ScannerGui/Config/config_private.json
+/3rdparty/opencv/include
+/3rdparty/opencv/staticlib
