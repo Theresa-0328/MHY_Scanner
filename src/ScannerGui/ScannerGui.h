@@ -46,4 +46,5 @@ private:
     void updateConfig0();
     void updateUserinfo(const std::string& str);
     void loadUserinfo();
+    int getSelectedRowIndex();
 };

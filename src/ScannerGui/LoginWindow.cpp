@@ -1,9 +1,14 @@
 ﻿#include "LoginWindow.h"
 #include <QRegularExpressionValidator>
 
+#define LoginWindowReject 	ClearInputBox();isReject = true; QDialog::reject();
+
 LoginWindow::LoginWindow(QDialog* Dialog)
 {
 	ui.setupUi(this);
+	connect(ui.checkBoxShowPw, &QCheckBox::stateChanged, this, &LoginWindow::showPassword);
+	connect(ui.pBtofficialLogin, &QPushButton::clicked, this, &LoginWindow::officialLogin);
+	connect(ui.pBtofficialreject, &QPushButton::clicked, this, &LoginWindow::officialreject);
 	ui.lineEditAccount->setPlaceholderText("请输入账号...");
 	ui.lineEditAccount->setClearButtonEnabled(true);
 	ui.lineEditAccount->setFont(QFont("宋体", 13));
@@ -12,8 +17,25 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 	ui.lineEditPwd->setFont(QFont("宋体", 13));
 	ui.lineEditPwd->setEchoMode(QLineEdit::Password);
 	ui.lineEditCookie->setFont(QFont("宋体", 13));
-	ui.lineEditCookie->setPlaceholderText("请输入Cookie...");;
-	connect(ui.checkBoxShowPw, &QCheckBox::stateChanged, this, &LoginWindow::showPassword);
+	ui.lineEditCookie->setPlaceholderText("在这里粘贴Cookie...");
+	ui.tabWidget->setTabText(0, "官方");
+	ui.tabWidget->setTabText(1, "崩坏3B服");
+	ui.tabWidget->setCurrentIndex(0);
+	ui.tabWidget->usesScrollButtons();
+	//int currentIndex = ui.tabWidget->currentIndex();
+}
+
+void LoginWindow::officialLogin()
+{
+	QString c = ui.lineEditCookie->text();
+	cookie = c.toStdString();
+	QDialog::accept();
+	type = 1;
+}
+
+void LoginWindow::officialreject()
+{
+	LoginWindowReject
 }
 
 void LoginWindow::accept()
@@ -22,17 +44,14 @@ void LoginWindow::accept()
 	Account = a.toStdString();
 	QString b = ui.lineEditPwd->text();
 	Pwd = b.toStdString();
-	QString c = ui.lineEditCookie->text();
-	cookie = c.toStdString();
 	QDialog::accept();
 	isReject = false;
+	type = 2;
 }
 
 void LoginWindow::reject()
 {
-	ClearInputBox();
-	isReject = true;
-	QDialog::reject();
+	LoginWindowReject
 }
 
 void LoginWindow::ClearInputBox()

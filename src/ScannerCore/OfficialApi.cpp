@@ -141,8 +141,12 @@ std::string OfficialApi::getRole()
     return std::string();
 }
 
-void OfficialApi::cookieParser(const std::string& cookieString)
+int  OfficialApi::cookieParser(const std::string& cookieString)
 {
+    if (cookieString == "")
+    {
+        return -1;
+    }
     // 切割 cookie 字符串
     size_t pos = 0;
     while (pos < cookieString.length()) 
@@ -169,6 +173,7 @@ void OfficialApi::cookieParser(const std::string& cookieString)
         // 更新位置
         pos = endPos + 1;
     }
+    return 0;
 }
 
 std::string OfficialApi::getMultiTokenByLoginTicket()
