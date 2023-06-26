@@ -66,7 +66,7 @@ void ThreadGetScreen::serverType0()
 			emit loginResults(code == 0);
 			return;
 		}
-		cv::waitKey(200);
+		cv::waitKey(222);
 	}
 	return;
 }

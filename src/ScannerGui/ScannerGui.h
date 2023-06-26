@@ -26,12 +26,12 @@ public slots:
     void checkBoxAutoScreen(int state);
     void checkBoxAutoExit(int state);
     void pBtStream();
-    void failure();
     void getInfo(int x, int y);
     void pBtSwitch();
     void pBtDeleteAccount();
 private:
-    int countA;
+    void failure();
+    int countA = -1;
     Ui::ScannerGuiClass ui;
     json::Json configJson;
     ThreadGetScreen t1;

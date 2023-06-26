@@ -3,7 +3,6 @@
 #include "ThreadLocalServer.h"
 #include <qdesktopservices.h>
 #include <QUrl>
-#include "Mihoyosdk.h"
 LoginBili::LoginBili()
 {
 

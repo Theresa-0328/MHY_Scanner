@@ -61,8 +61,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>510</y>
+      <x>80</x>
+      <y>470</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -74,8 +74,8 @@
    <widget class="QCheckBox" name="checkBoxAutoExit">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>540</y>
+      <x>80</x>
+      <y>500</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -122,14 +122,14 @@
    <widget class="QLabel" name="labelUname">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>360</y>
-      <width>91</width>
+      <width>101</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>当前用户名：</string>
+     <string>当前选中用户名：</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -161,8 +161,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>540</y>
+      <x>290</x>
+      <y>500</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -174,8 +174,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>510</y>
+      <x>290</x>
+      <y>470</y>
       <width>118</width>
       <height>18</height>
      </rect>
@@ -240,7 +240,7 @@ QTableWidget::item:selected
    <widget class="QPushButton" name="pBtSwitch">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>340</x>
       <y>260</y>
       <width>130</width>
       <height>40</height>
@@ -253,13 +253,13 @@ QTableWidget::item:selected
      </size>
     </property>
     <property name="text">
-     <string>切换账号</string>
+     <string>设为启动时默认账号</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pBtDeleteAccount">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>180</x>
       <y>260</y>
       <width>130</width>
       <height>40</height>

@@ -72,46 +72,24 @@ ScannerGui::ScannerGui(QWidget* parent)
 			"测试中文数据");
 	}
 
-	//UI初始化默认值
+	//加载默认值
 	Mihoyosdk m;
 	m.setBHVer(configJson["bh_ver"]);
 	m.setOAServer();
-
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
+	ui.lineEditUname->setText("未选中");
 	if (configJson["auto_start"])
 	{
+		countA = userinfo["last_account"];
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
+		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
 	}
 	if (configJson["auto_exit"])
 	{
 		ui.checkBoxAutoExit->setChecked(true);
 	}
-	//loginbili.openConfig();
-	//bool repeat = true;
-	//if (loginbili.loginBiliKey(readName) != 0)
-	//{
-	//	repeat = false;
-	//}
-	//else
-	//{
-	//	QString uname = QString::fromStdString(readName);
-	//	ui.lineEditUname->setText(uname);
-	//}
-	//if (!repeat)
-	//{
-	//	QTimer::singleShot(0, this, SLOT(failure()));
-	//}
-
-	//ui.tableWidget->setRowCount(16);
-	//QTableWidgetItem* item[2];
-	//item[0] = new QTableWidgetItem(QString("%1").arg(99));
-	//item[1] = new QTableWidgetItem(QString("%1").arg(999));
-	//ui.tableWidget->setItem(14, 0, item[0]);
-	//ui.tableWidget->setItem(15, 0, item[1]);
-	//ui.tableWidget->removeRow(14);
-	//ui.tableWidget->removeRow(0);
 }
 
 ScannerGui::~ScannerGui()
@@ -211,8 +189,7 @@ void ScannerGui::pBtLoginAccount()
 
 void ScannerGui::pBtstartScreen()
 {
-	int nCurrentRow = getSelectedRowIndex();
-	if (nCurrentRow == -1)
+	if (countA == -1)
 	{
 		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
 		return;
@@ -239,12 +216,12 @@ void ScannerGui::pBtstartScreen()
 		int code = o.getGameToken(stoken, uid, gameToken);
 		if (code != 0)
 		{
-
+			failure();
 		}
 		t1.serverType = 0;
 		t1.Init0(uid, gameToken);
-		ui.pBtstartScreen->setText("监视屏幕二维码中");
 		t1.start();
+		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
 	if (type == "崩坏3B服")
 	{
@@ -256,12 +233,12 @@ void ScannerGui::pBtstartScreen()
 		int code = b.loginBiliKey(name, uid, stoken);
 		if (code != 0)
 		{
-
+			failure();
 		}
 		t1.serverType = 1;
 		t1.Init1(uid, stoken, name);
-		ui.pBtstartScreen->setText("监视屏幕二维码中");
 		t1.start();
+		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
 }
 
@@ -363,7 +340,7 @@ void ScannerGui::checkBoxAutoExit(int state)
 
 void ScannerGui::updateConfig0()//先放这里
 {
-	const std::string output = userinfo.str();
+	const std::string output = configJson.str();
 	std::ofstream outFile("./Config/config0.json");
 	std::stringstream outStr;
 	bool isInPair = false;
@@ -458,10 +435,8 @@ int ScannerGui::getSelectedRowIndex()
 std::string ScannerGui::loadConfig()
 {
 	const std::string filePath = "./Config/config0.json";
-	//检查路径是否存在。
 	if (std::filesystem::exists(filePath))
 	{
-		// 文件存在，读取配置
 		std::string configContent = readConfigFile(filePath);
 		return configContent;
 	}
@@ -471,9 +446,9 @@ std::string ScannerGui::loadConfig()
 		std::string defaultConfig =
 		R"({
 	"auto_exit": false,
-	"auto_start": false
+	"auto_start": false,
+	"bh_ver":"6.7.0"
 })";
-		// 文件不存在，创建默认配置文件
 		createDefaultConfigFile(filePath, defaultConfig);
 		return defaultConfig;
 	}
@@ -520,12 +495,14 @@ void ScannerGui::failure()
 	messageBox->setWindowTitle("提示");
 	messageBox->setIcon(QMessageBox::Information);
 	messageBox->show();
+	//delete messageBox;
 }
 
 void ScannerGui::getInfo(int x, int y)
 {
-	QTableWidgetItem* item = ui.tableWidget->item(x, y - 1);//溢出
+	QTableWidgetItem* item = ui.tableWidget->item(x, 2);
 	QString cellText = item->text();
+	ui.lineEditUname->setText(cellText);
 	countA = x;
 #ifdef _DEBUG
 	HttpClient h;
@@ -538,7 +515,11 @@ void ScannerGui::pBtSwitch()
 	int nCurrentRow = getSelectedRowIndex();
 	if (nCurrentRow != -1)
 	{
-		ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
+		//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
+		userinfo["last_account"] = nCurrentRow;
+		updateUserinfo(userinfo.str());
+		QMessageBox::information(this, "设置成功！", "开启启动时自动屏幕监视将在下次启动时自动登录游戏", QMessageBox::Yes);
+		return;
 	}
 	else
 	{
