@@ -7,7 +7,7 @@
 class BiliGameApi :public HttpClient
 {
 public:
-	json::Json getUserInfo(const int uid, const std::string accessKey);
+	json::Json getUserInfo(const int uid, const std::string& accessKey);
 	std::string login(const std::string& biliAccount, const std::string& biliPwd);
 	std::string login(const std::string& biliAccount, const std::string& biliPwd, const std::string challenge, const std::string gt_user, const std::string validate);
 	std::string makeCaptchUrl();
