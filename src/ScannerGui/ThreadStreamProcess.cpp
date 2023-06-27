@@ -1,6 +1,7 @@
 ﻿#include "ThreadStreamProcess.h"
 #include "ThreadSacn.h"
 #include "ThreadDownload.h"
+#include "OfficialApi.h"
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
@@ -10,43 +11,54 @@ ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 
 ThreadStreamProcess::~ThreadStreamProcess()
 {
+	if (!this->isInterruptionRequested())
+	{
+		QMutexLocker lock(&m_mux);
+		stopStream = true;
+	}
 	this->requestInterruption();
 	this->wait();
 }
 
-void ThreadStreamProcess::biliInitStream(int uid, std::string access_key, std::string uName)
+void ThreadStreamProcess::Init0(std::string uid, std::string gameToken)
 {
-	LoginData = m.verify(uid, access_key);
-	m.setUserName(uName);
+	this->uid = uid;
+	this->gameToken = gameToken;
 }
 
-void ThreadStreamProcess::stop()
+void ThreadStreamProcess::Init1(const std::string uid, const std::string gameToken, const std::string uName)
 {
-	stopStream = true;
+	this->uid = uid;
+	this->gameToken = gameToken;
+	this->uName = uName;
 }
 
-static int a = 0;
 
-void ThreadStreamProcess::run()
+void ThreadStreamProcess::serverType0()
 {
 	ThreadDownload td;
 	td.downloadInit(url);
 	td.start();
+	OfficialApi o;
 	ThreadSacn threadsacn;
 	QThread::msleep(3000);
-	stopStream = false;
 	VideoProcessor vp;
-	vp.OpenVideo("./Cache/output.flv");//错误判断
-	int64_t latestTimestamp = av_gettime_relative();
-	if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
+	//错误判断
+	if (vp.OpenVideo("./Cache/output.flv") != 0)
 	{
-		int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
-			vp.avformatContext->streams[vp.index]->time_base, { 1, AV_TIME_BASE });
-		if (streamTimestamp > latestTimestamp)
-		{
-			latestTimestamp = streamTimestamp;
-		}
+
 	}
+	int64_t latestTimestamp = av_gettime_relative();
+	
+	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
+	//{
+	//	int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
+	//		vp.avformatContext->streams[vp.index]->time_base, { 1, AV_TIME_BASE });
+	//	if (streamTimestamp > latestTimestamp)
+	//	{
+	//		latestTimestamp = streamTimestamp;
+	//	}
+	//}
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
 #ifdef _DEBUG
@@ -56,7 +68,6 @@ void ThreadStreamProcess::run()
 	{
 		//int64_t video_duration_sec = vp.avformatContext->duration / AV_TIME_BASE;
 		//size_t timeInSeconds = av_q2d(vp.avstream->time_base);
-		f++;
 		if (stopStream)
 		{
 #ifdef _DEBUG
@@ -64,13 +75,12 @@ void ThreadStreamProcess::run()
 #endif // _DEBUG
 			break;
 		}
-		int op1 = vp.read(vp.avPacket);
+		int op1 = vp.read();
 		if (vp.avPacket->stream_index != vp.index)
 		{
 			continue;
 		}
-		int op2 = vp.SendPacket(vp.avPacket);
-		if (op2 != 0)
+		if (vp.SendPacket() != 0)
 		{
 			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 			QThread::msleep(300);
@@ -81,28 +91,64 @@ void ThreadStreamProcess::run()
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-			cv::Rect roi(0, 0, 1280, 720);
-			cv::Mat crop_img = img(roi);
-			//待优化：缩小扫描区域以提高速度和降低cpu占用。注意到有1280 1980和60帧 30帧
+			//待优化：注意到有1280 1980和60帧 30帧
+			cv::Mat crop_img = img(cv::Range(340, 720), cv::Range(732, 1186));
 			if (!threadsacn.isRunning())
 			{
-				//threadsacn.setImg(crop_img);
-//#ifdef _DEBUG
-				//std::cout << "scan count "<< a++ << std::endl;
+				threadsacn.setImg(crop_img);
+#ifdef _DEBUG
+				std::cout << "scan count "<< f++ << std::endl;
 				imshow("Video", crop_img);
-				cv::waitKey(2);
-//#endif // _DEBUG
-				//threadsacn.start();
+				cv::waitKey(1);
+#endif
+				threadsacn.start();
 			}
 		}
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int retcode = m.scanCheck(threadsacn.getTicket(), LoginData);
-			emit loginSResults(retcode == 0);
-			threadsacn.uqrcode.clear();
-			break;
+			o.gameType = 1;
+			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
+			emit loginResults(code == 0);
+			continue;
+		}
+		//if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
+		//{
+
+		//}
+		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
+		{
+			o.gameType = 8;
+			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
+			emit loginResults(code == 0);
+			continue;
 		}
 		av_packet_unref(vp.avPacket);
 	}
 	td.stop();
+}
+
+void ThreadStreamProcess::serverType1()
+{
+
+}
+
+void ThreadStreamProcess::stop()
+{
+	stopStream = true;
+}
+
+void ThreadStreamProcess::run()
+{
+	stopStream = false;
+	if (serverType == 0)
+	{
+		serverType0();
+		return;
+	}
+	if (serverType == 1)
+	{
+		serverType1();
+		return;
+	}
+	return;
 }

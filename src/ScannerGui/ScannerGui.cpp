@@ -21,12 +21,10 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
-
 	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
-
 	connect(&t1, &ThreadGetScreen::loginResults, this, &ScannerGui::islogin);
-	connect(&t2, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
-	
+	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
+
 	//加载软件设置
 	std::string config = loadConfig();
 	configJson.parse(config);
@@ -62,8 +60,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	
-	for (int i = 0; i < (int)userinfo["num"];i++)
+
+	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{
 		insertTableItems(
 			QString::fromStdString(userinfo["account"][i]["uid"]),
@@ -167,7 +165,7 @@ void ScannerGui::pBtLoginAccount()
 		std::string uid;
 		std::string token;
 		loginwindow.getAccountPwd(account, pwd);
-		int code = loginbili.loginBiliPwd(account, pwd, message,uid,token,name);
+		int code = loginbili.loginBiliPwd(account, pwd, message, uid, token, name);
 		if (code != 0)
 		{
 			QString Qmessage = QString::fromLocal8Bit(message);
@@ -206,7 +204,7 @@ void ScannerGui::pBtstartScreen()
 		ui.pBtStream->setText("开始监视直播间");
 	}
 	std::string type = userinfo["account"][countA]["type"];
-	if (type=="官服")
+	if (type == "官服")
 	{
 		OfficialApi o;
 		std::string stoken = userinfo["account"][countA]["access_key"];
@@ -244,6 +242,11 @@ void ScannerGui::pBtstartScreen()
 
 void ScannerGui::pBtStream()
 {
+	if (countA == -1)
+	{
+		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+		return;
+	}
 	if (t1.isRunning())
 	{
 		t1.stop();
@@ -255,26 +258,38 @@ void ScannerGui::pBtStream()
 		ui.pBtStream->setText("开始监视直播间");
 		return;
 	}
-	////检查账号可用性
-	//std::string uName;
-	//if (loginbili.loginBiliKey(uName) != 0)
-	//{
-	//	failure();
-	//	return;
-	//}
-	////检查直播间状态
-	//QString liveRoomId = ui.lineEditLiveId->text();
-	//std::string n = liveRoomId.toStdString();
-	//v2api v;
-	//int id = v.GetRealRoomID(n);
-	//int readId = liveIdError(id);
-	//if (readId == 0)
-	//	return;
-	//std::string streamAddress = v.GetAddress(readId);
-	//t2.url = streamAddress;
-	//ui.pBtStream->setText("监视直播二维码中");
-	//t2.biliInitStream(loginbili.uid, loginbili.access_key, uName);
-	//t2.start();
+	//检查直播间状态
+	QString liveRoomId = ui.lineEditLiveId->text();
+	std::string num= liveRoomId.toStdString();
+	v2api v;
+	int id = v.GetRealRoomID(num);
+	int readId = liveIdError(id);
+	if (readId == 0)
+		return;
+	std::string streamAddress = v.GetAddress(readId);
+	t2.url = streamAddress;
+	std::string type = userinfo["account"][countA]["type"];
+	if (type == "官服")
+	{
+		OfficialApi o;
+		std::string stoken = userinfo["account"][countA]["access_key"];
+		std::string uid = userinfo["account"][countA]["uid"];
+		std::string gameToken;
+		//可用性检查
+		int code = o.getGameToken(stoken, uid, gameToken);
+		if (code != 0)
+		{
+			failure();
+		}
+		t2.serverType = 0;
+		t2.Init0(uid, gameToken);
+		t2.start();
+		ui.pBtStream->setText("监视直播二维码中");
+	}
+	if (type == "崩坏3B服")
+	{
+
+	}
 }
 
 void ScannerGui::closeEvent(QCloseEvent* event)
@@ -417,9 +432,19 @@ int ScannerGui::liveIdError(int code)
 
 void ScannerGui::loadUserinfo()
 {
-	const std::string& filePath = "./Config/userinfo.json";
-	std::string configContent = readConfigFile(filePath);
-	userinfo.parse(configContent);
+	const std::string filePath = "./Config/userinfo.json";
+	if (std::filesystem::exists(filePath))
+	{
+		std::string configContent = readConfigFile(filePath);
+		userinfo.parse(configContent);
+	}
+	else
+	{
+		// 默认值
+		std::string defaultConfig = R"({"account":[],"last_account":0,"num":0})";
+		createDefaultConfigFile(filePath, defaultConfig);
+		userinfo.parse(defaultConfig);
+	}
 }
 
 int ScannerGui::getSelectedRowIndex()
@@ -442,9 +467,10 @@ std::string ScannerGui::loadConfig()
 	}
 	else
 	{
+
 		// 默认值
 		std::string defaultConfig =
-		R"({
+			R"({
 	"auto_exit": false,
 	"auto_start": false,
 	"bh_ver":"6.7.0"
@@ -474,6 +500,18 @@ std::string ScannerGui::readConfigFile(const std::string& filePath)
 
 void ScannerGui::createDefaultConfigFile(const std::string& filePath, std::string defaultConfig)
 {
+	std::filesystem::path directory = std::filesystem::path(filePath).parent_path();
+
+	// 检查文件夹是否存在，如果不存在则创建它
+	if (!std::filesystem::exists(directory))
+	{
+		if (!std::filesystem::create_directories(directory))
+		{
+			std::cout << "无法创建配置文件夹。\n";
+			QMessageBox::information(this, "致命错误！", "无法创建配置文件夹！", QMessageBox::Yes);
+			exit(0);
+		}
+	}
 	std::ofstream file(filePath);
 	if (file.is_open())
 	{
@@ -537,7 +575,7 @@ void ScannerGui::pBtDeleteAccount()
 		return;
 	}
 	//自动启动的问题。
-	userinfo["num"] = (int)userinfo["num"]-1;
+	userinfo["num"] = (int)userinfo["num"] - 1;
 	//临时
 	userinfo["account"].remove(nCurrentRow);
 	std::string str = userinfo.str();
@@ -550,7 +588,7 @@ void ScannerGui::pBtDeleteAccount()
 	ui.tableWidget->removeRow(nCurrentRow);
 	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{
-		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i+1));
+		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
 }

@@ -51,7 +51,7 @@ int VideoProcessor::Close()
 	return 0;
 }
 
-int VideoProcessor::read(AVPacket* avPacket)
+int VideoProcessor::read()
 {
 	av_read_frame(avformatContext, avPacket);
 	return 0;
@@ -82,7 +82,7 @@ int VideoProcessor::OpenDecoder(int i)// 打开解码器
 	return avcodec_open2(avCodecContext, avCodec, nullptr);
 }
 
-int VideoProcessor::SendPacket(AVPacket* avPacket)
+int VideoProcessor::SendPacket()
 {
 	if (&avPacket == nullptr)
 	{
@@ -108,6 +108,6 @@ int VideoProcessor::buffer(AVFrame* avframe)
 int VideoProcessor::swsctx(struct SwsContext** swsCtx)
 {
 	*swsCtx = sws_getContext(avCodecContext->width, avCodecContext->height, avCodecContext->pix_fmt,
-		avCodecContext->width/1.5, avCodecContext->height/1.5, AV_PIX_FMT_BGR24, SWS_BILINEAR, nullptr, nullptr, nullptr);
+		avCodecContext->width, avCodecContext->height, AV_PIX_FMT_BGR24, SWS_BILINEAR, nullptr, nullptr, nullptr);
 	return 0;
 }

@@ -39,11 +39,11 @@ private:
     LoginWindow loginwindow;
     json::Json userinfo;
     int liveIdError(int code);
-    std::string loadConfig();
     std::string readConfigFile(const std::string& filePath);
     void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
     void updateConfig();
     void updateUserinfo(const std::string& str);
     void loadUserinfo();
+    std::string loadConfig();
     int getSelectedRowIndex();
 };

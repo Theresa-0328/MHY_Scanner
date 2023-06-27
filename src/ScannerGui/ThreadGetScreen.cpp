@@ -13,20 +13,20 @@ ThreadGetScreen::~ThreadGetScreen()
 	if (!this->isInterruptionRequested())
 	{
 		QMutexLocker lock(&m_mux);
-		isExit = true;
+		Exit = true;
 	}
 	this->requestInterruption();
 	this->wait();
 }
 
 
-void ThreadGetScreen::Init0(const std::string& uid, const std::string& token)
+void ThreadGetScreen::Init0(const std::string uid, const std::string token)
 {
 	this->uid = uid;
 	this->gameToken = token;
 }
 
-void ThreadGetScreen::Init1(const std::string& uid, const std::string& token, const std::string& uname)
+void ThreadGetScreen::Init1(const std::string uid, const std::string token, const std::string uname)
 {
 	this->uid = uid;
 	this->gameToken = token;
@@ -39,7 +39,7 @@ void ThreadGetScreen::serverType0()
 	ScreenScan screenshot;
 	cv::Mat img;
 	OfficialApi o;
-	while (!isExit)
+	while (!Exit)
 	{
 		img = screenshot.getScreenshot();
 		//img = screenshot.getScreenshot(600,250,600,600);
@@ -80,7 +80,7 @@ void ThreadGetScreen::serverType1()
 	Mihoyosdk m;
 	LoginData = m.verify(std::stoi(uid), gameToken);
 	m.setUserName(uname);
-	while (!isExit)
+	while (!Exit)
 	{
 		img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
@@ -97,7 +97,7 @@ void ThreadGetScreen::serverType1()
 
 void ThreadGetScreen::run()
 {
-	isExit = false;
+	Exit = false;
 	if (serverType == 0)
 	{
 		serverType0();
@@ -113,5 +113,5 @@ void ThreadGetScreen::run()
 
 void ThreadGetScreen::stop()
 {
-	isExit = true;
+	Exit = true;
 }
