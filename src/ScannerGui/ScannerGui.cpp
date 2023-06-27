@@ -28,8 +28,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(&t2, &ThreadStreamProcess::loginSResults, this, &ScannerGui::islogin);
 	
 	//加载软件设置
-	std::string config0 = loadConfig();
-	configJson.parse(config0);
+	std::string config = loadConfig();
+	configJson.parse(config);
 
 	//加载用户信息
 	loadUserinfo();
@@ -315,12 +315,12 @@ void ScannerGui::checkBoxAutoScreen(int state)
 	if (state == Qt::Checked)
 	{
 		configJson["auto_start"] = true;
-		updateConfig0();
+		updateConfig();
 	}
 	else if (state == Qt::Unchecked)
 	{
 		configJson["auto_start"] = false;
-		updateConfig0();
+		updateConfig();
 	}
 }
 
@@ -329,19 +329,19 @@ void ScannerGui::checkBoxAutoExit(int state)
 	if (state == Qt::Checked)
 	{
 		configJson["auto_exit"] = true;
-		updateConfig0();
+		updateConfig();
 	}
 	else if (state == Qt::Unchecked)
 	{
 		configJson["auto_exit"] = false;
-		updateConfig0();
+		updateConfig();
 	}
 }
 
-void ScannerGui::updateConfig0()//先放这里
+void ScannerGui::updateConfig()//先放这里
 {
 	const std::string output = configJson.str();
-	std::ofstream outFile("./Config/config0.json");
+	std::ofstream outFile("./Config/config.json");
 	std::stringstream outStr;
 	bool isInPair = false;
 	for (int i = 0; i < output.size(); i++)
@@ -434,7 +434,7 @@ int ScannerGui::getSelectedRowIndex()
 
 std::string ScannerGui::loadConfig()
 {
-	const std::string filePath = "./Config/config0.json";
+	const std::string filePath = "./Config/config.json";
 	if (std::filesystem::exists(filePath))
 	{
 		std::string configContent = readConfigFile(filePath);

@@ -1,5 +1,5 @@
 {
   "auto_exit":false,
-  "auto_start":false,
+  "auto_start":true,
   "bh_ver":"6.7.0"
 }
