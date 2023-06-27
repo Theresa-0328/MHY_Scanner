@@ -34,13 +34,13 @@ public:
 
 	int OpenVideo(std::string);
 	int Close();
-	int read(AVPacket* packet);
+	int read();
 	int GetStreamIndex(enum AVMediaType type);
 	//int GetStream(AVCodecParameters* avCodecParameters, int streamIndex);
 
 	int FFmpegDecoder(int);
 	int OpenDecoder(int);
-	int SendPacket(AVPacket* avPacket);
+	int SendPacket();
 	int ReceiveFrame(AVFrame* avframe);
 	int buffer(AVFrame* pFrameBGR);// 创建帧缓冲区
 	int swsctx(struct SwsContext** swsCtx);

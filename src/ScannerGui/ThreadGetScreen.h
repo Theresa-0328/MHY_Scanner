@@ -12,8 +12,8 @@ public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
 	int serverType = 0;
-	void Init0(const std::string& uid, const std::string& token);
-	void Init1(const std::string& uid, const std::string& token, const std::string& uname);
+	void Init0(const std::string uid, const std::string token);
+	void Init1(const std::string uid, const std::string token, const std::string uname);
 	void run();
 	void stop();
 signals:
@@ -21,7 +21,7 @@ signals:
 private:
 	void serverType0();
 	void serverType1();
-	bool isExit = true;
+	bool Exit = true;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
