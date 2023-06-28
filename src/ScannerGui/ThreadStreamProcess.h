@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <QThread>
 #include <QMutex>
-#include "Mihoyosdk.h"
 #include "ScreenScan.h"
 #include "QRScanner.h"
 #include "VideoProcessor.h"
@@ -22,9 +21,7 @@ signals:
 private:
 	void serverType0();
 	void serverType1();
-	std::string LoginData;
 	bool stopStream =false;
-	Mihoyosdk m;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;

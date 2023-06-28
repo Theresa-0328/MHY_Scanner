@@ -411,13 +411,11 @@ int ScannerGui::liveIdError(int code)
 	case -1:
 	{
 		QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
-
 	}
 	return 0;
 	case -2:
 	{
 		QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
-
 	}
 	return 0;
 	case -3:
@@ -501,8 +499,6 @@ std::string ScannerGui::readConfigFile(const std::string& filePath)
 void ScannerGui::createDefaultConfigFile(const std::string& filePath, std::string defaultConfig)
 {
 	std::filesystem::path directory = std::filesystem::path(filePath).parent_path();
-
-	// 检查文件夹是否存在，如果不存在则创建它
 	if (!std::filesystem::exists(directory))
 	{
 		if (!std::filesystem::create_directories(directory))
@@ -574,7 +570,6 @@ void ScannerGui::pBtDeleteAccount()
 		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
 		return;
 	}
-	//自动启动的问题。
 	userinfo["num"] = (int)userinfo["num"] - 1;
 	//临时
 	userinfo["account"].remove(nCurrentRow);
