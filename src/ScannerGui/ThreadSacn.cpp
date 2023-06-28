@@ -1,4 +1,5 @@
-#include "ThreadSacn.h"
+﻿#include "ThreadSacn.h"
+#include <chrono>
 
 ThreadSacn::ThreadSacn()
 	: QThread()
@@ -29,5 +30,13 @@ std::string ThreadSacn::getTicket()
 
 void ThreadSacn::run()
 {
-	qs.Decode(img, uqrcode);
+#ifdef _DEBUG
+	auto startTime = std::chrono::high_resolution_clock::now();
+#endif // _DEBUG
+	qs.decodeSingle(img, uqrcode);
+#ifdef _DEBUG
+	auto endTime = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+	std::cout << (double)duration / 1000000 << std::endl;
+#endif // _DEBUG
 }

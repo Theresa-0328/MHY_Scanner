@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include <QtWidgets/QMainWindow>
 #include "ui_ScannerGui.h"
 #include "LoginBili.h"

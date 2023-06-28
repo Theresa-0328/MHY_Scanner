@@ -2,6 +2,7 @@
 #include "ThreadSacn.h"
 #include "ThreadDownload.h"
 #include "OfficialApi.h"
+#include "Mihoyosdk.h"
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)
@@ -59,6 +60,7 @@ void ThreadStreamProcess::serverType0()
 	//		latestTimestamp = streamTimestamp;
 	//	}
 	//}
+
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
 #ifdef _DEBUG
@@ -99,7 +101,7 @@ void ThreadStreamProcess::serverType0()
 #ifdef _DEBUG
 				std::cout << "scan count "<< f++ << std::endl;
 				imshow("Video", crop_img);
-				cv::waitKey(1);
+				cv::waitKey(10);
 #endif
 				threadsacn.start();
 			}
@@ -129,7 +131,10 @@ void ThreadStreamProcess::serverType0()
 
 void ThreadStreamProcess::serverType1()
 {
-
+	ThreadDownload td;
+	td.downloadInit(url);
+	td.start();
+	Mihoyosdk m;
 }
 
 void ThreadStreamProcess::stop()
