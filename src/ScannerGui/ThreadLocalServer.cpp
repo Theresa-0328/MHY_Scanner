@@ -79,7 +79,7 @@ void ThreadLocalServer::stop()
     svr.stop();
 }
 
-std::string ThreadLocalServer::reCaptcha()
+std::string ThreadLocalServer::reCaptcha()const
 {
     return body;
 }

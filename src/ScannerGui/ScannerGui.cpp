@@ -77,12 +77,14 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
+	ui.label_3->setText("v1.0.0");
 	if (configJson["auto_start"])
 	{
 		countA = userinfo["last_account"];
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
 		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
+		ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);
 	}
 	if (configJson["auto_exit"])
 	{
@@ -288,7 +290,20 @@ void ScannerGui::pBtStream()
 	}
 	if (type == "崩坏3B服")
 	{
-
+		LoginBili b;
+		std::string stoken = userinfo["account"][countA]["access_key"];
+		std::string uid = userinfo["account"][countA]["uid"];
+		std::string name;
+		//可用性检查
+		int code = b.loginBiliKey(name, uid, stoken);
+		if (code != 0)
+		{
+			failure();
+		}
+		t2.serverType = 1;
+		t2.Init1(uid, stoken, name);
+		t2.start();
+		ui.pBtStream->setText("监视直播二维码中");
 	}
 }
 

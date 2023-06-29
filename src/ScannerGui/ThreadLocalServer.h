@@ -11,7 +11,7 @@ public:
 	~ThreadLocalServer();
 	void run();
 	void stop();
-	std::string reCaptcha();
+	std::string reCaptcha()const;
 private:
 	httplib::Server svr;
 	std::string body;
