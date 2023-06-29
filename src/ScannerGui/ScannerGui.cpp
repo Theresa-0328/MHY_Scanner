@@ -567,7 +567,7 @@ void ScannerGui::pBtSwitch()
 		//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 		userinfo["last_account"] = nCurrentRow;
 		updateUserinfo(userinfo.str());
-		QMessageBox::information(this, "设置成功！", "开启启动时自动屏幕监视将在下次启动时自动登录游戏", QMessageBox::Yes);
+		QMessageBox::information(this, "设置成功！", "开启\"启动时自动监视屏幕\"将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
 		return;
 	}
 	else
