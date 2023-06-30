@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <algorithm>
 #include <map>
 #include "json.h"
 #include "HttpClient.h"
@@ -13,7 +12,7 @@ public:
 	std::string makeCaptchUrl();
 private:
 	void captcha();
-	std::string setSign(std::map<std::string, std::string> data1);
+	std::string setSign(std::map<std::string, std::string> data);
 	std::string remove_quotes(std::string str);
 	json::Json captchaJ;
 	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";

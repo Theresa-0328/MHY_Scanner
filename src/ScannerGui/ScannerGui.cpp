@@ -140,16 +140,25 @@ void ScannerGui::pBtLoginAccount()
 		OfficialApi o;
 		if (o.cookieParser(loginwindow.cookie) != 0)
 		{
-			QMessageBox::information(this, "提示", "cookie错误！", QMessageBox::Yes);
+			QMessageBox::information(this, "错误", "不合法的cookie", QMessageBox::Yes);
 			ui.pBtLoginAccount->setEnabled(true);
 			ui.pBtstartScreen->setEnabled(true);
 			ui.pBtStream->setEnabled(true);
 			return;
 		}
-		else
+		std::string uid = o.getUid();
+		if (checkDuplicates(uid))
 		{
-			std::string token = o.getMultiTokenByLoginTicket();
-			std::string uid = o.getUid();
+			QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
+			ui.pBtLoginAccount->setEnabled(true);
+			ui.pBtstartScreen->setEnabled(true);
+			ui.pBtStream->setEnabled(true);
+			return;
+		}
+		std::string token;
+		int code = o.getMultiTokenByLoginTicket(token);
+		if (code == 0)
+		{
 			std::string name = o.getUserName(uid);
 			int num = userinfo["num"];
 			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
@@ -158,6 +167,11 @@ void ScannerGui::pBtLoginAccount()
 			userinfo["account"][num]["name"] = name;
 			userinfo["account"][num]["type"] = "官服";
 			userinfo["num"] = num + 1;
+		}
+		else
+		{
+			QString info = QString::fromStdString(token);
+			QMessageBox::information(this, "错误", info, QMessageBox::Yes);
 		}
 	}
 	if (loginwindow.type == 2)
@@ -171,6 +185,15 @@ void ScannerGui::pBtLoginAccount()
 		std::string token;
 		loginwindow.getAccountPwd(account, pwd);
 		int code = loginbili.loginBiliPwd(account, pwd, message, uid, token, name);
+		if (checkDuplicates(uid))
+		{
+			QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
+			ui.pBtLoginAccount->setEnabled(true);
+			ui.pBtstartScreen->setEnabled(true);
+			ui.pBtStream->setEnabled(true);
+			return;
+
+		}
 		if (code != 0)
 		{
 			QString Qmessage = QString::fromLocal8Bit(message);
@@ -268,7 +291,7 @@ void ScannerGui::pBtStream()
 	}
 	//检查直播间状态
 	QString liveRoomId = ui.lineEditLiveId->text();
-	std::string num= liveRoomId.toStdString();
+	std::string num = liveRoomId.toStdString();
 	v2api v;
 	int id = v.GetRealRoomID(num);
 	int readId = liveIdError(id);
@@ -476,6 +499,19 @@ int ScannerGui::getSelectedRowIndex()
 	return ui.tableWidget->row(item.at(0));
 }
 
+bool ScannerGui::checkDuplicates(const std::string uid)
+{
+	for (int i = 0; i < (int)userinfo["num"]; i++)
+	{
+		std::string m_uid = userinfo["account"][i]["uid"];
+		if (uid == m_uid)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 std::string ScannerGui::loadConfig()
 {
 	const std::string filePath = "./Config/config.json";
@@ -593,7 +629,7 @@ void ScannerGui::pBtDeleteAccount()
 	}
 	userinfo["num"] = (int)userinfo["num"] - 1;
 	//临时
-	userinfo["account"].remove(nCurrentRow);
+	userinfo["account"][nCurrentRow].clear();
 	std::string str = userinfo.str();
 	userinfo.parse(str);
 #ifdef _DEBUG
@@ -607,4 +643,4 @@ void ScannerGui::pBtDeleteAccount()
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
-}
+} 
