@@ -1,8 +1,6 @@
 ﻿#include "LoginBili.h"
 #include <QMessageBox>
 #include "ThreadLocalServer.h"
-#include <qdesktopservices.h>
-#include <QUrl>
 LoginBili::LoginBili()
 {
 
@@ -39,13 +37,13 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
     {
         ThreadLocalServer thserver;
         thserver.start();
-        const std::string capUrl = makeCaptchUrl();
-        QString URL = QString::fromStdString(capUrl);
-        QDesktopServices::openUrl(QUrl(URL.toLatin1()));
+        const std::string url = makeCaptchUrl();
+        const QString Qurl = QString::fromStdString(url);
+        ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
         QMessageBox msgBox;
         msgBox.setWindowTitle("验证提示");
         msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse);
-        msgBox.setText("如果没有自动打开浏览器，请手动复制并打开后面的链接并进行验证"+URL+ "如果你完成了验证码，点击OK");
+        msgBox.setText("如果没有自动打开浏览器，请手动复制并打开后面的链接并进行验证"+ Qurl + "如果你完成了验证码，点击OK");
         msgBox.exec();
         thserver.stop();
         if (thserver.reCaptcha() == "")

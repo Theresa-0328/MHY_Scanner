@@ -146,16 +146,19 @@ void ScannerGui::pBtLoginAccount()
 			ui.pBtStream->setEnabled(true);
 			return;
 		}
-		std::string token = o.getMultiTokenByLoginTicket();
-		std::string uid = o.getUid();
-		std::string name = o.getUserName(uid);
-		int num = userinfo["num"];
-		insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
-		userinfo["account"][num]["access_key"] = token;
-		userinfo["account"][num]["uid"] = uid;
-		userinfo["account"][num]["name"] = name;
-		userinfo["account"][num]["type"] = "官服";
-		userinfo["num"] = num + 1;
+		else
+		{
+			std::string token = o.getMultiTokenByLoginTicket();
+			std::string uid = o.getUid();
+			std::string name = o.getUserName(uid);
+			int num = userinfo["num"];
+			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
+			userinfo["account"][num]["access_key"] = token;
+			userinfo["account"][num]["uid"] = uid;
+			userinfo["account"][num]["name"] = name;
+			userinfo["account"][num]["type"] = "官服";
+			userinfo["num"] = num + 1;
+		}
 	}
 	if (loginwindow.type == 2)
 	{
@@ -173,13 +176,16 @@ void ScannerGui::pBtLoginAccount()
 			QString Qmessage = QString::fromLocal8Bit(message);
 			QMessageBox::information(this, "提示", Qmessage, QMessageBox::Yes);
 		}
-		int num = userinfo["num"];
-		insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "测试中文数据");
-		userinfo["account"][num]["access_key"] = token;
-		userinfo["account"][num]["uid"] = uid;
-		userinfo["account"][num]["name"] = name;
-		userinfo["account"][num]["type"] = "崩坏3B服";
-		userinfo["num"] = num + 1;
+		else
+		{
+			int num = userinfo["num"];
+			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "测试中文数据");
+			userinfo["account"][num]["access_key"] = token;
+			userinfo["account"][num]["uid"] = uid;
+			userinfo["account"][num]["name"] = name;
+			userinfo["account"][num]["type"] = "崩坏3B服";
+			userinfo["num"] = num + 1;
+		}
 	}
 	updateUserinfo(userinfo.str());
 	ui.pBtLoginAccount->setEnabled(true);
