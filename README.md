@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/MHY_Scanner?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/MHY_Scanner/stargazers)
 </div>
 
-### **版本 - v0.0.3**
+### **版本 - v1.0.0**
 
 ### [国内蓝奏云下载链接](https://wwru.lanzouc.com/b04e121qj) 密码:afph
 
@@ -22,29 +22,22 @@
 | 官服| 暂无 | 官服 |
 | bilibili服 |  |  |
 
-## 使用说明(待更新)
-运行 BH3ScannerGui.exe
+## 使用说明
+下载解压后运行 ScannerGui。
 
-登录账号。
-
-首次使用登录后，用户信息会保存在config/config_private.json
-,后续会在启动时自动登录。
+添加账号，官服使用cookie登录，崩坏3B服账号密码。本地仅保存登录信息在config/uesrinfo.json，不保存cookie或密码。
 
 登陆后点击 **开始监视屏幕** 就可以自动识别任意显示在屏幕上的二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
 
-在当前直播间输入框输入需要抢二维码的直播间号，点击 **开始监视直播间** 就可以自动识别该直播间显示的二维码并自动登录，再次点击可以主动停止，在发生登录后也会停止。
+在当前直播间输入框输入需要抢二维码的直播间号，点击 **开始监视直播间** 就可以自动识别该直播间显示的二维码并自动登录，再次点击可以主动停止，在发生登录后不会停止，必须再次点击停止。
 
 直播间号是一串纯数字，比如你想抢的直播间的链接是 https://live.bilibili.com/6, 那么直播间号为6。
 
 目前不支持同时从屏幕自动获取二维码登录和从直播获取二维码登录，启动其中一种方法会自动停止另一方法。
 
-Config文件夹里的config_private.json是用户信息文件，不要随意手动更改，随意更改会导致崩溃。
-
 Cache文件夹里的output.flv是缓存的直播视频，程序退出后可以手动删除。
 
-如果启动失败建议检查网络链接是否正常，Config文件夹里是否存在config_private.json
-
-目前没有进行大量测试，如果有任何建议和发现的问题欢迎提Issues
+目前没有进行大量测试，如果有任何建议和发现的问题欢迎提Issues。
 
 ## 已知问题
 登录时游戏客户端内用户名不显示。

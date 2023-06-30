@@ -45,4 +45,5 @@ private:
     void loadUserinfo();
     std::string loadConfig();
     int getSelectedRowIndex();
+    bool checkDuplicates(const std::string uid);
 };

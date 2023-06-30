@@ -5,7 +5,7 @@ class OfficialApi :public HttpClient
 {
 public:
 	std::string getRole();
-	std::string getMultiTokenByLoginTicket();
+	int getMultiTokenByLoginTicket(std::string& data);
 	std::string getUserName(std::string uid);
 	int cookieParser(const std::string& cookieString);
 	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token);

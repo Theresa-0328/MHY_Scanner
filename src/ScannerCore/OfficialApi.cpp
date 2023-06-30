@@ -173,10 +173,14 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
         // 更新位置
         pos = endPos + 1;
     }
-    return 0;
+    if ((cookieMap.count("login_ticket") > 0) && (cookieMap.count("login_uid") > 0))
+    {
+        return 0;
+    }
+    return -1;
 }
 
-std::string OfficialApi::getMultiTokenByLoginTicket()
+int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 {
     std::string url = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket";
     std::map<std::string, std::string> params =
@@ -190,8 +194,16 @@ std::string OfficialApi::getMultiTokenByLoginTicket()
     GetRequest(s, url);
     json::Json j;
     j.parse(s);
-    data = j["data"]["list"][0]["token"];
-    return data;
+    if ((int)j["retcode"] == 0)
+    {
+        data = j["data"]["list"][0]["token"];
+        return 0;
+    }
+    else
+    {
+        data = j["message"];
+        return -1;
+    }
 }
 
 int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid,std::string& gameToken)
