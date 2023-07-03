@@ -101,8 +101,7 @@ int OfficialApi::confirmRequest(const std::string& UUID, const std::string& tick
     data["device"] = UUID;
     data["payload"] = payload;
     data["ticket"] = ticket;
-    std::string d = data.str();
-    PostRequest(s, url, d);
+    PostRequest(s, url, data.str());
     s = UTF8_To_string(s);
     json::Json j;
     j.parse(s);

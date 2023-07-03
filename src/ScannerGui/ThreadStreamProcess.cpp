@@ -93,16 +93,16 @@ void ThreadStreamProcess::serverType0()
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-			//待优化：注意到有1280 1980和60帧 30帧
-			// 二维码不一定在屏幕的正中央。
-			//cv::Mat crop_img = img(cv::Range(150, 720), cv::Range(200, 1186));
+			//可能有1280 1980和60帧 30帧,二维码不一定在屏幕的正中央。
+			//cv::Mat crop_img = img(cv::Range(300, 800), cv::Range(500, 1186));
+			//cv::Mat crop_img = img(cv::Rect(0, 0, 1280, 720));
 			if (!threadsacn.isRunning())
 			{
 				threadsacn.setImg(img);
 #ifdef _DEBUG
 				std::cout << "scan count "<< f++ << std::endl;
 				imshow("Video", img);
-				cv::waitKey(2);
+				cv::waitKey(1);
 #endif
 				threadsacn.start();
 			}
@@ -191,9 +191,6 @@ void ThreadStreamProcess::serverType1()
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-			//待优化：注意到有1280 1980和60帧 30帧
-			// 二维码不一定在屏幕的正中央。
-			//cv::Mat crop_img = img(cv::Range(150, 720), cv::Range(200, 1186));
 			if (!threadsacn.isRunning())
 			{
 				threadsacn.setImg(img);
