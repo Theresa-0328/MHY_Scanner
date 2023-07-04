@@ -41,8 +41,8 @@ public:
 	int FFmpegDecoder(int);
 	int OpenDecoder(int);
 	int SendPacket();
-	int ReceiveFrame(AVFrame* avframe);
-	int buffer(AVFrame* pFrameBGR);// 创建帧缓冲区
+	int ReceiveFrame();
+	int buffer();// 创建帧缓冲区
 	int swsctx(struct SwsContext** swsCtx);
 private:
 

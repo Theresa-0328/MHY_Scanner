@@ -45,10 +45,8 @@ void ThreadStreamProcess::serverType0()
 	QThread::msleep(3000);
 	VideoProcessor vp;
 	//错误判断
-	if (vp.OpenVideo("./Cache/output.flv") != 0)
-	{
-
-	}
+	int onum = vp.OpenVideo("./Cache/output.flv");
+	assert(onum==0);
 	int64_t latestTimestamp = av_gettime_relative();
 	
 	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
@@ -88,20 +86,20 @@ void ThreadStreamProcess::serverType0()
 			QThread::msleep(300);
 		}
 		{
-			vp.ReceiveFrame(vp.avframe);
+			vp.ReceiveFrame();
 			// 转换像素格式
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 			cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
 			//可能有1280 1980和60帧 30帧,二维码不一定在屏幕的正中央。
 			//cv::Mat crop_img = img(cv::Range(300, 800), cv::Range(500, 1186));
-			//cv::Mat crop_img = img(cv::Rect(0, 0, 1280, 720));
+			cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
 			if (!threadsacn.isRunning())
 			{
-				threadsacn.setImg(img);
+				threadsacn.setImg(_img);
 #ifdef _DEBUG
 				std::cout << "scan count "<< f++ << std::endl;
-				imshow("Video", img);
+				imshow("Video", _img);
 				cv::waitKey(1);
 #endif
 				threadsacn.start();
@@ -148,17 +146,6 @@ void ThreadStreamProcess::serverType1()
 
 	}
 	int64_t latestTimestamp = av_gettime_relative();
-
-	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
-	//{
-	//	int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
-	//		vp.avformatContext->streams[vp.index]->time_base, { 1, AV_TIME_BASE });
-	//	if (streamTimestamp > latestTimestamp)
-	//	{
-	//		latestTimestamp = streamTimestamp;
-	//	}
-	//}
-
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
 #ifdef _DEBUG
@@ -166,8 +153,6 @@ void ThreadStreamProcess::serverType1()
 #endif // _DEBUG
 	while (true)
 	{
-		//int64_t video_duration_sec = vp.avformatContext->duration / AV_TIME_BASE;
-		//size_t timeInSeconds = av_q2d(vp.avstream->time_base);
 		if (stopStream)
 		{
 #ifdef _DEBUG
@@ -186,7 +171,7 @@ void ThreadStreamProcess::serverType1()
 			QThread::msleep(300);
 		}
 		{
-			vp.ReceiveFrame(vp.avframe);
+			vp.ReceiveFrame();
 			// 转换像素格式
 			sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 				vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
