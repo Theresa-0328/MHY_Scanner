@@ -38,7 +38,7 @@ int VideoProcessor::OpenVideo(std::string path)
 	index = GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	FFmpegDecoder(index);
 	OpenDecoder(index);
-	buffer(pFrameBGR);
+	buffer();
 	swsctx(&swsCtx);
 	avstream = avformatContext->streams[index];
 	fps = av_q2d(avformatContext->streams[index]->r_frame_rate);
@@ -91,13 +91,13 @@ int VideoProcessor::SendPacket()
 	return avcodec_send_packet(avCodecContext, avPacket);
 }
 
-int VideoProcessor::ReceiveFrame(AVFrame* avframe)
+int VideoProcessor::ReceiveFrame()
 {
 	avcodec_receive_frame(avCodecContext, avframe);
 	return 0;
 }
 
-int VideoProcessor::buffer(AVFrame* avframe)
+int VideoProcessor::buffer()
 {
 	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, avCodecContext->width, avCodecContext->height, 1);
 	uint8_t* buffer = (uint8_t*)av_malloc(numBytes * sizeof(uint8_t));
