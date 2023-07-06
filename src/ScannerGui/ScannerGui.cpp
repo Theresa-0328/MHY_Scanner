@@ -528,7 +528,7 @@ std::string ScannerGui::loadConfig()
 			R"({
 	"auto_exit": false,
 	"auto_start": false,
-	"bh_ver":"6.7.0"
+	"bh_ver":"6.8.0"
 })";
 		createDefaultConfigFile(filePath, defaultConfig);
 		return defaultConfig;
