@@ -78,9 +78,9 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
 	ui.label_3->setText("v1.0.0");
-	if (configJson["auto_start"])
+	if (configJson["auto_start"]&& static_cast<int>(userinfo["last_account"])!=0)
 	{
-		countA = userinfo["last_account"];
+		countA = static_cast<int>(userinfo["last_account"]) - 1;
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
 		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
@@ -607,7 +607,7 @@ void ScannerGui::pBtSwitch()
 	if (nCurrentRow != -1)
 	{
 		//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
-		userinfo["last_account"] = nCurrentRow;
+		userinfo["last_account"] = nCurrentRow + 1;
 		updateUserinfo(userinfo.str());
 		QMessageBox::information(this, "设置成功！", "开启\"启动时自动监视屏幕\"将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
 		return;
@@ -628,19 +628,23 @@ void ScannerGui::pBtDeleteAccount()
 		return;
 	}
 	userinfo["num"] = (int)userinfo["num"] - 1;
-	//临时
-	userinfo["account"][nCurrentRow].clear();
+	//判断删除的账号是否是启动默认账号
+	if (static_cast<int>(userinfo["last_account"]) == countA+1)
+	{
+		userinfo["last_account"] = 0;
+	}
+	userinfo["account"].remove(countA);
 	std::string str = userinfo.str();
 	userinfo.parse(str);
 #ifdef _DEBUG
 	std::cout << str << std::endl;
 #endif // _DEBUG
-
 	updateUserinfo(str);
+	ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 	ui.tableWidget->removeRow(nCurrentRow);
 	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
-} 
+}
