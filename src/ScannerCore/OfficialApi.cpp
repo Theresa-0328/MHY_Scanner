@@ -123,7 +123,6 @@ std::string OfficialApi::getUserName(std::string uid)
     j.parse(re);
     re = j["data"]["user_info"]["nickname"];
     return re;
-
 }
 
 //获取账号上所有的角色
