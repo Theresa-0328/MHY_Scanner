@@ -73,7 +73,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	//加载默认值
 	Mihoyosdk m;
 	m.setBHVer(configJson["bh_ver"]);
-	m.setOAServer();
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
