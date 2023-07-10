@@ -350,7 +350,7 @@ void ScannerGui::showEvent(QShowEvent* event)
 void ScannerGui::islogin(const bool& b)
 {
 	t1.stop();
-	t2.stop();
+	//t2.stop();
 	if (b)
 	{
 		if (configJson["auto_exit"])
@@ -358,13 +358,13 @@ void ScannerGui::islogin(const bool& b)
 			exit(0);
 		}
 		ui.pBtstartScreen->setText("开始监视屏幕");
-		ui.pBtStream->setText("开始监视直播间");
+		//ui.pBtStream->setText("开始监视直播间");
 		QMessageBox::information(this, "提示", "扫码成功！", QMessageBox::Yes);
 	}
 	else
 	{
 		ui.pBtstartScreen->setText("开始监视屏幕");
-		ui.pBtStream->setText("开始监视直播间");
+		//ui.pBtStream->setText("开始监视直播间");
 		QMessageBox::information(this, "提示", "扫码失败", QMessageBox::Yes);
 	}
 }
@@ -478,11 +478,12 @@ void ScannerGui::loadUserinfo()
 	if (std::filesystem::exists(filePath))
 	{
 		std::string configContent = readConfigFile(filePath);
+		//if config file error？
 		userinfo.parse(configContent);
 	}
 	else
 	{
-		// 默认值
+		// default
 		std::string defaultConfig = R"({"account":[],"last_account":0,"num":0})";
 		createDefaultConfigFile(filePath, defaultConfig);
 		userinfo.parse(defaultConfig);
@@ -523,7 +524,7 @@ std::string ScannerGui::loadConfig()
 	else
 	{
 
-		// 默认值
+		// default
 		std::string defaultConfig =
 			R"({
 	"auto_exit": false,
