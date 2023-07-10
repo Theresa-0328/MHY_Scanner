@@ -134,6 +134,7 @@ void ThreadStreamProcess::serverType1()
 	td.downloadInit(url);
 	td.start();
 	Mihoyosdk m;
+	m.setOAServer();
 	std::string LoginData;
 	LoginData = m.verify(std::stoi(uid), gameToken);
 	m.setUserName(uName);
@@ -214,10 +215,6 @@ void ThreadStreamProcess::run()
 	if (serverType == 1)
 	{
 		serverType1();
-		return;
-	}
-	else
-	{
 		return;
 	}
 }
