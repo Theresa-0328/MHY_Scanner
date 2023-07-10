@@ -362,9 +362,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+##
 *.flv
 notes.txt
 *.dll
 /src/ScannerGui/Config/userinfo.json
 /3rdparty/opencv/include
 /3rdparty/opencv/staticlib
+/src/ScannerGui/Config/userinfo_dev.json
