@@ -42,11 +42,12 @@ void ThreadStreamProcess::serverType0()
 	td.start();
 	OfficialApi o;
 	ThreadSacn threadsacn;
-	QThread::msleep(3000);
 	VideoProcessor vp;
 	//错误判断
-	int onum = vp.OpenVideo("./Cache/output.flv");
-	assert(onum==0);
+	if (vp.OpenVideo("./Cache/output.flv") != 0)
+	{
+	}
+	QThread::msleep(3000);
 	int64_t latestTimestamp = av_gettime_relative();
 	
 	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
@@ -134,7 +135,6 @@ void ThreadStreamProcess::serverType1()
 	td.downloadInit(url);
 	td.start();
 	Mihoyosdk m;
-	m.setOAServer();
 	std::string LoginData;
 	LoginData = m.verify(std::stoi(uid), gameToken);
 	m.setUserName(uName);
@@ -144,7 +144,7 @@ void ThreadStreamProcess::serverType1()
 	//错误判断
 	if (vp.OpenVideo("./Cache/output.flv") != 0)
 	{
-
+		throw std::logic_error("parse number error");
 	}
 	int64_t latestTimestamp = av_gettime_relative();
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);

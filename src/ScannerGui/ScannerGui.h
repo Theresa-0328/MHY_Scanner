@@ -47,3 +47,11 @@ private:
     int getSelectedRowIndex();
     bool checkDuplicates(const std::string uid);
 };
+
+class OnlineUpdate :public QThread
+{
+public:
+    OnlineUpdate() = default;
+    void run();
+    ~OnlineUpdate();
+};

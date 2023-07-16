@@ -28,6 +28,10 @@ ScannerGui::ScannerGui(QWidget* parent)
 	//加载软件设置
 	std::string config = loadConfig();
 	configJson.parse(config);
+	Mihoyosdk m;
+	m.setBHVer(configJson["bh_ver"]);
+	OnlineUpdate onlineupdate;
+	onlineupdate.start();
 
 	//加载用户信息
 	loadUserinfo();
@@ -71,8 +75,6 @@ ScannerGui::ScannerGui(QWidget* parent)
 	}
 
 	//加载默认值
-	Mihoyosdk m;
-	m.setBHVer(configJson["bh_ver"]);
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
@@ -349,7 +351,7 @@ void ScannerGui::showEvent(QShowEvent* event)
 void ScannerGui::islogin(const bool& b)
 {
 	t1.stop();
-	//t2.stop();
+	t2.stop();
 	if (b)
 	{
 		if (configJson["auto_exit"])
@@ -647,4 +649,15 @@ void ScannerGui::pBtDeleteAccount()
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
+}
+
+void OnlineUpdate::run()
+{
+	Mihoyosdk m;
+	m.setOAServer();
+}
+
+OnlineUpdate::~OnlineUpdate()
+{
+	wait();
 }

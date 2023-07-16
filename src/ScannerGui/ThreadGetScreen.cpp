@@ -78,7 +78,6 @@ void ThreadGetScreen::serverType1()
 	cv::Mat img;
 	std::string LoginData;
 	Mihoyosdk m;
-	m.setOAServer();
 	LoginData = m.verify(std::stoi(uid), gameToken);
 	m.setUserName(uname);
 	while (!Exit)
