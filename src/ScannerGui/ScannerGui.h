@@ -7,6 +7,14 @@
 #include "ThreadStreamProcess.h"
 #include "BiliLiveApi.h"
 
+class OnlineUpdate :public QThread
+{
+public:
+    OnlineUpdate() = default;
+    void run();
+    ~OnlineUpdate();
+};
+
 class ScannerGui 
     : public QMainWindow
 {
@@ -46,12 +54,5 @@ private:
     std::string loadConfig();
     int getSelectedRowIndex();
     bool checkDuplicates(const std::string uid);
-};
-
-class OnlineUpdate :public QThread
-{
-public:
-    OnlineUpdate() = default;
-    void run();
-    ~OnlineUpdate();
+    OnlineUpdate o;
 };
