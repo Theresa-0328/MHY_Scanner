@@ -30,8 +30,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	configJson.parse(config);
 	Mihoyosdk m;
 	m.setBHVer(configJson["bh_ver"]);
-	OnlineUpdate onlineupdate;
-	onlineupdate.start();
+	o.start();
 
 	//加载用户信息
 	loadUserinfo();
