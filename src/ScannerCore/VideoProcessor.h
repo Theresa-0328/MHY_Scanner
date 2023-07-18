@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 #include <string>
-#include <thread>
-#include <mutex>
 #include <opencv2/opencv.hpp>
 
 extern "C"

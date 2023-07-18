@@ -1,5 +1,5 @@
 ﻿#include "VideoProcessor.h"
-//Video Snap
+
 VideoProcessor::VideoProcessor()
 {
 	//av_log_set_level(AV_LOG_FATAL);

@@ -19,8 +19,8 @@ public:
 signals:
 	void loginResults(const bool& b);
 private:
-	void serverType0();
-	void serverType1();
+	void LoginOfficial();
+	void LoginBiliBili();
 	bool stopStream =false;
 	QMutex m_mux;
 	std::string uid;
