@@ -3,6 +3,17 @@
 #include <QMutex>
 #include "ScreenScan.h"
 #include "Mihoyosdk.h"
+
+class ServerType
+{
+public:
+	enum Type
+	{
+		Official = 0,
+		BiliBili
+	};
+};
+
 class ThreadGetScreen
 	: public QThread
 {
@@ -11,19 +22,20 @@ class ThreadGetScreen
 public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
-	int serverType = 0;
-	void Init0(const std::string uid, const std::string token);
-	void Init1(const std::string uid, const std::string token, const std::string uname);
+	void SetLoginInfo(const std::string uid, const std::string token);
+	void SetLoginInfo(const std::string uid, const std::string token, const std::string uname);
 	void run();
 	void stop();
+	void setServerType(ServerType::Type servertype);
 signals:
 	void loginResults(const bool& b);
 private:
-	void serverType0();
-	void serverType1();
+	void LoginOfficial();
+	void LoginBiliBili();
 	bool Exit = true;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
 	std::string uname;
+	ServerType::Type servertype;
 };

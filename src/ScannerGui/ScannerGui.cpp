@@ -247,8 +247,8 @@ void ScannerGui::pBtstartScreen()
 		{
 			failure();
 		}
-		t1.serverType = 0;
-		t1.Init0(uid, gameToken);
+		t1.setServerType(ServerType::Type::Official);
+		t1.SetLoginInfo(uid, gameToken);
 		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
@@ -264,8 +264,8 @@ void ScannerGui::pBtstartScreen()
 		{
 			failure();
 		}
-		t1.serverType = 1;
-		t1.Init1(uid, stoken, name);
+		t1.setServerType(ServerType::Type::BiliBili);
+		t1.SetLoginInfo(uid, stoken, name);
 		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
@@ -587,7 +587,6 @@ void ScannerGui::failure()
 	messageBox->setWindowTitle("提示");
 	messageBox->setIcon(QMessageBox::Information);
 	messageBox->show();
-	//delete messageBox;
 }
 
 void ScannerGui::getInfo(int x, int y)

@@ -35,7 +35,7 @@ void ThreadStreamProcess::Init1(const std::string uid, const std::string gameTok
 }
 
 
-void ThreadStreamProcess::serverType0()
+void ThreadStreamProcess::LoginOfficial()
 {
 	ThreadDownload td;
 	td.downloadInit(url);
@@ -129,7 +129,7 @@ void ThreadStreamProcess::serverType0()
 	td.stop();
 }
 
-void ThreadStreamProcess::serverType1()
+void ThreadStreamProcess::LoginBiliBili()
 {
 	ThreadDownload td;
 	td.downloadInit(url);
@@ -209,12 +209,12 @@ void ThreadStreamProcess::run()
 	stopStream = false;
 	if (serverType == 0)
 	{
-		serverType0();
+		LoginOfficial();
 		return;
 	}
 	if (serverType == 1)
 	{
-		serverType1();
+		LoginBiliBili();
 		return;
 	}
 }

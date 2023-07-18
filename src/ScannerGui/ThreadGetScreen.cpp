@@ -20,20 +20,20 @@ ThreadGetScreen::~ThreadGetScreen()
 }
 
 
-void ThreadGetScreen::Init0(const std::string uid, const std::string token)
+void ThreadGetScreen::SetLoginInfo(const std::string uid, const std::string token)
 {
 	this->uid = uid;
 	this->gameToken = token;
 }
 
-void ThreadGetScreen::Init1(const std::string uid, const std::string token, const std::string uname)
+void ThreadGetScreen::SetLoginInfo(const std::string uid, const std::string token, const std::string uname)
 {
 	this->uid = uid;
 	this->gameToken = token;
 	this->uname = uname;
 }
 
-void ThreadGetScreen::serverType0()
+void ThreadGetScreen::LoginOfficial()
 {
 	ThreadSacn threadsacn;
 	ScreenScan screenshot;
@@ -42,7 +42,6 @@ void ThreadGetScreen::serverType0()
 	while (!Exit)
 	{
 		img = screenshot.getScreenshot();
-		//img = screenshot.getScreenshot(600,250,600,600);
 		threadsacn.setImg(img);
 		threadsacn.start();
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
@@ -71,7 +70,7 @@ void ThreadGetScreen::serverType0()
 	return;
 }
 
-void ThreadGetScreen::serverType1()
+void ThreadGetScreen::LoginBiliBili()
 {
 	ThreadSacn threadsacn;
 	ScreenScan screenshot;
@@ -91,27 +90,32 @@ void ThreadGetScreen::serverType1()
 			emit loginResults(code == 0);
 			return;
 		}
-		cv::waitKey(200);
+		cv::waitKey(222);
 	}
 }
 
 void ThreadGetScreen::run()
 {
 	Exit = false;
-	if (serverType == 0)
+	switch (servertype)
 	{
-		serverType0();
-		return;
+	case ServerType::Official:
+		LoginOfficial();
+		break;
+	case ServerType::BiliBili:
+		LoginBiliBili();
+		break;
+	default:
+		break;
 	}
-	if (serverType == 1)
-	{
-		serverType1();
-		return;
-	}
-	return;
 }
 
 void ThreadGetScreen::stop()
 {
 	Exit = true;
+}
+
+void ThreadGetScreen::setServerType(ServerType::Type servertype)
+{
+	this->servertype = servertype;
 }
