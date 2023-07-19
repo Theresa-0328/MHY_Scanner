@@ -358,13 +358,13 @@ void ScannerGui::islogin(const bool& b)
 			exit(0);
 		}
 		ui.pBtstartScreen->setText("开始监视屏幕");
-		//ui.pBtStream->setText("开始监视直播间");
+		ui.pBtStream->setText("开始监视直播间");
 		QMessageBox::information(this, "提示", "扫码成功！", QMessageBox::Yes);
 	}
 	else
 	{
 		ui.pBtstartScreen->setText("开始监视屏幕");
-		//ui.pBtStream->setText("开始监视直播间");
+		ui.pBtStream->setText("开始监视直播间");
 		QMessageBox::information(this, "提示", "扫码失败", QMessageBox::Yes);
 	}
 }
