@@ -28,5 +28,5 @@ private:
 	std::string uid;
 	std::string gameToken;
 	std::string uname;
-	ServerType::Type servertype;
+	ServerType::Type servertype = ServerType::Type::UNKNOW;
 };

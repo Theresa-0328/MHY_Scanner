@@ -3,7 +3,6 @@
 
 ThreadGetScreen::ThreadGetScreen(QObject* parent)
 	: QThread(parent)
-	,servertype(ServerType::Type::UNKNOW)
 {
 
 }
