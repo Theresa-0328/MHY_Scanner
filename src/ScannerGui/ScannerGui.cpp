@@ -248,7 +248,7 @@ void ScannerGui::pBtstartScreen()
 			failure();
 		}
 		t1.setServerType(ServerType::Type::Official);
-		t1.SetLoginInfo(uid, gameToken);
+		t1.setLoginInfo(uid, gameToken);
 		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
@@ -265,7 +265,7 @@ void ScannerGui::pBtstartScreen()
 			failure();
 		}
 		t1.setServerType(ServerType::Type::BiliBili);
-		t1.SetLoginInfo(uid, stoken, name);
+		t1.setLoginInfo(uid, stoken, name);
 		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
@@ -312,8 +312,8 @@ void ScannerGui::pBtStream()
 		{
 			failure();
 		}
-		t2.serverType = 0;
-		t2.Init0(uid, gameToken);
+		t2.setServerType(ServerType::Type::Official);
+		t2.setLoginInfo(uid, gameToken);
 		t2.start();
 		ui.pBtStream->setText("监视直播二维码中");
 	}
@@ -329,8 +329,8 @@ void ScannerGui::pBtStream()
 		{
 			failure();
 		}
-		t2.serverType = 1;
-		t2.Init1(uid, stoken, name);
+		t2.setServerType(ServerType::Type::BiliBili);
+		t2.setLoginInfo(uid, stoken, name);
 		t2.start();
 		ui.pBtStream->setText("监视直播二维码中");
 	}
@@ -523,8 +523,6 @@ std::string ScannerGui::loadConfig()
 	}
 	else
 	{
-
-		// default
 		std::string defaultConfig =
 			R"({
 	"auto_exit": false,
@@ -541,7 +539,6 @@ std::string ScannerGui::readConfigFile(const std::string& filePath)
 	std::ifstream file(filePath);
 	if (file.is_open())
 	{
-		// 将文件内容读取到字符串
 		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 		file.close();
 		std::cout << "读取配置文件成功。\n";

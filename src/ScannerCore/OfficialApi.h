@@ -1,6 +1,19 @@
 #pragma once
 #include "HttpClient.h"
 #include <unordered_map>
+
+class GameType
+{
+public:
+	enum Type
+	{
+		UNKNOW = 0,
+		Honkai3 = 1,
+		Genshin = 4,
+		StarRail = 8
+	};
+};
+
 class OfficialApi :public HttpClient
 {
 public:
@@ -11,13 +24,14 @@ public:
 	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token);
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	std::string getUid();
+	void setGameType(GameType::Type gameType);
 	int gameType;
 private:
+	GameType::Type game_type = GameType::Type::UNKNOW;
 	int confirmRequest(const std::string& UUID, const std::string& ticket, 
 		const std::string& uid, const std::string& token, const std::string& url);
 	std::string generateUUID();
 	std::string getDS();
-	std::string data;
 	std::unordered_map<std::string, std::string> cookieMap;
 	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string app_version = "2.38.1";

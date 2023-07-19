@@ -1,5 +1,4 @@
 ﻿#include "ThreadStreamProcess.h"
-#include "ThreadSacn.h"
 #include "ThreadDownload.h"
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
@@ -21,13 +20,13 @@ ThreadStreamProcess::~ThreadStreamProcess()
 	this->wait();
 }
 
-void ThreadStreamProcess::Init0(std::string uid, std::string gameToken)
+void ThreadStreamProcess::setLoginInfo(std::string uid, std::string gameToken)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
 }
 
-void ThreadStreamProcess::Init1(const std::string uid, const std::string gameToken, const std::string uName)
+void ThreadStreamProcess::setLoginInfo(const std::string uid, const std::string gameToken, const std::string uName)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
@@ -43,13 +42,12 @@ void ThreadStreamProcess::LoginOfficial()
 	OfficialApi o;
 	ThreadSacn threadsacn;
 	VideoProcessor vp;
+	QThread::msleep(5000);
 	//错误判断
 	if (vp.OpenVideo("./Cache/output.flv") != 0)
 	{
 	}
-	QThread::msleep(3000);
 	int64_t latestTimestamp = av_gettime_relative();
-	
 	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
 	//{
 	//	int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
@@ -59,7 +57,6 @@ void ThreadStreamProcess::LoginOfficial()
 	//		latestTimestamp = streamTimestamp;
 	//	}
 	//}
-
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
 #ifdef _DEBUG
@@ -108,7 +105,7 @@ void ThreadStreamProcess::LoginOfficial()
 		}
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			o.gameType = 1;
+			o.setGameType(GameType::Type::Honkai3);
 			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
 			emit loginResults(code == 0);
 			continue;
@@ -119,7 +116,7 @@ void ThreadStreamProcess::LoginOfficial()
 		//}
 		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
-			o.gameType = 8;
+			o.setGameType(GameType::Type::StarRail);
 			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
 			emit loginResults(code == 0);
 			continue;
@@ -207,14 +204,20 @@ void ThreadStreamProcess::stop()
 void ThreadStreamProcess::run()
 {
 	stopStream = false;
-	if (serverType == 0)
+	switch (servertype)
 	{
+	case ServerType::Official:
 		LoginOfficial();
-		return;
-	}
-	if (serverType == 1)
-	{
+		break;
+	case ServerType::BiliBili:
 		LoginBiliBili();
-		return;
+		break;
+	default:
+		break;
 	}
+}
+
+void ThreadStreamProcess::setServerType(ServerType::Type servertype)
+{
+	this->servertype = servertype;
 }
