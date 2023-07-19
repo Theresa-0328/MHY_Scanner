@@ -19,3 +19,14 @@ private:
 	cv::Mat img;
 	QRScanner qs;
 };
+
+class ServerType
+{
+public:
+	enum Type
+	{
+		UNKNOW,
+		Official,
+		BiliBili
+	};
+};

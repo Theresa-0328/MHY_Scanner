@@ -1,9 +1,9 @@
 ﻿#include "ThreadGetScreen.h"
-#include "ThreadSacn.h"
 #include <OfficialApi.h>
 
 ThreadGetScreen::ThreadGetScreen(QObject* parent)
 	: QThread(parent)
+	,servertype(ServerType::Type::UNKNOW)
 {
 
 }
@@ -20,13 +20,13 @@ ThreadGetScreen::~ThreadGetScreen()
 }
 
 
-void ThreadGetScreen::SetLoginInfo(const std::string uid, const std::string token)
+void ThreadGetScreen::setLoginInfo(const std::string uid, const std::string token)
 {
 	this->uid = uid;
 	this->gameToken = token;
 }
 
-void ThreadGetScreen::SetLoginInfo(const std::string uid, const std::string token, const std::string uname)
+void ThreadGetScreen::setLoginInfo(const std::string uid, const std::string token, const std::string uname)
 {
 	this->uid = uid;
 	this->gameToken = token;
@@ -46,21 +46,17 @@ void ThreadGetScreen::LoginOfficial()
 		threadsacn.start();
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			o.gameType = 1;
+			o.setGameType(GameType::Type::Honkai3);
 			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
 			emit loginResults(code == 0);
 			return;
 		}
 		//if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		//{
-		//	o.gameType = 8;
-		//	int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
-		//	emit loginResults(code == 0);
-		//	return;
 		//}
 		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
-			o.gameType = 8;
+			o.setGameType(GameType::Type::StarRail);
 			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
 			emit loginResults(code == 0);
 			return;

@@ -4,18 +4,19 @@
 #include "ScreenScan.h"
 #include "QRScanner.h"
 #include "VideoProcessor.h"
+#include "ThreadSacn.h"
 class ThreadStreamProcess  : public QThread
 {
 	Q_OBJECT
 public:
 	ThreadStreamProcess(QObject *parent = nullptr);
 	~ThreadStreamProcess();
-	void Init0(const std::string uid, const std::string gameToken);
-	void Init1(const std::string uid, const std::string gameToken, const std::string uName);
+	void setLoginInfo(const std::string uid, const std::string gameToken);
+	void setLoginInfo(const std::string uid, const std::string gameToken, const std::string uName);
+	void setServerType(ServerType::Type servertype);
 	void stop();
 	void run();
 	std::string url;
-	int serverType;
 signals:
 	void loginResults(const bool& b);
 private:
@@ -26,4 +27,5 @@ private:
 	std::string uid;
 	std::string gameToken;
 	std::string uName;
+	ServerType::Type servertype;
 };
