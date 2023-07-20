@@ -264,7 +264,7 @@ void ScannerGui::pBtstartScreen()
 		{
 			failure();
 		}
-		t1.setServerType(ServerType::Type::BiliBili);
+		t1.setServerType(ServerType::Type::BH3_BiliBili);
 		t1.setLoginInfo(uid, stoken, name);
 		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
@@ -329,7 +329,7 @@ void ScannerGui::pBtStream()
 		{
 			failure();
 		}
-		t2.setServerType(ServerType::Type::BiliBili);
+		t2.setServerType(ServerType::Type::BH3_BiliBili);
 		t2.setLoginInfo(uid, stoken, name);
 		t2.start();
 		ui.pBtStream->setText("监视直播二维码中");

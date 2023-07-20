@@ -46,7 +46,7 @@ void ThreadGetScreen::LoginOfficial()
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::Honkai3);
-			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
+			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
 			emit loginResults(code == 0);
 			return;
 		}
@@ -56,7 +56,7 @@ void ThreadGetScreen::LoginOfficial()
 		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::StarRail);
-			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
+			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
 			emit loginResults(code == 0);
 			return;
 		}
@@ -65,14 +65,13 @@ void ThreadGetScreen::LoginOfficial()
 	return;
 }
 
-void ThreadGetScreen::LoginBiliBili()
+void ThreadGetScreen::LoginBH3BiliBili()
 {
 	ThreadSacn threadsacn;
 	ScreenScan screenshot;
 	cv::Mat img;
-	std::string LoginData;
 	Mihoyosdk m;
-	LoginData = m.verify(std::stoi(uid), gameToken);
+	const std::string LoginData = m.verify(uid, gameToken);
 	m.setUserName(uname);
 	while (!Exit)
 	{
@@ -81,7 +80,7 @@ void ThreadGetScreen::LoginBiliBili()
 		threadsacn.start();
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
-			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
+			const int code = m.scanCheck(threadsacn.getTicket(), LoginData);
 			emit loginResults(code == 0);
 			return;
 		}
@@ -97,8 +96,8 @@ void ThreadGetScreen::run()
 	case ServerType::Official:
 		LoginOfficial();
 		break;
-	case ServerType::BiliBili:
-		LoginBiliBili();
+	case ServerType::BH3_BiliBili:
+		LoginBH3BiliBili();
 		break;
 	default:
 		break;

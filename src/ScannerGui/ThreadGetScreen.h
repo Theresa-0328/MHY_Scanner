@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <QThread>
 #include <QMutex>
+#include <initializer_list>
 #include "ScreenScan.h"
 #include "Mihoyosdk.h"
 #include "ThreadSacn.h"
@@ -8,7 +9,6 @@
 class ThreadGetScreen
 	: public QThread
 {
-
 	Q_OBJECT
 public:
 	ThreadGetScreen(QObject* parent);
@@ -22,7 +22,7 @@ signals:
 	void loginResults(const bool& b);
 private:
 	void LoginOfficial();
-	void LoginBiliBili();
+	void LoginBH3BiliBili();
 	bool Exit = true;
 	QMutex m_mux;
 	std::string uid;
