@@ -7,7 +7,6 @@
 class ThreadSacn  : public QThread
 {
 	Q_OBJECT
-
 public:
 	ThreadSacn();
 	~ThreadSacn();
@@ -25,8 +24,8 @@ class ServerType
 public:
 	enum Type
 	{
-		UNKNOW,
-		Official,
-		BiliBili
+		UNKNOW = 0,
+		Official = 1,
+		BH3_BiliBili = 2
 	};
 };

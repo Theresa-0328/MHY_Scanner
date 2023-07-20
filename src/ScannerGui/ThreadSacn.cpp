@@ -18,14 +18,11 @@ void ThreadSacn::setImg(cv::Mat img)
 	this->img = img;
 }
 
+//调用前确保成员变量uqrcode存在ticket
 std::string ThreadSacn::getTicket()
 {
-	size_t pos = uqrcode.find("ticket=");
-	if (pos != std::string::npos)
-	{
-		return uqrcode.substr(pos + 7);
-	}
-	return "";
+	const size_t length = uqrcode.length();
+	return uqrcode.substr(length - 24);
 }
 
 void ThreadSacn::run()

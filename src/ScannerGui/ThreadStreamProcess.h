@@ -21,7 +21,7 @@ signals:
 	void loginResults(const bool& b);
 private:
 	void LoginOfficial();
-	void LoginBiliBili();
+	void LoginBH3BiliBili();
 	bool stopStream =false;
 	QMutex m_mux;
 	std::string uid;

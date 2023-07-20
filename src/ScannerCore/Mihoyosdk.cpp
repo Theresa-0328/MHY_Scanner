@@ -10,12 +10,12 @@ Mihoyosdk::Mihoyosdk()
 	
 }
 
-std::string Mihoyosdk::verify(const int uid, const std::string access_key)
+std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_key)
 {
 #ifdef _DEBUG
 	std::cout << "verify with uid = " << uid << std::endl;
 #endif // _DEBUG
-	verifyData["uid"] = std::to_string(uid);
+	verifyData["uid"] = uid;
 	verifyData["access_key"] = access_key;
 	const std::string bodyDataS = "{\\\"access_key\\\":\\\"" + verifyData["access_key"] + "\\\""",\\\"uid\\\":" + verifyData["uid"] + "}";
 	json::Json body;

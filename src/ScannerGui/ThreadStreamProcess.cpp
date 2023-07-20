@@ -126,14 +126,13 @@ void ThreadStreamProcess::LoginOfficial()
 	td.stop();
 }
 
-void ThreadStreamProcess::LoginBiliBili()
+void ThreadStreamProcess::LoginBH3BiliBili()
 {
 	ThreadDownload td;
 	td.downloadInit(url);
 	td.start();
 	Mihoyosdk m;
-	std::string LoginData;
-	LoginData = m.verify(std::stoi(uid), gameToken);
+	const std::string LoginData = m.verify(uid, gameToken);
 	m.setUserName(uName);
 	ThreadSacn threadsacn;
 	QThread::msleep(3000);
@@ -209,8 +208,8 @@ void ThreadStreamProcess::run()
 	case ServerType::Official:
 		LoginOfficial();
 		break;
-	case ServerType::BiliBili:
-		LoginBiliBili();
+	case ServerType::BH3_BiliBili:
+		LoginBH3BiliBili();
 		break;
 	default:
 		break;
