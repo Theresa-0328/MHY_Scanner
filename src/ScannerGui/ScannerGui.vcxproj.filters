@@ -81,10 +81,10 @@
     <QtMoc Include="ThreadStreamProcess.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="ThreadSacn.h">
+    <QtMoc Include="ThreadLocalServer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="ThreadLocalServer.h">
+    <QtMoc Include="ThreadSacn.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

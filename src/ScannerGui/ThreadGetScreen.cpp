@@ -18,7 +18,6 @@ ThreadGetScreen::~ThreadGetScreen()
 	this->wait();
 }
 
-
 void ThreadGetScreen::setLoginInfo(const std::string uid, const std::string token)
 {
 	this->uid = uid;
@@ -38,6 +37,7 @@ void ThreadGetScreen::LoginOfficial()
 	ScreenScan screenshot;
 	cv::Mat img;
 	OfficialApi o;
+	const std::string uuid = o.generateUUID();
 	while (!Exit)
 	{
 		img = screenshot.getScreenshot();
@@ -46,7 +46,7 @@ void ThreadGetScreen::LoginOfficial()
 		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::Honkai3);
-			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
+			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
 			emit loginResults(code == 0);
 			return;
 		}
@@ -56,7 +56,7 @@ void ThreadGetScreen::LoginOfficial()
 		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::StarRail);
-			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken);
+			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
 			emit loginResults(code == 0);
 			return;
 		}

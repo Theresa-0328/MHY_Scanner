@@ -15,14 +15,14 @@ void OfficialApi::setGameType(GameType::Type gameType)
     game_type = gameType;
 }
 
-std::string OfficialApi::generateUUID() 
+std::string OfficialApi::generateUUID()
 {
     std::random_device rd;
     std::default_random_engine generator(rd());
     std::uniform_int_distribution<int> distribution(0, 15);
 
     std::stringstream ss;
-    for (int i = 0; i < 32; ++i) 
+    for (int i = 0; i < 32; ++i)
     {
         int randomDigit = distribution(generator);
         ss << std::hex << randomDigit;
@@ -49,20 +49,19 @@ std::string OfficialApi::getDS()
     int upper_bound = 200000;
     std::uniform_int_distribution<int> dist(lower_bound, upper_bound);
     std::string rand = std::to_string(dist(gen));
-    std::string m = "salt=" +salt +"&t=" + time_now +"&r=" + rand;
+    std::string m = "salt=" + salt + "&t=" + time_now + "&r=" + rand;
     CryptoKit::Md5(m);
-    return time_now+","+rand +"," + m;
+    return time_now + "," + rand + "," + m;
 }
 
 //扫码请求
-int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token)
+int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid)
 {
     std::string scanUrl;
     std::string confirmUrl;
-    const std::string& UUID = generateUUID();
     json::Json payload;
     payload["app_id"] = game_type;
-    payload["device"] = UUID;
+    payload["device"] = uuid;
     payload["ticket"] = ticket;
     switch (game_type)
     {
@@ -82,14 +81,14 @@ int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, 
         break;
     }
     std::string s;
-    PostRequest(s, scanUrl,payload.str());
+    PostRequest(s, scanUrl, payload.str());
     json::Json j;
     j.parse(s);
     if ((int)j["retcode"] != 0)
     {
         return -1;
     }
-    if (confirmRequest(UUID,ticket,uid,token,confirmUrl) != 0)
+    if (confirmRequest(uuid, ticket, uid, token, confirmUrl) != 0)
     {
         return -2;
     }
@@ -97,13 +96,13 @@ int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, 
 }
 
 //扫码确认
-int OfficialApi::confirmRequest(const std::string& UUID, const std::string& ticket, 
-    const std::string& uid, const std::string& token,const std::string& url)
+int OfficialApi::confirmRequest(const std::string& UUID, const std::string& ticket,
+    const std::string& uid, const std::string& token, const std::string& url)
 {
     std::string s;
     json::Json payload;
     payload["proto"] = "Account";
-    payload["raw"] = "{\\\"uid\\\":\\\""+uid+"\\\",\\\"token\\\":\\\""+ token+"\\\"}";
+    payload["raw"] = "{\\\"uid\\\":\\\"" + uid + "\\\",\\\"token\\\":\\\"" + token + "\\\"}";
     json::Json data;
     data["app_id"] = game_type;
     data["device"] = UUID;
@@ -156,18 +155,18 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
     }
     // 切割 cookie 字符串
     size_t pos = 0;
-    while (pos < cookieString.length()) 
+    while (pos < cookieString.length())
     {
         // 查找键值对的结束位置
         size_t endPos = cookieString.find(';', pos);
-        if (endPos == std::string::npos) 
+        if (endPos == std::string::npos)
         {
             endPos = cookieString.length();
         }
 
         // 提取键值对
         size_t equalPos = cookieString.find('=', pos);
-        if (equalPos != std::string::npos && equalPos < endPos) 
+        if (equalPos != std::string::npos && equalPos < endPos)
         {
             std::string key = cookieString.substr(pos, equalPos - pos);
             key.erase(std::remove(key.begin(), key.end(), ' '), key.end());
@@ -213,7 +212,7 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
     }
 }
 
-int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid,std::string& gameToken)
+int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken)
 {
     std::string url = "https://api-takumi.mihoyo.com/auth/api/getGameToken";
     std::map<std::string, std::string> params =

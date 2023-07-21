@@ -21,21 +21,20 @@ public:
 	int getMultiTokenByLoginTicket(std::string& data);
 	std::string getUserName(std::string uid);
 	int cookieParser(const std::string& cookieString);
-	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token);
+	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	std::string getUid();
 	void setGameType(GameType::Type gameType);
-	int gameType;
+	std::string generateUUID();
 private:
 	GameType::Type game_type = GameType::Type::UNKNOW;
-	int confirmRequest(const std::string& UUID, const std::string& ticket, 
+	int confirmRequest(const std::string& UUID, const std::string& ticket,
 		const std::string& uid, const std::string& token, const std::string& url);
-	std::string generateUUID();
 	std::string getDS();
 	std::unordered_map<std::string, std::string> cookieMap;
 	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string app_version = "2.38.1";
-	std::map<std::string, std::string> headers = 
+	std::map<std::string, std::string> headers =
 	{
 		{"x-rpc-client_type", "2"},
 		{"x-rpc-app_version", app_version},
