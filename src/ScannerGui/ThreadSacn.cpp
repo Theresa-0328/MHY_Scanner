@@ -13,12 +13,11 @@ ThreadSacn::~ThreadSacn()
 	this->wait();
 }
 
-void ThreadSacn::setImg(cv::Mat img)
+void ThreadSacn::setImg(const cv::Mat& img)
 {
 	this->img = img;
 }
 
-//调用前确保成员变量uqrcode存在ticket
 std::string ThreadSacn::getTicket()
 {
 	const size_t length = uqrcode.length();

@@ -4,21 +4,6 @@
 #include <string>
 #include "QRScanner.h"
 
-class ThreadSacn  : public QThread
-{
-	Q_OBJECT
-public:
-	ThreadSacn();
-	~ThreadSacn();
-	void setImg(cv::Mat img);
-	std::string getTicket();
-	void run();
-	std::string uqrcode;
-private:
-	cv::Mat img;
-	QRScanner qs;
-};
-
 class ServerType
 {
 public:
@@ -28,4 +13,20 @@ public:
 		Official = 1,
 		BH3_BiliBili = 2
 	};
+};
+
+class ThreadSacn : public QThread
+{
+	Q_OBJECT
+public:
+	ThreadSacn();
+	~ThreadSacn();
+	void setImg(const cv::Mat& img);
+	//调用前确保成员变量uqrcode存在ticket
+	std::string getTicket();
+	void run();
+	std::string uqrcode;
+private:
+	cv::Mat img;
+	QRScanner qs;
 };

@@ -6,7 +6,7 @@
 #include "OfficialApi.h"
 #include <fstream>
 #include <filesystem>
-#include <QStringList>
+#include <QStringList> 
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -78,7 +78,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
 	ui.label_3->setText("v1.0.0");
-	if (configJson["auto_start"]&& static_cast<int>(userinfo["last_account"])!=0)
+	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
 		countA = static_cast<int>(userinfo["last_account"]) - 1;
 		ui.pBtstartScreen->clicked();
@@ -249,7 +249,7 @@ void ScannerGui::pBtstartScreen()
 		}
 		t1.setServerType(ServerType::Type::Official);
 		t1.setLoginInfo(uid, gameToken);
-		t1.start();
+		t1.start(QThread::Priority::TimeCriticalPriority);
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
 	if (type == "崩坏3B服")
@@ -266,7 +266,7 @@ void ScannerGui::pBtstartScreen()
 		}
 		t1.setServerType(ServerType::Type::BH3_BiliBili);
 		t1.setLoginInfo(uid, stoken, name);
-		t1.start();
+		t1.start(QThread::Priority::TimeCriticalPriority);
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
 }
@@ -314,7 +314,7 @@ void ScannerGui::pBtStream()
 		}
 		t2.setServerType(ServerType::Type::Official);
 		t2.setLoginInfo(uid, gameToken);
-		t2.start();
+		t2.start(QThread::Priority::TimeCriticalPriority);
 		ui.pBtStream->setText("监视直播二维码中");
 	}
 	if (type == "崩坏3B服")
@@ -331,7 +331,7 @@ void ScannerGui::pBtStream()
 		}
 		t2.setServerType(ServerType::Type::BH3_BiliBili);
 		t2.setLoginInfo(uid, stoken, name);
-		t2.start();
+		t2.start(QThread::Priority::TimeCriticalPriority);
 		ui.pBtStream->setText("监视直播二维码中");
 	}
 }
@@ -626,7 +626,7 @@ void ScannerGui::pBtDeleteAccount()
 	}
 	userinfo["num"] = (int)userinfo["num"] - 1;
 	//判断删除的账号是否是启动默认账号
-	if (static_cast<int>(userinfo["last_account"]) == countA+1)
+	if (static_cast<int>(userinfo["last_account"]) == countA + 1)
 	{
 		userinfo["last_account"] = 0;
 	}
