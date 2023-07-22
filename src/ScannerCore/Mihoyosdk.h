@@ -10,7 +10,7 @@ public:
 	std::string verify(const std::string& uid, const std::string& access_key);
 	int scanCheck(const std::string& ticket, const std::string& bhInfo);
 	void setUserName(const std::string& name);
-	void setBHVer(std::string s);
+	void setBHVer(std::string s)const;
 	void setOAServer();
 private:
 	std::string makeSign(const std::string);

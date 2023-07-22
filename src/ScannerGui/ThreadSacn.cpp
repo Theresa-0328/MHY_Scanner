@@ -18,10 +18,14 @@ void ThreadSacn::setImg(const cv::Mat& img)
 	this->img = img;
 }
 
-std::string ThreadSacn::getTicket()
+std::string ThreadSacn::getTicket()const
 {
-	const size_t length = uqrcode.length();
-	return uqrcode.substr(length - 24);
+	return m_qrcode.substr(m_qrcode.length() - 24);
+}
+
+std::string ThreadSacn::getQRcode() const
+{
+	return m_qrcode;
 }
 
 void ThreadSacn::run()
@@ -29,7 +33,7 @@ void ThreadSacn::run()
 #ifdef _DEBUG
 	auto startTime = std::chrono::high_resolution_clock::now();
 #endif // _DEBUG
-	qs.decodeSingle(img, uqrcode);
+	qs.decodeSingle(img, m_qrcode);
 #ifdef _DEBUG
 	auto endTime = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();

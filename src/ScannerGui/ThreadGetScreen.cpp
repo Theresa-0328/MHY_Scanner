@@ -43,7 +43,7 @@ void ThreadGetScreen::LoginOfficial()
 		img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		threadsacn.start();
-		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
+		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::Honkai3);
 			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
@@ -53,7 +53,7 @@ void ThreadGetScreen::LoginOfficial()
 		//if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		//{
 		//}
-		if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
+		if (threadsacn.getQRcode().find("biz_key=hkrpg_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::StarRail);
 			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
@@ -78,7 +78,7 @@ void ThreadGetScreen::LoginBH3BiliBili()
 		img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		threadsacn.start();
-		if (threadsacn.uqrcode.find("biz_key=bh3_cn") != std::string::npos)
+		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
 		{
 			const int code = m.scanCheck(threadsacn.getTicket(), LoginData);
 			emit loginResults(code == 0);
