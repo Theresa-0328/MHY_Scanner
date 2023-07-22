@@ -5,7 +5,7 @@ QRScanner::QRScanner()
 	detector = cv::makePtr<cv::wechat_qrcode::WeChatQRCode>(detect_prototxt, detect_caffe_model, sr_prototxt, sr_caffe_model);
 }
 
-void QRScanner::decodeSingle(cv::Mat img, std::string& qrCode)
+void QRScanner::decodeSingle(const cv::Mat& img, std::string& qrCode)
 {
 	strDecoded = detector->detectAndDecode(img);
 	if (strDecoded.size() > 0)
@@ -17,7 +17,7 @@ void QRScanner::decodeSingle(cv::Mat img, std::string& qrCode)
 #endif // DEBUG
 }
 
-void QRScanner::decodeMultiple(cv::Mat img, std::string& qrCode)
+void QRScanner::decodeMultiple(const cv::Mat& img, std::string& qrCode)
 {
 	strDecoded = detector->detectAndDecode(img);
 	for (int i = 0; i < strDecoded.size(); i++)

@@ -22,11 +22,12 @@ public:
 	ThreadSacn();
 	~ThreadSacn();
 	void setImg(const cv::Mat& img);
-	//调用前确保成员变量uqrcode存在ticket
-	std::string getTicket();
+	//调用前必须确保成员变量m_qrcode包含子字符串ticket
+	std::string getTicket()const;
+	std::string getQRcode()const;
 	void run();
-	std::string uqrcode;
 private:
 	cv::Mat img;
 	QRScanner qs;
+	std::string m_qrcode;
 };

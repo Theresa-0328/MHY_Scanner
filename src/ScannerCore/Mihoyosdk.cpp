@@ -7,7 +7,7 @@ std::string Mihoyosdk::bh3Ver;
 
 Mihoyosdk::Mihoyosdk()
 {
-	
+
 }
 
 std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_key)
@@ -32,7 +32,7 @@ std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_
 	return s;
 }
 
-void Mihoyosdk::setBHVer(std::string s)
+void Mihoyosdk::setBHVer(std::string s)const
 {
 	bh3Ver = s;
 }
@@ -96,16 +96,16 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 {
 	json::Json bhInfoJ;
 	bhInfoJ.parse(bhInfoR);
-	
+
 	json::Json bhInFo;
 	bhInFo.parse(bhInfoJ["data"].str());
 	//std::cout << bhInFo.str() << std::endl;
 	json::Json scanResultJ;
 	scanResultJ.parse(scanResult);
-	
+
 	json::Json scanDataJ;
 	scanDataJ.parse(scanData);
-	
+
 	//json::Json oa;
 	//oa.parse(oaString);
 	scanDataJ["dispatch"] = oaString;
@@ -150,7 +150,7 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	}
 	else
 	{
-		std::cout << "扫码失败 :" <<postBodyJ.str()<<std::endl;
+		std::cout << "扫码失败 :" << postBodyJ.str() << std::endl;
 	}
 	return;
 }
@@ -214,7 +214,7 @@ std::string Mihoyosdk::bh3Sign(std::string data)
 {
 	const std::string key = "0ebc517adb1b62c6b408df153331f9aa";
 	data.erase(std::remove(data.begin(), data.end(), '\\'), data.end());
-	std::string sign = CryptoKit::HmacSha256(data,key);
+	std::string sign = CryptoKit::HmacSha256(data, key);
 #ifdef _DEBUG
 	std::cout << "Hmac_Sha256签名完成" << std::endl;
 #endif // DEBUG
