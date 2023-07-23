@@ -15,7 +15,7 @@ public:
 	};
 };
 
-class ThreadSacn : public QThread
+class ThreadSacn : public QThread, public QRScanner
 {
 	Q_OBJECT
 public:
@@ -28,6 +28,5 @@ public:
 	void run();
 private:
 	cv::Mat img;
-	QRScanner qs;
 	std::string m_qrcode;
 };

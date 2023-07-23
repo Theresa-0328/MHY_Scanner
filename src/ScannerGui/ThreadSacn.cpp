@@ -3,6 +3,7 @@
 
 ThreadSacn::ThreadSacn()
 	: QThread()
+	, QRScanner()
 {
 
 }
@@ -33,7 +34,7 @@ void ThreadSacn::run()
 #ifdef _DEBUG
 	auto startTime = std::chrono::high_resolution_clock::now();
 #endif // _DEBUG
-	qs.decodeSingle(img, m_qrcode);
+	decodeSingle(img, m_qrcode);
 #ifdef _DEBUG
 	auto endTime = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
