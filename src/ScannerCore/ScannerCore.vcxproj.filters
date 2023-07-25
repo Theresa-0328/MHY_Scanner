@@ -18,7 +18,7 @@
     <ClCompile Include="HttpClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BiliLiveApi.cpp">
+    <ClCompile Include="LiveBili.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BiliGameApi.cpp">
@@ -47,7 +47,7 @@
     <ClInclude Include="HttpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BiliLiveApi.h">
+    <ClInclude Include="LiveBili.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BiliGameApi.h">

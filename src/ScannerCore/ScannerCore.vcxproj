@@ -103,7 +103,7 @@
     <ClCompile Include="VideoProcessor.cpp" />
     <ClCompile Include="ScreenScan.cpp" />
     <ClCompile Include="HttpClient.cpp" />
-    <ClCompile Include="BiliLiveApi.cpp" />
+    <ClCompile Include="LiveBili.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BiliGameApi.h" />
@@ -114,7 +114,7 @@
     <ClInclude Include="QRScanner.h" />
     <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="ScreenScan.h" />
-    <ClInclude Include="BiliLiveApi.h" />
+    <ClInclude Include="LiveBili.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrrJson\TrrJson.vcxproj">
