@@ -13,9 +13,9 @@ class ThreadGetScreen
 public:
 	ThreadGetScreen(QObject* parent);
 	~ThreadGetScreen();
-	void setLoginInfo(const std::string uid, const std::string token);
-	void setLoginInfo(const std::string uid, const std::string token, const std::string uname);
-	void setServerType(ServerType::Type servertype);
+	void setLoginInfo(const std::string& uid, const std::string& token);
+	void setLoginInfo(const std::string& uid, const std::string& token, const std::string& uname);
+	void setServerType(const ServerType::Type& servertype);
 	void run();
 	void stop();
 signals:

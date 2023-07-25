@@ -4,13 +4,13 @@
 #include <curl/curl.h>
 #include <iostream>
 #include <QMutex>
-class ThreadDownload  : public QThread
+class ThreadDownload : public QThread
 {
 	Q_OBJECT
 public:
 	ThreadDownload();
 	~ThreadDownload();
-	void downloadInit(std::string url);
+	void downloadInit(const std::string& url);
 	void stop();
 	void run();
 private:

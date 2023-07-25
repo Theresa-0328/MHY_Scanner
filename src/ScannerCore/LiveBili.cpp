@@ -1,4 +1,4 @@
-﻿#include "BiliLiveApi.h"
+﻿#include "LiveBili.h"
 
 v2api::v2api()
 {
@@ -9,33 +9,36 @@ std::string v2api::GetAddress(int realRoomID)
 #ifdef _DEBUG
 	std::cout << "realRoomID:" << realRoomID << std::endl;
 #endif
-    std::map<std::string, std::string> params =
-    {
-        //appkey:iVGUTjsxvpLeuDCf
-        //build:6215200
-        //c_locale:zh_CN
-        {"codec" , "0"},
-        //device:web
-        //device_name:VTR-AL00
-        //dolby:1
-        {"format" , "0,2"},
-        //free_type:0
-        //http:1
-        //mask:0
-        //mobi_app:web
-        //network:wifi
-        //no_playurl:0
-        {"only_audio" , "0"},
-        {"only_video" , "0"},
-        //platform:web
-        //play_type:0
-        {"protocol" , "0,1"},
-        {"qn" , "10000"},
-        {"room_id" , std::to_string(realRoomID)},
-        //s_locale:zh_CN
-        //statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
-    };
-    std::string playurl = GetStreamUrl(V2API,params);
+	std::map<std::string, std::string> params =
+	{
+		//appkey:iVGUTjsxvpLeuDCf
+		//build:6215200
+		//c_locale:zh_CN
+		{"codec" , "0"},
+		//device:web
+		//device_name:VTR-AL00
+		//dolby:1
+		{"format" , "0,2"},
+		//free_type:0
+		//http:1
+		//mask:0
+		//mobi_app:web
+		//network:wifi
+		//no_playurl:0
+		{"only_audio" , "0"},
+		{"only_video" , "0"},
+		//platform:web
+		//play_type:0
+		{"protocol" , "0,1"},
+		{"qn" , "10000"},
+		{"room_id" , std::to_string(realRoomID)},
+		//s_locale:zh_CN
+		//statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
+	};
+	//弃用v1api
+	//const std::string v1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";
+	const std::string v2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
+	std::string playurl = GetStreamUrl(v2API, params);
 	playurl = string_To_UTF8(playurl);
 	return playurl;
 }
@@ -43,9 +46,10 @@ std::string v2api::GetAddress(int realRoomID)
 int v2api::GetRealRoomID(std::string roomID)
 {
 	std::map<std::string, std::string> params = { {"id", roomID} };
+	const std::string address = "https://api.live.bilibili.com/room/v1/Room/room_init";
 	std::string addres = Url(address, params);
 	std::string result;
-	GetRequest(result,addres);
+	GetRequest(result, addres);
 	result = UTF8_To_string(result);
 	int realRoomID = HandlerLiveStatus(result);
 	return realRoomID;
@@ -83,12 +87,12 @@ int v2api::HandlerLiveStatus(std::string string)
 	return -3;
 }
 
-std::string v2api::GetStreamUrl(std::string api,std::map<std::string, std::string> param)
+std::string v2api::GetStreamUrl(std::string api, std::map<std::string, std::string> param)
 {
 	std::string address = Url(api, param);
-	
+
 	std::string str;
-	GetRequest(str,address);
+	GetRequest(str, address);
 
 	json::Json j;
 	j.parse(str);

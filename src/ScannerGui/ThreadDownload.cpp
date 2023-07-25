@@ -38,7 +38,7 @@ void ThreadDownload::stop()
 #endif // DEBUG
 }
 
-void ThreadDownload::downloadInit(std::string url)
+void ThreadDownload::downloadInit(const std::string& url)
 {
 	this->url = url;
 }
