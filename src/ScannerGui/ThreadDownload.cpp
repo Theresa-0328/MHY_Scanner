@@ -62,7 +62,8 @@ void ThreadDownload::run()
 	if (fp)
 	{
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41");
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
+			Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41");
 		curl_easy_setopt(curl, CURLOPT_REFERER, "https://live.bilibili.com");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DownloadCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)this);

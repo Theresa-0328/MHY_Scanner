@@ -85,11 +85,11 @@ void ThreadStreamProcess::LoginOfficial()
 			QThread::msleep(300);
 		}
 		vp.ReceiveFrame();
-		// 转换像素格式
+		//转换像素格式
 		sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 			vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 		cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-		//可能有1280 1980和60帧 30帧,二维码不一定在屏幕的正中央。
+		//NOTE:可能有1280 1980和60帧 30帧,二维码不一定在屏幕的正中央。
 		//cv::Mat crop_img = img(cv::Range(300, 800), cv::Range(500, 1186));
 		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
 		if (!threadsacn.isRunning())
@@ -109,10 +109,7 @@ void ThreadStreamProcess::LoginOfficial()
 			emit loginResults(code == 0);
 			continue;
 		}
-		//if (threadsacn.uqrcode.find("biz_key=hkrpg_cn") != std::string::npos)
-		//{
-
-		//}
+		//TODO:Genshin
 		if (threadsacn.getQRcode().find("biz_key=hkrpg_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::StarRail);
