@@ -1,8 +1,6 @@
 ﻿#include "LoginWindow.h"
 #include <QRegularExpressionValidator>
 
-#define LOGINWINDOWREJECT 	ClearInputBox();isReject = true; QDialog::reject();
-
 LoginWindow::LoginWindow(QDialog* Dialog)
 {
 	ui.setupUi(this);
@@ -36,7 +34,9 @@ void LoginWindow::officialLogin()
 
 void LoginWindow::officialreject()
 {
-	LOGINWINDOWREJECT
+	ClearInputBox();
+	isReject = true;
+	QDialog::reject();
 }
 
 void LoginWindow::accept()
@@ -53,7 +53,9 @@ void LoginWindow::accept()
 
 void LoginWindow::reject()
 {
-	LOGINWINDOWREJECT
+	ClearInputBox();
+	isReject = true;
+	QDialog::reject();
 }
 
 void LoginWindow::ClearInputBox()

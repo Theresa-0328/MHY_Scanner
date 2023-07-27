@@ -192,7 +192,6 @@ void ScannerGui::pBtLoginAccount()
 			ui.pBtstartScreen->setEnabled(true);
 			ui.pBtStream->setEnabled(true);
 			return;
-
 		}
 		if (code != 0)
 		{
