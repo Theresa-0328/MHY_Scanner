@@ -50,7 +50,13 @@ void ThreadGetScreen::LoginOfficial()
 			emit loginResults(code == 0);
 			return;
 		}
-		//TODO:Genshin
+		if (qrcode.find("biz_key=hk4e_cn") != std::string::npos)
+		{
+			o.setGameType(GameType::Type::Genshin);
+			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+			emit loginResults(code == 0);
+			return;
+		}
 		if (qrcode.find("biz_key=hkrpg_cn") != std::string::npos)
 		{
 			o.setGameType(GameType::Type::StarRail);

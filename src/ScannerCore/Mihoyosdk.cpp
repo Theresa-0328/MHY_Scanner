@@ -7,7 +7,7 @@ std::string Mihoyosdk::bh3Ver;
 
 Mihoyosdk::Mihoyosdk()
 {
-
+	oaString = "";
 }
 
 std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_key)
@@ -32,7 +32,7 @@ std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_
 	return s;
 }
 
-void Mihoyosdk::setBHVer(std::string s)const
+void Mihoyosdk::setBHVer(const std::string& s)
 {
 	bh3Ver = s;
 }
@@ -50,7 +50,7 @@ std::string Mihoyosdk::getOAServer()
 	std::string feedback;
 	GetRequest(feedback, oaMainUrl + param);
 #ifdef _DEBUG
-	std::cout << "获得OA服务器 : " << UTF8_To_string(feedback) << std::endl;
+	std::cout << "获得OA服务器 : " << feedback << std::endl;
 #endif // DEBUG
 	return feedback;
 
