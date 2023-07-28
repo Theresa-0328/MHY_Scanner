@@ -4,7 +4,7 @@
 #include <curl/curl.h>
 #include <iostream>
 #include "CryptoKit.h"
-class HttpClient
+class HttpClient :public CryptoKit
 {
 public:
 	std::string Url(std::string url, std::map<std::string, std::string> params);
