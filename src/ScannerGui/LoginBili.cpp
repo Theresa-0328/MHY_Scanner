@@ -14,13 +14,15 @@ LoginBili::~LoginBili()
 //获取用户名,检查access_key是否有效
 int LoginBili::loginBiliKey(std::string& name, const std::string& uid, const std::string& access_key)
 {
-	json::Json userInfo = getUserInfo(std::stoi(uid), access_key);
+	json::Json userInfo = getUserInfo(uid, access_key);
 	int code = (int)userInfo["code"];
+	const std::string uname = userInfo["uname"];
 	if (code != 0)
 	{
 		return code;
 	}
-	name = HttpClient::string_To_UTF8(userInfo["uname"]);
+	name = uname;
+	//name = UTF8_To_string(userInfo["uname"]);
 	return 0;
 }
 
@@ -29,7 +31,7 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
 {
 	json::Json loginJ;
 	std::string loginInfo = login(Account, Pwd);
-	loginInfo = HttpClient::UTF8_To_string(loginInfo);
+	loginInfo = UTF8_To_string(loginInfo);
 	loginJ.parse(loginInfo);
 	int code = (int)loginJ["code"];
 	if (code == 200000)
@@ -67,10 +69,9 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
 		return code;
 	}
 	int nuid = loginJ["uid"];
-	uid = std::to_string(nuid);
 	access_key = loginJ["access_key"];
 	loginJ.clear();
-	json::Json userInfo = getUserInfo(nuid, access_key);
-	name = HttpClient::string_To_UTF8(userInfo["uname"]);
+	json::Json userInfo = getUserInfo(uid, access_key);
+	name = string_To_UTF8(userInfo["uname"]);
 	return code;
 }
