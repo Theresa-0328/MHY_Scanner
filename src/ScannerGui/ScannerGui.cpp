@@ -592,8 +592,7 @@ void ScannerGui::getInfo(int x, int y)
 	ui.lineEditUname->setText(cellText);
 	countA = x;
 #ifdef _DEBUG
-	HttpClient h;
-	std::cout << "x=" << x << "y=" << y << " " << h.UTF8_To_string(cellText.toStdString()) << std::endl;
+	std::cout << "x=" << x << "y=" << y << " " << cellText.toStdString() << std::endl;
 #endif // _DEBUG
 }
 
