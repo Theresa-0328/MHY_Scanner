@@ -7,7 +7,7 @@ std::string Mihoyosdk::bh3Ver;
 
 Mihoyosdk::Mihoyosdk()
 {
-	oaString = "";
+
 }
 
 std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_key)
@@ -25,7 +25,6 @@ std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_
 	body.clear();
 	std::string s;
 	PostRequest(s, loginV2Url, makeSign(sBody));
-	s = UTF8_To_string(s);
 #ifdef _DEBUG
 	std::cout << "崩坏3验证完成 : " << s << std::endl;
 #endif // _DEBUG
