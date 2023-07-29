@@ -39,7 +39,7 @@ namespace json
         Json& operator [] (const char* key);
         Json& operator [] (const std::string& key);
 
-        void operator = (const Json& other);
+        //void operator = (const Json& other);
         bool operator == (const Json& other);
         bool operator != (const Json& other);
 
