@@ -1,7 +1,7 @@
 ﻿#include "Mihoyosdk.h"
 #include "Json.h"
 #include "CryptoKit.h"
-
+#include <format>
 std::string Mihoyosdk::oaString;
 std::string Mihoyosdk::bh3Ver;
 
@@ -17,10 +17,10 @@ std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_
 #endif // _DEBUG
 	verifyData["uid"] = uid;
 	verifyData["access_key"] = access_key;
-	const std::string bodyDataS = "{\\\"access_key\\\":\\\"" + verifyData["access_key"] + "\\\""",\\\"uid\\\":" + verifyData["uid"] + "}";
+	const std::string bodyData = std::format(R"({{\"access_key\":\"{}\",\"uid\":{}}})", verifyData["access_key"], verifyData["uid"]);
 	json::Json body;
 	body.parse(verifyBody);
-	body["data"] = bodyDataS;
+	body["data"] = bodyData;
 	const std::string sBody = body.str();
 	body.clear();
 	std::string s;

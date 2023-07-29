@@ -1,5 +1,5 @@
-﻿#include "LoginBili.h"
-#include <QMessageBox>
+﻿#include <QMessageBox>
+#include "LoginBili.h"
 #include "ThreadLocalServer.h"
 LoginBili::LoginBili()
 {
@@ -22,7 +22,6 @@ int LoginBili::loginBiliKey(std::string& name, const std::string& uid, const std
 		return code;
 	}
 	name = uname;
-	//name = UTF8_To_string(userInfo["uname"]);
 	return 0;
 }
 
@@ -31,7 +30,6 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
 {
 	json::Json loginJ;
 	std::string loginInfo = login(Account, Pwd);
-	loginInfo = UTF8_To_string(loginInfo);
 	loginJ.parse(loginInfo);
 	int code = (int)loginJ["code"];
 	if (code == 200000)
@@ -58,7 +56,6 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
 		std::string gt_user = captcha["userid"];
 		std::string validate = captcha["validate"];
 		loginInfo = login(Account, Pwd, challenge, gt_user, validate);
-		loginInfo = HttpClient::UTF8_To_string(loginInfo);
 		loginJ.parse(loginInfo);
 		code = (int)loginJ["code"];
 		std::cout << loginJ.str() << std::endl;
@@ -68,10 +65,10 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
 		message = loginJ["message"];
 		return code;
 	}
-	int nuid = loginJ["uid"];
+	uid = std::to_string((int)loginJ["uid"]);
 	access_key = loginJ["access_key"];
 	loginJ.clear();
 	json::Json userInfo = getUserInfo(uid, access_key);
-	name = string_To_UTF8(userInfo["uname"]);
+	name = userInfo["uname"];
 	return code;
 }

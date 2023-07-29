@@ -14,6 +14,6 @@ public:
 private:
 	std::string GetStreamUrl(std::string api, std::map<std::string, std::string> param);
 	int HandlerLiveStatus(std::string string);
-	//获取直播间信息
+	//获取直播间信息接口
 	//https://api.live.bilibili.com/room/v1/Room/get_info?room_id=6&from=room
 };

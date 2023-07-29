@@ -257,7 +257,7 @@ void json::Json::clear()
     default:
         break;
     }
-    m_type = json_null;
+    //m_type = json_null;
 }
 
 void json::Json::append(const json::Json& other)
