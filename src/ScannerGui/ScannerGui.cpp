@@ -1,12 +1,12 @@
-﻿#include "ScannerGui.h"
+﻿#include <fstream>
+#include <filesystem>
 #include <QMessageBox>
 #include <QWindow>
 #include <QRegularExpressionValidator>
+#include <QStringList> 
 #include <qtimer.h>
 #include "OfficialApi.h"
-#include <fstream>
-#include <filesystem>
-#include <QStringList> 
+#include "ScannerGui.h"
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -195,7 +195,7 @@ void ScannerGui::pBtLoginAccount()
 		}
 		if (code != 0)
 		{
-			QString Qmessage = QString::fromLocal8Bit(message);
+			QString Qmessage = QString::fromStdString(message);
 			QMessageBox::information(this, "提示", Qmessage, QMessageBox::Yes);
 		}
 		else
@@ -630,7 +630,7 @@ void ScannerGui::pBtDeleteAccount()
 	}
 	userinfo["account"].remove(countA);
 	std::string str = userinfo.str();
-	userinfo.parse(str);
+	str = userinfo.str();
 #ifdef _DEBUG
 	std::cout << str << std::endl;
 #endif // _DEBUG

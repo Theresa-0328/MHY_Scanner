@@ -1,4 +1,5 @@
-﻿#include "BiliGameApi.h"
+﻿#include <format>
+#include "BiliGameApi.h"
 #include "CryptoKit.h"
 
 std::string BiliGameApi::remove_quotes(std::string str)
@@ -87,11 +88,11 @@ void BiliGameApi::captcha()
 std::string BiliGameApi::makeCaptchUrl()
 {
 	captcha();
-	std::string gt = captchaJ["gt"];
-	std::string challenge = captchaJ["challenge"];
-	std::string gt_user = captchaJ["gt_user_id"];
+	const std::string& gt = captchaJ["gt"];
+	const std::string& challenge = captchaJ["challenge"];
+	const std::string& gt_user_id = captchaJ["gt_user_id"];
 	//NOTE:official https://game.bilibili.com/sdk/geetest/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1
-	std::string capurl = "http://127.0.0.1:12983/?captcha_type=1&challenge=" + challenge + "&gt=" + gt + "&userid=" + gt_user + "&gs=1";
+	std::string capurl = std::format(R"(http://127.0.0.1:12983/?captcha_type=1&challenge={}&gt={}&userid={}&gs=1)", challenge, gt, gt_user_id);
 	return capurl;
 }
 

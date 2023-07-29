@@ -147,7 +147,7 @@ CURLcode HttpClient::PostRequest(std::string& response, const std::string& url, 
 	return res;
 }
 
-int HttpClient::getCurrentUnixTime()
+int HttpClient::getCurrentUnixTime()const
 {
 	return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }
@@ -158,7 +158,7 @@ std::string HttpClient::urlEncode(const std::string& str)
 	escaped.fill('0');
 	escaped << std::hex;
 
-	for (auto itr = str.begin(), end = str.end(); itr != end; ++itr) 
+	for (auto itr = str.begin(), end = str.end(); itr != end; ++itr)
 	{
 		const unsigned char c = *itr;
 
@@ -166,7 +166,7 @@ std::string HttpClient::urlEncode(const std::string& str)
 			|| c == '!' || c == '*' || c == '\'' || c == '(' || c == ')'
 			|| c == ';' || c == ':' || c == '@' || c == '&' || c == '='
 			|| c == '$' || c == ',' || c == '/' || c == '?'
-			|| c == '#' || c == '[' || c == ']') 
+			|| c == '#' || c == '[' || c == ']')
 		{
 			escaped << c;
 			continue;
@@ -183,9 +183,9 @@ std::string HttpClient::urlEncode(const std::string& str)
 std::string HttpClient::replaceQuotes(const std::string& str)
 {
 	std::string newStr;
-	for (int i = 0; i < str.length(); i++) 
+	for (int i = 0; i < str.length(); i++)
 	{
-		if (str[i] == '\"') 
+		if (str[i] == '\"')
 		{
 			newStr += '\\';
 		}

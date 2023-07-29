@@ -50,7 +50,6 @@ int v2api::GetRealRoomID(std::string roomID)
 	std::string addres = Url(address, params);
 	std::string result;
 	GetRequest(result, addres);
-	result = UTF8_To_string(result);
 	int realRoomID = HandlerLiveStatus(result);
 	return realRoomID;
 }
@@ -83,7 +82,7 @@ int v2api::HandlerLiveStatus(std::string string)
 			return room_id;
 		}
 	}
-	//未知错误
+	//其他未知错误
 	return -3;
 }
 
@@ -101,6 +100,7 @@ std::string v2api::GetStreamUrl(std::string api, std::map<std::string, std::stri
 	std::string host = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"];
 	std::string streamUrl = host + baseUrl + extra;
 
+	//FIXME
 	size_t pos = streamUrl.find("0026");
 	while (pos != std::string::npos)
 	{
