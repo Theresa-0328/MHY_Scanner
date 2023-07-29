@@ -69,7 +69,6 @@ json::Json BiliGameApi::getUserInfo(const std::string& uid, const std::string& a
 #ifdef _DEBUG
 	std::cout << "BiliBili用户信息：" << t << std::endl;
 #endif // _DEBUG
-	j.clear();
 	j.parse(t);
 	return j;
 }
@@ -107,7 +106,6 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 #ifdef _DEBUG
 	std::cout << re << std::endl;
 #endif // _DEBUG
-	data.clear();
 	data.parse(loginParam);
 	json::Json re1J;
 	re1J.parse(re);
@@ -146,7 +144,6 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 #ifdef _DEBUG
 	std::cout << re << std::endl;
 #endif // _DEBUG
-	data.clear();
 	data.parse(loginParam);
 	json::Json re1J;
 	re1J.parse(re);

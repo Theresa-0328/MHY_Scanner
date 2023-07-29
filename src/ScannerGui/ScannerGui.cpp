@@ -33,6 +33,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	o.start();
 
 	//加载用户信息
+	//TODO:可能出现不合法的配置文件
 	loadUserinfo();
 	std::string readName;
 	ui.tableWidget->setColumnCount(5);
@@ -629,8 +630,7 @@ void ScannerGui::pBtDeleteAccount()
 		userinfo["last_account"] = 0;
 	}
 	userinfo["account"].remove(countA);
-	std::string str = userinfo.str();
-	str = userinfo.str();
+	const std::string& str = userinfo.str();
 #ifdef _DEBUG
 	std::cout << str << std::endl;
 #endif // _DEBUG
