@@ -33,7 +33,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	o.start();
 
 	//加载用户信息
-	//TODO:可能出现不合法的配置文件
+	//FiXME:可能出现不合法的配置文件
 	loadUserinfo();
 	std::string readName;
 	ui.tableWidget->setColumnCount(5);
@@ -100,7 +100,7 @@ ScannerGui::~ScannerGui()
 
 void ScannerGui::insertTableItems(QString uid, QString userName, QString type, QString notes)
 {
-	QTableWidgetItem* item[5];
+	QTableWidgetItem* item[5]{};
 	int nCount = 0;
 	nCount = ui.tableWidget->rowCount();
 	ui.tableWidget->insertRow(nCount);

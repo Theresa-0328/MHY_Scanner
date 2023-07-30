@@ -39,7 +39,6 @@ std::string v2api::GetAddress(int realRoomID)
 	//const std::string v1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";
 	const std::string v2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
 	std::string playurl = GetStreamUrl(v2API, params);
-	playurl = string_To_UTF8(playurl);
 	return playurl;
 }
 
