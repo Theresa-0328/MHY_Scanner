@@ -78,7 +78,7 @@ size_t HttpClient::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)
 
 CURLcode HttpClient::GetRequest(std::string& response, std::string address, std::map<std::string, std::string> headers)
 {
-	CURL* curl = curl_easy_init(); // 初始化 cURL 库;
+	CURL* curl = curl_easy_init();
 	CURLcode res{};
 	if (curl)
 	{
@@ -102,13 +102,10 @@ CURLcode HttpClient::GetRequest(std::string& response, std::string address, std:
 
 CURLcode HttpClient::PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers)
 {
-	// curl初始化  
 	CURL* curl = curl_easy_init();
-	// curl返回值 
 	CURLcode res{};
 	if (curl)
 	{
-		//设置curl的请求头
 		struct curl_slist* headerList = NULL;
 		for (const auto& kv : headers)
 		{

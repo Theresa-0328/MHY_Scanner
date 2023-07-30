@@ -1,18 +1,18 @@
-﻿#include "OfficialApi.h"
-#include "CryptoKit.h"
-#include "Json.h"
-#include <random>
+﻿#include <random>
 #include <sstream>
 #include <iomanip>
+#include "Json.h"
+#include "OfficialApi.h"
+#include "CryptoKit.h"
 
-std::string OfficialApi::getUid()
+std::string OfficialApi::getUid()const
 {
-	return cookieMap["login_uid"];
+	return cookieMap.at("login_uid");
 }
 
-void OfficialApi::setGameType(GameType::Type gameType)
+void OfficialApi::setGameType(const GameType::Type& gameType)
 {
-	game_type = gameType;
+	m_gameType = gameType;
 }
 
 std::string OfficialApi::generateUUID()
@@ -60,10 +60,10 @@ int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, 
 	std::string scanUrl;
 	std::string confirmUrl;
 	json::Json payload;
-	payload["app_id"] = game_type;
+	payload["app_id"] = m_gameType;
 	payload["device"] = uuid;
 	payload["ticket"] = ticket;
-	switch (game_type)
+	switch (m_gameType)
 	{
 	case GameType::Honkai3:
 		scanUrl = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
@@ -104,7 +104,7 @@ int OfficialApi::confirmRequest(const std::string& UUID, const std::string& tick
 	payload["proto"] = "Account";
 	payload["raw"] = "{\\\"uid\\\":\\\"" + uid + "\\\",\\\"token\\\":\\\"" + token + "\\\"}";
 	json::Json data;
-	data["app_id"] = game_type;
+	data["app_id"] = m_gameType;
 	data["device"] = UUID;
 	data["payload"] = payload;
 	data["ticket"] = ticket;
@@ -132,13 +132,12 @@ std::string OfficialApi::getUserName(std::string uid)
 	return re;
 }
 
-//获取账号上所有的角色,当前不可用！
 std::string OfficialApi::getRole()
 {
 	std::string data;
 	const std::string& url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
 	headers["DS"] = getDS();
-	headers["Cookie"] = "stuid=" + cookieMap["login_uid"] + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
+	headers["Cookie"] = "stuid=" + cookieMap.at("login_uid") + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
 	std::string re;
 	GetRequest(re, url, headers);
 	re = UTF8_To_string(re);
@@ -191,8 +190,8 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 	std::string url = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket";
 	std::map<std::string, std::string> params =
 	{
-		{"login_ticket",cookieMap["login_ticket"]},
-		{"uid",cookieMap["login_uid"]},
+		{"login_ticket",cookieMap.at("login_ticket")},
+		{"uid",cookieMap.at("login_uid")},
 		{"token_types","3"},
 	};
 	url = Url(url, params);

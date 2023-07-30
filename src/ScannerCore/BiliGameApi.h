@@ -15,7 +15,6 @@ private:
 	std::string setSign(std::map<std::string, std::string> data);
 	std::string remove_quotes(std::string str);
 	json::Json captchaJ;
-	const std::string bililogin = "https://line1-sdk-center-login-sh.biligame.net/";
 	const std::map<std::string, std::string> headers =
 	{
 		{"User-Agent","Mozilla/5.0 BSGameSDK"},
