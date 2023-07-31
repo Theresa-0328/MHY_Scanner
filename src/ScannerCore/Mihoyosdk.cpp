@@ -43,28 +43,32 @@ void Mihoyosdk::setOAServer()
 
 std::string Mihoyosdk::getOAServer()
 {
-	const std::string bhVer = bh3Ver;
-	const std::string oaMainUrl = "https://dispatch.scanner.hellocraft.xyz/v1/query_dispatch/?version=";
-	std::string param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
+	//const std::string bhVer = bh3Ver;
+	//const std::string oaMainUrl = "https://dispatch.scanner.hellocraft.xyz/v1/query_dispatch/?version=";
+	//std::string param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
+	//std::string feedback;
+	//GetRequest(feedback, oaMainUrl + param);
+
 	std::string feedback;
-	GetRequest(feedback, oaMainUrl + param);
-#ifdef _DEBUG
-	std::cout << "获得OA服务器 : " << feedback << std::endl;
-#endif // DEBUG
+	GetRequest(feedback, "http://api.flamescion.top/getoaserver");
+	if (feedback.empty())
+	{
+		exit(0);
+	}
 	return feedback;
 
-	param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
-	json::Json j;
-	j.parse(feedback);
-	std::string dispatch_url = j["region_list"][0]["dispatch_url"];
-	std::string dispatch;
-	PostRequest(dispatch, dispatch_url + param, "");
-	dispatch = UTF8_To_string(dispatch);
-#ifdef _DEBUG
-	std::cout << "获得OA服务器 : " << dispatch << std::endl;
-#endif // DEBUG
-	j.clear();
-	return dispatch;
+	//	param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
+	//	json::Json j;
+	//	j.parse(feedback);
+	//	std::string dispatch_url = j["region_list"][0]["dispatch_url"];
+	//	std::string dispatch;
+	//	PostRequest(dispatch, dispatch_url + param, "");
+	//	dispatch = UTF8_To_string(dispatch);
+	//#ifdef _DEBUG
+	//	std::cout << "获得OA服务器 : " << dispatch << std::endl;
+	//#endif // DEBUG
+	//	j.clear();
+	//	return dispatch;
 }
 
 int Mihoyosdk::scanCheck(const std::string& ticket, const std::string& bhInfo)
