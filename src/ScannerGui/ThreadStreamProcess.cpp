@@ -131,7 +131,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 	const std::string LoginData = m.verify(uid, gameToken);
 	m.setUserName(uName);
 	ThreadSacn threadsacn;
-	QThread::msleep(3000);
+	QThread::msleep(5000);
 	VideoProcessor vp;
 	//错误判断
 	if (vp.OpenVideo("./Cache/output.flv") != 0)

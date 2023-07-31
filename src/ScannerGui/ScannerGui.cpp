@@ -33,7 +33,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	o.start();
 
 	//加载用户信息
-	//FiXME:可能出现不合法的配置文件
+	//FIXME:可能出现不合法的配置文件
 	loadUserinfo();
 	std::string readName;
 	ui.tableWidget->setColumnCount(5);
@@ -78,7 +78,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
-	ui.label_3->setText("v1.0.0");
+	//版本号
+	ui.label_3->setText("v1.1.0");
 	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
 		countA = static_cast<int>(userinfo["last_account"]) - 1;
