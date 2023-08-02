@@ -39,7 +39,7 @@ std::string OfficialApi::generateUUID()
 	return uuid;
 }
 
-std::string OfficialApi::getDS()
+std::string OfficialApi::getDS2()
 {
 	std::string time_now = std::to_string(getCurrentUnixTime());
 	std::random_device rd;
@@ -136,12 +136,10 @@ std::string OfficialApi::getRole()
 {
 	std::string data;
 	const std::string& url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
-	headers["DS"] = getDS();
+	headers["DS"] = getDS2();
 	headers["Cookie"] = "stuid=" + cookieMap.at("login_uid") + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
 	std::string re;
 	GetRequest(re, url, headers);
-	re = UTF8_To_string(re);
-	string_To_UTF8(re);
 	headers.erase("Cookie");
 	return std::string();
 }

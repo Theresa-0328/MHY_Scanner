@@ -168,6 +168,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
 			vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
 		cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
+		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
 		if (!threadsacn.isRunning())
 		{
 			threadsacn.setImg(img);
