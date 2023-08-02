@@ -76,7 +76,7 @@ size_t HttpClient::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)
 	return size * nmemb;
 }
 
-CURLcode HttpClient::GetRequest(std::string& response, std::string address, std::map<std::string, std::string> headers)
+CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, std::map<std::string, std::string> headers)
 {
 	CURL* curl = curl_easy_init();
 	CURLcode res{};
@@ -89,7 +89,7 @@ CURLcode HttpClient::GetRequest(std::string& response, std::string address, std:
 			headerList = curl_slist_append(headerList, header.c_str());
 		}
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
-		curl_easy_setopt(curl, CURLOPT_URL, address.c_str()); // 设置请求的 URL
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); // 设置请求的 URL
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response); // 设置回调函数，保存请求返回的数据
 		res = curl_easy_perform(curl); // 发送请求

@@ -29,7 +29,7 @@ public:
 	void setGameType(const GameType::Type& gameType);
 	std::string getUid()const;
 	std::string generateUUID();
-	std::string getDS();
+	std::string getDS2();
 private:
 	GameType::Type m_gameType = GameType::Type::UNKNOW;
 	int confirmRequest(const std::string& UUID, const std::string& ticket,

@@ -55,8 +55,6 @@ std::string BiliGameApi::setSign(std::map<std::string, std::string> data)
 
 json::Json BiliGameApi::getUserInfo(const std::string& uid, const std::string& accessKey)
 {
-	std::string s;
-	std::string t;
 	json::Json j;
 	j.parse(userinfoParam);
 	j["uid"] = uid;
@@ -66,7 +64,8 @@ json::Json BiliGameApi::getUserInfo(const std::string& uid, const std::string& a
 	{
 		it.second = remove_quotes(it.second);
 	}
-	s = setSign(m);
+	std::string s = setSign(m);
+	std::string t;
 	PostRequest(t, BILIGAMEDOMAIN"api/client/user.info", s, headers);
 #ifdef _DEBUG
 	std::cout << "BiliBili用户信息：" << t << std::endl;
