@@ -171,11 +171,11 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
 		if (!threadsacn.isRunning())
 		{
-			threadsacn.setImg(img);
+			threadsacn.setImg(_img);
 			threadsacn.start();
 #ifdef _DEBUG
 			std::cout << "scan count " << f++ << std::endl;
-			imshow("Video", img);
+			imshow("Video", _img);
 			cv::waitKey(2);
 #endif
 		}

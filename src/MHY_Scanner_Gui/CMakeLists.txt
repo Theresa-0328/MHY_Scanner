@@ -10,7 +10,8 @@ add_executable(${PROJECT_NAME}
 	"ThreadGetScreen.cpp" 
 	"ThreadLocalServer.cpp" 
 	"ThreadSacn.cpp" 
-	"ThreadStreamProcess.cpp" 
+	"ThreadStreamProcess.cpp"
+	../rc/ScannerGui.rc
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC 

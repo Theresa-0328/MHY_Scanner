@@ -5,7 +5,7 @@
 			"name": "windows-base",
 			"description": "面向具有 Visual Studio 开发环境的 Windows。",
 			"hidden": true,
-			"generator": "Visual Studio 17 2022",
+			"generator": "Ninja",
 			"binaryDir": "${sourceDir}/out/build/${presetName}",
 			"installDir": "${sourceDir}/out/install/${presetName}",
 			"cacheVariables": {
@@ -34,24 +34,6 @@
 			"displayName": "x64 Release",
 			"description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(Release)",
 			"inherits": "x64-debug",
-			"cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
-		},
-		{
-			"name": "x86-debug",
-			"displayName": "x86 Debug",
-			"description": "用 Visual Studio 开发环境定向到 Windows (32 位)。(Debug)",
-			"inherits": "windows-base",
-			"architecture": {
-				"value": "x86",
-				"strategy": "external"
-			},
-			"cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
-		},
-		{
-			"name": "x86-release",
-			"displayName": "x86 Release",
-			"description": "用 Visual Studio 开发环境定向到 Windows (32 位)。(Release)",
-			"inherits": "x86-debug",
 			"cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
 		}
 	]
