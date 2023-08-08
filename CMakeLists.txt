@@ -42,9 +42,13 @@ add_definitions(-DCURL_STATICLIB)
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
+
 add_subdirectory(src)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+enable_testing()
+add_subdirectory(tests)
+
+set(PROJECT_LIBRARIES
 	MHY_Scanner_Core
 	TrrJson
 
@@ -91,3 +95,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	# curl
 	libcurl_a
 )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
+target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
+target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
