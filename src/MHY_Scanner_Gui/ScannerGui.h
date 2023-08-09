@@ -45,7 +45,7 @@ private:
 	ThreadStreamProcess t2;
 	LoginWindow loginwindow;
 	json::Json userinfo;
-	int liveIdError(int code);
+	int liveIdError(int roomid);
 	std::string readConfigFile(const std::string& filePath);
 	void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
 	void updateConfig();

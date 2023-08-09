@@ -1,10 +1,10 @@
 ﻿#include "LiveBili.h"
 
-v2api::v2api()
+LiveBili::LiveBili()
 {
 }
 
-std::string v2api::GetAddress(int realRoomID)
+std::string LiveBili::GetAddress(int realRoomID)
 {
 #ifdef _DEBUG
 	std::cout << "realRoomID:" << realRoomID << std::endl;
@@ -42,7 +42,7 @@ std::string v2api::GetAddress(int realRoomID)
 	return playurl;
 }
 
-int v2api::GetRealRoomID(std::string roomID)
+int LiveBili::GetRealRoomID(std::string roomID)
 {
 	std::map<std::string, std::string> params = { {"id", roomID} };
 	const std::string address = "https://api.live.bilibili.com/room/v1/Room/room_init";
@@ -54,7 +54,7 @@ int v2api::GetRealRoomID(std::string roomID)
 }
 
 
-int v2api::HandlerLiveStatus(std::string string)
+int LiveBili::HandlerLiveStatus(std::string string)
 {
 	json::Json a;
 	a.parse(string);
@@ -85,7 +85,7 @@ int v2api::HandlerLiveStatus(std::string string)
 	return -3;
 }
 
-std::string v2api::GetStreamUrl(std::string api, std::map<std::string, std::string> param)
+std::string LiveBili::GetStreamUrl(std::string api, std::map<std::string, std::string> param)
 {
 	std::string address = Url(api, param);
 
