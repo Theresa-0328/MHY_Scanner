@@ -36,6 +36,10 @@ void ThreadStreamProcess::setLoginInfo(const std::string uid, const std::string 
 
 void ThreadStreamProcess::LoginOfficial()
 {
+	do
+	{
+
+	} while (false);
 	ThreadDownload td;
 	td.downloadInit(url);
 	td.start();
@@ -124,6 +128,10 @@ void ThreadStreamProcess::LoginOfficial()
 
 void ThreadStreamProcess::LoginBH3BiliBili()
 {
+	do
+	{
+
+	} while (false);
 	ThreadDownload td;
 	td.downloadInit(url);
 	td.start();

@@ -2,6 +2,7 @@
 #include "Json.h"
 #include "CryptoKit.h"
 #include <format>
+
 std::string Mihoyosdk::oaString;
 std::string Mihoyosdk::bh3Ver;
 

@@ -4,8 +4,8 @@
 
 TEST(LiveBili, Test1)
 {
-	v2api v;
-	EXPECT_EQ(7734200, v.GetRealRoomID("6"));
+	LiveBili liveBili;
+	EXPECT_EQ(7734200, liveBili.GetRealRoomID("6"));
 }
 
 TEST(LiveHuya, Test1)

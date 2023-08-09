@@ -1,4 +1,5 @@
-﻿#include <fstream>
+﻿#include "ScannerGui.h"
+#include <fstream>
 #include <filesystem>
 #include <QMessageBox>
 #include <QWindow>
@@ -6,7 +7,6 @@
 #include <QStringList> 
 #include <qtimer.h>
 #include "OfficialApi.h"
-#include "ScannerGui.h"
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -292,13 +292,11 @@ void ScannerGui::pBtStream()
 	}
 	//检查直播间状态
 	QString liveRoomId = ui.lineEditLiveId->text();
-	std::string num = liveRoomId.toStdString();
-	v2api v;
-	int id = v.GetRealRoomID(num);
-	int readId = liveIdError(id);
+	LiveBili livebili;
+	int readId = liveIdError(livebili.GetRealRoomID(liveRoomId.toStdString()));
 	if (readId == 0)
 		return;
-	std::string streamAddress = v.GetAddress(readId);
+	std::string streamAddress = livebili.GetAddress(readId);
 	t2.url = streamAddress;
 	std::string type = userinfo["account"][countA]["type"];
 	if (type == "官服")
@@ -449,9 +447,9 @@ void ScannerGui::updateUserinfo(const std::string& str)
 	}
 }
 
-int ScannerGui::liveIdError(int code)
+int ScannerGui::liveIdError(int roomid)
 {
-	switch (code)
+	switch (roomid)
 	{
 	case -1:
 	{
@@ -469,7 +467,7 @@ int ScannerGui::liveIdError(int code)
 	}
 	return 0;
 	default:
-		return code;
+		return roomid;
 	}
 }
 
@@ -535,6 +533,7 @@ std::string ScannerGui::loadConfig()
 	}
 
 }
+
 std::string ScannerGui::readConfigFile(const std::string& filePath)
 {
 	std::ifstream file(filePath);

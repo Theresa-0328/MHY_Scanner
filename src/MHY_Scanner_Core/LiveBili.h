@@ -3,10 +3,10 @@
 #include"Json.h"
 #include"HttpClient.h"
 
-class v2api :public HttpClient
+class LiveBili :public HttpClient
 {
 public:
-	v2api();
+	LiveBili();
 	//获取直播流地址
 	std::string GetAddress(int realRoomID);
 	//获取真实直播间ID
