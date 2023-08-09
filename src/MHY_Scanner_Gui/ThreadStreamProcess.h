@@ -5,11 +5,12 @@
 #include "QRScanner.h"
 #include "VideoProcessor.h"
 #include "ThreadSacn.h"
-class ThreadStreamProcess  : public QThread
+
+class ThreadStreamProcess : public QThread
 {
 	Q_OBJECT
 public:
-	ThreadStreamProcess(QObject *parent = nullptr);
+	ThreadStreamProcess(QObject* parent = nullptr);
 	~ThreadStreamProcess();
 	void setLoginInfo(const std::string uid, const std::string gameToken);
 	void setLoginInfo(const std::string uid, const std::string gameToken, const std::string uName);
@@ -22,7 +23,7 @@ signals:
 private:
 	void LoginOfficial();
 	void LoginBH3BiliBili();
-	bool stopStream =false;
+	bool stopStream = false;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
