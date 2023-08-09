@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
 
-add_executable(${PROJECT_NAME}
+set(SRC_CPP
 	#WIN32 # If you need a terminal for debug, please comment this statement 
 	"LoginBili.cpp" 
 	"LoginWindow.cpp"
@@ -13,6 +13,12 @@ add_executable(${PROJECT_NAME}
 	"ThreadStreamProcess.cpp"
 	../rc/ScannerGui.rc
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_executable(${PROJECT_NAME} WIN32 ${SRC_CPP})
+else()
+    add_executable(${PROJECT_NAME} ${SRC_CPP})
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
 	../TrrJson

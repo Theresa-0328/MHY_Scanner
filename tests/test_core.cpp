@@ -21,8 +21,6 @@ TEST(LiveDouyin, Test1)
 TEST(QRScanner1, Test1)
 {
 	cv::Mat image = cv::imread(R"(../doc/image/bh3_qrcode_1080.png)");
-	//cv::imshow("vv", image);
-	//cv::waitKey(0);
 	std::string qrcode1;
 	QRScanner q;
 	q.decodeSingle(image, qrcode1);
