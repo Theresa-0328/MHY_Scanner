@@ -1,13 +1,11 @@
 ﻿#pragma once
 
 #include <QtWidgets/QMainWindow>
-
-#include <Winsock2.h>
+#include <Json.h>
 
 #include "ui_ScannerGui.h"
 #include "ThreadGetScreen.h"
 #include "ThreadStreamProcess.h"
-#include "LoginBili.h"
 
 class OnlineUpdate :public QThread
 {
