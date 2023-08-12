@@ -1,5 +1,7 @@
-﻿#include <format>
-#include "BiliGameApi.h"
+﻿#include "BiliGameApi.h"
+
+#include <format>
+
 #include "CryptoKit.h"
 
 #define BILIGAMEDOMAIN "https://line1-sdk-center-login-sh.biligame.net/"
@@ -53,7 +55,7 @@ std::string BiliGameApi::setSign(std::map<std::string, std::string> data)
 	return data2;
 }
 
-json::Json BiliGameApi::getUserInfo(const std::string& uid, const std::string& accessKey)
+std::string BiliGameApi::getUserInfo(const std::string& uid, const std::string& accessKey)
 {
 	json::Json j;
 	j.parse(userinfoParam);
@@ -70,8 +72,7 @@ json::Json BiliGameApi::getUserInfo(const std::string& uid, const std::string& a
 #ifdef _DEBUG
 	std::cout << "BiliBili用户信息：" << t << std::endl;
 #endif // _DEBUG
-	j.parse(t);
-	return j;
+	return t;
 }
 
 void BiliGameApi::captcha()

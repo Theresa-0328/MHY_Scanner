@@ -1,11 +1,11 @@
 ﻿#pragma once
+
+#include <QtWidgets/QMainWindow>
+
 #include "ui_ScannerGui.h"
 #include "LoginBili.h"
 #include "ThreadGetScreen.h"
-#include "LoginWindow.h"
 #include "ThreadStreamProcess.h"
-#include "LiveBili.h"
-#include <QtWidgets/QMainWindow>
 
 class OnlineUpdate :public QThread
 {
@@ -43,7 +43,6 @@ private:
 	json::Json configJson;
 	ThreadGetScreen t1;
 	ThreadStreamProcess t2;
-	LoginWindow loginwindow;
 	json::Json userinfo;
 	int liveIdError(int roomid);
 	std::string readConfigFile(const std::string& filePath);

@@ -1,12 +1,16 @@
 ﻿#include "ScannerGui.h"
+
 #include <fstream>
 #include <filesystem>
+
 #include <QMessageBox>
 #include <QWindow>
 #include <QRegularExpressionValidator>
 #include <QStringList> 
-#include <qtimer.h>
+
 #include "OfficialApi.h"
+#include "LiveBili.h"
+#include "LoginWindow.h"
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -121,6 +125,7 @@ void ScannerGui::insertTableItems(QString uid, QString userName, QString type, Q
 
 void ScannerGui::pBtLoginAccount()
 {
+	LoginWindow loginwindow;
 	ui.pBtLoginAccount->setEnabled(false);
 	ui.pBtstartScreen->setEnabled(false);
 	ui.pBtStream->setEnabled(false);

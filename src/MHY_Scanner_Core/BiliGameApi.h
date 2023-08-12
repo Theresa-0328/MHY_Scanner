@@ -1,12 +1,14 @@
 ﻿#pragma once
 #include <map>
-#include "json.h"
+
+#include "Json.h"
+
 #include "HttpClient.h"
 
 class BiliGameApi :public HttpClient
 {
 public:
-	json::Json getUserInfo(const std::string& uid, const std::string& accessKey);
+	std::string getUserInfo(const std::string& uid, const std::string& accessKey);
 	std::string login(const std::string& biliAccount, const std::string& biliPwd);
 	std::string login(const std::string& biliAccount, const std::string& biliPwd, const std::string challenge, const std::string gt_user, const std::string validate);
 	std::string makeCaptchUrl();
