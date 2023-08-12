@@ -364,7 +364,7 @@ QTableWidget::item:selected
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="ScannerGui.qrc"/>
+  <include location="../rc/ScannerGui.qrc"/>
  </resources>
  <connections/>
 </ui>

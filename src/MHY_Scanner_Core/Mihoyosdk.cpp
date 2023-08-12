@@ -50,13 +50,13 @@ std::string Mihoyosdk::getOAServer()
 	//std::string feedback;
 	//GetRequest(feedback, oaMainUrl + param);
 
-	std::string feedback;
-	GetRequest(feedback, "http://api.flamescion.top/getoaserver");
-	if (feedback.empty())
+	std::string oaserver;
+	GetRequest(oaserver, "http://api.flamescion.top/getoaserver");
+	if (oaserver.empty())
 	{
 		exit(0);
 	}
-	return feedback;
+	return oaserver;
 
 	//	param = bhVer + "_gf_android_bilibili&t=" + std::to_string(getCurrentUnixTime());
 	//	json::Json j;
