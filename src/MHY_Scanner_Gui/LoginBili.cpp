@@ -1,4 +1,6 @@
 ﻿#include <QMessageBox>
+#include "Json.h"
+
 #include "LoginBili.h"
 #include "ThreadLocalServer.h"
 LoginBili::LoginBili()
@@ -14,9 +16,11 @@ LoginBili::~LoginBili()
 //获取用户名,检查access_key是否有效
 int LoginBili::loginBiliKey(std::string& name, const std::string& uid, const std::string& access_key)
 {
-	json::Json userInfo = getUserInfo(uid, access_key);
-	int code = (int)userInfo["code"];
-	const std::string uname = userInfo["uname"];
+	std::string userInfo = getUserInfo(uid, access_key);
+	json::Json userInfoJ;
+	userInfoJ.parse(userInfo);
+	int code = (int)userInfoJ["code"];
+	const std::string uname = userInfoJ["uname"];
 	if (code != 0)
 	{
 		return code;
@@ -68,7 +72,9 @@ int LoginBili::loginBiliPwd(std::string Account, std::string Pwd,
 	uid = std::to_string((int)loginJ["uid"]);
 	access_key = loginJ["access_key"];
 	loginJ.clear();
-	json::Json userInfo = getUserInfo(uid, access_key);
-	name = userInfo["uname"];
+	std::string userInfo = getUserInfo(uid, access_key);
+	json::Json userInfoJ;
+	userInfoJ.parse(userInfo);
+	name = userInfoJ["uname"];
 	return code;
 }
