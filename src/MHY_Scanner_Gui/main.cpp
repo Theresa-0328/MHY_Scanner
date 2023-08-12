@@ -1,5 +1,7 @@
 ﻿#include "ScannerGui.h"
 
+#include <Windows.h>
+
 #include <QMessageBox>
 #include <opencv2/core/utils/logger.hpp>
 

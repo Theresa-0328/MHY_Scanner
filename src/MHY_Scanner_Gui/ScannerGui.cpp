@@ -9,6 +9,7 @@
 #include <QStringList> 
 
 #include "OfficialApi.h"
+#include "LoginBili.h"
 #include "LiveBili.h"
 #include "LoginWindow.h"
 #include "Mihoyosdk.h"

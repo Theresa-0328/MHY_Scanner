@@ -3,7 +3,6 @@
 #include <QThread>
 #include <QMutex>
 
-#include "ScreenScan.h"
 #include "ThreadSacn.h"
 
 class ThreadStreamProcess : public QThread
