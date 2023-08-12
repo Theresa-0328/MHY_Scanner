@@ -1,7 +1,7 @@
 ﻿#include "ScannerGui.h"
 
 #include <QMessageBox>
-//#include <opencv2/core/utils/logger.hpp>
+#include <opencv2/core/utils/logger.hpp>
 
 bool isOpen()
 {
@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 {
 	UINT utf8 = 65001;
 	SetConsoleOutputCP(utf8);
-	//cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
+	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
 	QApplication a(argc, argv);
 	if (isOpen())
 	{

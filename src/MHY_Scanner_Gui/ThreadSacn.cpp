@@ -1,4 +1,5 @@
 ﻿#include "ThreadSacn.h"
+
 #include <chrono>
 
 ThreadSacn::ThreadSacn()

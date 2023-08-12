@@ -1,6 +1,8 @@
 ﻿#pragma once
+
 #include <iostream>
 #include <string>
+
 #include <opencv2/opencv.hpp>
 
 extern "C"
@@ -14,7 +16,7 @@ extern "C"
 
 class VideoProcessor
 {
-public:	
+public:
 	AVCodecContext* avCodecContext = nullptr;
 	const AVCodec* avCodec = nullptr;
 	AVFormatContext* avformatContext = nullptr;

@@ -1,8 +1,9 @@
 ﻿#pragma once
+
 #include <QThread>
 #include <httplib.h>
 
-class ThreadLocalServer  : public QThread
+class ThreadLocalServer : public QThread
 {
 	Q_OBJECT
 

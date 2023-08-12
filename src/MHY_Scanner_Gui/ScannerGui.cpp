@@ -11,6 +11,7 @@
 #include "OfficialApi.h"
 #include "LiveBili.h"
 #include "LoginWindow.h"
+#include "Mihoyosdk.h"
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)

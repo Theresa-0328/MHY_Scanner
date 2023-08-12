@@ -1,6 +1,9 @@
 ﻿#pragma once
+
 #include <string>
-#include"Json.h"
+
+#include <Json.h>
+
 #include"HttpClient.h"
 
 class LiveBili :public HttpClient
@@ -16,4 +19,12 @@ private:
 	int HandlerLiveStatus(std::string string);
 	//获取直播间信息接口
 	//https://api.live.bilibili.com/room/v1/Room/get_info?room_id=6&from=room
+};
+
+class LiveHuya :public HttpClient
+{
+public:
+	LiveHuya();
+	~LiveHuya();
+private:
 };

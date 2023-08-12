@@ -1,5 +1,9 @@
 ﻿#include "ThreadGetScreen.h"
-#include <OfficialApi.h>
+
+#include "OfficialApi.h"
+#include "ScreenScan.h"
+#include "Mihoyosdk.h"
+
 
 ThreadGetScreen::ThreadGetScreen(QObject* parent)
 	: QThread(parent)

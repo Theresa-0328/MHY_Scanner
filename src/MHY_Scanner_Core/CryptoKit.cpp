@@ -1,14 +1,18 @@
-﻿#pragma warning(disable : 4996)
+﻿#include "CryptoKit.h"
+
+#include <sstream>
+#include <iomanip>
+#include <iostream>
+
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 //#include <openssl/bio.h>
 //#include <openssl/buffer.h>
 #include <openssl/hmac.h>
 #include <openssl/md5.h>
-#include <sstream>
-#include <iomanip>
-#include "CryptoKit.h"
-#include <iostream>
+
+#pragma warning(disable : 4996)
+
 using namespace std;
 
 std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string& public_key)

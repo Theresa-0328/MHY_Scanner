@@ -1,5 +1,7 @@
 ﻿#include "ThreadDownload.h"
 
+#include <iostream>
+
 ThreadDownload::ThreadDownload()
 	: QThread()
 {

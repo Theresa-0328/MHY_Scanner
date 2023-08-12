@@ -1,4 +1,5 @@
 ﻿#include "LoginWindow.h"
+
 #include <QRegularExpressionValidator>
 
 LoginWindow::LoginWindow(QDialog* Dialog)

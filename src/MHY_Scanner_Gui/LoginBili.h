@@ -1,8 +1,10 @@
 ﻿#pragma once
 
 #include "BiliGameApi.h"
+
 #include <sstream>
 #include <fstream>
+
 class LoginBili
 	:public BiliGameApi
 {

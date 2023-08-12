@@ -1,9 +1,9 @@
 ﻿#pragma once
+
 #include <QThread>
 #include <QMutex>
+
 #include "ScreenScan.h"
-#include "QRScanner.h"
-#include "VideoProcessor.h"
 #include "ThreadSacn.h"
 
 class ThreadStreamProcess : public QThread
