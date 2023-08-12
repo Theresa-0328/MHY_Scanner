@@ -2,8 +2,8 @@
 
 #include <QThread>
 #include <curl/curl.h>
-#include <iostream>
 #include <QMutex>
+
 class ThreadDownload : public QThread
 {
 	Q_OBJECT

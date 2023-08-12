@@ -1,5 +1,7 @@
 ﻿#pragma once
+
 #include <string>
+
 #include <opencv2/wechat_qrcode.hpp>
 #include <opencv2/opencv.hpp>
 

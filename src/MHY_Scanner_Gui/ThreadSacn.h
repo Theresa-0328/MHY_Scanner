@@ -1,7 +1,9 @@
 ﻿#pragma once
 
-#include <QThread>
 #include <string>
+
+#include <QThread>
+
 #include "QRScanner.h"
 
 class ServerType

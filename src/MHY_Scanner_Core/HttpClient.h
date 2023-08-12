@@ -1,9 +1,13 @@
 ﻿#pragma once
+
 #include <string>
 #include <map>
-#include <curl/curl.h>
 #include <iostream>
+
+#include <curl/curl.h>
+
 #include "CryptoKit.h"
+
 class HttpClient :public CryptoKit
 {
 public:

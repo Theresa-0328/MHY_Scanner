@@ -1,7 +1,9 @@
 ﻿#include "ThreadStreamProcess.h"
+
 #include "ThreadDownload.h"
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
+#include "VideoProcessor.h"
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent)

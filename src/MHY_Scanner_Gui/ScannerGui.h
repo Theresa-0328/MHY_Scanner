@@ -2,10 +2,12 @@
 
 #include <QtWidgets/QMainWindow>
 
+#include <Winsock2.h>
+
 #include "ui_ScannerGui.h"
-#include "LoginBili.h"
 #include "ThreadGetScreen.h"
 #include "ThreadStreamProcess.h"
+#include "LoginBili.h"
 
 class OnlineUpdate :public QThread
 {

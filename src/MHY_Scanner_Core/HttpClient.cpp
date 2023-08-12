@@ -1,8 +1,8 @@
-﻿#include <iomanip>
+﻿#include "HttpClient.h"
+
+#include <iomanip>
 #include <chrono>
 #include <sstream>
-#include "HttpClient.h"
-
 
 std::string HttpClient::string_To_UTF8(const std::string& str)
 {

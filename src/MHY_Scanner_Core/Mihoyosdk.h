@@ -1,6 +1,8 @@
 ﻿#pragma once
+
 #include <string>
 #include <iostream>
+
 #include "HttpClient.h"
 
 class Mihoyosdk :public HttpClient

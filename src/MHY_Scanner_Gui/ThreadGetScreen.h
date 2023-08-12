@@ -1,9 +1,10 @@
 ﻿#pragma once
+
+#include <initializer_list>
+
 #include <QThread>
 #include <QMutex>
-#include <initializer_list>
-#include "ScreenScan.h"
-#include "Mihoyosdk.h"
+
 #include "ThreadSacn.h"
 
 class ThreadGetScreen
