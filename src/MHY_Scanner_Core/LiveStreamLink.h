@@ -4,13 +4,13 @@
 
 #include <Json.h>
 
-#include"HttpClient.h"
+#include "HttpClient.h"
 
 class LiveBili :public HttpClient
 {
 public:
 	LiveBili();
-	//获取直播流地址
+	//获取B站直播流地址
 	std::string GetAddress(int realRoomID);
 	//获取真实直播间ID
 	int GetRealRoomID(std::string roomID);

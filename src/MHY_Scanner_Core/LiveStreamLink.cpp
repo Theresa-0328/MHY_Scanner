@@ -1,4 +1,4 @@
-﻿#include "LiveBili.h"
+﻿#include "LiveStreamLink.h"
 
 LiveBili::LiveBili()
 {
@@ -111,4 +111,14 @@ std::string LiveBili::GetStreamUrl(std::string api, std::map<std::string, std::s
 	std::cout << streamUrl << std::endl;
 #endif // _DEBUG
 	return streamUrl;
+}
+
+LiveHuya::LiveHuya()
+{
+
+}
+
+LiveHuya::~LiveHuya()
+{
+
 }

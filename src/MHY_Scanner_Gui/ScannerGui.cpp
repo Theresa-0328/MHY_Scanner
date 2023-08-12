@@ -10,7 +10,7 @@
 
 #include "OfficialApi.h"
 #include "LoginBili.h"
-#include "LiveBili.h"
+#include "LiveStreamLink.h"
 #include "LoginWindow.h"
 #include "Mihoyosdk.h"
 
@@ -90,7 +90,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
 		countA = static_cast<int>(userinfo["last_account"]) - 1;
-		//FIXME 代理会导致响应过慢,约10倍响应时间
+		//FIXME 代理会导致响应过慢
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
 		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
@@ -614,7 +614,7 @@ void ScannerGui::pBtSwitch()
 		//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 		userinfo["last_account"] = nCurrentRow + 1;
 		updateUserinfo(userinfo.str());
-		QMessageBox::information(this, "设置成功！", "开启\"启动时自动监视屏幕\"将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
+		QMessageBox::information(this, "设置成功！", "勾选下方\"启动时自动监视屏幕\"将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
 		return;
 	}
 	else
