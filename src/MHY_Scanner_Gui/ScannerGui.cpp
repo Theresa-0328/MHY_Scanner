@@ -80,9 +80,11 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditUname->setText("未选中");
 	//版本号
 	ui.label_3->setText("v1.1.0");
+
 	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
 		countA = static_cast<int>(userinfo["last_account"]) - 1;
+		//FIXME 代理会导致响应过慢,约10倍响应时间
 		ui.pBtstartScreen->clicked();
 		ui.checkBoxAutoScreen->setChecked(true);
 		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
