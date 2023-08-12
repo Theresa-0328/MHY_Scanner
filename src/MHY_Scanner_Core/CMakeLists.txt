@@ -4,13 +4,12 @@ add_library(MHY_Scanner_Core STATIC
 	BiliGameApi.cpp
 	CryptoKit.cpp
 	HttpClient.cpp
-	LiveBili.cpp
+	LiveStreamLink.cpp
 	Mihoyosdk.cpp
 	OfficialApi.cpp
 	QRScanner.cpp
 	ScreenScan.cpp
 	VideoProcessor.cpp
-	LiveHuya.cpp
 )
 
 target_include_directories(MHY_Scanner_Core PUBLIC 

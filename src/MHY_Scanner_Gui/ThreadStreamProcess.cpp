@@ -42,9 +42,6 @@ void ThreadStreamProcess::LoginOfficial()
 	{
 
 	} while (false);
-	ThreadDownload td;
-	td.downloadInit(url);
-	td.start();
 	OfficialApi o;
 	std::string uuid = o.generateUUID();
 	ThreadSacn threadsacn;
@@ -125,7 +122,6 @@ void ThreadStreamProcess::LoginOfficial()
 		}
 		av_packet_unref(vp.avPacket);
 	}
-	td.stop();
 }
 
 void ThreadStreamProcess::LoginBH3BiliBili()
@@ -134,9 +130,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 	{
 
 	} while (false);
-	ThreadDownload td;
-	td.downloadInit(url);
-	td.start();
 	Mihoyosdk m;
 	const std::string LoginData = m.verify(uid, gameToken);
 	m.setUserName(uName);
@@ -197,7 +190,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		}
 		av_packet_unref(vp.avPacket);
 	}
-	td.stop();
 }
 
 void ThreadStreamProcess::stop()
@@ -208,6 +200,9 @@ void ThreadStreamProcess::stop()
 void ThreadStreamProcess::run()
 {
 	stopStream = false;
+	ThreadDownload td;
+	td.downloadInit(url);
+	td.start();
 	switch (servertype)
 	{
 	case ServerType::Official:
@@ -219,6 +214,7 @@ void ThreadStreamProcess::run()
 	default:
 		break;
 	}
+	td.stop();
 }
 
 void ThreadStreamProcess::setServerType(ServerType::Type servertype)
