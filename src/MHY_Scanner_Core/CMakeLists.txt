@@ -10,6 +10,7 @@ add_library(MHY_Scanner_Core STATIC
 	QRScanner.cpp
 	ScreenScan.cpp
 	VideoProcessor.cpp
+	#"VideoProcessor_1.cpp" 
 )
 
 target_include_directories(MHY_Scanner_Core PUBLIC 

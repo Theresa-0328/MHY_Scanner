@@ -42,10 +42,9 @@ add_definitions(-DCURL_STATICLIB)
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
+enable_testing()
 
 add_subdirectory(src)
-
-enable_testing()
 add_subdirectory(tests)
 
 set(PROJECT_LIBRARIES
@@ -99,3 +98,4 @@ set(PROJECT_LIBRARIES
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
 target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
+target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})

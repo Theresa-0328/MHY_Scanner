@@ -1,4 +1,5 @@
-﻿#include "gtest/gtest.h"
+﻿#include <gtest/gtest.h>
+
 #include "ThreadSacn.h"
 
 TEST(ThreadSacn, Test1)

@@ -13,7 +13,6 @@
 #include "Mihoyosdk.h"
 #include "LoginBili.h"
 #include "LoginWindow.h"
-#include "LiveStreamLink.h"
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -302,12 +301,12 @@ void ScannerGui::pBtStream()
 		return;
 	}
 	//检查直播间状态
-	QString liveRoomId = ui.lineEditLiveId->text();
-	LiveBili livebili;
-	int readId = liveIdError(livebili.GetRealRoomID(liveRoomId.toStdString()));
-	if (readId == 0)
+	LiveBili livebili(ui.lineEditLiveId->text().toStdString());
+	if (liveIdError(livebili.GetLiveStreamStatus()) != 0)
+	{
 		return;
-	std::string streamAddress = livebili.GetAddress(readId);
+	}
+	std::string streamAddress = livebili.GetLiveStreamLink();
 	t2.url = streamAddress;
 	std::string type = userinfo["account"][countA]["type"];
 	if (type == "官服")
@@ -458,28 +457,29 @@ void ScannerGui::updateUserinfo(const std::string& str)
 	}
 }
 
-int ScannerGui::liveIdError(int roomid)
+int ScannerGui::liveIdError(const LiveStreamStatus::Status& data)
 {
-	switch (roomid)
+	switch (data)
 	{
-	case -1:
+	case LiveStreamStatus::Absent:
 	{
 		QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
 	}
-	return 0;
-	case -2:
+	return 1;
+	case LiveStreamStatus::NotLive:
 	{
 		QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
 	}
-	return 0;
-	case -3:
+	return 1;
+	case LiveStreamStatus::Error:
 	{
-		QMessageBox::information(this, "提示", "未知错误!", QMessageBox::Yes);
+		QMessageBox::information(this, "提示", "直播间未知错误!", QMessageBox::Yes);
+	}
+	return 1;
+	default:
+		return 0;
 	}
 	return 0;
-	default:
-		return roomid;
-	}
 }
 
 void ScannerGui::loadUserinfo()

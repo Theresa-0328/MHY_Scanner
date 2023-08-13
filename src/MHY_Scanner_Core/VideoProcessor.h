@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-#include <opencv2/opencv.hpp>
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -26,12 +25,12 @@ public:
 	AVStream* avstream;
 	struct SwsContext* swsCtx = 0;
 public:
-	int fps;
+	float fps;
 	int index;
 	VideoProcessor();
 	~VideoProcessor();
 
-	int OpenVideo(std::string);
+	int OpenVideo(const std::string& path);
 	int Close();
 	int read();
 	int GetStreamIndex(enum AVMediaType type);

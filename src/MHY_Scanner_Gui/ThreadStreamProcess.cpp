@@ -38,12 +38,12 @@ void ThreadStreamProcess::setLoginInfo(const std::string uid, const std::string 
 
 void ThreadStreamProcess::LoginOfficial()
 {
+	OfficialApi o;
+	std::string uuid = o.generateUUID();
 	do
 	{
 
 	} while (false);
-	OfficialApi o;
-	std::string uuid = o.generateUUID();
 	ThreadSacn threadsacn;
 	VideoProcessor vp;
 	QThread::msleep(5000);
