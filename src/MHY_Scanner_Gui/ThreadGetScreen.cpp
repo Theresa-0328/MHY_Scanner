@@ -28,11 +28,11 @@ void ThreadGetScreen::setLoginInfo(const std::string& uid, const std::string& to
 	this->gameToken = token;
 }
 
-void ThreadGetScreen::setLoginInfo(const std::string& uid, const std::string& token, const std::string& uname)
+void ThreadGetScreen::setLoginInfo(const std::string& uid, const std::string& token, const std::string& name)
 {
 	this->uid = uid;
 	this->gameToken = token;
-	this->uname = uname;
+	this->m_name = name;
 }
 
 void ThreadGetScreen::LoginOfficial()
@@ -79,7 +79,7 @@ void ThreadGetScreen::LoginBH3BiliBili()
 	ScreenScan screenshot;
 	Mihoyosdk m;
 	const std::string& LoginData = m.verify(uid, gameToken);
-	m.setUserName(uname);
+	m.setUserName(m_name);
 	while (!Exit)
 	{
 		const cv::Mat& img = screenshot.getScreenshot();

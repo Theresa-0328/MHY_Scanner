@@ -1,5 +1,7 @@
 ﻿#include "LiveStreamLink.h"
 
+#include <Json.h>
+
 LiveBili::LiveBili()
 {
 }
@@ -119,6 +121,16 @@ LiveHuya::LiveHuya()
 }
 
 LiveHuya::~LiveHuya()
+{
+
+}
+
+LiveDoyin::LiveDoyin()
+{
+
+}
+
+LiveDoyin::~LiveDoyin()
 {
 
 }

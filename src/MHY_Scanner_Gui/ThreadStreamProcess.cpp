@@ -28,11 +28,11 @@ void ThreadStreamProcess::setLoginInfo(std::string uid, std::string gameToken)
 	this->gameToken = gameToken;
 }
 
-void ThreadStreamProcess::setLoginInfo(const std::string uid, const std::string gameToken, const std::string uName)
+void ThreadStreamProcess::setLoginInfo(const std::string uid, const std::string gameToken, const std::string name)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
-	this->uName = uName;
+	this->m_name = name;
 }
 
 
@@ -99,11 +99,11 @@ void ThreadStreamProcess::LoginOfficial()
 		{
 			threadsacn.setImg(_img);
 			threadsacn.start();
-#ifdef _DEBUG
+			//#ifdef _DEBUG
 			std::cout << "scan count " << f++ << std::endl;
 			imshow("Video", _img);
-			cv::waitKey(1);
-#endif
+			//#endif
+			cv::waitKey(2);
 		}
 		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
 		{
@@ -132,7 +132,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 	} while (false);
 	Mihoyosdk m;
 	const std::string LoginData = m.verify(uid, gameToken);
-	m.setUserName(uName);
+	m.setUserName(m_name);
 	ThreadSacn threadsacn;
 	QThread::msleep(5000);
 	VideoProcessor vp;
@@ -176,11 +176,11 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		{
 			threadsacn.setImg(_img);
 			threadsacn.start();
-#ifdef _DEBUG
+			//#ifdef _DEBUG
 			std::cout << "scan count " << f++ << std::endl;
 			imshow("Video", _img);
+			//#endif
 			cv::waitKey(2);
-#endif
 		}
 		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
 		{
@@ -217,7 +217,7 @@ void ThreadStreamProcess::run()
 	td.stop();
 }
 
-void ThreadStreamProcess::setServerType(ServerType::Type servertype)
+void ThreadStreamProcess::setServerType(const ServerType::Type& servertype)
 {
 	this->servertype = servertype;
 }
