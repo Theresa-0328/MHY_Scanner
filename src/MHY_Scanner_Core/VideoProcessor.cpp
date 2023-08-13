@@ -17,7 +17,7 @@ VideoProcessor::~VideoProcessor()
 	}
 }
 
-int VideoProcessor::OpenVideo(std::string path)
+int VideoProcessor::OpenVideo(const std::string& path)
 {
 	if (avformatContext == nullptr)
 	{
@@ -35,6 +35,7 @@ int VideoProcessor::OpenVideo(std::string path)
 		std::cerr << "Error finding the stream information" << std::endl;
 		return -1;
 	}
+
 	index = GetStreamIndex(AVMEDIA_TYPE_VIDEO);
 	FFmpegDecoder(index);
 	OpenDecoder(index);

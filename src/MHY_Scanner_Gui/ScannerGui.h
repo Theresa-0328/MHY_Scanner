@@ -6,6 +6,7 @@
 #include "ui_ScannerGui.h"
 #include "ThreadGetScreen.h"
 #include "ThreadStreamProcess.h"
+#include "LiveStreamLink.h"
 
 class OnlineUpdate :public QThread
 {
@@ -44,7 +45,7 @@ private:
 	ThreadGetScreen t1;
 	ThreadStreamProcess t2;
 	json::Json userinfo;
-	int liveIdError(int roomid);
+	int liveIdError(const LiveStreamStatus::Status& data);
 	std::string readConfigFile(const std::string& filePath);
 	void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
 	void updateConfig();

@@ -1,11 +1,25 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+
 #include "LiveStreamLink.h"
 #include "QRScanner.h"
 
 TEST(LiveBili, Test1)
 {
-	LiveBili liveBili;
-	EXPECT_EQ(7734200, liveBili.GetRealRoomID("6"));
+	LiveBili liveBili("6");
+	EXPECT_EQ(LiveStreamStatus::Status::Normal, liveBili.GetLiveStreamStatus());
+	EXPECT_TRUE(!liveBili.GetLiveStreamLink().empty());
+}
+
+TEST(LiveBili, Test2)
+{
+	LiveBili liveBili("2");
+	EXPECT_EQ(LiveStreamStatus::Status::Absent, liveBili.GetLiveStreamStatus());
+}
+
+TEST(LiveBili, Test3)
+{
+	LiveBili liveBili("2132121");
+	EXPECT_EQ(LiveStreamStatus::Status::NotLive, liveBili.GetLiveStreamStatus());
 }
 
 TEST(LiveHuya, Test1)

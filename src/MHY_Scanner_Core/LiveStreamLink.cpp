@@ -2,15 +2,56 @@
 
 #include <Json.h>
 
-LiveBili::LiveBili()
+LiveBili::LiveBili(const std::string& roomID) :m_roomID(roomID)
 {
+
 }
 
-std::string LiveBili::GetAddress(int realRoomID)
+LiveStreamStatus::Status LiveBili::GetLiveStreamStatus()
 {
-#ifdef _DEBUG
-	std::cout << "realRoomID:" << realRoomID << std::endl;
-#endif
+
+	std::map<std::string, std::string> params = { {"id", m_roomID} };
+	const std::string address = "https://api.live.bilibili.com/room/v1/Room/room_init";
+	std::string addres = Url(address, params);
+	std::string result;
+	GetRequest(result, addres);
+
+	json::Json data;
+	data.parse(result);
+	int code = data["code"];
+	if (code == 60004)
+	{
+		//直播间不存在
+		data.clear();
+		return LiveStreamStatus::Absent;
+	}
+	if (code == 0)
+	{
+		int liveStatus = data["data"]["live_status"];
+		if (liveStatus != 1)
+		{
+			//直播间未开播
+			data.clear();
+			return LiveStreamStatus::NotLive;
+		}
+		else
+		{
+			m_realRoomID = data["data"]["room_id"].str();
+			data.clear();
+			return LiveStreamStatus::Status::Normal;
+		}
+	}
+	//其他错误
+	return LiveStreamStatus::Error;
+}
+
+std::string LiveBili::GetLiveStreamLink()
+{
+	return GetLinkByRealRoomID(m_realRoomID);
+}
+
+std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
+{
 	std::map<std::string, std::string> params =
 	{
 		//appkey:iVGUTjsxvpLeuDCf
@@ -33,7 +74,7 @@ std::string LiveBili::GetAddress(int realRoomID)
 		//play_type:0
 		{"protocol" , "0,1"},
 		{"qn" , "10000"},
-		{"room_id" , std::to_string(realRoomID)},
+		{"room_id" , realRoomID},
 		//s_locale:zh_CN
 		//statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
 	};
@@ -44,52 +85,9 @@ std::string LiveBili::GetAddress(int realRoomID)
 	return playurl;
 }
 
-int LiveBili::GetRealRoomID(std::string roomID)
+std::string LiveBili::GetStreamUrl(std::string url, std::map<std::string, std::string> param)
 {
-	std::map<std::string, std::string> params = { {"id", roomID} };
-	const std::string address = "https://api.live.bilibili.com/room/v1/Room/room_init";
-	std::string addres = Url(address, params);
-	std::string result;
-	GetRequest(result, addres);
-	int realRoomID = HandlerLiveStatus(result);
-	return realRoomID;
-}
-
-
-int LiveBili::HandlerLiveStatus(std::string string)
-{
-	json::Json a;
-	a.parse(string);
-	int code = a["code"];
-	if (code == 60004)
-	{
-		//直播间不存在
-		a.clear();
-		return -1;
-	}
-	if (code == 0)
-	{
-		int liveStatus = a["data"]["live_status"];
-		if (liveStatus != 1)
-		{
-			//直播间未开播
-			a.clear();
-			return -2;
-		}
-		else
-		{
-			int room_id = a["data"]["room_id"];
-			a.clear();
-			return room_id;
-		}
-	}
-	//其他未知错误
-	return -3;
-}
-
-std::string LiveBili::GetStreamUrl(std::string api, std::map<std::string, std::string> param)
-{
-	std::string address = Url(api, param);
+	std::string address = Url(url, param);
 
 	std::string str;
 	GetRequest(str, address);
@@ -108,14 +106,13 @@ std::string LiveBili::GetStreamUrl(std::string api, std::map<std::string, std::s
 		streamUrl.replace(pos, 4, "&");
 		pos = streamUrl.find("0026");
 	}
-
 #ifdef _DEBUG
 	std::cout << streamUrl << std::endl;
 #endif // _DEBUG
 	return streamUrl;
 }
 
-LiveHuya::LiveHuya()
+LiveHuya::LiveHuya(const std::string& roomID)
 {
 
 }
@@ -125,7 +122,7 @@ LiveHuya::~LiveHuya()
 
 }
 
-LiveDoyin::LiveDoyin()
+LiveDoyin::LiveDoyin(const std::string& roomID)
 {
 
 }
