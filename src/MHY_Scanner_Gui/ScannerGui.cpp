@@ -7,12 +7,13 @@
 #include <QWindow>
 #include <QRegularExpressionValidator>
 #include <QStringList> 
+#include <Json.h>
 
 #include "OfficialApi.h"
-#include "LoginBili.h"
-#include "LiveStreamLink.h"
-#include "LoginWindow.h"
 #include "Mihoyosdk.h"
+#include "LoginBili.h"
+#include "LoginWindow.h"
+#include "LiveStreamLink.h"
 
 ScannerGui::ScannerGui(QWidget* parent)
 	: QMainWindow(parent)
@@ -71,13 +72,14 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+
 	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{
 		insertTableItems(
 			QString::fromStdString(userinfo["account"][i]["uid"]),
 			QString::fromStdString(userinfo["account"][i]["name"]),
 			QString::fromStdString(userinfo["account"][i]["type"]),
-			"测试中文数据");
+			QString::fromStdString("测试中文数据"));
 	}
 
 	//加载默认值
@@ -151,7 +153,7 @@ void ScannerGui::pBtLoginAccount()
 		OfficialApi o;
 		if (o.cookieParser(loginwindow.cookie) != 0)
 		{
-			QMessageBox::information(this, "错误", "不合法的cookie", QMessageBox::Yes);
+			QMessageBox::information(this, "错误", "cookie格式错误", QMessageBox::Yes);
 			ui.pBtLoginAccount->setEnabled(true);
 			ui.pBtstartScreen->setEnabled(true);
 			ui.pBtStream->setEnabled(true);
@@ -602,7 +604,7 @@ void ScannerGui::getInfo(int x, int y)
 	ui.lineEditUname->setText(cellText);
 	countA = x;
 #ifdef _DEBUG
-	std::cout << "x=" << x << "y=" << y << " " << cellText.toStdString() << std::endl;
+	std::cout << std::format(R"(row = {} , user_name = {})", x, cellText.toStdString()) << std::endl;
 #endif // _DEBUG
 }
 

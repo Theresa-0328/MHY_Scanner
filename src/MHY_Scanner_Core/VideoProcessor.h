@@ -4,7 +4,6 @@
 #include <string>
 
 #include <opencv2/opencv.hpp>
-
 extern "C"
 {
 #include <libavcodec/avcodec.h>

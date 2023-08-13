@@ -8,7 +8,7 @@
 
 std::string BiliGameApi::remove_quotes(std::string str)
 {
-	std::string result = "";
+	std::string result;
 	char* p = &str[0];
 	while (*p != '\0')
 	{

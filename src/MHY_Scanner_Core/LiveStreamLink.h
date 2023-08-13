@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include <Json.h>
-
 #include "HttpClient.h"
 
 class LiveBili :public HttpClient
@@ -26,5 +24,13 @@ class LiveHuya :public HttpClient
 public:
 	LiveHuya();
 	~LiveHuya();
+private:
+};
+
+class LiveDoyin :public HttpClient
+{
+public:
+	LiveDoyin();
+	~LiveDoyin();
 private:
 };

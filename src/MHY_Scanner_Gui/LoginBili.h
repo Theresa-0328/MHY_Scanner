@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include "BiliGameApi.h"
-
 #include <sstream>
 #include <fstream>
+
+#include "BiliGameApi.h"
 
 class LoginBili
 	:public BiliGameApi

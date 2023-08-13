@@ -12,8 +12,8 @@ public:
 	ThreadStreamProcess(QObject* parent = nullptr);
 	~ThreadStreamProcess();
 	void setLoginInfo(const std::string uid, const std::string gameToken);
-	void setLoginInfo(const std::string uid, const std::string gameToken, const std::string uName);
-	void setServerType(ServerType::Type servertype);
+	void setLoginInfo(const std::string uid, const std::string gameToken, const std::string name);
+	void setServerType(const ServerType::Type& servertype);
 	void stop();
 	void run();
 	std::string url;
@@ -26,6 +26,6 @@ private:
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
-	std::string uName;
+	std::string m_name;
 	ServerType::Type servertype = ServerType::Type::UNKNOW;
 };

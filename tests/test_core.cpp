@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "LiveBili.h"
+#include "LiveStreamLink.h"
 #include "QRScanner.h"
 
 TEST(LiveBili, Test1)
@@ -18,7 +18,7 @@ TEST(LiveDouyin, Test1)
 	EXPECT_TRUE(true);
 }
 
-TEST(QRScanner1, Test1)
+TEST(QRScanner, Test1)
 {
 	cv::Mat image = cv::imread(R"(../doc/image/bh3_qrcode_1080.png)");
 	std::string qrcode1;
