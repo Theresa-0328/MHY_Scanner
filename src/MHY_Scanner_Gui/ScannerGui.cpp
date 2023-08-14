@@ -306,8 +306,7 @@ void ScannerGui::pBtStream()
 	{
 		return;
 	}
-	std::string streamAddress = livebili.GetLiveStreamLink();
-	t2.url = streamAddress;
+	t2.url = livebili.GetLiveStreamLink();
 	std::string type = userinfo["account"][countA]["type"];
 	if (type == "官服")
 	{
