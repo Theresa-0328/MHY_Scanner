@@ -25,7 +25,7 @@ public:
 private:
 	//获取B站直播流地址
 	std::string GetLinkByRealRoomID(const std::string& realRoomID);
-	std::string GetStreamUrl(std::string url, std::map<std::string, std::string> param);
+	std::string GetStreamUrl(const std::string& url, std::map<std::string, std::string> param);
 	std::string m_roomID;
 	std::string m_realRoomID;
 	//获取直播间信息接口

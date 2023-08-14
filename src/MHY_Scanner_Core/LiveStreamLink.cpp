@@ -1,5 +1,7 @@
 ﻿#include "LiveStreamLink.h"
 
+#include <format>
+
 #include <Json.h>
 
 LiveBili::LiveBili(const std::string& roomID) :m_roomID(roomID)
@@ -36,6 +38,7 @@ LiveStreamStatus::Status LiveBili::GetLiveStreamStatus()
 		}
 		else
 		{
+			// 设置真实roomid
 			m_realRoomID = data["data"]["room_id"].str();
 			data.clear();
 			return LiveStreamStatus::Status::Normal;
@@ -70,9 +73,11 @@ std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
 		//no_playurl:0
 		{"only_audio" , "0"},
 		{"only_video" , "0"},
-		//platform:web
+		//TODO platform 会影响下载时使用的referer
+		//{"platform", "h5" },
 		//play_type:0
 		{"protocol" , "0,1"},
+		//TODO 考虑存在低清晰度时使用低清晰度？
 		{"qn" , "10000"},
 		{"room_id" , realRoomID},
 		//s_locale:zh_CN
@@ -80,12 +85,12 @@ std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
 	};
 	//弃用v1api
 	//const std::string v1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";
-	const std::string v2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
+	const std::string& v2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
 	std::string playurl = GetStreamUrl(v2API, params);
 	return playurl;
 }
 
-std::string LiveBili::GetStreamUrl(std::string url, std::map<std::string, std::string> param)
+std::string LiveBili::GetStreamUrl(const std::string& url, std::map<std::string, std::string> param)
 {
 	std::string address = Url(url, param);
 
@@ -94,22 +99,22 @@ std::string LiveBili::GetStreamUrl(std::string url, std::map<std::string, std::s
 
 	json::Json j;
 	j.parse(str);
-	std::string baseUrl = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"];
-	std::string extra = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"];
-	std::string host = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"];
-	std::string streamUrl = host + baseUrl + extra;
+	const std::string& base_url = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"];
+	const std::string& extra = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"];
+	const std::string& host = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"];
+	std::string stream_url = std::format("{}{}{}", host, base_url, extra);
 
 	//FIXME
-	size_t pos = streamUrl.find("0026");
+	size_t pos = stream_url.find("0026");
 	while (pos != std::string::npos)
 	{
-		streamUrl.replace(pos, 4, "&");
-		pos = streamUrl.find("0026");
+		stream_url.replace(pos, 4, "&");
+		pos = stream_url.find("0026");
 	}
 #ifdef _DEBUG
-	std::cout << streamUrl << std::endl;
+	std::cout << stream_url << std::endl;
 #endif // _DEBUG
-	return streamUrl;
+	return stream_url;
 }
 
 LiveHuya::LiveHuya(const std::string& roomID)
