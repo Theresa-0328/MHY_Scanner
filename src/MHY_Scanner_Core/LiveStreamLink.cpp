@@ -11,13 +11,11 @@ LiveBili::LiveBili(const std::string& roomID) :m_roomID(roomID)
 
 LiveStreamStatus::Status LiveBili::GetLiveStreamStatus()
 {
-
 	std::map<std::string, std::string> params = { {"id", m_roomID} };
-	const std::string address = "https://api.live.bilibili.com/room/v1/Room/room_init";
-	std::string addres = Url(address, params);
+	const std::string& address = "https://api.live.bilibili.com/room/v1/Room/room_init";
+	const std::string& addres = Url(address, params);
 	std::string result;
 	GetRequest(result, addres);
-
 	json::Json data;
 	data.parse(result);
 	int code = data["code"];
@@ -25,7 +23,7 @@ LiveStreamStatus::Status LiveBili::GetLiveStreamStatus()
 	{
 		//直播间不存在
 		data.clear();
-		return LiveStreamStatus::Absent;
+		return LiveStreamStatus::Status::Absent;
 	}
 	if (code == 0)
 	{
@@ -34,7 +32,7 @@ LiveStreamStatus::Status LiveBili::GetLiveStreamStatus()
 		{
 			//直播间未开播
 			data.clear();
-			return LiveStreamStatus::NotLive;
+			return LiveStreamStatus::Status::NotLive;
 		}
 		else
 		{
@@ -45,7 +43,7 @@ LiveStreamStatus::Status LiveBili::GetLiveStreamStatus()
 		}
 	}
 	//其他错误
-	return LiveStreamStatus::Error;
+	return LiveStreamStatus::Status::Error;
 }
 
 std::string LiveBili::GetLiveStreamLink()
@@ -86,7 +84,7 @@ std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
 	//弃用v1api
 	//const std::string v1API = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";
 	const std::string& v2API = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
-	std::string playurl = GetStreamUrl(v2API, params);
+	const std::string& playurl = GetStreamUrl(v2API, params);
 	return playurl;
 }
 
