@@ -3,6 +3,7 @@
 #include <string>
 
 #include <QThread>
+#include <QMutex>
 
 #include "QRScanner.h"
 
@@ -28,7 +29,11 @@ public:
 	std::string getTicket()const;
 	std::string getQRcode()const;
 	void run();
+	void stop();
+	bool MatEmpty()const;
 private:
-	cv::Mat img;
+	cv::Mat m_img;
 	std::string m_qrcode;
+	QMutex m_mux;
+	bool m_stop = false;
 };

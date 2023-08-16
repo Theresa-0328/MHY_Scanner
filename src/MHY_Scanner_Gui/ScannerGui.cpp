@@ -28,7 +28,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
-	connect(&t1, &ThreadGetScreen::loginResults, this, &ScannerGui::islogin);
+	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
 
 	//加载软件设置
@@ -260,7 +260,7 @@ void ScannerGui::pBtstartScreen()
 		}
 		t1.setServerType(ServerType::Type::Official);
 		t1.setLoginInfo(uid, gameToken);
-		t1.start(QThread::Priority::TimeCriticalPriority);
+		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
 	if (type == "崩坏3B服")
@@ -277,7 +277,7 @@ void ScannerGui::pBtstartScreen()
 		}
 		t1.setServerType(ServerType::Type::BH3_BiliBili);
 		t1.setLoginInfo(uid, stoken, name);
-		t1.start(QThread::Priority::TimeCriticalPriority);
+		t1.start();
 		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
 }
@@ -306,7 +306,13 @@ void ScannerGui::pBtStream()
 	{
 		return;
 	}
-	t2.url = livebili.GetLiveStreamLink();
+	std::map<std::string, std::string> heards =
+	{
+		{"user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
+			Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41"},
+		{"referer", "https://live.bilibili.com"}
+	};
+	t2.setUrl(livebili.GetLiveStreamLink(), heards);
 	std::string type = userinfo["account"][countA]["type"];
 	if (type == "官服")
 	{
@@ -324,6 +330,7 @@ void ScannerGui::pBtStream()
 		t2.setLoginInfo(uid, gameToken);
 		t2.start(QThread::Priority::TimeCriticalPriority);
 		ui.pBtStream->setText("监视直播二维码中");
+		return;
 	}
 	if (type == "崩坏3B服")
 	{
@@ -341,6 +348,7 @@ void ScannerGui::pBtStream()
 		t2.setLoginInfo(uid, stoken, name);
 		t2.start(QThread::Priority::TimeCriticalPriority);
 		ui.pBtStream->setText("监视直播二维码中");
+		return;
 	}
 }
 

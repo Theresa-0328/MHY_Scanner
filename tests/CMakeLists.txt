@@ -24,5 +24,6 @@ add_executable(test_video test_video.cpp)
 target_link_libraries(test_video PUBLIC gtest gtest_main)
 target_include_directories(test_video PUBLIC ../3rdparty/googletest-1.13.0/include)
 target_include_directories(test_video PUBLIC ../src/MHY_Scanner_Core)
+
 #add_test(NAME test_video COMMAND test_video)
 #set_tests_properties(test_video PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
