@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/MHY_Scanner?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/MHY_Scanner/stargazers)
 </div>
 
-### **版本 - v1.1.0**
+### **版本 - v1.1.1**
 
 ### [国内蓝奏云下载链接](https://wwru.lanzouc.com/b04e121qj) 密码:afph
 
@@ -20,11 +20,11 @@
 ## 目前可用的服务器
 | 崩坏3 | 原神 | 星穹铁道 |
 |:-----:|:-----:|:-----:|
-| 官服| (仅屏幕获取可用)官服 | 官服 |
+| 官服| 官服 | 官服 |
 | bilibili服 |  |  |
 
 ## 使用说明
-下载解压后运行 ScannerGui。
+下载解压后运行 MHY_Scanner.exe
 
 添加账号，官服使用cookie登录，崩坏3B服账号密码。本地仅保存登录信息在config/uesrinfo.json，不保存cookie或密码。
 

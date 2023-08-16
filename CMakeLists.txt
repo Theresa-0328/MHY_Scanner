@@ -10,6 +10,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(Unit_Tests "Unit Tests" OFF)
+
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /sdl")
@@ -42,10 +44,12 @@ add_definitions(-DCURL_STATICLIB)
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
-enable_testing()
-
 add_subdirectory(src)
-add_subdirectory(tests)
+
+if(Unit_Tests)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
 
 set(PROJECT_LIBRARIES
 	MHY_Scanner_Core
@@ -96,6 +100,8 @@ set(PROJECT_LIBRARIES
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
-target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
-target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
-target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
+if(Unit_Tests)
+	target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
+	target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
+	target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
+endif()
