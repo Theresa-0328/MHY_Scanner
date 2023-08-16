@@ -21,7 +21,7 @@ ThreadStreamProcess::~ThreadStreamProcess()
 	if (!this->isInterruptionRequested())
 	{
 		QMutexLocker lock(&m_mux);
-		m_stop = true;
+		m_stop = false;
 	}
 	this->requestInterruption();
 	this->wait();
@@ -77,13 +77,11 @@ void ThreadStreamProcess::LoginOfficial()
 		}
 		cv::Mat img(720, 1280, CV_8UC3);
 		uint8_t* dstData[1] = { img.data };
-		int dstLinesize[1] = { img.step };
+		int dstLinesize[1] = { static_cast<int>(img.step) };
 		sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 		if (threadsacn.MatEmpty())
 		{
 			threadsacn.setImg(img);
-			//cv::imshow("Video Player", img); 
-			//cv::waitKey(1);
 		}
 		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
 		{
@@ -111,6 +109,7 @@ void ThreadStreamProcess::LoginOfficial()
 	}
 	threadsacn.stop();
 }
+
 void ThreadStreamProcess::LoginBH3BiliBili()
 {
 	Mihoyosdk m;
@@ -143,25 +142,24 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		}
 		cv::Mat img(720, 1280, CV_8UC3);
 		uint8_t* dstData[1] = { img.data };
-		int dstLinesize[1] = { img.step };
+		int dstLinesize[1] = { static_cast<int>(img.step) };
 		sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 		if (threadsacn.MatEmpty())
 		{
 			threadsacn.setImg(img);
-			//cv::imshow("Video Player", img); 
-			//cv::waitKey(1);
 		}
 		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
 		{
 			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
 			emit loginResults(code == 0);
-			continue;
+			break;
 		}
 		av_frame_free(&pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
 	threadsacn.stop();
 }
+
 //void ThreadStreamProcess::LoginOfficial()
 //{
 //	OfficialApi o;
@@ -326,6 +324,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 void ThreadStreamProcess::stop()
 {
+	QMutexLocker lock(&m_mux);
 	m_stop = false;
 }
 
@@ -384,6 +383,7 @@ bool ThreadStreamProcess::init()
 		1280, 720, AV_PIX_FMT_BGR24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
+	return true;
 }
 
 void ThreadStreamProcess::run()

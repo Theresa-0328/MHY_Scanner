@@ -35,6 +35,13 @@
 			"description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(Release)",
 			"inherits": "x64-debug",
 			"cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+		},
+		{
+			"name": "x64-RelWithDebInfo",
+			"displayName": "x64 RelWithDebInfo",
+			"description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(Release)",
+			"inherits": "x64-debug",
+			"cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
 		}
 	]
 }

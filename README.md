@@ -36,7 +36,7 @@
 
 直播间号仅支持BiliBili直播间，是一串纯数字，比如你想抢的直播间的链接是 https://live.bilibili.com/6, 那么直播间号为6。
 
-目前不支持同时从屏幕自动获取二维码登录和从直播获取二维码登录，启动其中一种方法会自动停止另一方法。
+不支持同时从屏幕自动获取二维码登录和从直播获取二维码登录，启动其中一种方法会自动停止另一方法。
 
 目前没有进行大量测试，如果有任何建议和发现的问题欢迎提Issues。
 
@@ -52,9 +52,10 @@
 - ffmpeg v6.0
 
 ## 未来目标
-- 优化UI
-- 支持更多服务器
-- 优化cpu占用
+- [ ] 增加日志系统
+- [ ] 优化UI
+- [ ] 支持更多平台
+- [ ] 优化cpu占用
 
 ## 参考和感谢
 - [BililiveRecorder/BililiveRecorder](https://github.com/BililiveRecorder/BililiveRecorder)
