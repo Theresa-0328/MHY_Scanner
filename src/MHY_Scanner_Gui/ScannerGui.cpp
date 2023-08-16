@@ -105,7 +105,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 
 ScannerGui::~ScannerGui()
 {
-
+	t1.stop();
+	t2.stop();
 }
 
 void ScannerGui::insertTableItems(QString uid, QString userName, QString type, QString notes)
