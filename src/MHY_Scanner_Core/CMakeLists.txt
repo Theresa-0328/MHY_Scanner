@@ -9,8 +9,7 @@ add_library(MHY_Scanner_Core STATIC
 	OfficialApi.cpp
 	QRScanner.cpp
 	ScreenScan.cpp
-	VideoProcessor.cpp
-	#"VideoProcessor_1.cpp" 
+	#VideoProcessor.cpp
 )
 
 target_include_directories(MHY_Scanner_Core PUBLIC 

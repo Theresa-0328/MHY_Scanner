@@ -1,5 +1,13 @@
 ﻿#pragma once
 
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/time.h>
+#include <libswscale/swscale.h>
+};
 #include <QThread>
 #include <QMutex>
 
@@ -14,18 +22,27 @@ public:
 	void setLoginInfo(const std::string uid, const std::string gameToken);
 	void setLoginInfo(const std::string uid, const std::string gameToken, const std::string name);
 	void setServerType(const ServerType::Type& servertype);
-	void stop();
+	void setUrl(const std::string& url, const std::map<std::string, std::string>& heard = {});
+	bool init();
 	void run();
-	std::string url;
+	void stop();
 signals:
 	void loginResults(const bool& b);
 private:
+	std::string m_url;
 	void LoginOfficial();
 	void LoginBH3BiliBili();
-	bool stopStream = false;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
 	std::string m_name;
 	ServerType::Type servertype = ServerType::Type::UNKNOW;
+	AVDictionary* pAvdictionary;
+	AVFormatContext* pAVFormatContext;
+	AVCodecContext* pAVCodecContext;
+	SwsContext* pSwsContext;
+	AVFrame* pAVFrame;
+	AVPacket* pAVPacket;
+	int videoStremIndex = 0;
+	bool m_stop = false;
 };

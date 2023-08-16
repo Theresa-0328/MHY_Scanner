@@ -4,8 +4,8 @@
 #include <Json.h>
 
 #include "ui_ScannerGui.h"
-#include "ThreadGetScreen.h"
-#include "ThreadStreamProcess.h"
+#include "QRCodeForScreen.h"
+#include "QRCodeForStream.h"
 #include "LiveStreamLink.h"
 
 class OnlineUpdate :public QThread
@@ -42,7 +42,7 @@ private:
 	int countA = -1;
 	Ui::ScannerGuiClass ui;
 	json::Json configJson;
-	ThreadGetScreen t1;
+	QRCodeForScreen t1;
 	ThreadStreamProcess t2;
 	json::Json userinfo;
 	int liveIdError(const LiveStreamStatus::Status& data);

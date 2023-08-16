@@ -7,13 +7,13 @@
 
 #include "ThreadSacn.h"
 
-class ThreadGetScreen
+class QRCodeForScreen
 	: public QThread
 {
 	Q_OBJECT
 public:
-	ThreadGetScreen(QObject* parent);
-	~ThreadGetScreen();
+	QRCodeForScreen(QObject* parent);
+	~QRCodeForScreen();
 	void setLoginInfo(const std::string& uid, const std::string& token);
 	void setLoginInfo(const std::string& uid, const std::string& token, const std::string& name);
 	void setServerType(const ServerType::Type& servertype);
