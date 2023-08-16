@@ -389,9 +389,6 @@ bool ThreadStreamProcess::init()
 void ThreadStreamProcess::run()
 {
 	m_stop = true;
-	//ThreadDownload td;
-	//td.downloadInit(url);
-	//td.start();
 	//TODO 获取直播流地址放在这里
 	bool code = init();
 	switch (servertype)
@@ -409,5 +406,4 @@ void ThreadStreamProcess::run()
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);
 	av_dict_free(&pAvdictionary);
-	//td.stop();
 }

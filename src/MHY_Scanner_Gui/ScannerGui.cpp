@@ -86,7 +86,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 	ui.lineEditUname->setText("未选中");
 	//版本号
-	ui.label_3->setText("v1.1.0");
+	ui.label_3->setText("v1.1.1");
 
 	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{

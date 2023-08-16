@@ -2,8 +2,8 @@
 
 #include <chrono>
 
-#define TESTSPEED
-#define SHOW
+//#define TESTSPEED
+//#define SHOW
 
 ThreadSacn::ThreadSacn()
 	: QThread()
