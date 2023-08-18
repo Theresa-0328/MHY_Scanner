@@ -16,7 +16,7 @@ QRCodeForScreen::~QRCodeForScreen()
 	if (!this->isInterruptionRequested())
 	{
 		QMutexLocker lock(&m_mux);
-		Exit = true;
+		m_stop = false;
 	}
 	this->requestInterruption();
 	this->wait();
@@ -42,32 +42,26 @@ void QRCodeForScreen::LoginOfficial()
 	OfficialApi o;
 	const std::string& uuid = o.generateUUID();
 	threadsacn.start();
-	while (!Exit)
+
+	auto processQRCodeStr = [&](const std::string& qrodeStr, const std::string& bizKey, GameType::Type gameType)
+		{
+			if (qrodeStr.find(bizKey) != std::string::npos)
+			{
+				o.setGameType(gameType);
+				int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+				emit loginResults(code == 0);
+				stop();
+			}
+		};
+
+	while (m_stop)
 	{
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		const std::string& qrcode = threadsacn.getQRcode();
-		if (qrcode.find("biz_key=bh3_cn") != std::string::npos)
-		{
-			o.setGameType(GameType::Type::Honkai3);
-			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-			emit loginResults(code == 0);
-			break;
-		}
-		if (qrcode.find("biz_key=hk4e_cn") != std::string::npos)
-		{
-			o.setGameType(GameType::Type::Genshin);
-			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-			emit loginResults(code == 0);
-			break;
-		}
-		if (qrcode.find("biz_key=hkrpg_cn") != std::string::npos)
-		{
-			o.setGameType(GameType::Type::StarRail);
-			const int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-			emit loginResults(code == 0);
-			break;
-		}
+		processQRCodeStr(qrcode, "bh3_cn", GameType::Type::Honkai3);
+		processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
+		processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
 		cv::waitKey(222);
 	}
 	threadsacn.stop();
@@ -82,17 +76,23 @@ void QRCodeForScreen::LoginBH3BiliBili()
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
 	threadsacn.start();
-	while (!Exit)
+
+	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const std::string& login_data)
+		{
+			if (qrcodeStr.find(bizKey) != std::string::npos)
+			{
+				int code = m.scanCheck(threadsacn.getTicket(), login_data);
+				emit loginResults(code == 0);
+				stop();
+			}
+		};
+
+	while (m_stop)
 	{
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		const std::string& qrcode = threadsacn.getQRcode();
-		if (qrcode.find("biz_key=bh3_cn") != std::string::npos)
-		{
-			const int code = m.scanCheck(threadsacn.getTicket(), LoginData);
-			emit loginResults(code == 0);
-			break;
-		}
+		processQRCodeStr(qrcode, "bh3_cn", LoginData);
 		cv::waitKey(222);
 	}
 	threadsacn.stop();
@@ -101,7 +101,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 
 void QRCodeForScreen::run()
 {
-	Exit = false;
+	m_stop = true;
 	switch (servertype)
 	{
 	case ServerType::Official:
@@ -117,7 +117,7 @@ void QRCodeForScreen::run()
 
 void QRCodeForScreen::stop()
 {
-	Exit = true;
+	m_stop = false;
 }
 
 void QRCodeForScreen::setServerType(const ServerType::Type& servertype)
