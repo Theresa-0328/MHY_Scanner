@@ -2,7 +2,6 @@
 
 #include <random>
 #include <sstream>
-#include <iomanip>
 
 #include <Json.h>
 
@@ -13,7 +12,7 @@ std::string OfficialApi::getUid()const
 	return cookieMap.at("login_uid");
 }
 
-void OfficialApi::setGameType(const GameType::Type& gameType)
+void OfficialApi::setGameType(const GameType::Type gameType)
 {
 	m_gameType = gameType;
 }
@@ -112,7 +111,6 @@ int OfficialApi::confirmRequest(const std::string& UUID, const std::string& tick
 	data["payload"] = payload;
 	data["ticket"] = ticket;
 	PostRequest(s, url, data.str());
-	s = UTF8_To_string(s);
 	json::Json j;
 	j.parse(s);
 	if ((int)j["retcode"] != 0)

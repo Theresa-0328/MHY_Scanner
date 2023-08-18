@@ -27,21 +27,20 @@ ThreadStreamProcess::~ThreadStreamProcess()
 	this->wait();
 }
 
-void ThreadStreamProcess::setLoginInfo(std::string uid, std::string gameToken)
+void ThreadStreamProcess::setLoginInfo(const std::string& uid, const std::string& gameToken)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
 }
 
-void ThreadStreamProcess::setLoginInfo(const std::string uid, const std::string gameToken, const std::string name)
+void ThreadStreamProcess::setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
 	this->m_name = name;
 }
 
-
-void ThreadStreamProcess::setServerType(const ServerType::Type& servertype)
+void ThreadStreamProcess::setServerType(const ServerType::Type servertype)
 {
 	this->servertype = servertype;
 }
@@ -52,6 +51,18 @@ void ThreadStreamProcess::LoginOfficial()
 	ThreadSacn threadsacn;
 	const std::string& uuid = o.generateUUID();
 	threadsacn.start();
+
+	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
+		{
+			if (qrcodeStr.find(bizKey) != std::string::npos)
+			{
+				o.setGameType(gameType);
+				int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+				emit loginResults(code == 0);
+				stop();
+			}
+		};
+
 	while (m_stop)
 	{
 		pAVPacket = av_packet_alloc();
@@ -61,99 +72,98 @@ void ThreadStreamProcess::LoginOfficial()
 		{
 			return;
 		}
+
 		avcodec_send_packet(pAVCodecContext, pAVPacket);
 		if (pAVPacket->stream_index != videoStremIndex)
 		{
 			continue;
 		}
+
 		if (pAVFrame == nullptr)
 		{
 			std::cerr << "Error allocating frame" << std::endl;
 			break;
 		}
-		if (avcodec_receive_frame(pAVCodecContext, pAVFrame) != 0)
+
+		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			continue;
+			cv::Mat img(720, 1280, CV_8UC3);
+			uint8_t* dstData[1] = { img.data };
+			int dstLinesize[1] = { static_cast<int>(img.step) };
+			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+
+			if (threadsacn.MatEmpty())
+			{
+				threadsacn.setImg(img);
+			}
+			const std::string& qrcode = threadsacn.getQRcode();
+			processQRCodeStr(qrcode, "bh3_cn", GameType::Type::Honkai3);
+			processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
+			processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
 		}
-		cv::Mat img(720, 1280, CV_8UC3);
-		uint8_t* dstData[1] = { img.data };
-		int dstLinesize[1] = { static_cast<int>(img.step) };
-		sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
-		if (threadsacn.MatEmpty())
-		{
-			threadsacn.setImg(img);
-		}
-		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
-		{
-			o.setGameType(GameType::Type::Honkai3);
-			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-			emit loginResults(code == 0);
-			break;
-		}
-		if (threadsacn.getQRcode().find("biz_key=hk4e_cn") != std::string::npos)
-		{
-			o.setGameType(GameType::Type::Genshin);
-			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-			emit loginResults(code == 0);
-			break;
-		}
-		if (threadsacn.getQRcode().find("biz_key=hkrpg_cn") != std::string::npos)
-		{
-			o.setGameType(GameType::Type::StarRail);
-			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-			emit loginResults(code == 0);
-			break;
-		}
+
 		av_frame_free(&pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
 	threadsacn.stop();
 }
 
+
 void ThreadStreamProcess::LoginBH3BiliBili()
 {
 	Mihoyosdk m;
-	const std::string LoginData = m.verify(uid, gameToken);
+	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
 	ThreadSacn threadsacn;
 	threadsacn.start();
+
+	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const std::string& login_data)
+		{
+			if (qrcodeStr.find(bizKey) != std::string::npos)
+			{
+				int code = m.scanCheck(threadsacn.getTicket(), login_data);
+				emit loginResults(code == 0);
+				stop();
+			}
+		};
+
 	while (m_stop)
 	{
 		pAVPacket = av_packet_alloc();
 		pAVFrame = av_frame_alloc();
-		int code = av_read_frame(pAVFormatContext, pAVPacket);
-		if (code < 0)
+
+		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
 		{
 			return;
 		}
+
 		avcodec_send_packet(pAVCodecContext, pAVPacket);
+
 		if (pAVPacket->stream_index != videoStremIndex)
 		{
 			continue;
 		}
+
 		if (pAVFrame == nullptr)
 		{
 			std::cerr << "Error allocating frame" << std::endl;
 			break;
 		}
-		if (avcodec_receive_frame(pAVCodecContext, pAVFrame) != 0)
+
+		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			continue;
+			cv::Mat img(720, 1280, CV_8UC3);
+			uint8_t* dstData[1] = { img.data };
+			int dstLinesize[1] = { static_cast<int>(img.step) };
+			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+			if (threadsacn.MatEmpty())
+			{
+				threadsacn.setImg(img);
+			}
+			const std::string& qrcode = threadsacn.getQRcode();
+			processQRCodeStr(qrcode, "bh3_cn", LoginData);
 		}
-		cv::Mat img(720, 1280, CV_8UC3);
-		uint8_t* dstData[1] = { img.data };
-		int dstLinesize[1] = { static_cast<int>(img.step) };
-		sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
-		if (threadsacn.MatEmpty())
-		{
-			threadsacn.setImg(img);
-		}
-		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
-		{
-			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
-			emit loginResults(code == 0);
-			break;
-		}
+
 		av_frame_free(&pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
@@ -390,20 +400,26 @@ void ThreadStreamProcess::run()
 {
 	m_stop = true;
 	//TODO 获取直播流地址放在这里
-	bool code = init();
-	switch (servertype)
+	if (init())
 	{
-	case ServerType::Official:
-		LoginOfficial();
-		break;
-	case ServerType::BH3_BiliBili:
-		LoginBH3BiliBili();
-		break;
-	default:
-		break;
+		switch (servertype)
+		{
+		case ServerType::Official:
+			LoginOfficial();
+			break;
+		case ServerType::BH3_BiliBili:
+			LoginBH3BiliBili();
+			break;
+		default:
+			break;
+		}
 	}
 	avformat_close_input(&pAVFormatContext);
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);
 	av_dict_free(&pAvdictionary);
+	pAVFormatContext = nullptr;
+	pAVCodecContext = nullptr;
+	pSwsContext = nullptr;
+	pAvdictionary = nullptr;
 }

@@ -24,7 +24,7 @@ signals:
 private:
 	void LoginOfficial();
 	void LoginBH3BiliBili();
-	bool Exit = true;
+	bool m_stop = false;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;

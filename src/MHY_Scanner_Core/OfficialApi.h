@@ -28,7 +28,7 @@ public:
 	//扫码请求
 	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
-	void setGameType(const GameType::Type& gameType);
+	void setGameType(const GameType::Type gameType);
 	std::string getUid()const;
 	std::string generateUUID();
 	std::string getDS2();
