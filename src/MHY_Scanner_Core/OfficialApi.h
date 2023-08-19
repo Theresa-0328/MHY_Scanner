@@ -3,22 +3,12 @@
 #include <unordered_map>
 
 #include "HttpClient.h"
-
-class GameType
-{
-public:
-	enum Type
-	{
-		UNKNOW = 0,
-		Honkai3 = 1,
-		Genshin = 4,
-		StarRail = 8
-	};
-};
+#include "Common.h"
 
 class OfficialApi :public HttpClient
 {
 public:
+	OfficialApi();
 	//获取账号上所有的角色,当前不可用！
 	[[deprecated("This function is temporarily deprecated!")]]
 	std::string getRole();
@@ -26,7 +16,7 @@ public:
 	std::string getUserName(std::string uid);
 	int cookieParser(const std::string& cookieString);
 	//扫码请求
-	int scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
+	ScanRet::Type scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	void setGameType(const GameType::Type gameType);
 	std::string getUid()const;
@@ -35,10 +25,12 @@ public:
 private:
 	GameType::Type m_gameType = GameType::Type::UNKNOW;
 	int confirmRequest(const std::string& UUID, const std::string& ticket,
-		const std::string& uid, const std::string& token, const std::string& url);
+		const std::string& uid, const std::string& token);
 	std::unordered_map<std::string, std::string> cookieMap;
 	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string app_version = "2.38.1";
+	std::string scanUrl;
+	std::string confirmUrl;
 	std::map<std::string, std::string> headers =
 	{
 		{"x-rpc-client_type", "2"},

@@ -57,7 +57,7 @@ void ThreadSacn::run()
 #ifdef TESTSPEED
 			auto endTime = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
-			std::cout << (double)duration / 1000000 << std::endl;
+			std::cout << static_cast<float>(duration) / 1000000 << std::endl;
 #endif
 		}
 		else

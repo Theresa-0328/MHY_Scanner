@@ -7,17 +7,6 @@
 
 #include "QRScanner.h"
 
-class ServerType
-{
-public:
-	enum Type
-	{
-		UNKNOW = 0,
-		Official = 1,
-		BH3_BiliBili = 2
-	};
-};
-
 class ThreadSacn : public QThread, public QRScanner
 {
 	Q_OBJECT

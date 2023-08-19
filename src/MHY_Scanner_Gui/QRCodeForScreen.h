@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QMutex>
 
+#include "Common.h"
 #include "ThreadSacn.h"
 
 class QRCodeForScreen
@@ -20,7 +21,7 @@ public:
 	void run();
 	void stop();
 signals:
-	void loginResults(const bool& b);
+	void loginResults(const ScanRet::Type ret);
 private:
 	void LoginOfficial();
 	void LoginBH3BiliBili();
@@ -30,4 +31,5 @@ private:
 	std::string gameToken;
 	std::string m_name;
 	ServerType::Type servertype = ServerType::Type::UNKNOW;
+	ScanRet::Type ret = ScanRet::Type::UNKNOW;
 };

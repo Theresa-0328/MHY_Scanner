@@ -74,7 +74,7 @@ std::string Mihoyosdk::getOAServer()
 	//	return dispatch;
 }
 
-int Mihoyosdk::scanCheck(const std::string& ticket, const std::string& bhInfo)
+ScanRet::Type Mihoyosdk::scanCheck(const std::string& ticket, const std::string& bhInfo)
 {
 	json::Json check;
 	check.parse(scanCheckS);
@@ -88,17 +88,16 @@ int Mihoyosdk::scanCheck(const std::string& ticket, const std::string& bhInfo)
 	check.clear();
 	if (retcode != 0)
 	{
-		std::cout << "扫码失败 : " << feedback << std::endl;
-		return 1;
+		return ScanRet::Type::FAILURE_1;
 	}
-	else
+	if (scanConfirm(ticket, bhInfo) != 0)
 	{
-		scanConfirm(ticket, bhInfo);
+		return ScanRet::Type::FAILURE_2;
 	}
-	return 0;
+	return ScanRet::Type::SUCCESS;
 }
 
-void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR)
+int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR)
 {
 	json::Json bhInfoJ;
 	bhInfoJ.parse(bhInfoR);
@@ -152,13 +151,16 @@ void Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfo
 	postBodyJ.parse(response);
 	if ((int)postBodyJ["retcode"] == 0)
 	{
+
 		std::cout << "扫码成功" << std::endl;
+		return 0;
 	}
 	else
 	{
 		std::cout << "扫码失败 :" << postBodyJ.str() << std::endl;
+		return -1;
 	}
-	return;
+	return -1;
 }
 
 void Mihoyosdk::setUserName(const std::string& name)

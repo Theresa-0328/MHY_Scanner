@@ -65,8 +65,6 @@ void ThreadStreamProcess::LoginOfficial()
 
 	while (m_stop)
 	{
-		pAVPacket = av_packet_alloc();
-		pAVFrame = av_frame_alloc();
 		int code = av_read_frame(pAVFormatContext, pAVPacket);
 		if (code < 0)
 		{
@@ -101,9 +99,6 @@ void ThreadStreamProcess::LoginOfficial()
 			processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
 			processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
 		}
-
-		av_frame_free(&pAVFrame);
-		av_packet_unref(pAVPacket);
 	}
 	threadsacn.stop();
 }
@@ -129,9 +124,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 	while (m_stop)
 	{
-		pAVPacket = av_packet_alloc();
-		pAVFrame = av_frame_alloc();
-
 		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
 		{
 			return;
@@ -163,9 +155,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			const std::string& qrcode = threadsacn.getQRcode();
 			processQRCodeStr(qrcode, "bh3_cn", LoginData);
 		}
-
-		av_frame_free(&pAVFrame);
-		av_packet_unref(pAVPacket);
 	}
 	threadsacn.stop();
 }
@@ -349,6 +338,7 @@ void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::str
 
 bool ThreadStreamProcess::init()
 {
+	pAVFormatContext = avformat_alloc_context();
 	if (avformat_open_input(&pAVFormatContext, m_url.c_str(), NULL, &pAvdictionary) != 0)
 	{
 		std::cerr << "Error opening input file" << std::endl;
@@ -393,6 +383,8 @@ bool ThreadStreamProcess::init()
 		1280, 720, AV_PIX_FMT_BGR24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
+	pAVPacket = av_packet_alloc();
+	pAVFrame = av_frame_alloc();
 	return true;
 }
 
@@ -418,8 +410,12 @@ void ThreadStreamProcess::run()
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);
 	av_dict_free(&pAvdictionary);
+	av_frame_free(&pAVFrame);
+	av_packet_unref(pAVPacket);
 	pAVFormatContext = nullptr;
 	pAVCodecContext = nullptr;
 	pSwsContext = nullptr;
 	pAvdictionary = nullptr;
+	pAVFrame = nullptr;
+	pAVPacket = nullptr;
 }

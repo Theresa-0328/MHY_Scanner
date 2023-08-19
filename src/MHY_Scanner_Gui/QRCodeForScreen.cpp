@@ -48,8 +48,7 @@ void QRCodeForScreen::LoginOfficial()
 			if (qrodeStr.find(bizKey) != std::string::npos)
 			{
 				o.setGameType(gameType);
-				int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-				emit loginResults(code == 0);
+				ret = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
 				stop();
 			}
 		};
@@ -62,8 +61,9 @@ void QRCodeForScreen::LoginOfficial()
 		processQRCodeStr(qrcode, "bh3_cn", GameType::Type::Honkai3);
 		processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
 		processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
-		cv::waitKey(222);
+		QThread::msleep(200);
 	}
+	emit loginResults(ret);
 	threadsacn.stop();
 	return;
 }
@@ -81,8 +81,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 		{
 			if (qrcodeStr.find(bizKey) != std::string::npos)
 			{
-				int code = m.scanCheck(threadsacn.getTicket(), login_data);
-				emit loginResults(code == 0);
+				ret = m.scanCheck(threadsacn.getTicket(), login_data);
 				stop();
 			}
 		};
@@ -93,14 +92,16 @@ void QRCodeForScreen::LoginBH3BiliBili()
 		threadsacn.setImg(img);
 		const std::string& qrcode = threadsacn.getQRcode();
 		processQRCodeStr(qrcode, "bh3_cn", LoginData);
-		cv::waitKey(222);
+		QThread::msleep(200);
 	}
+	emit loginResults(ret);
 	threadsacn.stop();
 	return;
 }
 
 void QRCodeForScreen::run()
 {
+	ret = ScanRet::Type::UNKNOW;
 	m_stop = true;
 	switch (servertype)
 	{
