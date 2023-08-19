@@ -30,7 +30,7 @@ public:
 public slots:
 	void pBtLoginAccount();
 	void pBtstartScreen();
-	void islogin(const bool& b);
+	void islogin(const ScanRet::Type ret);
 	void checkBoxAutoScreen(int state);
 	void checkBoxAutoExit(int state);
 	void pBtStream();

@@ -2,10 +2,17 @@
 
 #include <random>
 #include <sstream>
+#include <format>
 
 #include <Json.h>
 
 #include "CryptoKit.h"
+
+OfficialApi::OfficialApi()
+{
+	scanUrl.reserve(100);
+	confirmUrl.reserve(100);
+}
 
 std::string OfficialApi::getUid()const
 {
@@ -57,10 +64,8 @@ std::string OfficialApi::getDS2()
 }
 
 //扫码请求
-int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid)
+ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid)
 {
-	std::string scanUrl;
-	std::string confirmUrl;
 	json::Json payload;
 	payload["app_id"] = m_gameType;
 	payload["device"] = uuid;
@@ -88,29 +93,29 @@ int OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, 
 	j.parse(s);
 	if ((int)j["retcode"] != 0)
 	{
-		return -1;
+		return ScanRet::Type::FAILURE_1;
 	}
-	if (confirmRequest(uuid, ticket, uid, token, confirmUrl) != 0)
+	if (confirmRequest(uuid, ticket, uid, token) != 0)
 	{
-		return -2;
+		return ScanRet::Type::FAILURE_2;
 	}
-	return 0;
+	return ScanRet::Type::SUCCESS;
 }
 
 //扫码确认
 int OfficialApi::confirmRequest(const std::string& UUID, const std::string& ticket,
-	const std::string& uid, const std::string& token, const std::string& url)
+	const std::string& uid, const std::string& token)
 {
 	std::string s;
 	json::Json payload;
 	payload["proto"] = "Account";
-	payload["raw"] = "{\\\"uid\\\":\\\"" + uid + "\\\",\\\"token\\\":\\\"" + token + "\\\"}";
+	payload["raw"] = std::format(R"({{\"uid\":\"{}\",\"token\":\"{}\"}})", uid, token);
 	json::Json data;
 	data["app_id"] = m_gameType;
 	data["device"] = UUID;
 	data["payload"] = payload;
 	data["ticket"] = ticket;
-	PostRequest(s, url, data.str());
+	PostRequest(s, confirmUrl, data.str());
 	json::Json j;
 	j.parse(s);
 	if ((int)j["retcode"] != 0)
@@ -133,6 +138,7 @@ std::string OfficialApi::getUserName(std::string uid)
 	return re;
 }
 
+//暂时用不上
 std::string OfficialApi::getRole()
 {
 	std::string data;
@@ -168,7 +174,7 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
 		{
 			std::string key = cookieString.substr(pos, equalPos - pos);
 			key.erase(std::remove(key.begin(), key.end(), ' '), key.end());
-			std::string value = cookieString.substr(equalPos + 1, endPos - equalPos - 1);
+			const std::string& value = cookieString.substr(equalPos + 1, endPos - equalPos - 1);
 
 			// 添加到字典中
 			cookieMap[key] = value;

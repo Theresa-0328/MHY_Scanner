@@ -364,26 +364,40 @@ void ScannerGui::showEvent(QShowEvent* event)
 
 }
 
-void ScannerGui::islogin(const bool& b)
+void ScannerGui::islogin(const ScanRet::Type ret)
 {
+	QMessageBox* messageBox = new QMessageBox(this);
+	auto Show_QMessageBox = [&](const QString& title, const QString& text)
+		{
+			messageBox->setIcon(QMessageBox::Information);
+			messageBox->setWindowTitle(title);
+			messageBox->setText(text);
+			messageBox->addButton(QMessageBox::Yes);
+			messageBox->show();
+		};
 	t1.stop();
 	t2.stop();
-	if (b)
+	switch (ret)
 	{
-		if (configJson["auto_exit"])
-		{
-			exit(0);
-		}
-		ui.pBtstartScreen->setText("开始监视屏幕");
-		ui.pBtStream->setText("开始监视直播间");
-		QMessageBox::information(this, "提示", "扫码成功！", QMessageBox::Yes);
+	case ScanRet::UNKNOW:
+		break;
+	case ScanRet::FAILURE_1:
+		Show_QMessageBox("提示", "扫码失败!");
+		break;
+	case ScanRet::FAILURE_2:
+		Show_QMessageBox("提示", "扫码失败!");
+		break;
+	case ScanRet::LIVESTOP:
+		Show_QMessageBox("提示", "直播中断!");
+		break;
+	case ScanRet::SUCCESS:
+		Show_QMessageBox("提示", "扫码成功!");
+		break;
+	default:
+		break;
 	}
-	else
-	{
-		ui.pBtstartScreen->setText("开始监视屏幕");
-		ui.pBtStream->setText("开始监视直播间");
-		QMessageBox::information(this, "提示", "扫码失败", QMessageBox::Yes);
-	}
+	ui.pBtstartScreen->setText("开始监视屏幕");
+	ui.pBtStream->setText("开始监视直播间");
 }
 
 void ScannerGui::checkBoxAutoScreen(int state)

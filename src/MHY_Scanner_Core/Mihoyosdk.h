@@ -4,19 +4,20 @@
 #include <iostream>
 
 #include "HttpClient.h"
+#include "Common.h"
 
 class Mihoyosdk :public HttpClient
 {
 public:
 	Mihoyosdk();
 	std::string verify(const std::string& uid, const std::string& access_key);
-	int scanCheck(const std::string& ticket, const std::string& bhInfo);
+	ScanRet::Type scanCheck(const std::string& ticket, const std::string& bhInfo);
 	void setUserName(const std::string& name);
 	void setBHVer(const std::string& s);
 	void setOAServer();
 private:
 	std::string makeSign(const std::string);
-	void scanConfirm(const std::string&, const std::string&);
+	int scanConfirm(const std::string&, const std::string&);
 	std::string bh3Sign(std::string);
 	std::string getOAServer();
 	static std::string bh3Ver;
