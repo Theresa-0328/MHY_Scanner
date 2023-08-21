@@ -27,7 +27,7 @@ std::string Mihoyosdk::verify(const std::string& uid, const std::string& access_
 	const std::string sBody = body.str();
 	body.clear();
 	std::string s;
-	PostRequest(s, loginV2Url, makeSign(sBody));
+	PostRequest(s, mhy_bh3_v2_login, makeSign(sBody));
 #ifdef _DEBUG
 	std::cout << "崩坏3验证完成 : " << s << std::endl;
 #endif // _DEBUG
@@ -82,7 +82,7 @@ ScanRet::Type Mihoyosdk::scanCheck(const std::string& ticket, const std::string&
 	check["ts"] = getCurrentUnixTime();
 	std::string postBody = makeSign(check.str());
 	std::string feedback;
-	PostRequest(feedback, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan", postBody);//扫码请求
+	PostRequest(feedback, mhy_bh3_qrcode_scan, postBody);//扫码请求
 	check.parse(feedback);
 	int retcode = (int)check["retcode"];
 	check.clear();
@@ -147,7 +147,7 @@ int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR
 	std::cout << postBody << std::endl;
 #endif // _DEBUG
 	std::string response;
-	PostRequest(response, "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm", postBody);
+	PostRequest(response, mhy_bh3_qrcode_confirm, postBody);
 	postBodyJ.parse(response);
 	if ((int)postBodyJ["retcode"] == 0)
 	{

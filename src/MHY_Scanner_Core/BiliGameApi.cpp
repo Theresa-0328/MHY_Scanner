@@ -2,10 +2,6 @@
 
 #include <format>
 
-#include "CryptoKit.h"
-
-#define BILIGAMEDOMAIN "https://line1-sdk-center-login-sh.biligame.net/"
-
 std::string BiliGameApi::remove_quotes(std::string str)
 {
 	std::string result;
@@ -68,7 +64,7 @@ std::string BiliGameApi::getUserInfo(const std::string& uid, const std::string& 
 	}
 	std::string s = setSign(m);
 	std::string t;
-	PostRequest(t, BILIGAMEDOMAIN"api/client/user.info", s, headers);
+	PostRequest(t, game_bili_userinfo, s, headers);
 #ifdef _DEBUG
 	std::cout << "BiliBili用户信息：" << t << std::endl;
 #endif // _DEBUG
@@ -82,7 +78,7 @@ void BiliGameApi::captcha()
 	std::map < std::string, std::string > info = data.objToMap();
 	std::string data1 = setSign(info);
 	std::string data2;
-	HttpClient::PostRequest(data2, BILIGAMEDOMAIN"api/client/start_captcha", data1, headers);
+	HttpClient::PostRequest(data2, game_bili_start_captcha, data1, headers);
 	captchaJ.parse(data2);
 }
 
@@ -104,7 +100,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	std::map < std::string, std::string> dataM = data.objToMap();
 	std::string p1 = setSign(dataM);
 	std::string re;
-	PostRequest(re, BILIGAMEDOMAIN"api/client/rsa", p1, headers);
+	PostRequest(re, game_bili_rsa, p1, headers);
 #ifdef _DEBUG
 	std::cout << re << std::endl;
 #endif // _DEBUG
@@ -128,7 +124,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	std::map < std::string, std::string> dataR = data.objToMap();
 	std::string p2 = setSign(dataR);
 	re.clear();
-	PostRequest(re, BILIGAMEDOMAIN"api/client/login", p2, headers);
+	PostRequest(re, game_bili_login, p2, headers);
 	data.clear();
 	re1J.clear();
 	return re;
@@ -142,7 +138,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	std::map < std::string, std::string> dataM = data.objToMap();
 	std::string p1 = setSign(dataM);
 	std::string re;
-	PostRequest(re, BILIGAMEDOMAIN"api/client/rsa", p1, headers);
+	PostRequest(re, game_bili_rsa, p1, headers);
 #ifdef _DEBUG
 	std::cout << re << std::endl;
 #endif // _DEBUG
@@ -167,7 +163,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	std::map < std::string, std::string> dataR = data.objToMap();
 	std::string p2 = setSign(dataR);
 	re.clear();
-	PostRequest(re, BILIGAMEDOMAIN"api/client/login", p2, headers);
+	PostRequest(re, game_bili_login, p2, headers);
 	data.clear();
 	re1J.clear();
 	return re;
