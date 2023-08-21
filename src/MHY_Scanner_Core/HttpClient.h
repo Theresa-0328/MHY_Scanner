@@ -6,6 +6,7 @@
 
 #include <curl/curl.h>
 
+#include "Common.h"
 #include "CryptoKit.h"
 
 class HttpClient :public CryptoKit

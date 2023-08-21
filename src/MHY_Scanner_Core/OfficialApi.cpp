@@ -73,8 +73,8 @@ ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::str
 	switch (m_gameType)
 	{
 	case GameType::Honkai3:
-		scanUrl = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
-		confirmUrl = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
+		scanUrl = mhy_bh3_qrcode_scan;
+		confirmUrl = mhy_bh3_qrcode_confirm;
 		break;
 	case GameType::Genshin:
 		scanUrl = "https://api-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/scan";
