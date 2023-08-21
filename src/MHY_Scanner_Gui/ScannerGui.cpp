@@ -393,6 +393,9 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	case ScanRet::SUCCESS:
 		Show_QMessageBox("提示", "扫码成功!");
 		break;
+	case ScanRet::STREAMERROR:
+		Show_QMessageBox("提示", "直播流初始化失败!");
+		break;
 	default:
 		break;
 	}

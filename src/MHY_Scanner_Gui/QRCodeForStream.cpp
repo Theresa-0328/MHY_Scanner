@@ -105,7 +105,6 @@ void ThreadStreamProcess::LoginOfficial()
 		av_frame_free(&pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
-	emit loginResults(ret);
 	threadsacn.stop();
 }
 
@@ -168,7 +167,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		av_frame_free(&pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
-	emit loginResults(ret);
 	threadsacn.stop();
 }
 
@@ -422,8 +420,9 @@ void ThreadStreamProcess::run()
 	}
 	else
 	{
-		ret = ScanRet::Type::LIVESTOP;
+		ret = ScanRet::Type::STREAMERROR;
 	}
+	emit loginResults(ret);
 	avformat_close_input(&pAVFormatContext);
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);

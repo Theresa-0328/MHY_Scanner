@@ -192,16 +192,14 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
 
 int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 {
-	std::string url = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket";
 	std::map<std::string, std::string> params =
 	{
 		{"login_ticket",cookieMap.at("login_ticket")},
 		{"uid",cookieMap.at("login_uid")},
 		{"token_types","3"},
 	};
-	url = Url(url, params);
 	std::string s;
-	GetRequest(s, url);
+	GetRequest(s, Url(mhy_takumi_multi_token_by_login_ticket, params));
 	json::Json j;
 	j.parse(s);
 	if ((int)j["retcode"] == 0)
