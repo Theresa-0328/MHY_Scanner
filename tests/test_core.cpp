@@ -3,6 +3,21 @@
 #include "LiveStreamLink.h"
 #include "QRScanner.h"
 
+TEST(LiveHuya, Test1)
+{
+	EXPECT_TRUE(true);
+}
+
+TEST(LiveDoyin, Test1)
+{
+	LiveDoyin l("1");
+	l.GetLiveStreamLink();
+}
+
+TEST(LiveDouyin, Test2)
+{
+	EXPECT_TRUE(true);
+}
 TEST(LiveBili, Test1)
 {
 	LiveBili liveBili("6");
@@ -20,16 +35,6 @@ TEST(LiveBili, Test3)
 {
 	LiveBili liveBili("2132121");
 	EXPECT_EQ(LiveStreamStatus::Status::NotLive, liveBili.GetLiveStreamStatus());
-}
-
-TEST(LiveHuya, Test1)
-{
-	EXPECT_TRUE(true);
-}
-
-TEST(LiveDouyin, Test1)
-{
-	EXPECT_TRUE(true);
 }
 
 TEST(QRScanner, Test1)
