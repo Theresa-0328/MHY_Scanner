@@ -12,6 +12,7 @@ extern "C"
 #include <QMutex>
 
 #include "ThreadSacn.h"
+#include "Common.h"
 
 class ThreadStreamProcess : public QThread
 {
@@ -27,7 +28,7 @@ public:
 	void run();
 	void stop();
 signals:
-	void loginResults(const bool& b);
+	void loginResults(const ScanRet::Type ret);
 private:
 	std::string m_url;
 	void LoginOfficial();
@@ -37,6 +38,7 @@ private:
 	std::string gameToken;
 	std::string m_name;
 	ServerType::Type servertype = ServerType::Type::UNKNOW;
+	ScanRet::Type ret = ScanRet::Type::UNKNOW;
 	AVDictionary* pAvdictionary;
 	AVFormatContext* pAVFormatContext;
 	AVCodecContext* pAVCodecContext;

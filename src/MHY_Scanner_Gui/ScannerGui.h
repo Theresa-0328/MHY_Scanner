@@ -7,6 +7,7 @@
 #include "QRCodeForScreen.h"
 #include "QRCodeForStream.h"
 #include "LiveStreamLink.h"
+#include "Common.h"
 
 class OnlineUpdate :public QThread
 {
