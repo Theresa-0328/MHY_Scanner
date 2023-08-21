@@ -78,7 +78,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 			QString::fromStdString(userinfo["account"][i]["uid"]),
 			QString::fromStdString(userinfo["account"][i]["name"]),
 			QString::fromStdString(userinfo["account"][i]["type"]),
-			QString::fromStdString("测试中文数据"));
+			QString::fromStdString(" "));
 	}
 
 	//加载默认值
@@ -385,7 +385,7 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 		Show_QMessageBox("提示", "扫码失败!");
 		break;
 	case ScanRet::FAILURE_2:
-		Show_QMessageBox("提示", "扫码失败!");
+		Show_QMessageBox("提示", "扫码二次确认失败!");
 		break;
 	case ScanRet::LIVESTOP:
 		Show_QMessageBox("提示", "直播中断!");

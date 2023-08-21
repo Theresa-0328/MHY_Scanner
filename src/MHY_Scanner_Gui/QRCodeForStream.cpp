@@ -57,18 +57,20 @@ void ThreadStreamProcess::LoginOfficial()
 			if (qrcodeStr.find(bizKey) != std::string::npos)
 			{
 				o.setGameType(gameType);
-				int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-				emit loginResults(code == 0);
+				ret = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
 				stop();
 			}
 		};
 
 	while (m_stop)
 	{
-		int code = av_read_frame(pAVFormatContext, pAVPacket);
-		if (code < 0)
+		pAVPacket = av_packet_alloc();
+		pAVFrame = av_frame_alloc();
+
+		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
 		{
-			return;
+			ret = ScanRet::Type::LIVESTOP;
+			break;
 		}
 
 		avcodec_send_packet(pAVCodecContext, pAVPacket);
@@ -80,6 +82,7 @@ void ThreadStreamProcess::LoginOfficial()
 		if (pAVFrame == nullptr)
 		{
 			std::cerr << "Error allocating frame" << std::endl;
+			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
 
@@ -99,7 +102,10 @@ void ThreadStreamProcess::LoginOfficial()
 			processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
 			processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
 		}
+		av_frame_free(&pAVFrame);
+		av_packet_unref(pAVPacket);
 	}
+	emit loginResults(ret);
 	threadsacn.stop();
 }
 
@@ -116,17 +122,20 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		{
 			if (qrcodeStr.find(bizKey) != std::string::npos)
 			{
-				int code = m.scanCheck(threadsacn.getTicket(), login_data);
-				emit loginResults(code == 0);
+				ret = m.scanCheck(threadsacn.getTicket(), login_data);
 				stop();
 			}
 		};
 
 	while (m_stop)
 	{
+		pAVPacket = av_packet_alloc();
+		pAVFrame = av_frame_alloc();
+
 		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
 		{
-			return;
+			ret = ScanRet::Type::LIVESTOP;
+			break;
 		}
 
 		avcodec_send_packet(pAVCodecContext, pAVPacket);
@@ -139,6 +148,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		if (pAVFrame == nullptr)
 		{
 			std::cerr << "Error allocating frame" << std::endl;
+			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
 
@@ -155,7 +165,10 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			const std::string& qrcode = threadsacn.getQRcode();
 			processQRCodeStr(qrcode, "bh3_cn", LoginData);
 		}
+		av_frame_free(&pAVFrame);
+		av_packet_unref(pAVPacket);
 	}
+	emit loginResults(ret);
 	threadsacn.stop();
 }
 
@@ -391,6 +404,7 @@ bool ThreadStreamProcess::init()
 void ThreadStreamProcess::run()
 {
 	m_stop = true;
+	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里
 	if (init())
 	{
