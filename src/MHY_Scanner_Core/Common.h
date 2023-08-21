@@ -32,7 +32,8 @@ public:
 		SUCCESS = 1,
 		FAILURE_1 = 3,
 		FAILURE_2 = 4,
-		LIVESTOP = 5
+		LIVESTOP = 5,
+		STREAMERROR = 6
 	};
 };
 
@@ -42,8 +43,10 @@ constexpr const char* game_bili_login = "https://line1-sdk-center-login-sh.bilig
 constexpr const char* game_bili_rsa = "https://line1-sdk-center-login-sh.biligame.net/api/client/rsa";
 
 constexpr const char* live_bili_room_init = "https://api.live.bilibili.com/room/v1/Room/room_init";
-constexpr const char* live_bili_v1_playUrl = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";//弃用
+//constexpr const char* live_bili_v1_playUrl = "https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl";//弃用
 constexpr const char* live_bili_v2_PlayInfo = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
+
+constexpr const char* live_douyin = "https://live.douyin.com";
 
 constexpr const char* mhy_bh3_v2_login = "https://api-sdk.mihoyo.com/bh3_cn/combo/granter/login/v2/login";
 constexpr const char* mhy_bh3_qrcode_scan = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
@@ -54,3 +57,5 @@ constexpr const char* mhy_hk4e_qrcode_confirm = "https://api-sdk.mihoyo.com/bh3_
 
 constexpr const char* mhy_hkrpg_qrcode_scan = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
 constexpr const char* mhy_hkrpg_qrcode_confirm = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
+
+constexpr const char* mhy_takumi_multi_token_by_login_ticket = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket";
