@@ -420,6 +420,10 @@ void ThreadStreamProcess::run()
 			break;
 		}
 	}
+	else
+	{
+		ret = ScanRet::Type::LIVESTOP;
+	}
 	avformat_close_input(&pAVFormatContext);
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);
