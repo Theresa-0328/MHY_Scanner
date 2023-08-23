@@ -13,7 +13,7 @@ public:
 	[[deprecated("This function is temporarily deprecated!")]]
 	std::string getRole();
 	int getMultiTokenByLoginTicket(std::string& data);
-	std::string getUserName(std::string uid);
+	std::string getUserName(const std::string& uid);
 	int cookieParser(const std::string& cookieString);
 	//扫码请求
 	ScanRet::Type scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
@@ -31,6 +31,7 @@ private:
 	const std::string app_version = "2.38.1";
 	std::string scanUrl;
 	std::string confirmUrl;
+	std::string m_sacnRet;
 	std::map<std::string, std::string> headers =
 	{
 		{"x-rpc-client_type", "2"},

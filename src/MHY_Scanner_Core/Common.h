@@ -48,14 +48,18 @@ constexpr const char* live_bili_v2_PlayInfo = "https://api.live.bilibili.com/xli
 
 constexpr const char* live_douyin = "https://live.douyin.com";
 
+//constexpr const char* live_huya;
+
 constexpr const char* mhy_bh3_v2_login = "https://api-sdk.mihoyo.com/bh3_cn/combo/granter/login/v2/login";
 constexpr const char* mhy_bh3_qrcode_scan = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
 constexpr const char* mhy_bh3_qrcode_confirm = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
 
-constexpr const char* mhy_hk4e_qrcode_scan = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
-constexpr const char* mhy_hk4e_qrcode_confirm = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
+constexpr const char* mhy_hk4e_qrcode_scan = "https://api-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/scan";
+constexpr const char* mhy_hk4e_qrcode_confirm = "https://api-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/confirm";
 
-constexpr const char* mhy_hkrpg_qrcode_scan = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
-constexpr const char* mhy_hkrpg_qrcode_confirm = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
+constexpr const char* mhy_hkrpg_qrcode_scan = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/scan";
+constexpr const char* mhy_hkrpg_qrcode_confirm = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/confirm";
 
 constexpr const char* mhy_takumi_multi_token_by_login_ticket = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket";
+
+constexpr const char* mhy_mys_uesrinfo = "https://bbs-api.miyoushe.com/user/api/getUserFullInfo";

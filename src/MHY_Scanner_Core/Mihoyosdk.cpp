@@ -151,13 +151,10 @@ int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR
 	postBodyJ.parse(response);
 	if ((int)postBodyJ["retcode"] == 0)
 	{
-
-		std::cout << "扫码成功" << std::endl;
 		return 0;
 	}
 	else
 	{
-		std::cout << "扫码失败 :" << postBodyJ.str() << std::endl;
 		return -1;
 	}
 	return -1;
