@@ -52,7 +52,7 @@ std::string LiveBili::GetLiveStreamLink()
 
 std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
 {
-	std::map<std::string, std::string> params =
+	const std::map<std::string, std::string>& params =
 	{
 		//appkey:iVGUTjsxvpLeuDCf
 		//build:6215200
@@ -133,7 +133,7 @@ LiveStreamStatus::Status LiveDoyin::GetLiveStreamStatus()
 std::string LiveDoyin::GetLiveStreamLink()
 {
 	std::string ret;
-	std::map <std::string, std::string> header =
+	const std::map <std::string, std::string>& header =
 	{
 		{"User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203"}
 	};

@@ -18,6 +18,7 @@ TEST(LiveDouyin, Test2)
 {
 	EXPECT_TRUE(true);
 }
+
 TEST(LiveBili, Test1)
 {
 	LiveBili liveBili("6");

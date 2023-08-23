@@ -63,7 +63,6 @@ void QRCodeForScreen::LoginOfficial()
 		processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
 		QThread::msleep(200);
 	}
-	emit loginResults(ret);
 	threadsacn.stop();
 	return;
 }
@@ -94,7 +93,6 @@ void QRCodeForScreen::LoginBH3BiliBili()
 		processQRCodeStr(qrcode, "bh3_cn", LoginData);
 		QThread::msleep(200);
 	}
-	emit loginResults(ret);
 	threadsacn.stop();
 	return;
 }
@@ -114,6 +112,7 @@ void QRCodeForScreen::run()
 	default:
 		break;
 	}
+	emit loginResults(ret);
 }
 
 void QRCodeForScreen::stop()

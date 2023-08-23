@@ -78,7 +78,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 			QString::fromStdString(userinfo["account"][i]["uid"]),
 			QString::fromStdString(userinfo["account"][i]["name"]),
 			QString::fromStdString(userinfo["account"][i]["type"]),
-			QString::fromStdString(" "));
+			QString::fromStdString("无"));
 	}
 
 	//加载默认值
@@ -174,7 +174,7 @@ void ScannerGui::pBtLoginAccount()
 		{
 			std::string name = o.getUserName(uid);
 			int num = userinfo["num"];
-			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "测试中文数据");
+			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "无");
 			userinfo["account"][num]["access_key"] = token;
 			userinfo["account"][num]["uid"] = uid;
 			userinfo["account"][num]["name"] = name;
@@ -214,7 +214,7 @@ void ScannerGui::pBtLoginAccount()
 		else
 		{
 			int num = userinfo["num"];
-			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "测试中文数据");
+			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "无");
 			userinfo["account"][num]["access_key"] = token;
 			userinfo["account"][num]["uid"] = uid;
 			userinfo["account"][num]["name"] = name;

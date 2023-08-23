@@ -12,6 +12,7 @@ OfficialApi::OfficialApi()
 {
 	scanUrl.reserve(100);
 	confirmUrl.reserve(100);
+	m_sacnRet.reserve(100);
 }
 
 std::string OfficialApi::getUid()const
@@ -66,10 +67,6 @@ std::string OfficialApi::getDS2()
 //扫码请求
 ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid)
 {
-	json::Json payload;
-	payload["app_id"] = m_gameType;
-	payload["device"] = uuid;
-	payload["ticket"] = ticket;
 	switch (m_gameType)
 	{
 	case GameType::Honkai3:
@@ -77,20 +74,21 @@ ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::str
 		confirmUrl = mhy_bh3_qrcode_confirm;
 		break;
 	case GameType::Genshin:
-		scanUrl = "https://api-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/scan";
-		confirmUrl = "https://api-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/confirm";
+		scanUrl = mhy_hk4e_qrcode_scan;
+		confirmUrl = mhy_hk4e_qrcode_confirm;
 		break;
 	case GameType::StarRail:
-		scanUrl = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/scan";
-		confirmUrl = "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/confirm";
+		scanUrl = mhy_hkrpg_qrcode_scan;
+		confirmUrl = mhy_hkrpg_qrcode_confirm;
 		break;
 	default:
 		break;
 	}
-	std::string s;
-	PostRequest(s, scanUrl, payload.str());
+	PostRequest(m_sacnRet, scanUrl, std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, ticket));
 	json::Json j;
-	j.parse(s);
+	j.parse(m_sacnRet);
+	m_sacnRet.clear();
+	m_sacnRet.reserve(100);
 	if ((int)j["retcode"] != 0)
 	{
 		return ScanRet::Type::FAILURE_1;
@@ -126,12 +124,10 @@ int OfficialApi::confirmRequest(const std::string& UUID, const std::string& tick
 }
 
 //获取用户完整信息
-std::string OfficialApi::getUserName(std::string uid)
+std::string OfficialApi::getUserName(const std::string& uid)
 {
-	std::string url = "https://bbs-api.miyoushe.com/user/api/getUserFullInfo";
 	std::string re;
-	url += "?uid=" + uid;
-	GetRequest(re, url);
+	GetRequest(re, std::format("{}?uid={}", mhy_mys_uesrinfo, uid));
 	json::Json j;
 	j.parse(re);
 	re = j["data"]["user_info"]["nickname"];
@@ -175,8 +171,6 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
 			std::string key = cookieString.substr(pos, equalPos - pos);
 			key.erase(std::remove(key.begin(), key.end(), ' '), key.end());
 			const std::string& value = cookieString.substr(equalPos + 1, endPos - equalPos - 1);
-
-			// 添加到字典中
 			cookieMap[key] = value;
 		}
 
