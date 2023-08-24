@@ -110,9 +110,27 @@ std::string LiveBili::GetStreamUrl(const std::string& url, std::map<std::string,
 	return stream_url;
 }
 
-LiveHuya::LiveHuya(const std::string& roomID)
+LiveHuya::LiveHuya(const std::string& roomID) :m_roomID(roomID)
 {
 
+}
+
+LiveStreamStatus::Status LiveHuya::GetLiveStreamStatus()
+{
+	std::string ret;
+	const std::map <std::string, std::string>& header =
+	{
+		{"User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203"},
+		{"referer","https://live.douyin.com/"},
+		{"cookie",""}
+	};
+	GetRequest(ret, std::format("{}/{}", live_huya, m_roomID), header);
+	return LiveStreamStatus::Status();
+}
+
+std::string LiveHuya::GetLiveStreamLink()
+{
+	return std::string();
 }
 
 LiveHuya::~LiveHuya()
@@ -127,17 +145,20 @@ LiveDoyin::LiveDoyin(const std::string& roomID) :m_roomID(roomID)
 
 LiveStreamStatus::Status LiveDoyin::GetLiveStreamStatus()
 {
+	std::string ret;
+	const std::map <std::string, std::string>& header =
+	{
+		{"User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203"},
+		{"referer","https://live.douyin.com/"},
+		{"cookie",""}
+	};
+	GetRequest(ret, std::format("{}/{}", live_douyin, m_roomID), header);
+	// 抖音 status == 2 代表是开播的状态
 	return LiveStreamStatus::Status();
 }
 
 std::string LiveDoyin::GetLiveStreamLink()
 {
-	std::string ret;
-	const std::map <std::string, std::string>& header =
-	{
-		{"User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203"}
-	};
-	GetRequest(ret, std::format("{}/{}", live_douyin, m_roomID), header);
 	return std::string();
 }
 
