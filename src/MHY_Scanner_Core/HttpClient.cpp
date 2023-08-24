@@ -173,8 +173,30 @@ std::string HttpClient::urlEncode(const std::string& str)
 		escaped << '%' << std::setw(2) << int((unsigned char)c);
 		escaped << std::nouppercase;
 	}
-
 	return escaped.str();
+}
+
+std::string HttpClient::urlDecode(const std::string& str)
+{
+	std::string str_decode;
+	int i;
+	char* cd = (char*)str.c_str();
+	char p[2];
+	for (i = 0; i < strlen(cd); i++)
+	{
+		memset(p, '\0', 2);
+		if (cd[i] != '%')
+		{
+			str_decode += cd[i];
+			continue;
+		}
+		p[0] = cd[++i];
+		p[1] = cd[++i];
+		p[0] = p[0] - 48 - ((p[0] >= 'A') ? 7 : 0) - ((p[0] >= 'a') ? 32 : 0);
+		p[1] = p[1] - 48 - ((p[1] >= 'A') ? 7 : 0) - ((p[1] >= 'a') ? 32 : 0);
+		str_decode += (unsigned char)(p[0] * 16 + p[1]);
+	}
+	return str_decode;
 }
 
 std::string HttpClient::replaceQuotes(const std::string& str)

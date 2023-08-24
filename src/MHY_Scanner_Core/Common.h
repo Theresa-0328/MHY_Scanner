@@ -48,9 +48,10 @@ constexpr const char* live_bili_v2_PlayInfo = "https://api.live.bilibili.com/xli
 
 constexpr const char* live_douyin = "https://live.douyin.com";
 
-//constexpr const char* live_huya;
+constexpr const char* live_huya = "https://m.huya.com/";
 
 constexpr const char* mhy_bh3_v2_login = "https://api-sdk.mihoyo.com/bh3_cn/combo/granter/login/v2/login";
+constexpr const char* mhy_bh3_version = "https://bh3-launcher-static.mihoyo.com/bh3_cn/mdk/launcher/api/resource?launcher_id=4";
 constexpr const char* mhy_bh3_qrcode_scan = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/scan";
 constexpr const char* mhy_bh3_qrcode_confirm = "https://api-sdk.mihoyo.com/bh3_cn/combo/panda/qrcode/confirm";
 
