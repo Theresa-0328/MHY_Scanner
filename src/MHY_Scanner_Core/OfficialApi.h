@@ -20,7 +20,6 @@ public:
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	void setGameType(const GameType::Type gameType);
 	std::string getUid()const;
-	std::string generateUUID();
 	std::string getDS2();
 private:
 	GameType::Type m_gameType = GameType::Type::UNKNOW;
