@@ -28,30 +28,6 @@ std::string HttpClient::string_To_UTF8(const std::string& str)
 	return retStr;
 }
 
-std::string HttpClient::generateUUID()
-{
-	std::random_device rd;
-	std::default_random_engine generator(rd());
-	std::uniform_int_distribution<int> distribution(0, 15);
-
-	std::stringstream ss;
-	for (int i = 0; i < 32; ++i)
-	{
-		int randomDigit = distribution(generator);
-		ss << std::hex << randomDigit;
-	}
-
-	std::string uuid = ss.str();
-
-	// 格式化UUID，插入分隔符
-	uuid.insert(8, "-");
-	uuid.insert(13, "-");
-	uuid.insert(18, "-");
-	uuid.insert(23, "-");
-
-	return uuid;
-}
-
 std::string HttpClient::UTF8_To_string(const std::string& str)
 {
 	int nwLen = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);

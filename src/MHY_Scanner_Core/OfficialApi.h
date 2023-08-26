@@ -15,7 +15,7 @@ public:
 	int getMultiTokenByLoginTicket(std::string& data);
 	std::string getUserName(const std::string& uid);
 	int cookieParser(const std::string& cookieString);
-	//扫码请求
+	[[nodiscard]] std::string generateUUID();
 	ScanRet::Type scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	void setGameType(const GameType::Type gameType);
