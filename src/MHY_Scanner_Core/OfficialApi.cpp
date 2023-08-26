@@ -15,6 +15,8 @@ OfficialApi::OfficialApi()
 	m_sacnRet.reserve(100);
 }
 
+
+
 std::string OfficialApi::getUid()const
 {
 	return cookieMap.at("login_uid");
@@ -158,6 +160,30 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
 		return 0;
 	}
 	return -1;
+}
+
+std::string OfficialApi::generateUUID()
+{
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::uniform_int_distribution<int> distribution(0, 15);
+
+	std::stringstream ss;
+	for (int i = 0; i < 32; ++i)
+	{
+		int randomDigit = distribution(generator);
+		ss << std::hex << randomDigit;
+	}
+
+	std::string uuid = ss.str();
+
+	// 格式化UUID，插入分隔符
+	uuid.insert(8, "-");
+	uuid.insert(13, "-");
+	uuid.insert(18, "-");
+	uuid.insert(23, "-");
+
+	return uuid;
 }
 
 int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
