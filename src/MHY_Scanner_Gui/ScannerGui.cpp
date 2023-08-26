@@ -173,6 +173,7 @@ void ScannerGui::pBtLoginAccount()
 		if (code == 0)
 		{
 			std::string name = o.getUserName(uid);
+
 			int num = userinfo["num"];
 			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "无");
 			userinfo["account"][num]["access_key"] = token;

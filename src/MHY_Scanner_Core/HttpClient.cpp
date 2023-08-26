@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <chrono>
 #include <sstream>
+#include <random>
 
 std::string HttpClient::string_To_UTF8(const std::string& str)
 {
@@ -25,6 +26,30 @@ std::string HttpClient::string_To_UTF8(const std::string& str)
 	delete[]pBuf;
 
 	return retStr;
+}
+
+std::string HttpClient::generateUUID()
+{
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::uniform_int_distribution<int> distribution(0, 15);
+
+	std::stringstream ss;
+	for (int i = 0; i < 32; ++i)
+	{
+		int randomDigit = distribution(generator);
+		ss << std::hex << randomDigit;
+	}
+
+	std::string uuid = ss.str();
+
+	// 格式化UUID，插入分隔符
+	uuid.insert(8, "-");
+	uuid.insert(13, "-");
+	uuid.insert(18, "-");
+	uuid.insert(23, "-");
+
+	return uuid;
 }
 
 std::string HttpClient::UTF8_To_string(const std::string& str)
@@ -51,7 +76,7 @@ std::string HttpClient::UTF8_To_string(const std::string& str)
 	return retStr;
 }
 
-std::string HttpClient::Url(std::string url, std::map<std::string, std::string> params)
+std::string HttpClient::MapToQueryString(const std::map<std::string, std::string>& params)
 {
 	std::ostringstream paramsTemp;
 	bool first = true;
@@ -64,7 +89,38 @@ std::string HttpClient::Url(std::string url, std::map<std::string, std::string> 
 		first = false;
 		paramsTemp << kv.first << "=" << kv.second;
 	}
-	return url + "?" + paramsTemp.str();//url拼接完成
+	return paramsTemp.str();
+}
+
+std::map<std::string, std::string> HttpClient::QueryStringToMap(const std::string& queryString)
+{
+	std::map<std::string, std::string> params;
+
+	size_t startPos = 0;
+	size_t endPos;
+
+	while (startPos < queryString.length())
+	{
+		endPos = queryString.find('&', startPos);
+		if (endPos == std::string::npos)
+		{
+			endPos = queryString.length();
+		}
+
+		std::string param = queryString.substr(startPos, endPos - startPos);
+
+		size_t equalPos = param.find('=');
+		if (equalPos != std::string::npos)
+		{
+			std::string key = param.substr(0, equalPos);
+			std::string value = param.substr(equalPos + 1);
+			params[key] = value;
+		}
+
+		startPos = endPos + 1;
+	}
+
+	return params;
 }
 
 size_t HttpClient::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)//get请求和post请求数据响应函数

@@ -25,30 +25,6 @@ void OfficialApi::setGameType(const GameType::Type gameType)
 	m_gameType = gameType;
 }
 
-std::string OfficialApi::generateUUID()
-{
-	std::random_device rd;
-	std::default_random_engine generator(rd());
-	std::uniform_int_distribution<int> distribution(0, 15);
-
-	std::stringstream ss;
-	for (int i = 0; i < 32; ++i)
-	{
-		int randomDigit = distribution(generator);
-		ss << std::hex << randomDigit;
-	}
-
-	std::string uuid = ss.str();
-
-	// 格式化UUID，插入分隔符
-	uuid.insert(8, "-");
-	uuid.insert(13, "-");
-	uuid.insert(18, "-");
-	uuid.insert(23, "-");
-
-	return uuid;
-}
-
 std::string OfficialApi::getDS2()
 {
 	std::string time_now = std::to_string(getCurrentUnixTime());
@@ -193,7 +169,7 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 		{"token_types","3"},
 	};
 	std::string s;
-	GetRequest(s, Url(mhy_takumi_multi_token_by_login_ticket, params));
+	GetRequest(s, std::format("{}?{}", mhy_takumi_multi_token_by_login_ticket, MapToQueryString(params)));
 	json::Json j;
 	j.parse(s);
 	if ((int)j["retcode"] == 0)
@@ -210,15 +186,13 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 
 int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken)
 {
-	std::string url = "https://api-takumi.mihoyo.com/auth/api/getGameToken";
 	std::map<std::string, std::string> params =
 	{
 		{"stoken",stoken},
 		{"uid",uid},
 	};
-	url = Url(url, params);
 	std::string s;
-	GetRequest(s, url);
+	GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, MapToQueryString(params)));
 	json::Json j;
 	j.parse(s);
 	gameToken = j["data"]["game_token"];
