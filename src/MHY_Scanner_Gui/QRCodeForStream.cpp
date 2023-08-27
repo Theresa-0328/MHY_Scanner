@@ -64,9 +64,6 @@ void ThreadStreamProcess::LoginOfficial()
 
 	while (m_stop)
 	{
-		pAVPacket = av_packet_alloc();
-		pAVFrame = av_frame_alloc();
-
 		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
 		{
 			ret = ScanRet::Type::LIVESTOP;
@@ -76,6 +73,7 @@ void ThreadStreamProcess::LoginOfficial()
 		avcodec_send_packet(pAVCodecContext, pAVPacket);
 		if (pAVPacket->stream_index != videoStremIndex)
 		{
+			av_packet_unref(pAVPacket);
 			continue;
 		}
 
@@ -102,7 +100,7 @@ void ThreadStreamProcess::LoginOfficial()
 			processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
 			processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
 		}
-		av_frame_free(&pAVFrame);
+		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
 	threadsacn.stop();
@@ -128,9 +126,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 	while (m_stop)
 	{
-		pAVPacket = av_packet_alloc();
-		pAVFrame = av_frame_alloc();
-
 		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
 		{
 			ret = ScanRet::Type::LIVESTOP;
@@ -141,6 +136,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 		if (pAVPacket->stream_index != videoStremIndex)
 		{
+			av_packet_unref(pAVPacket);
 			continue;
 		}
 
@@ -164,7 +160,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			const std::string& qrcode = threadsacn.getQRcode();
 			processQRCodeStr(qrcode, "bh3_cn", LoginData);
 		}
-		av_frame_free(&pAVFrame);
+		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
 	threadsacn.stop();
@@ -428,7 +424,7 @@ void ThreadStreamProcess::run()
 	sws_freeContext(pSwsContext);
 	av_dict_free(&pAvdictionary);
 	av_frame_free(&pAVFrame);
-	av_packet_unref(pAVPacket);
+	av_packet_free(&pAVPacket);
 	pAVFormatContext = nullptr;
 	pAVCodecContext = nullptr;
 	pSwsContext = nullptr;
