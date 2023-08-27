@@ -50,6 +50,9 @@
 - opencv v4.80
 - openssl v3.10
 - ffmpeg v6.0
+- googletest
+- boost
+- httplib
 
 ## 未来目标
 - [ ] 增加日志系统

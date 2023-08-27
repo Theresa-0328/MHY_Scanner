@@ -33,6 +33,9 @@ link_directories(./3rdparty/opencv/staticlib)
 #httplib
 include_directories(./3rdparty/httplib)
 
+#boost
+include_directories(./3rdparty/boost)
+
 #ffmpeg
 include_directories(D:/Dev/ffmpeg/include)
 link_directories(D:/Dev/ffmpeg/lib)

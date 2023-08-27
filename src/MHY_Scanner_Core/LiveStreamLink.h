@@ -25,7 +25,7 @@ public:
 private:
 	//获取B站直播流地址
 	std::string GetLinkByRealRoomID(const std::string& realRoomID);
-	std::string GetStreamUrl(const std::string& url, std::map<std::string, std::string> param);
+	std::string GetStreamUrl(const std::string& url, const std::map<std::string, std::string>& param);
 	std::string m_roomID;
 	std::string m_realRoomID;
 	//获取直播间信息接口
@@ -37,10 +37,14 @@ class LiveHuya :public HttpClient
 public:
 	LiveHuya(const std::string& roomID);
 	LiveStreamStatus::Status GetLiveStreamStatus();
-	std::string GetLiveStreamLink();
+	std::string GetLiveStreamLink()const;
 	~LiveHuya();
 private:
 	std::string m_roomID;
+	std::string m_flvUrl;
+	std::string GetanonymousUid();
+	std::string process_anticode(const std::string& anticode, const std::string& uid, const std::string& streamname);
+	std::string getUUID();
 };
 
 class LiveDoyin :public HttpClient
