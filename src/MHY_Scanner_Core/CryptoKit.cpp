@@ -109,7 +109,7 @@ std::string CryptoKit::HmacSha256(const std::string& message, const std::string&
 	return output;
 }
 
-void CryptoKit::Md5(string& str)
+std::string CryptoKit::Md5(const string& str)
 {
 	unsigned char md[MD5_DIGEST_LENGTH];
 	MD5(reinterpret_cast<const unsigned char*>(str.c_str()), str.size(), md);
@@ -118,7 +118,6 @@ void CryptoKit::Md5(string& str)
 	for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
 		ss << hex << setw(2) << setfill('0') << static_cast<int>(md[i]);
 	}
-	str = ss.str();
-	return;
+	return ss.str();
 }
 #pragma warning(default: 4996)

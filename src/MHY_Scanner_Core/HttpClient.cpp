@@ -121,11 +121,12 @@ CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, s
 			headerList = curl_slist_append(headerList, header.c_str());
 		}
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); // 设置请求的 URL
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response); // 设置回调函数，保存请求返回的数据
-		res = curl_easy_perform(curl); // 发送请求
-		/* always cleanup */
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+		res = curl_easy_perform(curl);
+
 		curl_easy_cleanup(curl);
 		curl_slist_free_all(headerList);
 	}
@@ -167,9 +168,9 @@ CURLcode HttpClient::PostRequest(std::string& response, const std::string& url, 
 		//设置超时时间(单位：s)
 		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
-		// 开启post请求
+
 		res = curl_easy_perform(curl);
-		//释放curl 
+
 		curl_easy_cleanup(curl);
 		curl_slist_free_all(headerList);
 	}

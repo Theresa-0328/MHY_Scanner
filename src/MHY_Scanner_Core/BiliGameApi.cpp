@@ -45,10 +45,8 @@ std::string BiliGameApi::setSign(std::map<std::string, std::string> data)
 	{
 		sign += c.second;
 	}
-	sign = sign + "dbf8f1b4496f430b8a3c0f436a35b931";
-	CryptoKit::Md5(sign);
-	data2 += "sign=" + sign;
-	return data2;
+	sign += "dbf8f1b4496f430b8a3c0f436a35b931";
+	return std::format("{}{}{}", data2, "sign=", CryptoKit::Md5(sign));
 }
 
 std::string BiliGameApi::getUserInfo(const std::string& uid, const std::string& accessKey)
