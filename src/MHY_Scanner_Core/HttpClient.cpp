@@ -103,7 +103,7 @@ size_t HttpClient::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)
 {
 	//std::cout << "----->reply" << std::endl;
 	std::string* str = (std::string*)stream;
-	//cout << *str << endl;
+	//std::cout << *str << std::endl;
 	(*str).append((char*)ptr, size * nmemb);
 	return size * nmemb;
 }
@@ -122,10 +122,17 @@ CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, s
 		}
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+		//curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
 
 		res = curl_easy_perform(curl);
+		char* content_encoding;
+		//curl_easy_getinfo(curl, CURLINFO_CONTENT_ENCODING, &content_encoding);
 
 		curl_easy_cleanup(curl);
 		curl_slist_free_all(headerList);

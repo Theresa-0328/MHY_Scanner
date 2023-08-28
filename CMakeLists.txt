@@ -45,8 +45,8 @@ include_directories(D:/Dev/OpenSSL-Win64/include)
 link_directories(D:/Dev/OpenSSL-Win64/lib)
 
 #curl
-include_directories(D:/Dev/curl-7.87.0/builds/libcurl-vc15-x64-release-static-ipv6-sspi-schannel/include)
-link_directories(D:/Dev/curl-7.87.0/builds/libcurl-vc15-x64-release-static-ipv6-sspi-schannel/lib)
+include_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/include)
+link_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/lib)
 add_definitions(-DCURL_STATICLIB)
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
