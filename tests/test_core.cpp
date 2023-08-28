@@ -14,7 +14,7 @@ TEST(URLEncode, test1)
 
 TEST(LiveHuya, Test1)
 {
-	LiveHuya l("575757");
+	LiveHuya l("660000");
 	l.GetLiveStreamStatus();
 	EXPECT_TRUE(true);
 }

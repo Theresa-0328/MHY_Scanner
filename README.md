@@ -46,7 +46,7 @@
 &emsp;该错误与本项目无关。
 ## 依赖
 - qt v6.2.3
-- curl v7.87.0
+- curl v8.2.1
 - opencv v4.80
 - openssl v3.10
 - ffmpeg v6.0
