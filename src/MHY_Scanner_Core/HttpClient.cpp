@@ -132,7 +132,6 @@ CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, s
 
 		res = curl_easy_perform(curl);
 		char* content_encoding;
-		//curl_easy_getinfo(curl, CURLINFO_CONTENT_ENCODING, &content_encoding);
 
 		curl_easy_cleanup(curl);
 		curl_slist_free_all(headerList);
