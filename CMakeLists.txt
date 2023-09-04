@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(MHY_Scanner VERSION 1.1.0 LANGUAGES CXX)
+project(MHY_Scanner VERSION 1.1 LANGUAGES CXX)
 
 
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -15,6 +15,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 option(Unit_Tests "Unit Tests" ON)
+option(USE_OPENSSL "OPENSSL" ON)
 
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
@@ -40,14 +41,17 @@ include_directories(./3rdparty/boost)
 include_directories(D:/Dev/ffmpeg/include)
 link_directories(D:/Dev/ffmpeg/lib)
 
-#OpenSSL
-include_directories(D:/Dev/OpenSSL-Win64/include)
-link_directories(D:/Dev/OpenSSL-Win64/lib)
-
 #curl
 include_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/include)
 link_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/lib)
 add_definitions(-DCURL_STATICLIB)
+
+#OpenSSL
+if(USE_OPENSSL)
+	include_directories(D:/Dev/OpenSSL-Win64/include)
+	link_directories(D:/Dev/OpenSSL-Win64/lib)
+	add_definitions(-DUSE_OPENSSL)
+endif()
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
@@ -98,17 +102,27 @@ set(PROJECT_LIBRARIES
 	swresample
 	swscale
 
-	# OpenSSL
-	libssl_static
-	libcrypto_static
-
 	# curl
 	libcurl_a
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
+if(USE_OPENSSL)
+	target_link_libraries(MHY_Scanner_Core PRIVATE 
+		# OpenSSL
+		libssl_static
+		libcrypto_static)
+endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+	${PROJECT_LIBRARIES}
+)
+
 if(Unit_Tests)
 	target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
 	target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
 	target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
 endif()
+
+INSTALL(TARGETS ${PROJECT_NAME}
+	RUNTIME DESTINATION MHY_Scanner
+)

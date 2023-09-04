@@ -8,6 +8,8 @@
 #include <Json.h>
 #include <Base64.hpp>
 
+#include "CryptoKit.h"
+
 LiveBili::LiveBili(const std::string& roomID) :m_roomID(roomID)
 {
 

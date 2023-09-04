@@ -2,6 +2,8 @@
 
 #include <format>
 
+#include "CryptoKit.h"
+
 std::string BiliGameApi::remove_quotes(std::string str)
 {
 	std::string result;
@@ -46,7 +48,7 @@ std::string BiliGameApi::setSign(std::map<std::string, std::string> data)
 		sign += c.second;
 	}
 	sign += "dbf8f1b4496f430b8a3c0f436a35b931";
-	return std::format("{}{}{}", data2, "sign=", CryptoKit::Md5(sign));
+	return std::format("{}{}{}", data2, "sign=", Md5(sign));
 }
 
 std::string BiliGameApi::getUserInfo(const std::string& uid, const std::string& accessKey)
@@ -106,7 +108,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	json::Json re1J;
 	re1J.parse(re);
 	std::string publicKey = re1J["rsa_key"];
-	CryptoKit::FormatRsaPublicKey(publicKey);
+	FormatRsaPublicKey(publicKey);
 	data["access_key"] = "";
 	data["gt_user_id"] = "";
 	data["uid"] = "";
@@ -114,7 +116,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	data["user_id"] = biliAccount;
 	data["validate"] = "";
 	std::string hash1 = re1J["hash"];
-	std::string rekit = CryptoKit::rsaEncrypt(hash1 + biliPwd, publicKey);
+	std::string rekit = rsaEncrypt(hash1 + biliPwd, publicKey);
 	data["pwd"] = rekit;
 #ifdef _DEBUG
 	std::cout << data.str() << std::endl;
@@ -144,7 +146,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	json::Json re1J;
 	re1J.parse(re);
 	std::string publicKey = re1J["rsa_key"];
-	CryptoKit::FormatRsaPublicKey(publicKey);
+	FormatRsaPublicKey(publicKey);
 	data["access_key"] = "";
 	data["gt_user_id"] = gt_user;
 	data["uid"] = "";
@@ -153,7 +155,7 @@ std::string BiliGameApi::login(const std::string& biliAccount, const std::string
 	data["validate"] = validate;
 	data["seccode"] = validate + "|jordan";
 	std::string hash1 = re1J["hash"];
-	std::string rekit = CryptoKit::rsaEncrypt(hash1 + biliPwd, publicKey);
+	std::string rekit = rsaEncrypt(hash1 + biliPwd, publicKey);
 	data["pwd"] = rekit;
 #ifdef _DEBUG
 	std::cout << data.str() << std::endl;
