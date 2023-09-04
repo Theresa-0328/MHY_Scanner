@@ -162,20 +162,20 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>490</y>
+      <y>520</y>
       <width>71</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>v0.0.3</string>
+     <string>v1.1.1</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>490</y>
+      <y>520</y>
       <width>343</width>
       <height>18</height>
      </rect>

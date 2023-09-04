@@ -38,7 +38,7 @@ std::string OfficialApi::getDS2()
 	std::uniform_int_distribution<int> dist(lower_bound, upper_bound);
 	std::string rand = std::to_string(dist(gen));
 	std::string m = "salt=" + salt + "&t=" + time_now + "&r=" + rand;
-	CryptoKit::Md5(m);
+	Md5(m);
 	return time_now + "," + rand + "," + m;
 }
 
@@ -219,8 +219,13 @@ int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid,
 	};
 	std::string s;
 	GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, MapToQueryString(params)));
+	const std::string& data = UTF8_To_string(s);
 	json::Json j;
-	j.parse(s);
-	gameToken = j["data"]["game_token"];
-	return 0;
+	j.parse(data);
+	int retcode = j["retcode"];
+	if (retcode == 0)
+	{
+		gameToken = j["data"]["game_token"];
+	}
+	return retcode;
 }

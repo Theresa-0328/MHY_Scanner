@@ -7,9 +7,8 @@
 #include <curl/curl.h>
 
 #include "Common.h"
-#include "CryptoKit.h"
 
-class HttpClient :public CryptoKit
+class HttpClient
 {
 public:
 	CURLcode GetRequest(std::string& response, const std::string& url, std::map<std::string, std::string> headers = {});

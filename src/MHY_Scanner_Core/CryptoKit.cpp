@@ -4,18 +4,20 @@
 #include <iomanip>
 #include <iostream>
 
+#ifdef USE_OPENSSL
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
-//#include <openssl/bio.h>
-//#include <openssl/buffer.h>
+#include <openssl/bio.h>
+#include <openssl/buffer.h>
 #include <openssl/hmac.h>
 #include <openssl/md5.h>
+#endif // OPENSSL
+
+#ifdef USE_OPENSSL
 
 #pragma warning(disable : 4996)
 
-using namespace std;
-
-std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string& public_key)
+std::string rsaEncrypt(const std::string& message, const std::string& public_key)
 {
 	RSA* rsa = nullptr;
 	BIO* bio = BIO_new_mem_buf(public_key.c_str(), (int)public_key.length());
@@ -23,7 +25,7 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
 	BIO_free(bio);
 	if (!rsa)
 	{
-		cerr << "Failed to load public key" << endl;
+		std::cerr << "Failed to load public key" << std::endl;
 		return "";
 	}
 
@@ -33,14 +35,14 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
 	int len = RSA_public_encrypt((int)message.length(), (unsigned char*)message.c_str(), encrypted, rsa, RSA_PADDING);
 	if (len < 0)
 	{
-		cerr << "Failed to encrypt message" << endl;
+		std::cerr << "Failed to encrypt message" << std::endl;
 		RSA_free(rsa);
 		delete[] encrypted;
 		return "";
 	}
 
 	// Convert encrypted message to base64
-	BIO* bin = BIO_new_mem_buf((void*)encrypted, -1);
+	//BIO* bin = BIO_new_mem_buf((void*)encrypted, -1);
 	BIO* b64 = BIO_new(BIO_f_base64());
 	BIO* bmem = BIO_new(BIO_s_mem());
 	b64 = BIO_push(b64, bmem);
@@ -49,7 +51,7 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
 	BIO_flush(b64);
 	BUF_MEM* bptr;
 	BIO_get_mem_ptr(b64, &bptr);
-	string cipher_text(bptr->data, bptr->length);
+	std::string cipher_text(bptr->data, bptr->length);
 
 	// Clean up
 	RSA_free(rsa);
@@ -59,7 +61,7 @@ std::string CryptoKit::rsaEncrypt(const std::string& message, const std::string&
 	return cipher_text;
 }
 
-void CryptoKit::FormatRsaPublicKey(std::string& key)
+void FormatRsaPublicKey(std::string& key)
 {
 	// 检查输入参数合法性
 	if (key.empty())
@@ -90,7 +92,7 @@ void CryptoKit::FormatRsaPublicKey(std::string& key)
 	return;
 }
 
-std::string CryptoKit::HmacSha256(const std::string& message, const std::string& key)
+std::string HmacSha256(const std::string& message, const std::string& key)
 {
 	const EVP_MD* evp_md = EVP_sha256();
 	unsigned int md_len = EVP_MD_size(evp_md);
@@ -109,15 +111,22 @@ std::string CryptoKit::HmacSha256(const std::string& message, const std::string&
 	return output;
 }
 
-std::string CryptoKit::Md5(const string& str)
+std::string Md5(const std::string& str)
 {
 	unsigned char md[MD5_DIGEST_LENGTH];
 	MD5(reinterpret_cast<const unsigned char*>(str.c_str()), str.size(), md);
 
-	stringstream ss;
+	std::stringstream ss;
 	for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
-		ss << hex << setw(2) << setfill('0') << static_cast<int>(md[i]);
+		ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md[i]);
 	}
 	return ss.str();
 }
+
 #pragma warning(default: 4996)
+
+#else
+
+
+
+#endif 
