@@ -55,5 +55,6 @@ private:
 	std::string loadConfig();
 	int getSelectedRowIndex();
 	bool checkDuplicates(const std::string uid);
+	bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
 	OnlineUpdate o;
 };

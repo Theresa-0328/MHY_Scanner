@@ -334,7 +334,7 @@ void ThreadStreamProcess::stop()
 	m_stop = false;
 }
 
-void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::string, std::string>& heard)
+void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::string, std::string> heard)
 {
 	m_url = url;
 	for (const auto& it : heard)

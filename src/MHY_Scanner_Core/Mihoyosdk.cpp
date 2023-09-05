@@ -3,6 +3,8 @@
 #include <Json.h>
 #include <format>
 
+#include <Json.h>
+
 #include "CryptoKit.h"
 
 std::string Mihoyosdk::oaString;

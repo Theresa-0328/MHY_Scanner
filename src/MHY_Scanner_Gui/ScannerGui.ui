@@ -110,7 +110,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>未登录</string>
+     <string>未选中</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -287,6 +287,31 @@ QTableWidget::item:selected
     <property name="text">
      <string>账号列表</string>
     </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>310</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>BiliBili</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>抖音</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>虎牙</string>
+     </property>
+    </item>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

@@ -23,7 +23,7 @@ public:
 	void setLoginInfo(const std::string& uid, const std::string& gameToken);
 	void setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name);
 	void setServerType(const ServerType::Type servertype);
-	void setUrl(const std::string& url, const std::map<std::string, std::string>& heard = {});
+	void setUrl(const std::string& url, const std::map<std::string, std::string> heard = {});
 	bool init();
 	void run();
 	void stop();
