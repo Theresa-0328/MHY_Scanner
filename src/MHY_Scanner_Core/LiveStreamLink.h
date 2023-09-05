@@ -47,13 +47,13 @@ private:
 	std::string getUUID();
 };
 
-class LiveDoyin :public HttpClient
+class LiveDouyin :public HttpClient
 {
 public:
-	LiveDoyin(const std::string& roomID);
+	LiveDouyin(const std::string& roomID);
 	LiveStreamStatus::Status GetLiveStreamStatus();
 	std::string GetLiveStreamLink();
-	~LiveDoyin();
+	~LiveDouyin();
 private:
 	std::string m_roomID;
 };

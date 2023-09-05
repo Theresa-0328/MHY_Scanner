@@ -220,12 +220,12 @@ std::string LiveHuya::getUUID()
 	return std::to_string(uuid);
 }
 
-LiveDoyin::LiveDoyin(const std::string& roomID) :m_roomID(roomID)
+LiveDouyin::LiveDouyin(const std::string& roomID) :m_roomID(roomID)
 {
 
 }
 
-LiveStreamStatus::Status LiveDoyin::GetLiveStreamStatus()
+LiveStreamStatus::Status LiveDouyin::GetLiveStreamStatus()
 {
 	std::string ret;
 	const std::map <std::string, std::string>& header =
@@ -239,12 +239,12 @@ LiveStreamStatus::Status LiveDoyin::GetLiveStreamStatus()
 	return LiveStreamStatus::Status();
 }
 
-std::string LiveDoyin::GetLiveStreamLink()
+std::string LiveDouyin::GetLiveStreamLink()
 {
 	return std::string();
 }
 
-LiveDoyin::~LiveDoyin()
+LiveDouyin::~LiveDouyin()
 {
 
 }
