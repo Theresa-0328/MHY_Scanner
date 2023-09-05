@@ -52,8 +52,9 @@ class LiveDouyin :public HttpClient
 public:
 	LiveDouyin(const std::string& roomID);
 	LiveStreamStatus::Status GetLiveStreamStatus();
-	std::string GetLiveStreamLink();
+	std::string GetLiveStreamLink()const;
 	~LiveDouyin();
 private:
 	std::string m_roomID;
+	std::string m_flvUrl;
 };

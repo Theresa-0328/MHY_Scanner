@@ -3,6 +3,13 @@
 #include "LiveStreamLink.h"
 #include "QRScanner.h"
 
+TEST(LiveDoyin, Test1)
+{
+	LiveDouyin l("745964462470");
+	l.GetLiveStreamStatus();
+	EXPECT_TRUE(true);
+}
+
 TEST(URLEncode, test1)
 {
 	HttpClient h;
@@ -19,12 +26,6 @@ TEST(LiveHuya, Test1)
 	EXPECT_TRUE(true);
 }
 
-TEST(LiveDoyin, Test1)
-{
-	LiveDoyin l("1");
-	l.GetLiveStreamStatus();
-	EXPECT_TRUE(true);
-}
 
 TEST(LiveDouyin, Test2)
 {

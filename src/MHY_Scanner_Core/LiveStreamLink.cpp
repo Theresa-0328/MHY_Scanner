@@ -9,6 +9,7 @@
 #include <Base64.hpp>
 
 #include "CryptoKit.h"
+#include "UtilString.hpp"
 
 LiveBili::LiveBili(const std::string& roomID) :m_roomID(roomID)
 {
@@ -232,16 +233,30 @@ LiveStreamStatus::Status LiveDouyin::GetLiveStreamStatus()
 	{
 		{"User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203"},
 		{"referer","https://live.douyin.com/"},
-		{"cookie",""}
+		{"cookie","ttwid=1%7CxaukhGxBEHUsUlCmIY4HRiGzUO3JIZtwThFAM26tJso%7C1676112432%7C7764fe35c2bb172955868ce911bca5aa8b1019e28e9fd9f8cd925bbb11a3ec1f; xgplayer_user_id=327735195191; odin_tt=7205a5bf96b9ae49071d11088256571edac5cfc1423f99b4d8b27ef9968e144b9ef6e70febb76032686d2f53b386b024dee75ebecccbfa2f68c2096dd7fdaaa887921bf20108bf274532d73f11ae74b2; pwa2=%220%7C0%7C3%7C1%22; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtcmVlLXB1YmxpYy1rZXkiOiJCTUoxOC9iWmV0QlF1OGxWMXFnbFpVTE5abXFIV2YzNDh5YWZLandxRXk0c3ZrdHRQaTNXcU9jYk0vSDBnVHc2bWZyWmxMYnI5MWhPTzJGWjFaaTJDbGc9IiwiYmQtdGlja2V0LWd1YXJkLXdlYi12ZXJzaW9uIjoxfQ==; s_v_web_id=verify_llt5j3pc_qHbwb43X_rsMK_4URB_8lX8_KGZk6AZuqKQW; passport_csrf_token=6ee312f524a087d2e0954e280195f093; passport_csrf_token_default=6ee312f524a087d2e0954e280195f093; FORCE_LOGIN=%7B%22videoConsumedRemainSeconds%22%3A180%7D; volume_info=%7B%22isUserMute%22%3Afalse%2C%22isMute%22%3Atrue%2C%22volume%22%3A0.6%7D; live_version=%221.1.1.3542%22; device_web_cpu_core=12; device_web_memory_size=8; webcast_local_quality=sd; csrf_session_id=c2d050ec6eca0581bd33676bb01efbcb; webcast_leading_last_show_time=1693840853743; webcast_leading_total_show_times=1; download_guide=%223%2F20230905%2F0%22; strategyABtestKey=%221693878032.975%22; stream_recommend_feed_params=%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A1536%2C%5C%22screen_height%5C%22%3A960%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A12%2C%5C%22device_memory%5C%22%3A8%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A150%7D%22; VIDEO_FILTER_MEMO_SELECT=%7B%22expireTime%22%3A1694482833541%2C%22type%22%3A1%7D; home_can_add_dy_2_desktop=%221%22; __ac_signature=_02B4Z6wo00f01HeJgRgAAIDBgvZrhVoJ1YB3qYWAAHkc9uZs7w58Na.-yxd4KVmlVgdxWyyGFH2FZ4Kcpu-LDEpV82QCjWieKfk06Z9B0S9K5LW49zI8AxPvqQFgkBRN9-xx8Aidv67iRFh00f; live_can_add_dy_2_desktop=%220%22; msToken=TJ5bDSCEeWCWz1nY9wrOhgQ4dr_SCBPPImY2G9Blj2VTSEwa7b4RfiqweW5RR0jaCEp-itcBYF8BispuGB-mlFCtslq_jJ5EU8fBjsLPginmPn39I5ZjIA==; tt_scid=NU1fQiBzvNTjAvXazULYjHoX7IQrdOmzz76IroqwcbcST8q5MiafUeBz6kCNZJIlcb47; msToken=MpALMGeJrcnDeVMS6FSENJ16Oz4BL2kXyknj5QXcXixQgcCBNF21bC0dE8mlrlHUZKbwHMN_4AG7a5V2yeSqLtePinRu-DHqZv1do92C6XGKEZVnxj4eug==; IsDouyinActive=false"}
 	};
-	GetRequest(ret, std::format("{}/{}", live_douyin, m_roomID), header);
+	GetRequest(ret, std::format("{}{}", live_douyin_room, m_roomID), header);
+	std::string ret_ = UTF8_To_string(ret);
+	json::Json temp;
+	temp.parse(ret_);
+	json::Json data = temp["data"]["data"][0];
+	std::string a1 = data.str();
 	// 抖音 status == 2 代表是开播的状态
-	return LiveStreamStatus::Status();
+	if ((int)data["status"] == 2)
+	{
+		std::string stream_data = data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"];
+		stream_data = unescapeString(stream_data);
+		json::Json data1;
+		data1.parse(stream_data);
+		m_flvUrl = data1["data"]["origin"]["main"]["flv"];
+		return LiveStreamStatus::Status();
+	}
+	return LiveStreamStatus::Error;
 }
 
-std::string LiveDouyin::GetLiveStreamLink()
+std::string LiveDouyin::GetLiveStreamLink()const
 {
-	return std::string();
+	return m_flvUrl;
 }
 
 LiveDouyin::~LiveDouyin()
