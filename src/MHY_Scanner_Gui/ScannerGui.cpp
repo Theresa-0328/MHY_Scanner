@@ -31,14 +31,12 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
 
-	//加载软件设置
 	std::string config = loadConfig();
 	configJson.parse(config);
 	Mihoyosdk m;
 	m.setBHVer(configJson["bh_ver"]);
 	o.start();
 
-	//加载用户信息
 	//FIXME:可能出现不合法的配置文件
 	loadUserinfo();
 	std::string readName;
@@ -81,12 +79,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 			QString::fromStdString("无"));
 	}
 
-	//加载默认值
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
-	ui.lineEditUname->setText("未选中");
-	//版本号
-	ui.label_3->setText("v1.1.1");
 
 	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
@@ -259,6 +253,7 @@ void ScannerGui::pBtstartScreen()
 		if (code != 0)
 		{
 			failure();
+			return;
 		}
 		t1.setServerType(ServerType::Type::Official);
 		t1.setLoginInfo(uid, gameToken);
@@ -276,6 +271,7 @@ void ScannerGui::pBtstartScreen()
 		if (code != 0)
 		{
 			failure();
+			return;
 		}
 		t1.setServerType(ServerType::Type::BH3_BiliBili);
 		t1.setLoginInfo(uid, stoken, name);
@@ -286,6 +282,8 @@ void ScannerGui::pBtstartScreen()
 
 void ScannerGui::pBtStream()
 {
+	std::string stream_link;
+	std::map<std::string, std::string> heards;
 	if (countA == -1)
 	{
 		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
@@ -303,18 +301,14 @@ void ScannerGui::pBtStream()
 		return;
 	}
 	//检查直播间状态
-	LiveBili livebili(ui.lineEditLiveId->text().toStdString());
-	if (liveIdError(livebili.GetLiveStreamStatus()) != 0)
+	if (!getStreamLink(ui.lineEditLiveId->text().toStdString(), stream_link, heards))
 	{
 		return;
 	}
-	std::map<std::string, std::string> heards =
+	else
 	{
-		{"user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
-			Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41"},
-		{"referer", "https://live.bilibili.com"}
-	};
-	t2.setUrl(livebili.GetLiveStreamLink(), heards);
+		t2.setUrl(stream_link, heards);
+	}
 	std::string type = userinfo["account"][countA]["type"];
 	if (type == "官服")
 	{
@@ -327,12 +321,10 @@ void ScannerGui::pBtStream()
 		if (code != 0)
 		{
 			failure();
+			return;
 		}
 		t2.setServerType(ServerType::Type::Official);
 		t2.setLoginInfo(uid, gameToken);
-		t2.start(QThread::Priority::TimeCriticalPriority);
-		ui.pBtStream->setText("监视直播二维码中");
-		return;
 	}
 	if (type == "崩坏3B服")
 	{
@@ -345,13 +337,14 @@ void ScannerGui::pBtStream()
 		if (code != 0)
 		{
 			failure();
+			return;
 		}
 		t2.setServerType(ServerType::Type::BH3_BiliBili);
 		t2.setLoginInfo(uid, stoken, name);
-		t2.start(QThread::Priority::TimeCriticalPriority);
-		ui.pBtStream->setText("监视直播二维码中");
-		return;
 	}
+	t2.start(QThread::Priority::TimeCriticalPriority);
+	ui.pBtStream->setText("监视直播二维码中");
+	return;
 }
 
 void ScannerGui::closeEvent(QCloseEvent* event)
@@ -547,6 +540,54 @@ bool ScannerGui::checkDuplicates(const std::string uid)
 		}
 	}
 	return false;
+}
+
+bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
+{
+	std::uint32_t live_type = ui.comboBox->currentIndex();
+	switch (live_type)
+	{
+	case 0:
+	{
+		LiveBili live(roomid);
+		if (liveIdError(live.GetLiveStreamStatus()) != 0)
+		{
+			return false;
+		}
+		heards =
+		{
+			{"user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
+			Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41"},
+			{"referer", "https://live.bilibili.com"}
+		};
+		url = live.GetLiveStreamLink();
+		break;
+
+	}
+	case 1:
+	{
+		LiveDouyin live(roomid);
+		if (liveIdError(live.GetLiveStreamStatus()) != 0)
+		{
+			return false;
+		}
+		url = live.GetLiveStreamLink();
+		break;
+	}
+	case 2:
+	{
+		LiveHuya live(roomid);
+		if (liveIdError(live.GetLiveStreamStatus()) != 0)
+		{
+			return false;
+		}
+		url = live.GetLiveStreamLink();
+		break;
+	}
+	default:
+		break;
+	}
+	return true;
 }
 
 std::string ScannerGui::loadConfig()
