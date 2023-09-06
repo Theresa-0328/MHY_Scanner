@@ -369,6 +369,8 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	QMessageBox* messageBox = new QMessageBox(this);
 	auto Show_QMessageBox = [&](const QString& title, const QString& text)
 		{
+			ui.pBtStream->setText("开始监视直播间");
+			ui.pBtstartScreen->setText("开始监视屏幕");
 			messageBox->setIcon(QMessageBox::Information);
 			messageBox->setWindowTitle(title);
 			messageBox->setText(text);
@@ -389,12 +391,14 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 		Show_QMessageBox("提示", "直播中断!");
 		break;
 	case ScanRet::SUCCESS:
+	{
+		Show_QMessageBox("提示", "扫码成功!");
 		if (configJson["auto_exit"])
 		{
 			exit(0);
 		}
-		Show_QMessageBox("提示", "扫码成功!");
 		break;
+	}
 	case ScanRet::STREAMERROR:
 		Show_QMessageBox("提示", "直播流初始化失败!");
 		break;
@@ -712,7 +716,7 @@ void ScannerGui::pBtDeleteAccount()
 	if (static_cast<int>(userinfo["last_account"]) == countA + 1)
 	{
 		userinfo["last_account"] = 0;
-}
+	}
 	userinfo["account"].remove(countA);
 	const std::string& str = userinfo.str();
 #ifdef _DEBUG
@@ -726,7 +730,7 @@ void ScannerGui::pBtDeleteAccount()
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
-	}
+}
 
 void OnlineUpdate::run()
 {
