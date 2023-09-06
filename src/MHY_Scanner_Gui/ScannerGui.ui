@@ -168,7 +168,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>v1.1.1</string>
+     <string>v1.1.2</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
