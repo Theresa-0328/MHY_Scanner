@@ -74,3 +74,17 @@ std::string unescapeString(const std::string& input)
 	}
 	return unescaped;
 }
+
+//temp
+void replace0026WithAmpersand(std::string& str)
+{
+	std::string searchString = "0026";
+	std::string replacement = "&";
+	size_t pos = 0;
+
+	while ((pos = str.find(searchString, pos)) != std::string::npos)
+	{
+		str.replace(pos, searchString.length(), replacement);
+		pos += replacement.length();
+	}
+}
