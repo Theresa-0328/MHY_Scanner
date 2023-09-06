@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(MHY_Scanner VERSION 1.1 LANGUAGES CXX)
+project(MHY_Scanner VERSION 1.1.2 LANGUAGES CXX)
 
 
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)

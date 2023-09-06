@@ -36,7 +36,7 @@ std::string ThreadSacn::getQRcode() const
 
 void ThreadSacn::run()
 {
-#ifdef SHOW
+#ifndef SHOW
 	cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
 	cv::resizeWindow("Video_Stream", 1280, 720);
 #endif
@@ -45,16 +45,16 @@ void ThreadSacn::run()
 	{
 		if (!MatEmpty())
 		{
-#ifdef TESTSPEED
+#ifndef TESTSPEED
 			auto startTime = std::chrono::high_resolution_clock::now();
 #endif
 			decodeMultiple(m_img, m_qrcode);
-#ifdef SHOW
+#ifndef SHOW
 			cv::imshow("Video_Stream", m_img);
 			cv::waitKey(1);
 #endif
 			m_img.release();
-#ifdef TESTSPEED
+#ifndef TESTSPEED
 			auto endTime = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
 			std::cout << static_cast<float>(duration) / 1000000 << std::endl;
@@ -65,7 +65,7 @@ void ThreadSacn::run()
 			cv::waitKey(10);
 		}
 	}
-#ifdef SHOW
+#ifndef SHOW
 	cv::destroyWindow("Video_Stream");
 #endif
 }

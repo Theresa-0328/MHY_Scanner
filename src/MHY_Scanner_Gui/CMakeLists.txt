@@ -16,7 +16,7 @@ set(SRC_CPP
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     add_executable(${PROJECT_NAME} 
-		#WIN32 
+		WIN32 
 		${SRC_CPP})
 else()
     add_executable(${PROJECT_NAME} 

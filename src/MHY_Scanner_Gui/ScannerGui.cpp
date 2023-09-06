@@ -257,10 +257,8 @@ void ScannerGui::pBtstartScreen()
 		}
 		t1.setServerType(ServerType::Type::Official);
 		t1.setLoginInfo(uid, gameToken);
-		t1.start();
-		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
-	if (type == "崩坏3B服")
+	else if (type == "崩坏3B服")
 	{
 		LoginBili b;
 		std::string stoken = userinfo["account"][countA]["access_key"];
@@ -275,9 +273,13 @@ void ScannerGui::pBtstartScreen()
 		}
 		t1.setServerType(ServerType::Type::BH3_BiliBili);
 		t1.setLoginInfo(uid, stoken, name);
-		t1.start();
-		ui.pBtstartScreen->setText("监视屏幕二维码中");
 	}
+	else
+	{
+		return;
+	}
+	t1.start();
+	ui.pBtstartScreen->setText("监视屏幕二维码中");
 }
 
 void ScannerGui::pBtStream()
@@ -309,7 +311,7 @@ void ScannerGui::pBtStream()
 	{
 		t2.setUrl(stream_link, heards);
 	}
-	std::string type = userinfo["account"][countA]["type"];
+	const std::string& type = userinfo["account"][countA]["type"];
 	if (type == "官服")
 	{
 		OfficialApi o;
@@ -326,7 +328,7 @@ void ScannerGui::pBtStream()
 		t2.setServerType(ServerType::Type::Official);
 		t2.setLoginInfo(uid, gameToken);
 	}
-	if (type == "崩坏3B服")
+	else if (type == "崩坏3B服")
 	{
 		LoginBili b;
 		std::string stoken = userinfo["account"][countA]["access_key"];
@@ -341,6 +343,10 @@ void ScannerGui::pBtStream()
 		}
 		t2.setServerType(ServerType::Type::BH3_BiliBili);
 		t2.setLoginInfo(uid, stoken, name);
+	}
+	else
+	{
+		return;
 	}
 	t2.start(QThread::Priority::TimeCriticalPriority);
 	ui.pBtStream->setText("监视直播二维码中");
@@ -369,8 +375,6 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 			messageBox->addButton(QMessageBox::Yes);
 			messageBox->show();
 		};
-	t1.stop();
-	t2.stop();
 	switch (ret)
 	{
 	case ScanRet::UNKNOW:
@@ -385,6 +389,10 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 		Show_QMessageBox("提示", "直播中断!");
 		break;
 	case ScanRet::SUCCESS:
+		if (configJson["auto_exit"])
+		{
+			exit(0);
+		}
 		Show_QMessageBox("提示", "扫码成功!");
 		break;
 	case ScanRet::STREAMERROR:
@@ -393,8 +401,6 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	default:
 		break;
 	}
-	ui.pBtstartScreen->setText("开始监视屏幕");
-	ui.pBtStream->setText("开始监视直播间");
 }
 
 void ScannerGui::checkBoxAutoScreen(int state)
@@ -706,7 +712,7 @@ void ScannerGui::pBtDeleteAccount()
 	if (static_cast<int>(userinfo["last_account"]) == countA + 1)
 	{
 		userinfo["last_account"] = 0;
-	}
+}
 	userinfo["account"].remove(countA);
 	const std::string& str = userinfo.str();
 #ifdef _DEBUG
@@ -720,7 +726,7 @@ void ScannerGui::pBtDeleteAccount()
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
-}
+	}
 
 void OnlineUpdate::run()
 {
