@@ -234,6 +234,8 @@ LiveStreamStatus::Status LiveDouyin::GetLiveStreamStatus()
 	std::string ret_ = UTF8_To_string(ret);
 	json::Json temp;
 	temp.parse(ret_);
+	if ((int)temp["status_code"] != 0)
+		return LiveStreamStatus::Absent;
 	json::Json data = temp["data"]["data"][0];
 	std::string a1 = data.str();
 	// 抖音 status == 2 代表是开播的状态
@@ -246,6 +248,10 @@ LiveStreamStatus::Status LiveDouyin::GetLiveStreamStatus()
 		m_flvUrl = data1["data"]["origin"]["main"]["flv"];
 		replace0026WithAmpersand(m_flvUrl);
 		return LiveStreamStatus::Status::Normal;
+	}
+	else if ((int)data["status"] == 4)
+	{
+		return LiveStreamStatus::NotLive;
 	}
 	return LiveStreamStatus::Error;
 }
