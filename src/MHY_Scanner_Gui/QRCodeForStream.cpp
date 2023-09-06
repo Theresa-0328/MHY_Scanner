@@ -1,5 +1,7 @@
 ﻿#include "QRCodeForStream.h"
 
+#include <Windows.h>
+
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
 #include "ThreadSacn.h"
@@ -397,6 +399,7 @@ bool ThreadStreamProcess::init()
 
 void ThreadStreamProcess::run()
 {
+	//Sleep(5000);
 	m_stop = true;
 	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里

@@ -102,12 +102,7 @@ std::string LiveBili::GetStreamUrl(const std::string& url, const std::map<std::s
 	std::string stream_url = std::format("{}{}{}", host, base_url, extra);
 
 	//FIXME
-	size_t pos = stream_url.find("0026");
-	while (pos != std::string::npos)
-	{
-		stream_url.replace(pos, 4, "&");
-		pos = stream_url.find("0026");
-	}
+	replace0026WithAmpersand(stream_url);
 	return stream_url;
 }
 
@@ -249,7 +244,8 @@ LiveStreamStatus::Status LiveDouyin::GetLiveStreamStatus()
 		json::Json data1;
 		data1.parse(stream_data);
 		m_flvUrl = data1["data"]["origin"]["main"]["flv"];
-		return LiveStreamStatus::Status();
+		replace0026WithAmpersand(m_flvUrl);
+		return LiveStreamStatus::Status::Normal;
 	}
 	return LiveStreamStatus::Error;
 }

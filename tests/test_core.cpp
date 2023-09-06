@@ -5,7 +5,7 @@
 
 TEST(LiveDoyin, Test1)
 {
-	LiveDouyin l("745964462470");
+	LiveDouyin l("85614521087");
 	l.GetLiveStreamStatus();
 	EXPECT_TRUE(true);
 }
