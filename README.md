@@ -40,7 +40,7 @@
 | 平台| `<RID>` 位置 |
 |:--------------------:|:--------------------------------------:|
 |[B 站](https://live.bilibili.com/)|  `https://live.bilibili.com/<RID>`     |
-|[抖音](https://live.douyin.com/)    |   `https://live.bilibili.com/<RID>`     |
+|[抖音](https://live.douyin.com/)    |   `https://live.douyin.com/<RID>`     |
 |[虎牙](https://huya.com/) |`https://www.huya.com/<RID>`  |
 
 不支持同时从屏幕自动获取二维码登录和从直播获取二维码登录，启动其中一种方法会自动停止另一方法。
