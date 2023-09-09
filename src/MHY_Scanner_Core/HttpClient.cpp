@@ -126,7 +126,8 @@ CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, s
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-		//curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+		curl_easy_setopt(curl, CURLOPT_HEADER, false);
+		curl_easy_setopt(curl, CURLOPT_NOBODY, false);
 		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
 
