@@ -84,7 +84,4 @@ void ThreadDownload::run()
 			std::cout << "Error downloading: " << curl_easy_strerror(res) << std::endl;
 		}
 	}
-#ifdef _DEBUG
-	std::cout << "===== Downlod Exiting =====" << std::endl;
-#endif
 }

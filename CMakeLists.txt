@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(MHY_Scanner VERSION 1.1.2 LANGUAGES CXX)
+project(MHY_Scanner LANGUAGES CXX)
 
 
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -13,6 +13,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+set(MAJOR_VERSION 1)
+set(MINOR_VERSION 1)
+set(MICRO_VERSION 2)
+set(_VERSION_ "v${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
 
 option(Unit_Tests "Unit Tests" ON)
 option(USE_OPENSSL "OPENSSL" ON)
@@ -55,7 +60,11 @@ endif()
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
+add_definitions(-DSCAN_VER="${_VERSION_}")
+
 add_subdirectory(src)
+
+#target_compile_definitions
 
 if(Unit_Tests)
 	enable_testing()
@@ -123,6 +132,13 @@ if(Unit_Tests)
 	target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
 endif()
 
-INSTALL(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION MHY_Scanner
+)
+install(
+    DIRECTORY
+    src/geetest
+	src/ScanModel
+    DESTINATION
+    MHY_Scanner
 )

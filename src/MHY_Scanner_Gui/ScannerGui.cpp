@@ -64,6 +64,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 		"color:#333333;"\
 		"}"\
 	);
+	ui.label_3->setText(SCAN_VER);
 
 	ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
