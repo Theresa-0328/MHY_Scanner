@@ -107,8 +107,7 @@ ScannerGui::~ScannerGui()
 void ScannerGui::insertTableItems(QString uid, QString userName, QString type, QString notes)
 {
 	QTableWidgetItem* item[5]{};
-	int nCount = 0;
-	nCount = ui.tableWidget->rowCount();
+	int nCount = ui.tableWidget->rowCount();
 	ui.tableWidget->insertRow(nCount);
 	item[0] = new QTableWidgetItem(QString("%1").arg(nCount + 1));
 	ui.tableWidget->setItem(nCount, 0, item[0]);
@@ -494,18 +493,18 @@ int ScannerGui::liveIdError(const LiveStreamStatus::Status& data)
 	case LiveStreamStatus::Absent:
 	{
 		QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
+		return 1;
 	}
-	return 1;
 	case LiveStreamStatus::NotLive:
 	{
 		QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
+		return 1;
 	}
-	return 1;
 	case LiveStreamStatus::Error:
 	{
 		QMessageBox::information(this, "提示", "直播间未知错误!", QMessageBox::Yes);
+		return 1;
 	}
-	return 1;
 	default:
 		return 0;
 	}

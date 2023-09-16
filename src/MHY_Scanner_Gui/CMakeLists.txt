@@ -15,9 +15,12 @@ set(SRC_CPP
 	"ConfigDate.cpp"
 )
 
+add_definitions(-DTESTSPEED)
+add_definitions(-DSHOW)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     add_executable(${PROJECT_NAME} 
-		WIN32 
+		#WIN32 
 		${SRC_CPP})
 else()
     add_executable(${PROJECT_NAME} 

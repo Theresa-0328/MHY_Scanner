@@ -26,8 +26,8 @@ private:
 	int confirmRequest(const std::string& UUID, const std::string& ticket,
 		const std::string& uid, const std::string& token);
 	std::unordered_map<std::string, std::string> cookieMap;
-	const std::string salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
-	const std::string app_version = "2.38.1";
+	const std::string& salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
+	const std::string& app_version = "2.38.1";
 	std::string scanUrl;
 	std::string confirmUrl;
 	std::string m_sacnRet;

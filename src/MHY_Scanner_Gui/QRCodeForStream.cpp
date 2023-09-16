@@ -345,7 +345,7 @@ void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::str
 	}
 }
 
-bool ThreadStreamProcess::init()
+auto ThreadStreamProcess::init()->bool
 {
 	pAVFormatContext = avformat_alloc_context();
 	if (avformat_open_input(&pAVFormatContext, m_url.c_str(), NULL, &pAvdictionary) != 0)
