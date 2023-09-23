@@ -54,15 +54,15 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.tableWidget->horizontalHeader()->setFont(QFont("楷体", 11));
 	ui.tableWidget->setAlternatingRowColors(true);
 
-	ui.tableWidget->horizontalHeader()->setStyleSheet(\
-		"QHeaderView::section {"\
-		"padding: 1px;"\
-		"border: none;"\
-		"border-bottom: 1px solid rgb(75, 120, 154);"\
-		"border-right: 1px solid rgb(75, 120, 154);"\
-		"background-color:#e2e6e7;"\
-		"color:#333333;"\
-		"}"\
+	ui.tableWidget->horizontalHeader()->setStyleSheet(
+		"QHeaderView::section {"
+		"padding: 1px;"
+		"border: none;"
+		"border-bottom: 1px solid rgb(75, 120, 154);"
+		"border-right: 1px solid rgb(75, 120, 154);"
+		"background-color:#e2e6e7;"
+		"color:#333333;"
+		"}"
 	);
 	ui.label_3->setText(SCAN_VER);
 
@@ -412,13 +412,12 @@ void ScannerGui::checkBoxAutoScreen(int state)
 	if (state == Qt::Checked)
 	{
 		configJson["auto_start"] = true;
-		updateConfig();
 	}
 	else if (state == Qt::Unchecked)
 	{
 		configJson["auto_start"] = false;
-		updateConfig();
 	}
+	updateConfig();
 }
 
 void ScannerGui::checkBoxAutoExit(int state)
@@ -426,13 +425,12 @@ void ScannerGui::checkBoxAutoExit(int state)
 	if (state == Qt::Checked)
 	{
 		configJson["auto_exit"] = true;
-		updateConfig();
 	}
 	else if (state == Qt::Unchecked)
 	{
 		configJson["auto_exit"] = false;
-		updateConfig();
 	}
+	updateConfig();
 }
 
 void ScannerGui::updateConfig()//先放这里
@@ -484,9 +482,10 @@ void ScannerGui::updateUserinfo(const std::string& str)
 	{
 		std::cout << "无法打开文件" << std::endl;
 	}
+	outputFile.close();
 }
 
-int ScannerGui::liveIdError(const LiveStreamStatus::Status& data)
+int ScannerGui::liveIdError(const LiveStreamStatus::Status data)
 {
 	switch (data)
 	{

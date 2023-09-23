@@ -46,7 +46,7 @@ private:
 	QRCodeForScreen t1;
 	ThreadStreamProcess t2;
 	json::Json userinfo;
-	int liveIdError(const LiveStreamStatus::Status& data);
+	int liveIdError(const LiveStreamStatus::Status data);
 	std::string readConfigFile(const std::string& filePath);
 	void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
 	void updateConfig();
