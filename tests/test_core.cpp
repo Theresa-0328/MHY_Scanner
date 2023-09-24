@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+﻿#include <gtest/gtest.h>
 
 #include "LiveStreamLink.h"
 #include "QRScanner.h"

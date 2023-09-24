@@ -366,7 +366,7 @@ FodyWeavers.xsd
 *.flv
 notes.txt
 *.dll
-/src/Config/userinfo.json
+/src/Config
 /3rdparty/opencv
 /tests/test_video.cpp
 [Bb]uild

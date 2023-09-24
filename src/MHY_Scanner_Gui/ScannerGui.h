@@ -8,6 +8,7 @@
 #include "QRCodeForStream.h"
 #include "LiveStreamLink.h"
 #include "Common.h"
+#include "ConfigDate.h"
 
 class OnlineUpdate :public QThread
 {
@@ -42,17 +43,11 @@ private:
 	void failure();
 	int countA = -1;
 	Ui::ScannerGuiClass ui;
-	json::Json configJson;
+	ConfigDate* m_config;
+	json::Json userinfo;
 	QRCodeForScreen t1;
 	ThreadStreamProcess t2;
-	json::Json userinfo;
 	int liveIdError(const LiveStreamStatus::Status data);
-	std::string readConfigFile(const std::string& filePath);
-	void createDefaultConfigFile(const std::string& filePath, std::string defaultConfig);
-	void updateConfig();
-	void updateUserinfo(const std::string& str);
-	void loadUserinfo();
-	std::string loadConfig();
 	int getSelectedRowIndex();
 	bool checkDuplicates(const std::string uid);
 	bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
