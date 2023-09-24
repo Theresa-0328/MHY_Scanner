@@ -31,14 +31,17 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
 
-	std::string config = loadConfig();
-	configJson.parse(config);
-	Mihoyosdk m;
-	m.setBHVer(configJson["bh_ver"]);
-	o.start();
+	m_config = &ConfigDate::getInstance();
+	try
+	{
+		userinfo.parse(m_config->getConfig());
+	}
+	catch (...)
+	{
+		userinfo.parse(m_config->defaultConfig());
+	}
 
-	//FIXME:可能出现不合法的配置文件
-	loadUserinfo();
+	o.start();
 	std::string readName;
 	ui.tableWidget->setColumnCount(5);
 	QStringList header;
@@ -83,7 +86,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 
-	if (configJson["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
+	if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
 		countA = static_cast<int>(userinfo["last_account"]) - 1;
 		//FIXME 代理会导致响应过慢
@@ -92,7 +95,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
 		ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);
 	}
-	if (configJson["auto_exit"])
+	if (userinfo["auto_exit"])
 	{
 		ui.checkBoxAutoExit->setChecked(true);
 	}
@@ -217,7 +220,7 @@ void ScannerGui::pBtLoginAccount()
 			userinfo["num"] = num + 1;
 		}
 	}
-	updateUserinfo(userinfo.str());
+	m_config->updateConfig(userinfo.str());
 	ui.pBtLoginAccount->setEnabled(true);
 	ui.pBtstartScreen->setEnabled(true);
 	ui.pBtStream->setEnabled(true);
@@ -393,7 +396,7 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	case ScanRet::SUCCESS:
 	{
 		Show_QMessageBox("提示", "扫码成功!");
-		if (configJson["auto_exit"])
+		if (userinfo["auto_exit"])
 		{
 			exit(0);
 		}
@@ -409,80 +412,33 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 
 void ScannerGui::checkBoxAutoScreen(int state)
 {
+	if ((int)userinfo["last_account"] == 0)
+	{
+		QMessageBox::information(this, "提示", "你没有选择默认账号!", QMessageBox::Yes);
+		return;
+	}
 	if (state == Qt::Checked)
 	{
-		configJson["auto_start"] = true;
+		userinfo["auto_start"] = true;
 	}
 	else if (state == Qt::Unchecked)
 	{
-		configJson["auto_start"] = false;
+		userinfo["auto_start"] = false;
 	}
-	updateConfig();
+	m_config->updateConfig(userinfo.str());
 }
 
 void ScannerGui::checkBoxAutoExit(int state)
 {
 	if (state == Qt::Checked)
 	{
-		configJson["auto_exit"] = true;
+		userinfo["auto_exit"] = true;
 	}
 	else if (state == Qt::Unchecked)
 	{
-		configJson["auto_exit"] = false;
+		userinfo["auto_exit"] = false;
 	}
-	updateConfig();
-}
-
-void ScannerGui::updateConfig()//先放这里
-{
-	const std::string output = configJson.str();
-	std::ofstream outFile("./Config/config.json");
-	std::stringstream outStr;
-	bool isInPair = false;
-	for (int i = 0; i < output.size(); i++)
-	{
-		if (output[i] == '{')
-		{
-			outStr << "{\n";
-			continue;
-		}
-		if (output[i] == '}')
-		{
-			outStr << "\n}";
-			isInPair = false;
-			continue;
-		}
-		if (output[i] == ',')
-		{
-			outStr << ",\n";
-			isInPair = false;
-			continue;
-		}
-		if (!isInPair)
-		{
-			outStr << "  ";
-			isInPair = true;
-		}
-		outStr << output[i];
-	}
-	outFile << outStr.str();
-	outFile.close();
-}
-
-void ScannerGui::updateUserinfo(const std::string& str)
-{
-	std::ofstream outputFile("./Config/userinfo.json");
-	if (outputFile.is_open())
-	{
-		outputFile << str;
-		outputFile.close();
-		std::cout << "字符串已成功写入文件" << std::endl;
-	}
-	else
-	{
-		std::cout << "无法打开文件" << std::endl;
-	}
-	outputFile.close();
+	m_config->updateConfig(userinfo.str());
 }
 
 int ScannerGui::liveIdError(const LiveStreamStatus::Status data)
@@ -510,23 +466,6 @@ int ScannerGui::liveIdError(const LiveStreamStatus::Status data)
 	return 0;
 }
 
-void ScannerGui::loadUserinfo()
-{
-	const std::string filePath = "./Config/userinfo.json";
-	if (std::filesystem::exists(filePath))
-	{
-		std::string configContent = readConfigFile(filePath);
-		//if config file error？
-		userinfo.parse(configContent);
-	}
-	else
-	{
-		// default
-		std::string defaultConfig = R"({"account":[],"last_account":0,"num":0})";
-		createDefaultConfigFile(filePath, defaultConfig);
-		userinfo.parse(defaultConfig);
-	}
-}
 
 int ScannerGui::getSelectedRowIndex()
 {
@@ -599,70 +538,6 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
 	return true;
 }
 
-std::string ScannerGui::loadConfig()
-{
-	const std::string filePath = "./Config/config.json";
-	if (std::filesystem::exists(filePath))
-	{
-		std::string configContent = readConfigFile(filePath);
-		return configContent;
-	}
-	else
-	{
-		std::string defaultConfig =
-			R"({
-	"auto_exit": false,
-	"auto_start": false,
-	"bh_ver":"6.8.0"
-})";
-		createDefaultConfigFile(filePath, defaultConfig);
-		return defaultConfig;
-	}
-
-}
-
-std::string ScannerGui::readConfigFile(const std::string& filePath)
-{
-	std::ifstream file(filePath);
-	if (file.is_open())
-	{
-		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		file.close();
-		std::cout << "读取配置文件成功。\n";
-		return content;
-	}
-	else
-	{
-		std::cout << "无法打开配置文件。\n";
-		return "";
-	}
-}
-
-void ScannerGui::createDefaultConfigFile(const std::string& filePath, std::string defaultConfig)
-{
-	std::filesystem::path directory = std::filesystem::path(filePath).parent_path();
-	if (!std::filesystem::exists(directory))
-	{
-		if (!std::filesystem::create_directories(directory))
-		{
-			std::cout << "无法创建配置文件夹。\n";
-			QMessageBox::information(this, "致命错误！", "无法创建配置文件夹！", QMessageBox::Yes);
-			exit(0);
-		}
-	}
-	std::ofstream file(filePath);
-	if (file.is_open())
-	{
-		file << defaultConfig;
-		file.close();
-		std::cout << "创建并写入默认配置文件成功。\n";
-	}
-	else
-	{
-		std::cout << "无法创建配置文件。\n";
-	}
-}
-
 void ScannerGui::failure()
 {
 	QMessageBox* messageBox = new QMessageBox(this);
@@ -691,7 +566,7 @@ void ScannerGui::pBtSwitch()
 	{
 		//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 		userinfo["last_account"] = nCurrentRow + 1;
-		updateUserinfo(userinfo.str());
+		m_config->updateConfig(userinfo.str());
 		QMessageBox::information(this, "设置成功！", "勾选下方\"启动时自动监视屏幕\"将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
 		return;
 	}
@@ -721,7 +596,7 @@ void ScannerGui::pBtDeleteAccount()
 #ifdef _DEBUG
 	std::cout << str << std::endl;
 #endif // _DEBUG
-	updateUserinfo(str);
+	m_config->updateConfig(userinfo.str());
 	ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 	ui.tableWidget->removeRow(nCurrentRow);
 	for (int i = 0; i < (int)userinfo["num"]; i++)

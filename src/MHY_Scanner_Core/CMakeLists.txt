@@ -9,6 +9,7 @@ add_library(MHY_Scanner_Core STATIC
 	OfficialApi.cpp
 	QRScanner.cpp
 	ScreenScan.cpp
+	ConfigDate.cpp
 	#VideoProcessor.cpp
 )
 
