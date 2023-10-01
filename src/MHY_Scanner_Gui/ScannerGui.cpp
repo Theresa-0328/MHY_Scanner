@@ -24,8 +24,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
 	connect(ui.pBtSwitch, &QPushButton::clicked, this, &ScannerGui::pBtSwitch);
 	connect(ui.pBtDeleteAccount, &QPushButton::clicked, this, &ScannerGui::pBtDeleteAccount);
-	connect(ui.checkBoxAutoScreen, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoScreen);
-	connect(ui.checkBoxAutoExit, &QCheckBox::stateChanged, this, &ScannerGui::checkBoxAutoExit);
+	connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
+	connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
@@ -206,8 +206,7 @@ void ScannerGui::pBtLoginAccount()
 		}
 		if (code != 0)
 		{
-			QString Qmessage = QString::fromStdString(message);
-			QMessageBox::information(this, "提示", Qmessage, QMessageBox::Yes);
+			QMessageBox::information(this, "提示", QString::fromStdString(message), QMessageBox::Yes);
 		}
 		else
 		{
@@ -410,26 +409,31 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	}
 }
 
-void ScannerGui::checkBoxAutoScreen(int state)
+void ScannerGui::checkBoxAutoScreen(bool clicked)
 {
+	int state = ui.checkBoxAutoScreen->checkState();
 	if ((int)userinfo["last_account"] == 0)
 	{
+		ui.checkBoxAutoScreen->setChecked(false);
 		QMessageBox::information(this, "提示", "你没有选择默认账号!", QMessageBox::Yes);
 		return;
 	}
 	if (state == Qt::Checked)
 	{
+		ui.checkBoxAutoScreen->setChecked(true);
 		userinfo["auto_start"] = true;
 	}
 	else if (state == Qt::Unchecked)
 	{
+		ui.checkBoxAutoScreen->setChecked(false);
 		userinfo["auto_start"] = false;
 	}
 	m_config->updateConfig(userinfo.str());
 }
 
-void ScannerGui::checkBoxAutoExit(int state)
+void ScannerGui::checkBoxAutoExit(bool clicked)
 {
+	int state = ui.checkBoxAutoExit->checkState();
 	if (state == Qt::Checked)
 	{
 		userinfo["auto_exit"] = true;

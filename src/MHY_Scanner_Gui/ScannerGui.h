@@ -33,8 +33,8 @@ public slots:
 	void pBtLoginAccount();
 	void pBtstartScreen();
 	void islogin(const ScanRet::Type ret);
-	void checkBoxAutoScreen(int state);
-	void checkBoxAutoExit(int state);
+	void checkBoxAutoScreen(bool clicked);
+	void checkBoxAutoExit(bool clicked);
 	void pBtStream();
 	void getInfo(int x, int y);
 	void pBtSwitch();
