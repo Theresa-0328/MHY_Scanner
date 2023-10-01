@@ -8,15 +8,20 @@ LoginWindow::LoginWindow(QDialog* Dialog)
 	connect(ui.checkBoxShowPw, &QCheckBox::stateChanged, this, &LoginWindow::showPassword);
 	connect(ui.pBtofficialLogin, &QPushButton::clicked, this, &LoginWindow::officialLogin);
 	connect(ui.pBtofficialreject, &QPushButton::clicked, this, &LoginWindow::officialreject);
+
 	ui.lineEditAccount->setPlaceholderText("请输入账号...");
 	ui.lineEditAccount->setClearButtonEnabled(true);
 	ui.lineEditAccount->setFont(QFont("宋体", 13));
+
 	ui.lineEditPwd->setPlaceholderText("请输入密码...");
 	ui.lineEditPwd->setClearButtonEnabled(true);
 	ui.lineEditPwd->setFont(QFont("宋体", 13));
 	ui.lineEditPwd->setEchoMode(QLineEdit::Password);
+
 	ui.lineEditCookie->setFont(QFont("宋体", 13));
 	ui.lineEditCookie->setPlaceholderText("在这里粘贴Cookie...");
+	ui.lineEditCookie->setClearButtonEnabled(true);
+
 	ui.tabWidget->setTabText(0, "官方");
 	ui.tabWidget->setTabText(1, "崩坏3B服");
 	ui.tabWidget->setCurrentIndex(0);

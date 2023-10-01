@@ -23,7 +23,8 @@ ConfigDate& ConfigDate::getInstance()
 
 void ConfigDate::updateConfig(const std::string& config)
 {
-	std::ofstream outFile("./Config/userinfo.json");
+	m_config = config;
+	std::ofstream outFile(ConfigFilePath);
 	outFile << config;
 	outFile.close();
 }
@@ -37,7 +38,7 @@ std::string ConfigDate::loadConfig()
 {
 	if (std::filesystem::exists(ConfigFilePath))
 	{
-		std::string configContent = readConfigFile(ConfigFilePath);
+		const std::string& configContent = readConfigFile(ConfigFilePath);
 		return configContent;
 	}
 	else
@@ -51,7 +52,7 @@ std::string ConfigDate::readConfigFile(const std::string& filePath)
 	std::ifstream file(filePath);
 	if (file.is_open())
 	{
-		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		const std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 		file.close();
 		std::cout << "读取配置文件成功。\n";
 		return content;
