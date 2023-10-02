@@ -16,18 +16,21 @@ public:
 	std::string getUserName(const std::string& uid);
 	int cookieParser(const std::string& cookieString);
 	[[nodiscard]] std::string generateUUID();
-	ScanRet::Type scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid);
+	void scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
+	ScanRet::Type scanRequest();
+	int scanConfirm();
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
-	void setGameType(const GameType::Type gameType);
 	std::string getUid()const;
 	std::string getDS2();
 private:
 	GameType::Type m_gameType = GameType::Type::UNKNOW;
-	int confirmRequest(const std::string& UUID, const std::string& ticket,
-		const std::string& uid, const std::string& token);
+	std::string m_uid;
+	std::string m_ticket;
+	std::string m_gameToken;
 	std::unordered_map<std::string, std::string> cookieMap;
 	const std::string& salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string& app_version = "2.38.1";
+	std::string uuid;
 	std::string scanUrl;
 	std::string confirmUrl;
 	std::string m_sacnRet;
