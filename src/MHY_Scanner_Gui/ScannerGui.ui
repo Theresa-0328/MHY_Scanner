@@ -61,7 +61,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>40</x>
       <y>490</y>
       <width>131</width>
       <height>20</height>
@@ -74,7 +74,7 @@
    <widget class="QCheckBox" name="checkBoxAutoExit">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>330</x>
       <y>490</y>
       <width>131</width>
       <height>20</height>
@@ -324,6 +324,19 @@ QTableWidget::item:selected
     </property>
     <property name="text">
      <string>直播平台：</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxAutoLogin">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>490</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>扫码成功后自动确认</string>
     </property>
    </widget>
   </widget>

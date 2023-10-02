@@ -1,6 +1,7 @@
 ﻿#include "QRCodeForScreen.h"
 
 #include <QMessageBox>
+#include <json.h>
 
 #include "ScreenScan.h"
 #include "ThreadSacn.h"
@@ -9,7 +10,7 @@
 QRCodeForScreen::QRCodeForScreen(QObject* parent)
 	: QThread(parent)
 {
-
+	m_config = &ConfigDate::getInstance();
 }
 
 QRCodeForScreen::~QRCodeForScreen()
@@ -48,7 +49,9 @@ void QRCodeForScreen::LoginOfficial()
 			{
 				o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
 				ret = o.scanRequest();
-				if (auto_login)
+				json::Json config;
+				config.parse(m_config->getConfig());
+				if (config["auto_login"])
 				{
 					o.scanConfirm();
 				}

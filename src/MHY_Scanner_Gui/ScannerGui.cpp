@@ -26,6 +26,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.pBtDeleteAccount, &QPushButton::clicked, this, &ScannerGui::pBtDeleteAccount);
 	connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoExit);
+	connect(ui.checkBoxAutoLogin, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoLogin);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
@@ -447,7 +448,16 @@ void ScannerGui::checkBoxAutoExit(bool clicked)
 
 void ScannerGui::checkBoxAutoLogin(bool clicked)
 {
-	int state;
+	int state = ui.checkBoxAutoLogin->checkState();
+	if (state == Qt::Checked)
+	{
+		userinfo["auto_login"] = true;
+	}
+	else if (state == Qt::Unchecked)
+	{
+		userinfo["auto_login"] = false;
+	}
+	m_config->updateConfig(userinfo.str());
 }
 
 int ScannerGui::liveIdError(const LiveStreamStatus::Status data)
