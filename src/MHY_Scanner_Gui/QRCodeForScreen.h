@@ -8,6 +8,7 @@
 #include "Common.h"
 #include "Mihoyosdk.h"
 #include "OfficialApi.h"
+#include "ConfigDate.h"
 
 class QRCodeForScreen
 	: public QThread
@@ -26,6 +27,7 @@ signals:
 private:
 	OfficialApi o;
 	Mihoyosdk m;
+	ConfigDate* m_config;
 	void LoginOfficial();
 	void LoginBH3BiliBili();
 	bool m_stop = false;
