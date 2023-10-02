@@ -2,8 +2,6 @@
 
 #include <Windows.h>
 
-#include "OfficialApi.h"
-#include "Mihoyosdk.h"
 #include "ThreadSacn.h"
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
@@ -58,8 +56,8 @@ void ThreadStreamProcess::LoginOfficial()
 		{
 			if (qrcodeStr.find(bizKey) != std::string::npos)
 			{
-				o.setGameType(gameType);
-				ret = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+				o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
+				ret = o.scanRequest();
 				stop();
 			}
 		};

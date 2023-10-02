@@ -1,8 +1,9 @@
 ﻿#include "QRCodeForScreen.h"
 
-#include "OfficialApi.h"
+#include <QMessageBox>
+
 #include "ScreenScan.h"
-#include "Mihoyosdk.h"
+#include "ThreadSacn.h"
 
 
 QRCodeForScreen::QRCodeForScreen(QObject* parent)
@@ -39,16 +40,18 @@ void QRCodeForScreen::LoginOfficial()
 {
 	ThreadSacn threadsacn;
 	ScreenScan screenshot;
-	OfficialApi o;
-	const std::string& uuid = o.generateUUID();
 	threadsacn.start();
 
 	auto processQRCodeStr = [&](const std::string& qrodeStr, const std::string& bizKey, GameType::Type gameType)
 		{
 			if (qrodeStr.find(bizKey) != std::string::npos)
 			{
-				o.setGameType(gameType);
-				ret = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+				o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
+				ret = o.scanRequest();
+				if (auto_login)
+				{
+					o.scanConfirm();
+				}
 				stop();
 			}
 		};
@@ -71,16 +74,15 @@ void QRCodeForScreen::LoginBH3BiliBili()
 {
 	ThreadSacn threadsacn;
 	ScreenScan screenshot;
-	Mihoyosdk m;
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
 	threadsacn.start();
 
-	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const std::string& login_data)
+	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
 		{
 			if (qrcodeStr.find(bizKey) != std::string::npos)
 			{
-				ret = m.scanCheck(threadsacn.getTicket(), login_data);
+				ret = m.scanCheck(threadsacn.getTicket(), LoginData);
 				stop();
 			}
 		};
@@ -90,7 +92,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		const std::string& qrcode = threadsacn.getQRcode();
-		processQRCodeStr(qrcode, "bh3_cn", LoginData);
+		processQRCodeStr(qrcode, "bh3_cn");
 		QThread::msleep(200);
 	}
 	threadsacn.stop();

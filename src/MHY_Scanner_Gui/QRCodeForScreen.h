@@ -6,7 +6,8 @@
 #include <QMutex>
 
 #include "Common.h"
-#include "ThreadSacn.h"
+#include "Mihoyosdk.h"
+#include "OfficialApi.h"
 
 class QRCodeForScreen
 	: public QThread
@@ -23,9 +24,12 @@ public:
 signals:
 	void loginResults(const ScanRet::Type ret);
 private:
+	OfficialApi o;
+	Mihoyosdk m;
 	void LoginOfficial();
 	void LoginBH3BiliBili();
 	bool m_stop = false;
+	bool auto_login = true;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;

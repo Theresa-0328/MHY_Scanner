@@ -445,6 +445,11 @@ void ScannerGui::checkBoxAutoExit(bool clicked)
 	m_config->updateConfig(userinfo.str());
 }
 
+void ScannerGui::checkBoxAutoLogin(bool clicked)
+{
+	int state;
+}
+
 int ScannerGui::liveIdError(const LiveStreamStatus::Status data)
 {
 	switch (data)

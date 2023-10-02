@@ -11,7 +11,8 @@ extern "C"
 #include <QThread>
 #include <QMutex>
 
-#include "ThreadSacn.h"
+#include "OfficialApi.h"
+#include "Mihoyosdk.h"
 #include "Common.h"
 
 class ThreadStreamProcess : public QThread
@@ -30,6 +31,8 @@ public:
 signals:
 	void loginResults(const ScanRet::Type ret);
 private:
+	OfficialApi o;
+	Mihoyosdk m;
 	std::string m_url;
 	void LoginOfficial();
 	void LoginBH3BiliBili();

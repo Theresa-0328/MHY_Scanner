@@ -22,11 +22,16 @@ std::string OfficialApi::getUid()const
 	return cookieMap.at("login_uid");
 }
 
-void OfficialApi::setGameType(const GameType::Type gameType)
+void OfficialApi::scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
 {
 	m_gameType = gameType;
+	m_uid = uid;
+	m_ticket = ticket;
+	m_gameToken = gameToken;
+
 }
 
+//暂时用不上
 std::string OfficialApi::getDS2()
 {
 	std::string time_now = std::to_string(getCurrentUnixTime());
@@ -43,8 +48,9 @@ std::string OfficialApi::getDS2()
 }
 
 //扫码请求
-ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::string& uid, const std::string& token, const std::string& uuid)
+ScanRet::Type OfficialApi::scanRequest()
 {
+	uuid = generateUUID();
 	switch (m_gameType)
 	{
 	case GameType::Honkai3:
@@ -62,7 +68,7 @@ ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::str
 	default:
 		break;
 	}
-	PostRequest(m_sacnRet, scanUrl, std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, ticket));
+	PostRequest(m_sacnRet, scanUrl, std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, m_ticket));
 	json::Json j;
 	j.parse(m_sacnRet);
 	m_sacnRet.clear();
@@ -71,26 +77,25 @@ ScanRet::Type OfficialApi::scanRequest(const std::string& ticket, const std::str
 	{
 		return ScanRet::Type::FAILURE_1;
 	}
-	if (confirmRequest(uuid, ticket, uid, token) != 0)
-	{
-		return ScanRet::Type::FAILURE_2;
-	}
+	//if (scanConfirm() != 0)
+	//{
+	//	return ScanRet::Type::FAILURE_2;
+	//}
 	return ScanRet::Type::SUCCESS;
 }
 
 //扫码确认
-int OfficialApi::confirmRequest(const std::string& UUID, const std::string& ticket,
-	const std::string& uid, const std::string& token)
+int OfficialApi::scanConfirm()
 {
 	std::string s;
 	json::Json payload;
 	payload["proto"] = "Account";
-	payload["raw"] = std::format(R"({{\"uid\":\"{}\",\"token\":\"{}\"}})", uid, token);
+	payload["raw"] = std::format(R"({{\"uid\":\"{}\",\"token\":\"{}\"}})", m_uid, m_gameToken);
 	json::Json data;
 	data["app_id"] = m_gameType;
-	data["device"] = UUID;
+	data["device"] = uuid;
 	data["payload"] = payload;
-	data["ticket"] = ticket;
+	data["ticket"] = m_ticket;
 	PostRequest(s, confirmUrl, data.str());
 	json::Json j;
 	j.parse(s);
@@ -164,26 +169,26 @@ int  OfficialApi::cookieParser(const std::string& cookieString)
 
 std::string OfficialApi::generateUUID()
 {
+	static const char chars[] = "0123456789abcdef";
 	std::random_device rd;
-	std::default_random_engine generator(rd());
-	std::uniform_int_distribution<int> distribution(0, 15);
-
-	std::stringstream ss;
-	for (int i = 0; i < 32; ++i)
+	std::mt19937 generator(rd());
+	std::uniform_int_distribution<int> distribution(0, 16);
+	constexpr int UUID_LENGTH = 36;
+	char uuid[UUID_LENGTH + 1]{};
+	for (int i = 0; i < UUID_LENGTH; ++i)
 	{
-		int randomDigit = distribution(generator);
-		ss << std::hex << randomDigit;
+		if (i == 8 || i == 13 || i == 18 || i == 23)
+		{
+			uuid[i] = '-';
+		}
+		else
+		{
+			int randomDigit = distribution(generator);
+			uuid[i] = chars[randomDigit];
+		}
 	}
-
-	std::string uuid = ss.str();
-
-	// 格式化UUID，插入分隔符
-	uuid.insert(8, "-");
-	uuid.insert(13, "-");
-	uuid.insert(18, "-");
-	uuid.insert(23, "-");
-
-	return uuid;
+	uuid[UUID_LENGTH] = '\0';
+	return std::string(uuid);
 }
 
 int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
