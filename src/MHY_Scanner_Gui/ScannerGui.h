@@ -18,6 +18,14 @@ public:
 	~OnlineUpdate();
 };
 
+class ThreadLoginConfirm :public QThread
+{
+public:
+	ThreadLoginConfirm() = default;
+	void run();
+	~ThreadLoginConfirm();
+};
+
 class ScannerGui
 	: public QMainWindow
 {
@@ -33,6 +41,7 @@ public slots:
 	void pBtLoginAccount();
 	void pBtstartScreen();
 	void islogin(const ScanRet::Type ret);
+	void loginConfirmTip(const GameType::Type gameType);
 	void checkBoxAutoScreen(bool clicked);
 	void checkBoxAutoExit(bool clicked);
 	void checkBoxAutoLogin(bool clicked);
@@ -53,4 +62,5 @@ private:
 	bool checkDuplicates(const std::string uid);
 	bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
 	OnlineUpdate o;
+	ThreadLoginConfirm Tloginconfirm;
 };

@@ -77,15 +77,11 @@ ScanRet::Type OfficialApi::scanRequest()
 	{
 		return ScanRet::Type::FAILURE_1;
 	}
-	//if (scanConfirm() != 0)
-	//{
-	//	return ScanRet::Type::FAILURE_2;
-	//}
 	return ScanRet::Type::SUCCESS;
 }
 
 //扫码确认
-int OfficialApi::scanConfirm()
+ScanRet::Type OfficialApi::scanConfirm()
 {
 	std::string s;
 	json::Json payload;
@@ -101,9 +97,9 @@ int OfficialApi::scanConfirm()
 	j.parse(s);
 	if ((int)j["retcode"] != 0)
 	{
-		return -1;
+		return ScanRet::Type::FAILURE_2;
 	}
-	return 0;
+	return ScanRet::Type::SUCCESS;
 }
 
 //获取用户完整信息

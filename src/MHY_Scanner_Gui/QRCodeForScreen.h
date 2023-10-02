@@ -22,16 +22,18 @@ public:
 	void setServerType(const ServerType::Type& servertype);
 	void run();
 	void stop();
+	bool continueLogin = false;
 signals:
 	void loginResults(const ScanRet::Type ret);
+	void loginConfirm(const GameType::Type gameType);
 private:
 	OfficialApi o;
 	Mihoyosdk m;
 	ConfigDate* m_config;
 	void LoginOfficial();
 	void LoginBH3BiliBili();
+	void continueLastLogin();
 	bool m_stop = false;
-	bool auto_login = true;
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;

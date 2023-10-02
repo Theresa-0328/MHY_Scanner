@@ -11,15 +11,18 @@ class Mihoyosdk :public HttpClient
 public:
 	Mihoyosdk();
 	std::string verify(const std::string& uid, const std::string& access_key);
-	ScanRet::Type scanCheck(const std::string& ticket, const std::string& bhInfo);
+	void scanInit(const std::string& ticket, const std::string& bhInfo);
+	ScanRet::Type scanCheck();
+	ScanRet::Type scanConfirm();
 	void setUserName(const std::string& name);
 	void setBHVer(const std::string& s);
 	void setOAServer();
 private:
 	std::string makeSign(const std::string);
-	int scanConfirm(const std::string&, const std::string&);
 	std::string bh3Sign(std::string);
 	std::string getOAServer();
+	std::string m_ticket;
+	std::string m_bhInfo;
 	inline static std::string bh3Ver;
 	inline static std::string oaString;
 	std::map<std::string, std::string> verifyData = { {"uid","1"},{"access_key","590"} };

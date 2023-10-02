@@ -43,20 +43,33 @@ void QRCodeForScreen::LoginOfficial()
 	ScreenScan screenshot;
 	threadsacn.start();
 
-	auto processQRCodeStr = [&](const std::string& qrodeStr, const std::string& bizKey, GameType::Type gameType)
+	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, GameType::Type gameType)
 		{
-			if (qrodeStr.find(bizKey) != std::string::npos)
+			if (qrcodeStr.find(bizKey) == std::string::npos)
 			{
-				o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
-				ret = o.scanRequest();
+				return;
+			}
+			o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
+			if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
+			{
 				json::Json config;
 				config.parse(m_config->getConfig());
 				if (config["auto_login"])
 				{
-					o.scanConfirm();
+					ret = o.scanConfirm();
+					emit loginResults(ret);
 				}
-				stop();
+				else
+				{
+					emit loginConfirm(gameType);
+				}
 			}
+			else
+			{
+				emit loginResults(ret);
+			}
+			stop();
+
 		};
 
 	while (m_stop)
@@ -83,11 +96,27 @@ void QRCodeForScreen::LoginBH3BiliBili()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
 		{
-			if (qrcodeStr.find(bizKey) != std::string::npos)
+			if (qrcodeStr.find(bizKey) == std::string::npos)
 			{
-				ret = m.scanCheck(threadsacn.getTicket(), LoginData);
-				stop();
+				return;
 			}
+			m.scanInit(threadsacn.getTicket(), LoginData);
+			if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
+			{
+				json::Json config;
+				config.parse(m_config->getConfig());
+				if (config["auto_login"])
+				{
+					m.scanConfirm();
+					emit loginResults(ret);
+				}
+				else
+				{
+					emit loginConfirm(GameType::Type::Honkai3);
+				}
+
+			}
+			stop();
 		};
 
 	while (m_stop)
@@ -102,8 +131,30 @@ void QRCodeForScreen::LoginBH3BiliBili()
 	return;
 }
 
+void QRCodeForScreen::continueLastLogin()
+{
+	continueLogin = false;
+	switch (servertype)
+	{
+	case ServerType::Official:
+		ret = o.scanConfirm();
+		break;
+	case ServerType::BH3_BiliBili:
+		ret = m.scanConfirm();
+		break;
+	default:
+		break;
+	}
+	emit loginResults(ret);
+}
+
 void QRCodeForScreen::run()
 {
+	if (continueLogin)
+	{
+		continueLastLogin();
+		return;
+	}
 	ret = ScanRet::Type::UNKNOW;
 	m_stop = true;
 	switch (servertype)
@@ -117,7 +168,6 @@ void QRCodeForScreen::run()
 	default:
 		break;
 	}
-	emit loginResults(ret);
 }
 
 void QRCodeForScreen::stop()

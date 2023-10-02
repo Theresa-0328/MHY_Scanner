@@ -73,11 +73,17 @@ std::string Mihoyosdk::getOAServer()
 	//	return dispatch;
 }
 
-ScanRet::Type Mihoyosdk::scanCheck(const std::string& ticket, const std::string& bhInfo)
+void Mihoyosdk::scanInit(const std::string& ticket, const std::string& bhInfo)
+{
+	m_ticket = ticket;
+	m_bhInfo = bhInfo;
+}
+
+ScanRet::Type Mihoyosdk::scanCheck()
 {
 	json::Json check;
 	check.parse(scanCheckS);
-	check["ticket"] = ticket;
+	check["ticket"] = m_ticket;
 	check["ts"] = getCurrentUnixTime();
 	std::string postBody = makeSign(check.str());
 	std::string feedback;
@@ -96,10 +102,10 @@ ScanRet::Type Mihoyosdk::scanCheck(const std::string& ticket, const std::string&
 	return ScanRet::Type::SUCCESS;
 }
 
-int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR)
+ScanRet::Type Mihoyosdk::scanConfirm()
 {
 	json::Json bhInfoJ;
-	bhInfoJ.parse(bhInfoR);
+	bhInfoJ.parse(m_bhInfo);
 
 	json::Json bhInFo;
 	bhInFo.parse(bhInfoJ["data"].str());
@@ -114,6 +120,7 @@ int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR
 	//oa.parse(oaString);
 	scanDataJ["dispatch"] = oaString;
 	scanDataJ["c"] = bhInFo["open_id"];
+	std::cout << std::format("{} \n", (std::string)bhInFo["open_id"]);
 	scanDataJ["accountToken"] = bhInFo["combo_token"];
 	//std::cout << scanDataJ.str() << std::endl;
 	json::Json scanExtJ;
@@ -130,7 +137,7 @@ int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR
 	scanPayLoadJ["ext"] = scanExtJ;
 	scanResultJ["payload"] = scanPayLoadJ;
 	scanResultJ["ts"] = getCurrentUnixTime();
-	scanResultJ["ticket"] = ticket;
+	scanResultJ["ticket"] = m_ticket;
 	std::string postBody = scanResultJ.str();
 	postBody = makeSign(postBody);
 	json::Json postBodyJ;
@@ -150,13 +157,13 @@ int Mihoyosdk::scanConfirm(const std::string& ticket, const std::string& bhInfoR
 	postBodyJ.parse(response);
 	if ((int)postBodyJ["retcode"] == 0)
 	{
-		return 0;
+		return ScanRet::Type::SUCCESS;
 	}
 	else
 	{
-		return -1;
+		return ScanRet::Type::FAILURE_2;
 	}
-	return -1;
+	return ScanRet::Type::FAILURE_2;
 }
 
 void Mihoyosdk::setUserName(const std::string& name)

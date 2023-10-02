@@ -18,7 +18,7 @@ public:
 	[[nodiscard]] std::string generateUUID();
 	void scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
 	ScanRet::Type scanRequest();
-	int scanConfirm();
+	ScanRet::Type scanConfirm();
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
 	std::string getUid()const;
 	std::string getDS2();
