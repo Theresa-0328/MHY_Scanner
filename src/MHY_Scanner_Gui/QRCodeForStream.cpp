@@ -119,7 +119,9 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		{
 			if (qrcodeStr.find(bizKey) != std::string::npos)
 			{
-				ret = m.scanCheck(threadsacn.getTicket(), login_data);
+				m.scanInit(threadsacn.getTicket(), LoginData);
+				ret = m.scanCheck();
+				m.scanConfirm();
 				stop();
 			}
 		};

@@ -30,6 +30,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
+	connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
 
 	m_config = &ConfigDate::getInstance();
@@ -410,6 +411,20 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	}
 }
 
+void ScannerGui::loginConfirmTip(const GameType::Type gameType)
+{
+	int result = QMessageBox::information(this, "提示", "确认登录？", QMessageBox::Yes | QMessageBox::No);
+	if (result == QMessageBox::Yes)
+	{
+		t1.continueLogin = true;
+		t1.start();
+	}
+	else
+	{
+
+	}
+}
+
 void ScannerGui::checkBoxAutoScreen(bool clicked)
 {
 	int state = ui.checkBoxAutoScreen->checkState();
@@ -634,4 +649,12 @@ void OnlineUpdate::run()
 OnlineUpdate::~OnlineUpdate()
 {
 	wait();
+}
+
+void ThreadLoginConfirm::run()
+{
+}
+
+ThreadLoginConfirm::~ThreadLoginConfirm()
+{
 }
