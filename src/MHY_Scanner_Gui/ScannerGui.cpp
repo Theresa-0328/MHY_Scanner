@@ -32,6 +32,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
+	connect(&t2, &ThreadStreamProcess::loginConfirm, this, &ScannerGui::loginConfirmTip);
+
 
 	m_config = &ConfigDate::getInstance();
 	try
@@ -445,6 +447,7 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	}
 	else
 	{
+		t2.continueLogin = true;
 		t2.start();
 	}
 }

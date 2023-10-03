@@ -112,7 +112,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 				}
 				else
 				{
-					emit loginConfirm(GameType::Type::Honkai3, true);
+					emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
 				}
 
 			}

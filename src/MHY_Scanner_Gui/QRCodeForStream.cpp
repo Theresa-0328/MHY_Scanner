@@ -14,6 +14,7 @@ ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	pAVCodecContext(nullptr)
 {
 	av_log_set_level(AV_LOG_FATAL);
+	m_config = &(ConfigDate::getInstance());
 }
 
 ThreadStreamProcess::~ThreadStreamProcess()
@@ -54,12 +55,30 @@ void ThreadStreamProcess::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
 		{
-			if (qrcodeStr.find(bizKey) != std::string::npos)
+			if (qrcodeStr.find(bizKey) == std::string::npos)
 			{
-				o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
-				ret = o.scanRequest();
-				stop();
+				return;
 			}
+			o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
+			if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
+			{
+				json::Json config;
+				config.parse(m_config->getConfig());
+				if (config["auto_login"])
+				{
+					ret = o.scanConfirm();
+					emit loginResults(ret);
+				}
+				else
+				{
+					emit loginConfirm(gameType, true);
+				}
+			}
+			else
+			{
+				emit loginResults(ret);
+			}
+			stop();
 		};
 
 	while (m_stop)
@@ -115,15 +134,29 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 	ThreadSacn threadsacn;
 	threadsacn.start();
 
-	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const std::string& login_data)
+	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
 		{
-			if (qrcodeStr.find(bizKey) != std::string::npos)
+			if (qrcodeStr.find(bizKey) == std::string::npos)
 			{
-				m.scanInit(threadsacn.getTicket(), LoginData);
-				ret = m.scanCheck();
-				m.scanConfirm();
-				stop();
+				return;
 			}
+			m.scanInit(threadsacn.getTicket(), LoginData);
+			if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
+			{
+				json::Json config;
+				config.parse(m_config->getConfig());
+				if (config["auto_login"])
+				{
+					m.scanConfirm();
+					emit loginResults(ret);
+				}
+				else
+				{
+					emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+				}
+
+			}
+			stop();
 		};
 
 	while (m_stop)
@@ -160,7 +193,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 				threadsacn.setImg(img);
 			}
 			const std::string& qrcode = threadsacn.getQRcode();
-			processQRCodeStr(qrcode, "bh3_cn", LoginData);
+			processQRCodeStr(qrcode, "bh3_cn");
 		}
 		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
@@ -397,9 +430,30 @@ auto ThreadStreamProcess::init()->bool
 	return true;
 }
 
+void ThreadStreamProcess::continueLastLogin()
+{
+	continueLogin = false;
+	switch (servertype)
+	{
+	case ServerType::Official:
+		ret = o.scanConfirm();
+		break;
+	case ServerType::BH3_BiliBili:
+		ret = m.scanConfirm();
+		break;
+	default:
+		break;
+	}
+	emit loginResults(ret);
+}
+
 void ThreadStreamProcess::run()
 {
-	//Sleep(5000);
+	if (continueLogin)
+	{
+		continueLastLogin();
+		return;
+	}
 	m_stop = true;
 	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里
@@ -421,7 +475,6 @@ void ThreadStreamProcess::run()
 	{
 		ret = ScanRet::Type::STREAMERROR;
 	}
-	emit loginResults(ret);
 	avformat_close_input(&pAVFormatContext);
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);
