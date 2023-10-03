@@ -41,7 +41,7 @@ public slots:
 	void pBtLoginAccount();
 	void pBtstartScreen();
 	void islogin(const ScanRet::Type ret);
-	void loginConfirmTip(const GameType::Type gameType);
+	void loginConfirmTip(const GameType::Type gameType, bool b);
 	void checkBoxAutoScreen(bool clicked);
 	void checkBoxAutoExit(bool clicked);
 	void checkBoxAutoLogin(bool clicked);

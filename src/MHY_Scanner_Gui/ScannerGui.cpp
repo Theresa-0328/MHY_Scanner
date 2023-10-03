@@ -411,17 +411,41 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	}
 }
 
-void ScannerGui::loginConfirmTip(const GameType::Type gameType)
+void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 {
-	int result = QMessageBox::information(this, "提示", "确认登录？", QMessageBox::Yes | QMessageBox::No);
-	if (result == QMessageBox::Yes)
+	QString info("将用账号" + ui.lineEditUname->text());
+	switch (gameType)
+	{
+	case GameType::Type::Honkai3:
+		info += "\n登录崩坏3\n";
+		break;
+	case GameType::Type::Honkai3_BiliBili:
+		info += "\n登录BiliBili崩坏3\n";
+		break;
+	case GameType::Type::Genshin:
+		info += "\n登录原神\n";
+		break;
+	case GameType::Type::StarRail:
+		info += "\n登录星穹铁道\n";
+		break;
+	default:
+		break;
+	}
+	int result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
+	if (result != QMessageBox::Yes)
+	{
+		ui.pBtStream->setText("开始监视直播间");
+		ui.pBtstartScreen->setText("开始监视屏幕");
+		return;
+	}
+	if (b)
 	{
 		t1.continueLogin = true;
 		t1.start();
 	}
 	else
 	{
-
+		t2.start();
 	}
 }
 

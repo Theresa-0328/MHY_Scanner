@@ -61,7 +61,7 @@ void QRCodeForScreen::LoginOfficial()
 				}
 				else
 				{
-					emit loginConfirm(gameType);
+					emit loginConfirm(gameType, true);
 				}
 			}
 			else
@@ -112,7 +112,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 				}
 				else
 				{
-					emit loginConfirm(GameType::Type::Honkai3);
+					emit loginConfirm(GameType::Type::Honkai3, true);
 				}
 
 			}

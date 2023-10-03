@@ -19,7 +19,8 @@ public:
 		UNKNOW = 0,
 		Honkai3 = 1,
 		Genshin = 4,
-		StarRail = 8
+		StarRail = 8,
+		Honkai3_BiliBili = 10000
 	};
 };
 

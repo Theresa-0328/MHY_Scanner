@@ -12,7 +12,6 @@ set(SRC_CPP
 	"QRCodeForStream.cpp"
 	"QRCodeForScreen.cpp" 
 	../rc/ScannerGui.rc
-	"ConfigDate.cpp"
 )
 
 #add_definitions(-DTESTSPEED)

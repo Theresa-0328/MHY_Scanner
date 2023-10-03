@@ -25,7 +25,7 @@ public:
 	bool continueLogin = false;
 signals:
 	void loginResults(const ScanRet::Type ret);
-	void loginConfirm(const GameType::Type gameType);
+	void loginConfirm(const GameType::Type gameType, bool b);
 private:
 	OfficialApi o;
 	Mihoyosdk m;
