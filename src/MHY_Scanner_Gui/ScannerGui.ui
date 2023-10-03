@@ -329,14 +329,14 @@ QTableWidget::item:selected
    <widget class="QCheckBox" name="checkBoxAutoLogin">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>200</x>
       <y>490</y>
       <width>131</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>扫码成功后自动确认</string>
+     <string>自动二次确认</string>
     </property>
    </widget>
   </widget>
