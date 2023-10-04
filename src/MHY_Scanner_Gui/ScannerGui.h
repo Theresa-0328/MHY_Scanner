@@ -1,6 +1,9 @@
 ﻿#pragma once
 
+#include <vector>
+
 #include <QtWidgets/QMainWindow>
+#include <QRunnable>
 #include <Json.h>
 
 #include "ui_ScannerGui.h"
@@ -18,12 +21,17 @@ public:
 	~OnlineUpdate();
 };
 
-class ThreadLoginConfirm :public QThread
+class configInitLoad :public QThread
 {
+	Q_OBJECT
 public:
-	ThreadLoginConfirm() = default;
+	configInitLoad() = default;
 	void run();
-	~ThreadLoginConfirm();
+	~configInitLoad();
+signals:
+	void userinfoTrue(bool b);
+private:
+	ConfigDate* m_config = &ConfigDate::getInstance();
 };
 
 class ScannerGui
@@ -49,11 +57,12 @@ public slots:
 	void getInfo(int x, int y);
 	void pBtSwitch();
 	void pBtDeleteAccount();
+	void configInitUpdate(bool b);
 private:
 	void failure();
 	int countA = -1;
 	Ui::ScannerGuiClass ui;
-	ConfigDate* m_config;
+	ConfigDate* m_config = &ConfigDate::getInstance();
 	json::Json userinfo;
 	QRCodeForScreen t1;
 	ThreadStreamProcess t2;
@@ -62,5 +71,5 @@ private:
 	bool checkDuplicates(const std::string uid);
 	bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
 	OnlineUpdate o;
-	ThreadLoginConfirm Tloginconfirm;
+	configInitLoad configinitload;
 };

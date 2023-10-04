@@ -33,20 +33,9 @@ ScannerGui::ScannerGui(QWidget* parent)
 	connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
 	connect(&t2, &ThreadStreamProcess::loginConfirm, this, &ScannerGui::loginConfirmTip);
-
-
-	m_config = &ConfigDate::getInstance();
-	try
-	{
-		userinfo.parse(m_config->getConfig());
-	}
-	catch (...)
-	{
-		userinfo.parse(m_config->defaultConfig());
-	}
+	connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
 
 	o.start();
-	std::string readName;
 	ui.tableWidget->setColumnCount(5);
 	QStringList header;
 	header << "序号" << "UID" << "用户名" << "类型" << "备注";
@@ -77,32 +66,10 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-
-	for (int i = 0; i < (int)userinfo["num"]; i++)
-	{
-		insertTableItems(
-			QString::fromStdString(userinfo["account"][i]["uid"]),
-			QString::fromStdString(userinfo["account"][i]["name"]),
-			QString::fromStdString(userinfo["account"][i]["type"]),
-			QString::fromStdString("无"));
-	}
-
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 
-	if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
-	{
-		countA = static_cast<int>(userinfo["last_account"]) - 1;
-		//FIXME 代理会导致响应过慢
-		ui.pBtstartScreen->clicked();
-		ui.checkBoxAutoScreen->setChecked(true);
-		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
-		ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);
-	}
-	if (userinfo["auto_exit"])
-	{
-		ui.checkBoxAutoExit->setChecked(true);
-	}
+	configinitload.start();
 }
 
 ScannerGui::~ScannerGui()
@@ -667,6 +634,48 @@ void ScannerGui::pBtDeleteAccount()
 	}
 }
 
+void ScannerGui::configInitUpdate(bool b)
+{
+	if (!b)
+	{
+		int result = QMessageBox::information(this, "错误", "配置文件错误！\n重置配置文件为默认？", QMessageBox::Yes | QMessageBox::No);
+		if (result == QMessageBox::Yes)
+		{
+			m_config->defaultConfig();
+		}
+		else
+		{
+			QMessageBox::information(this, "错误", "配置文件错误！\n无法继续运行！", QMessageBox::Yes);
+			exit(1);
+		}
+	}
+	userinfo.parse(m_config->getConfig());
+	for (int i = 0; i < (int)userinfo["num"]; i++)
+	{
+		insertTableItems(
+			QString::fromStdString(userinfo["account"][i]["uid"]),
+			QString::fromStdString(userinfo["account"][i]["name"]),
+			QString::fromStdString(userinfo["account"][i]["type"]),
+			QString::fromStdString("无"));
+	}
+	if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
+	{
+		countA = static_cast<int>(userinfo["last_account"]) - 1;
+		ui.pBtstartScreen->clicked();
+		ui.checkBoxAutoScreen->setChecked(true);
+		ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
+		ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);
+	}
+	if (userinfo["auto_exit"])
+	{
+		ui.checkBoxAutoExit->setChecked(true);
+	}
+	if (userinfo["auto_login"])
+	{
+		ui.checkBoxAutoLogin->setChecked(true);
+	}
+}
+
 void OnlineUpdate::run()
 {
 	Mihoyosdk m;
@@ -678,10 +687,33 @@ OnlineUpdate::~OnlineUpdate()
 	wait();
 }
 
-void ThreadLoginConfirm::run()
+void configInitLoad::run()
 {
+	const std::string& config = m_config->getConfig();
+	json::Json data;
+	try
+	{
+		data.parse(config);
+		int num = data["num"];
+		for (int i = 0; i < num; i++)
+		{
+			std::string s = data["account"][i]["uid"];
+			s = data["account"][i]["name"];
+			s = data["account"][i]["type"];
+		};
+		int i = data["last_account"];
+		bool b = data["auto_start"];
+		b = data["auto_login"];
+		b = data["auto_exit"];
+		emit userinfoTrue(true);
+	}
+	catch (...)
+	{
+		emit userinfoTrue(false);
+	}
 }
 
-ThreadLoginConfirm::~ThreadLoginConfirm()
+configInitLoad::~configInitLoad()
 {
+	wait();
 }
