@@ -90,7 +90,8 @@ void ConfigDate::createDefaultConfigFile(const std::string& filePath, const std:
 
 std::string ConfigDate::defaultConfig()
 {
-	const std::string& defaultConfig = R"({"auto_exit": false,"auto_login":false,auto_start": false,"account":[],"last_account":0,"num":0})";
+	const std::string& defaultConfig = R"({"auto_exit": false,"auto_login":false,"auto_start": false,"account":[],"last_account":0,"num":0})";
+	m_config = defaultConfig;
 	createDefaultConfigFile(ConfigFilePath, defaultConfig);
 	return defaultConfig;
 }

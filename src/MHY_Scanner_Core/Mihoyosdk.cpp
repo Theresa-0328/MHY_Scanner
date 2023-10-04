@@ -95,10 +95,6 @@ ScanRet::Type Mihoyosdk::scanCheck()
 	{
 		return ScanRet::Type::FAILURE_1;
 	}
-	if (scanConfirm(ticket, bhInfo) != 0)
-	{
-		return ScanRet::Type::FAILURE_2;
-	}
 	return ScanRet::Type::SUCCESS;
 }
 
