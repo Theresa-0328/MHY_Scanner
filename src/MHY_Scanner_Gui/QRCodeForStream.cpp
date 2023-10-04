@@ -48,7 +48,6 @@ void ThreadStreamProcess::setServerType(const ServerType::Type servertype)
 
 void ThreadStreamProcess::LoginOfficial()
 {
-	OfficialApi o;
 	ThreadSacn threadsacn;
 	const std::string& uuid = o.generateUUID();
 	threadsacn.start();
@@ -71,7 +70,7 @@ void ThreadStreamProcess::LoginOfficial()
 				}
 				else
 				{
-					emit loginConfirm(gameType, true);
+					emit loginConfirm(gameType, false);
 				}
 			}
 			else
@@ -128,7 +127,6 @@ void ThreadStreamProcess::LoginOfficial()
 
 void ThreadStreamProcess::LoginBH3BiliBili()
 {
-	Mihoyosdk m;
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
 	ThreadSacn threadsacn;
@@ -152,9 +150,13 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 				}
 				else
 				{
-					emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+					emit loginConfirm(GameType::Type::Honkai3_BiliBili, false);
 				}
 
+			}
+			else
+			{
+				emit loginResults(ret);
 			}
 			stop();
 		};
