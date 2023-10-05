@@ -14,10 +14,9 @@ set(SRC_CPP
 	../rc/ScannerGui.rc
 )
 
-add_definitions(-DTESTSPEED)
-add_definitions(-DSHOW)
-
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	add_definitions(-DTESTSPEED)
+	add_definitions(-DSHOW)
     add_executable(${PROJECT_NAME} 
 		WIN32 
 		${SRC_CPP})
