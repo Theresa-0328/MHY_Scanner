@@ -613,6 +613,13 @@ void ScannerGui::pBtDeleteAccount()
 		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
 		return;
 	}
+	if (int re = QMessageBox::information(this, "删除确认",
+		QString::fromStdString(std::format("你正在删除账号\n{}", (std::string)userinfo["account"][countA]["name"])),
+		QMessageBox::Yes | QMessageBox::No);
+		re != QMessageBox::Yes)
+	{
+		return;
+	}
 	userinfo["num"] = (int)userinfo["num"] - 1;
 	//判断删除的账号是否是启动默认账号
 	if (static_cast<int>(userinfo["last_account"]) == countA + 1)
