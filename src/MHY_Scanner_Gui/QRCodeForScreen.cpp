@@ -116,6 +116,10 @@ void QRCodeForScreen::LoginBH3BiliBili()
 				}
 
 			}
+			else
+			{
+				emit loginResults(ret);
+			}
 			stop();
 		};
 
