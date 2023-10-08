@@ -54,7 +54,7 @@ void ThreadStreamProcess::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
 		{
-			if (qrcodeStr.find(bizKey) == std::string::npos)
+			if (qrcodeStr != bizKey)
 			{
 				return;
 			}
@@ -104,19 +104,22 @@ void ThreadStreamProcess::LoginOfficial()
 
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			cv::Mat img(720, 1280, CV_8UC3);
-			uint8_t* dstData[1] = { img.data };
-			int dstLinesize[1] = { static_cast<int>(img.step) };
-			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
-
 			if (threadsacn.MatEmpty())
 			{
+				cv::Mat img(720, 1280, CV_8UC3);
+				uint8_t* dstData[1] = { img.data };
+				int dstLinesize[1] = { static_cast<int>(img.step) };
+				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 				threadsacn.setImg(img);
 			}
 			const std::string& qrcode = threadsacn.getQRcode();
-			processQRCodeStr(qrcode, "bh3_cn", GameType::Type::Honkai3);
-			processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
-			processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
+			if (size_t found = qrcode.find("biz_key="); found != std::string::npos)
+			{
+				const std::string& key = qrcode.substr(found + 8, 3);
+				processQRCodeStr(key, "bh3", GameType::Type::Honkai3);
+				processQRCodeStr(key, "hk4", GameType::Type::Genshin);
+				processQRCodeStr(key, "hkr", GameType::Type::StarRail);
+			}
 		}
 		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
@@ -186,16 +189,16 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			cv::Mat img(720, 1280, CV_8UC3);
-			uint8_t* dstData[1] = { img.data };
-			int dstLinesize[1] = { static_cast<int>(img.step) };
-			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 			if (threadsacn.MatEmpty())
 			{
+				cv::Mat img(720, 1280, CV_8UC3);
+				uint8_t* dstData[1] = { img.data };
+				int dstLinesize[1] = { static_cast<int>(img.step) };
+				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 				threadsacn.setImg(img);
 			}
 			const std::string& qrcode = threadsacn.getQRcode();
-			processQRCodeStr(qrcode, "bh3_cn");
+			processQRCodeStr(qrcode, "biz_key=bh3_cn");
 		}
 		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
@@ -424,7 +427,7 @@ auto ThreadStreamProcess::init()->bool
 	}
 	pSwsContext = sws_getContext(
 		pAVCodecContext->width, pAVCodecContext->height, pAVCodecContext->pix_fmt,
-		1280, 720, AV_PIX_FMT_BGR24,
+		pAVCodecContext->width / 1.5, pAVCodecContext->height / 1.5, AV_PIX_FMT_BGR24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
 	pAVPacket = av_packet_alloc();

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <string>
 
-class ConfigDate
+class ConfigDate final
 {
 public:
 	static ConfigDate& getInstance();
