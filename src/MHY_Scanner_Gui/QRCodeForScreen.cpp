@@ -1,6 +1,8 @@
 ﻿#include "QRCodeForScreen.h"
 
-#include <QMessageBox>
+#include <chrono>
+#include <thread>
+
 #include <json.h>
 
 #include "ScreenScan.h"
@@ -45,7 +47,7 @@ void QRCodeForScreen::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, GameType::Type gameType)
 		{
-			if (qrcodeStr.find(bizKey) == std::string::npos)
+			if (qrcodeStr != bizKey)
 			{
 				return;
 			}
@@ -77,10 +79,14 @@ void QRCodeForScreen::LoginOfficial()
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		const std::string& qrcode = threadsacn.getQRcode();
-		processQRCodeStr(qrcode, "bh3_cn", GameType::Type::Honkai3);
-		processQRCodeStr(qrcode, "hk4e_cn", GameType::Type::Genshin);
-		processQRCodeStr(qrcode, "hkrpg_cn", GameType::Type::StarRail);
-		QThread::msleep(200);
+		if (size_t found = qrcode.find("biz_key="); found != std::string::npos)
+		{
+			const std::string& key = qrcode.substr(found + 8, 3);
+			processQRCodeStr(key, "bh3", GameType::Type::Honkai3);
+			processQRCodeStr(key, "hk4", GameType::Type::Genshin);
+			processQRCodeStr(key, "hkr", GameType::Type::StarRail);
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	}
 	threadsacn.stop();
 	return;
@@ -128,8 +134,8 @@ void QRCodeForScreen::LoginBH3BiliBili()
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
 		const std::string& qrcode = threadsacn.getQRcode();
-		processQRCodeStr(qrcode, "bh3_cn");
-		QThread::msleep(200);
+		processQRCodeStr(qrcode, "biz_key=bh3_cn");
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	}
 	threadsacn.stop();
 	return;

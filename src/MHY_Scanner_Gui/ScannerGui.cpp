@@ -400,7 +400,7 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	default:
 		break;
 	}
-	int result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
+	QMessageBox::StandardButton result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
 	if (result != QMessageBox::Yes)
 	{
 		ui.pBtStream->setText("开始监视直播间");
