@@ -47,7 +47,7 @@ void QRCodeForScreen::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, GameType::Type gameType)
 		{
-			if (qrcodeStr.find(bizKey, 79) == std::string::npos)
+			if (qrcodeStr.compare(79, 3, bizKey) != 0)
 			{
 				return;
 			}
@@ -100,7 +100,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
 		{
-			if (qrcodeStr.find(bizKey, 79) == std::string::npos)
+			if (qrcodeStr.compare(79, 3, bizKey) != 0)
 			{
 				return;
 			}
