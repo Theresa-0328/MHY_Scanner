@@ -54,7 +54,7 @@ void ThreadStreamProcess::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
 		{
-			if (qrcodeStr != bizKey)
+			if (qrcodeStr.find_first_of(bizKey, 78) == std::string::npos)
 			{
 				return;
 			}
@@ -112,13 +112,11 @@ void ThreadStreamProcess::LoginOfficial()
 				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 				threadsacn.setImg(img);
 			}
-			const std::string& qrcode = threadsacn.getQRcode();
-			if (size_t found = qrcode.find("biz_key="); found != std::string::npos)
+			if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
 			{
-				const std::string& key = qrcode.substr(found + 8, 3);
-				processQRCodeStr(key, "bh3", GameType::Type::Honkai3);
-				processQRCodeStr(key, "hk4", GameType::Type::Genshin);
-				processQRCodeStr(key, "hkr", GameType::Type::StarRail);
+				processQRCodeStr(qrcode, "8F3", GameType::Type::Honkai3);
+				processQRCodeStr(qrcode, "9E&", GameType::Type::Genshin);
+				processQRCodeStr(qrcode, "8F%", GameType::Type::StarRail);
 			}
 		}
 		av_frame_unref(pAVFrame);
@@ -137,7 +135,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
 		{
-			if (qrcodeStr.find(bizKey) == std::string::npos)
+			if (qrcodeStr.find(bizKey, 79) == std::string::npos)
 			{
 				return;
 			}
@@ -198,7 +196,10 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 				threadsacn.setImg(img);
 			}
 			const std::string& qrcode = threadsacn.getQRcode();
-			processQRCodeStr(qrcode, "biz_key=bh3_cn");
+			if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
+			{
+				processQRCodeStr(qrcode, "8F3");
+			}
 		}
 		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
