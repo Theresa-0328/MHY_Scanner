@@ -54,7 +54,7 @@ void ThreadStreamProcess::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
 		{
-			if (qrcodeStr.find_first_of(bizKey, 78) == std::string::npos)
+			if (qrcodeStr.find(bizKey, 78) == std::string::npos)
 			{
 				return;
 			}
