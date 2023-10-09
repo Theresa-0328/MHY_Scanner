@@ -47,7 +47,7 @@ void QRCodeForScreen::LoginOfficial()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, GameType::Type gameType)
 		{
-			if (qrcodeStr != bizKey)
+			if (qrcodeStr.find(bizKey, 79) == std::string::npos)
 			{
 				return;
 			}
@@ -78,13 +78,11 @@ void QRCodeForScreen::LoginOfficial()
 	{
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
-		const std::string& qrcode = threadsacn.getQRcode();
-		if (size_t found = qrcode.find("biz_key="); found != std::string::npos)
+		if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
 		{
-			const std::string& key = qrcode.substr(found + 8, 3);
-			processQRCodeStr(key, "bh3", GameType::Type::Honkai3);
-			processQRCodeStr(key, "hk4", GameType::Type::Genshin);
-			processQRCodeStr(key, "hkr", GameType::Type::StarRail);
+			processQRCodeStr(qrcode, "8F3", GameType::Type::Honkai3);
+			processQRCodeStr(qrcode, "9E&", GameType::Type::Genshin);
+			processQRCodeStr(qrcode, "8F%", GameType::Type::StarRail);
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	}
@@ -102,7 +100,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
 		{
-			if (qrcodeStr.find(bizKey) == std::string::npos)
+			if (qrcodeStr.find(bizKey, 79) == std::string::npos)
 			{
 				return;
 			}
@@ -133,8 +131,10 @@ void QRCodeForScreen::LoginBH3BiliBili()
 	{
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
-		const std::string& qrcode = threadsacn.getQRcode();
-		processQRCodeStr(qrcode, "biz_key=bh3_cn");
+		if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
+		{
+			processQRCodeStr(qrcode, "8F3");
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	}
 	threadsacn.stop();
