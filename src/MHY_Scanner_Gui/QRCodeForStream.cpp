@@ -112,7 +112,7 @@ void ThreadStreamProcess::LoginOfficial()
 				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 				threadsacn.setImg(img);
 			}
-			if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
+			if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
 			{
 				processQRCodeStr(qrcode, "8F3", GameType::Type::Honkai3);
 				processQRCodeStr(qrcode, "9E&", GameType::Type::Genshin);
@@ -196,7 +196,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 				threadsacn.setImg(img);
 			}
 			const std::string& qrcode = threadsacn.getQRcode();
-			if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
+			if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
 			{
 				processQRCodeStr(qrcode, "8F3");
 			}
@@ -428,7 +428,7 @@ auto ThreadStreamProcess::init()->bool
 	}
 	pSwsContext = sws_getContext(
 		pAVCodecContext->width, pAVCodecContext->height, pAVCodecContext->pix_fmt,
-		pAVCodecContext->width / 1.5, pAVCodecContext->height / 1.5, AV_PIX_FMT_BGR24,
+		1280, 720, AV_PIX_FMT_BGR24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
 	pAVPacket = av_packet_alloc();
