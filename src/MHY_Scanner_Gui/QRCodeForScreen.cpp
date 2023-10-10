@@ -78,7 +78,7 @@ void QRCodeForScreen::LoginOfficial()
 	{
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
-		if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
+		if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
 		{
 			processQRCodeStr(qrcode, "8F3", GameType::Type::Honkai3);
 			processQRCodeStr(qrcode, "9E&", GameType::Type::Genshin);
@@ -131,7 +131,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 	{
 		const cv::Mat& img = screenshot.getScreenshot();
 		threadsacn.setImg(img);
-		if (const std::string& qrcode = threadsacn.getQRcode(); !(qrcode.empty()))
+		if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
 		{
 			processQRCodeStr(qrcode, "8F3");
 		}

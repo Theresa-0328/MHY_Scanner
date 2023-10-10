@@ -13,5 +13,5 @@ public:
 	void decodeMultiple(const cv::Mat& img, std::string& qrCode);
 private:
 	cv::Ptr<cv::wechat_qrcode::WeChatQRCode> detector;
-	std::vector<cv::String> strDecoded;
+	std::vector<std::string> strDecoded;
 };
