@@ -49,7 +49,6 @@ void ThreadStreamProcess::setServerType(const ServerType::Type servertype)
 void ThreadStreamProcess::LoginOfficial()
 {
 	ThreadSacn threadsacn;
-	const std::string& uuid = o.generateUUID();
 	threadsacn.start();
 
 	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
@@ -195,7 +194,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 				threadsacn.setImg(img);
 			}
-			const std::string& qrcode = threadsacn.getQRcode();
 			if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
 			{
 				processQRCodeStr(qrcode, "8F3");
