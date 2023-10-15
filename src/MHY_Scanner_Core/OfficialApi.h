@@ -16,7 +16,7 @@ public:
 	std::string getUserName(const std::string& uid);
 	int cookieParser(const std::string& cookieString);
 	[[nodiscard]] std::string generateUUID();
-	void scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
+	bool scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
 	ScanRet::Type scanRequest();
 	ScanRet::Type scanConfirm();
 	int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);

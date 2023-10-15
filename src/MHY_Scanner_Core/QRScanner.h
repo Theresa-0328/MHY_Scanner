@@ -9,9 +9,9 @@ class QRScanner
 {
 public:
 	QRScanner();
+	~QRScanner();
 	void decodeSingle(const cv::Mat& img, std::string& qrCode);
 	void decodeMultiple(const cv::Mat& img, std::string& qrCode);
 private:
 	cv::Ptr<cv::wechat_qrcode::WeChatQRCode> detector;
-	std::vector<std::string> strDecoded;
 };

@@ -1,8 +1,10 @@
 ﻿#include "QRCodeForStream.h"
 
-#include <Windows.h>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+#include <QThreadPool>
 
-#include "ThreadSacn.h"
+#include "QRScanner.h"
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	: QThread(parent),
@@ -48,36 +50,9 @@ void ThreadStreamProcess::setServerType(const ServerType::Type servertype)
 
 void ThreadStreamProcess::LoginOfficial()
 {
-	ThreadSacn threadsacn;
-	threadsacn.start();
-
-	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey, const GameType::Type gameType)
-		{
-			if (qrcodeStr.compare(79, 3, bizKey) != 0)
-			{
-				return;
-			}
-			o.scanInit(gameType, threadsacn.getTicket(), uid, gameToken);
-			if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
-			{
-				json::Json config;
-				config.parse(m_config->getConfig());
-				if (config["auto_login"])
-				{
-					ret = o.scanConfirm();
-					emit loginResults(ret);
-				}
-				else
-				{
-					emit loginConfirm(gameType, false);
-				}
-			}
-			else
-			{
-				emit loginResults(ret);
-			}
-			stop();
-		};
+	QThreadPool threadPool;
+	threadPool.setMaxThreadCount(threadNumber);
+	GameType::Type m_gametype = GameType::Type::UNKNOW;
 
 	while (m_stop)
 	{
@@ -103,63 +78,75 @@ void ThreadStreamProcess::LoginOfficial()
 
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			if (threadsacn.MatEmpty())
-			{
-				cv::Mat img(720, 1280, CV_8UC3);
-				uint8_t* dstData[1] = { img.data };
-				int dstLinesize[1] = { static_cast<int>(img.step) };
-				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
-				threadsacn.setImg(img);
-			}
-			if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
-			{
-				processQRCodeStr(qrcode, "8F3", GameType::Type::Honkai3);
-				processQRCodeStr(qrcode, "9E&", GameType::Type::Genshin);
-				processQRCodeStr(qrcode, "8F%", GameType::Type::StarRail);
-			}
+			cv::Mat img(720, 1280, CV_8UC3);
+			uint8_t* dstData[1] = { img.data };
+			const int dstLinesize[1] = { static_cast<int>(img.step) };
+			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+			threadPool.tryStart([&, temp_img = std::move(img)]()
+				{
+					cv::imshow("Video_Stream", temp_img);
+					cv::waitKey(1);
+					thread_local QRScanner qrScanners;
+					std::string str;
+					qrScanners.decodeSingle(temp_img, str);
+					if (str.size() < 85)
+					{
+						return;
+					}
+					else if (str.compare(79, 3, "8F3") == 0)
+					{
+						m_gametype = GameType::Type::Honkai3;
+					}
+					else if (str.compare(79, 3, "9E&") == 0)
+					{
+						m_gametype = GameType::Type::Genshin;
+					}
+					else if (str.compare(79, 3, "8F%") == 0)
+					{
+						m_gametype = GameType::Type::StarRail;
+					}
+					else
+					{
+						return;
+					}
+
+					const std::string& ticket = str.substr(str.length() - 24);
+					if (!o.scanInit(m_gametype, ticket, uid, gameToken))
+					{
+						return;
+					}
+					if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
+					{
+						json::Json config;
+						config.parse(m_config->getConfig());
+						if (config["auto_login"])
+						{
+							ret = o.scanConfirm();
+							emit loginResults(ret);
+						}
+						else
+						{
+							emit loginConfirm(m_gametype, true);
+						}
+					}
+					else
+					{
+						emit loginResults(ret);
+					}
+				});
 		}
 		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
-	threadsacn.stop();
 }
 
 
 void ThreadStreamProcess::LoginBH3BiliBili()
 {
+	QThreadPool threadPool;
+	threadPool.setMaxThreadCount(threadNumber);
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
-	ThreadSacn threadsacn;
-	threadsacn.start();
-
-	auto processQRCodeStr = [&](const std::string& qrcodeStr, const std::string& bizKey)
-		{
-			if (qrcodeStr.compare(79, 3, bizKey) != 0)
-			{
-				return;
-			}
-			m.scanInit(threadsacn.getTicket(), LoginData);
-			if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
-			{
-				json::Json config;
-				config.parse(m_config->getConfig());
-				if (config["auto_login"])
-				{
-					m.scanConfirm();
-					emit loginResults(ret);
-				}
-				else
-				{
-					emit loginConfirm(GameType::Type::Honkai3_BiliBili, false);
-				}
-
-			}
-			else
-			{
-				emit loginResults(ret);
-			}
-			stop();
-		};
 
 	while (m_stop)
 	{
@@ -186,23 +173,53 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			if (threadsacn.MatEmpty())
-			{
-				cv::Mat img(720, 1280, CV_8UC3);
-				uint8_t* dstData[1] = { img.data };
-				int dstLinesize[1] = { static_cast<int>(img.step) };
-				sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
-				threadsacn.setImg(img);
-			}
-			if (const std::string& qrcode = threadsacn.getQRcode(); qrcode.size() > 85)
-			{
-				processQRCodeStr(qrcode, "8F3");
-			}
+			cv::Mat img(720, 1280, CV_8UC3);
+			uint8_t* dstData[1] = { img.data };
+			const int dstLinesize[1] = { static_cast<int>(img.step) };
+			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+			cv::imshow("Video_Stream", img);
+			cv::waitKey(1);
+			threadPool.tryStart([&, temp_img = std::move(img)]()
+				{
+					thread_local QRScanner qrScanners;
+					std::string str;
+					qrScanners.decodeSingle(temp_img, str);
+					if (str.size() < 85)
+					{
+						return;
+					}
+					else if (str.compare(79, 3, "8F3") != 0)
+					{
+						return;
+					}
+					const std::string& ticket = str.substr(str.length() - 24);
+					if (!m.scanInit(ticket, LoginData))
+					{
+						return;
+					}
+					if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
+					{
+						json::Json config;
+						config.parse(m_config->getConfig());
+						if (config["auto_login"])
+						{
+							ret = m.scanConfirm();
+							emit loginResults(ret);
+						}
+						else
+						{
+							emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+						}
+					}
+					else
+					{
+						emit loginResults(ret);
+					}
+				});
 		}
 		av_frame_unref(pAVFrame);
 		av_packet_unref(pAVPacket);
 	}
-	threadsacn.stop();
 }
 
 //void ThreadStreamProcess::LoginOfficial()
@@ -380,6 +397,10 @@ void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::str
 	{
 		av_dict_set(&pAvdictionary, it.first.c_str(), it.second.c_str(), 0);
 	}
+	av_dict_set(&pAvdictionary, "max_delay", "2000", 0);
+	av_dict_set(&pAvdictionary, "probesize", "1024", 0);
+	av_dict_set(&pAvdictionary, "packetsize", "128", 0);
+	av_dict_set(&pAvdictionary, "rtbufsize", "0", 0);
 }
 
 auto ThreadStreamProcess::init()->bool

@@ -11,7 +11,7 @@ class Mihoyosdk :public HttpClient
 public:
 	Mihoyosdk();
 	std::string verify(const std::string& uid, const std::string& access_key);
-	void scanInit(const std::string& ticket, const std::string& bhInfo);
+	bool scanInit(const std::string& ticket, const std::string& bhInfo);
 	ScanRet::Type scanCheck();
 	ScanRet::Type scanConfirm();
 	void setUserName(const std::string& name);
