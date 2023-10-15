@@ -11,6 +11,11 @@ QRScanner::QRScanner()
 		SR_PROTOTXT_PATH, SR_CAFFE_MODEL_PATH);
 }
 
+QRScanner::~QRScanner()
+{
+
+}
+
 void QRScanner::decodeSingle(const cv::Mat& img, std::string& qrCode)
 {
 	strDecoded = detector->detectAndDecode(img);
@@ -25,7 +30,7 @@ void QRScanner::decodeSingle(const cv::Mat& img, std::string& qrCode)
 
 void QRScanner::decodeMultiple(const cv::Mat& img, std::string& qrCode)
 {
-	strDecoded = detector->detectAndDecode(img);
+	const std::vector<std::string>& strDecoded = detector->detectAndDecode(img);
 	for (int i = 0; i < strDecoded.size(); i++)
 	{
 		qrCode = strDecoded[i];

@@ -40,4 +40,5 @@ private:
 	std::string m_name;
 	ServerType::Type servertype = ServerType::Type::UNKNOW;
 	ScanRet::Type ret = ScanRet::Type::UNKNOW;
+	const int threadNumber = 4;
 };

@@ -79,7 +79,6 @@ std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
 		//{"platform", "h5" },
 		//play_type:0
 		{"protocol" , "0,1"},
-		//TODO 考虑存在低清晰度时使用低清晰度？
 		{"qn" , "10000"},
 		{"room_id" , realRoomID},
 		//s_locale:zh_CN

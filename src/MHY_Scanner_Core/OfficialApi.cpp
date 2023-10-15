@@ -22,13 +22,17 @@ std::string OfficialApi::getUid()const
 	return cookieMap.at("login_uid");
 }
 
-void OfficialApi::scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
+bool OfficialApi::scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
 {
+	if (ticket == m_ticket)
+	{
+		return false;
+	}
 	m_gameType = gameType;
 	m_uid = uid;
 	m_ticket = ticket;
 	m_gameToken = gameToken;
-
+	return true;
 }
 
 //暂时用不上

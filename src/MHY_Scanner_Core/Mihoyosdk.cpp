@@ -73,10 +73,15 @@ std::string Mihoyosdk::getOAServer()
 	//	return dispatch;
 }
 
-void Mihoyosdk::scanInit(const std::string& ticket, const std::string& bhInfo)
+bool Mihoyosdk::scanInit(const std::string& ticket, const std::string& bhInfo)
 {
+	if (ticket == m_ticket)
+	{
+		return true;
+	}
 	m_ticket = ticket;
 	m_bhInfo = bhInfo;
+	return false;
 }
 
 ScanRet::Type Mihoyosdk::scanCheck()

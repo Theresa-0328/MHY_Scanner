@@ -56,4 +56,5 @@ private:
 	AVPacket* pAVPacket;
 	int videoStremIndex = 0;
 	bool m_stop = false;
+	const int threadNumber = 4;
 };
