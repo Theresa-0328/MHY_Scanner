@@ -30,7 +30,7 @@ public:
 	auto init() -> bool;
 	void run();
 	void stop();
-	bool continueLogin = false;
+	void continueLastLogin();
 signals:
 	void loginResults(const ScanRet::Type ret);
 	void loginConfirm(const GameType::Type gameType, bool b);
@@ -40,12 +40,18 @@ private:
 	std::string m_url;
 	void LoginOfficial();
 	void LoginBH3BiliBili();
-	void continueLastLogin();
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
 	std::string m_name;
 	ConfigDate* m_config;
+	const std::map<std::string_view, std::function<void()>> setGameType
+	{
+		{"8F3", [this]() { m_gametype = GameType::Type::Honkai3; }},
+		{"9E&", [this]() { m_gametype = GameType::Type::Genshin; }},
+		{"8F%", [this]() { m_gametype = GameType::Type::StarRail; }},
+	};
+	GameType::Type m_gametype = GameType::Type::UNKNOW;
 	ServerType::Type servertype = ServerType::Type::UNKNOW;
 	ScanRet::Type ret = ScanRet::Type::UNKNOW;
 	AVDictionary* pAvdictionary;
@@ -56,5 +62,5 @@ private:
 	AVPacket* pAVPacket;
 	int videoStremIndex = 0;
 	bool m_stop = false;
-	const int threadNumber = 4;
+	const int threadNumber = 2;
 };
