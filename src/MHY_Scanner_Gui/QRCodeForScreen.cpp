@@ -47,19 +47,11 @@ void QRCodeForScreen::LoginOfficial()
 	ScreenScan screenshot;
 	QThreadPool threadPool;
 	threadPool.setMaxThreadCount(threadNumber);
-	GameType::Type m_gametype = GameType::Type::UNKNOW;
-
-	cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Video_Stream", 1280, 720);
 
 	while (m_stop)
 	{
 		cv::Mat img;
 		cv::resize(screenshot.getScreenshot(), img, { 1280,720 });
-
-		cv::imshow("Video_Stream", img);
-		cv::waitKey(1);
-
 		threadPool.tryStart([&, temp_img = std::move(img)]()
 			{
 				thread_local QRScanner qrScanners;
@@ -69,22 +61,12 @@ void QRCodeForScreen::LoginOfficial()
 				{
 					return;
 				}
-				else if (str.compare(79, 3, "8F3") == 0)
-				{
-					m_gametype = GameType::Type::Honkai3;
-				}
-				else if (str.compare(79, 3, "9E&") == 0)
-				{
-					m_gametype = GameType::Type::Genshin;
-				}
-				else if (str.compare(79, 3, "8F%") == 0)
-				{
-					m_gametype = GameType::Type::StarRail;
-				}
-				else
+				std::string_view view(str.c_str() + 79, 3);
+				if (setGameType.count(view) == 0)
 				{
 					return;
 				}
+				setGameType.at(view)();
 				const std::string& ticket = str.substr(str.length() - 24);
 				if (!o.scanInit(m_gametype, ticket, uid, gameToken))
 				{
@@ -127,10 +109,6 @@ void QRCodeForScreen::LoginBH3BiliBili()
 	{
 		cv::Mat img;
 		cv::resize(screenshot.getScreenshot(), img, { 1280,720 });
-
-		cv::imshow("Video_Stream", img);
-		cv::waitKey(1);
-
 		threadPool.tryStart([&, temp_img = std::move(img)]()
 			{
 				thread_local QRScanner qrScanners;
@@ -140,7 +118,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 				{
 					return;
 				}
-				else if (str.compare(79, 3, "8F3") != 0)
+				if (std::string_view view(str.c_str() + 79, 3); view != "8F3")
 				{
 					return;
 				}
@@ -176,7 +154,6 @@ void QRCodeForScreen::LoginBH3BiliBili()
 
 void QRCodeForScreen::continueLastLogin()
 {
-	continueLogin = false;
 	switch (servertype)
 	{
 	case ServerType::Official:
@@ -193,11 +170,6 @@ void QRCodeForScreen::continueLastLogin()
 
 void QRCodeForScreen::run()
 {
-	if (continueLogin)
-	{
-		continueLastLogin();
-		return;
-	}
 	ret = ScanRet::Type::UNKNOW;
 	m_stop = true;
 	switch (servertype)

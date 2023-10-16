@@ -409,13 +409,11 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	}
 	if (b)
 	{
-		t1.continueLogin = true;
-		t1.start();
+		t1.continueLastLogin();
 	}
 	else
 	{
-		t2.continueLogin = true;
-		t2.start();
+		t2.continueLastLogin();
 	}
 }
 

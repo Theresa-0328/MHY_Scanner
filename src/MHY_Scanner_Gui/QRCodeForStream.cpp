@@ -1,5 +1,8 @@
 ﻿#include "QRCodeForStream.h"
 
+#include <string>
+#include <string_view>
+
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 #include <QThreadPool>
@@ -52,7 +55,6 @@ void ThreadStreamProcess::LoginOfficial()
 {
 	QThreadPool threadPool;
 	threadPool.setMaxThreadCount(threadNumber);
-	GameType::Type m_gametype = GameType::Type::UNKNOW;
 
 	while (m_stop)
 	{
@@ -84,8 +86,6 @@ void ThreadStreamProcess::LoginOfficial()
 			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
 			threadPool.tryStart([&, temp_img = std::move(img)]()
 				{
-					cv::imshow("Video_Stream", temp_img);
-					cv::waitKey(1);
 					thread_local QRScanner qrScanners;
 					std::string str;
 					qrScanners.decodeSingle(temp_img, str);
@@ -93,23 +93,12 @@ void ThreadStreamProcess::LoginOfficial()
 					{
 						return;
 					}
-					else if (str.compare(79, 3, "8F3") == 0)
-					{
-						m_gametype = GameType::Type::Honkai3;
-					}
-					else if (str.compare(79, 3, "9E&") == 0)
-					{
-						m_gametype = GameType::Type::Genshin;
-					}
-					else if (str.compare(79, 3, "8F%") == 0)
-					{
-						m_gametype = GameType::Type::StarRail;
-					}
-					else
+					std::string_view view(str.c_str() + 79, 3);
+					if (setGameType.count(view) == 0)
 					{
 						return;
 					}
-
+					setGameType.at(view)();
 					const std::string& ticket = str.substr(str.length() - 24);
 					if (!o.scanInit(m_gametype, ticket, uid, gameToken))
 					{
@@ -177,8 +166,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			uint8_t* dstData[1] = { img.data };
 			const int dstLinesize[1] = { static_cast<int>(img.step) };
 			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
-			cv::imshow("Video_Stream", img);
-			cv::waitKey(1);
 			threadPool.tryStart([&, temp_img = std::move(img)]()
 				{
 					thread_local QRScanner qrScanners;
@@ -188,7 +175,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 					{
 						return;
 					}
-					else if (str.compare(79, 3, "8F3") != 0)
+					if (std::string_view view(str.c_str() + 79, 3); view != "8F3")
 					{
 						return;
 					}
@@ -457,7 +444,6 @@ auto ThreadStreamProcess::init()->bool
 
 void ThreadStreamProcess::continueLastLogin()
 {
-	continueLogin = false;
 	switch (servertype)
 	{
 	case ServerType::Official:
@@ -474,11 +460,6 @@ void ThreadStreamProcess::continueLastLogin()
 
 void ThreadStreamProcess::run()
 {
-	if (continueLogin)
-	{
-		continueLastLogin();
-		return;
-	}
 	m_stop = true;
 	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里
