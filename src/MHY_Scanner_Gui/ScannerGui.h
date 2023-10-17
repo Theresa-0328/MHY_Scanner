@@ -58,6 +58,7 @@ public slots:
 	void pBtSwitch();
 	void pBtDeleteAccount();
 	void configInitUpdate(bool b);
+	void updateNote(QTableWidgetItem* item);
 private:
 	void failure();
 	int countA = -1;

@@ -64,7 +64,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 
 	ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui.tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
 
 	ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
 	ui.lineEditLiveId->setClearButtonEnabled(true);
@@ -93,6 +93,12 @@ void ScannerGui::insertTableItems(QString uid, QString userName, QString type, Q
 	ui.tableWidget->setItem(nCount, 3, item[3]);
 	item[4] = new QTableWidgetItem(notes);
 	ui.tableWidget->setItem(nCount, 4, item[4]);
+
+	for (int i = 0; i < 4; i++)
+	{
+		QTableWidgetItem* item1 = ui.tableWidget->item(nCount, i);
+		item1->setFlags(item1->flags() & ~Qt::ItemIsEditable);
+	}
 }
 
 void ScannerGui::pBtLoginAccount()
@@ -143,11 +149,12 @@ void ScannerGui::pBtLoginAccount()
 			std::string name = o.getUserName(uid);
 
 			int num = userinfo["num"];
-			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "无");
+			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "");
 			userinfo["account"][num]["access_key"] = token;
 			userinfo["account"][num]["uid"] = uid;
 			userinfo["account"][num]["name"] = name;
 			userinfo["account"][num]["type"] = "官服";
+			userinfo["account"][num]["note"] = "";
 			userinfo["num"] = num + 1;
 		}
 		else
@@ -182,11 +189,12 @@ void ScannerGui::pBtLoginAccount()
 		else
 		{
 			int num = userinfo["num"];
-			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "无");
+			insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "");
 			userinfo["account"][num]["access_key"] = token;
 			userinfo["account"][num]["uid"] = uid;
 			userinfo["account"][num]["name"] = name;
 			userinfo["account"][num]["type"] = "崩坏3B服";
+			userinfo["account"][num]["note"] = "";
 			userinfo["num"] = num + 1;
 		}
 	}
@@ -661,7 +669,7 @@ void ScannerGui::configInitUpdate(bool b)
 			QString::fromStdString(userinfo["account"][i]["uid"]),
 			QString::fromStdString(userinfo["account"][i]["name"]),
 			QString::fromStdString(userinfo["account"][i]["type"]),
-			QString::fromStdString("无"));
+			QString::fromStdString(userinfo["account"][i]["note"]));
 	}
 	if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
 	{
@@ -679,6 +687,14 @@ void ScannerGui::configInitUpdate(bool b)
 	{
 		ui.checkBoxAutoLogin->setChecked(true);
 	}
+	connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
+}
+
+void ScannerGui::updateNote(QTableWidgetItem* item)
+{
+	QString text = item->text();
+	userinfo["account"][item->row()]["note"] = text.toStdString();
+	m_config->updateConfig(userinfo.str());
 }
 
 void OnlineUpdate::run()
@@ -716,6 +732,19 @@ void configInitLoad::run()
 	{
 		emit userinfoTrue(false);
 	}
+	//兼容旧配置文件
+	for (int i = 0; i < (int)data["num"]; i++)
+	{
+		try
+		{
+			const std::string& str = data["account"][i]["note"];
+		}
+		catch (...)
+		{
+			data["account"][i]["note"] = "";
+		}
+	}
+	m_config->updateConfig(data.str());
 }
 
 configInitLoad::~configInitLoad()

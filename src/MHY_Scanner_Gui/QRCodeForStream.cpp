@@ -195,13 +195,14 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 						}
 						else
 						{
-							emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+							emit loginConfirm(GameType::Type::Honkai3_BiliBili, false);
 						}
 					}
 					else
 					{
 						emit loginResults(ret);
 					}
+					stop();
 				});
 		}
 		av_frame_unref(pAVFrame);
