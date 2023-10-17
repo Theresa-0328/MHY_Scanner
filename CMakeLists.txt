@@ -130,6 +130,7 @@ if(Unit_Tests)
 	target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
 	target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
 	target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
+	target_link_libraries(test_video_hw PRIVATE ${PROJECT_LIBRARIES})
 endif()
 
 install(TARGETS ${PROJECT_NAME}
