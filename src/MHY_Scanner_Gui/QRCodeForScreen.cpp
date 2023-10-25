@@ -52,6 +52,10 @@ void QRCodeForScreen::LoginOfficial()
 	{
 		cv::Mat img;
 		cv::resize(screenshot.getScreenshot(), img, { 1280,720 });
+#ifndef SHOW
+		cv::imshow("Video_Stream", img);
+		cv::waitKey(1);
+#endif
 		threadPool.tryStart([&, temp_img = std::move(img)]()
 			{
 				thread_local QRScanner qrScanners;
@@ -66,7 +70,7 @@ void QRCodeForScreen::LoginOfficial()
 				{
 					return;
 				}
-				setGameType.at(view)();
+				setGameType[view]();
 				const std::string& ticket = str.substr(str.length() - 24);
 				if (!o.scanInit(m_gametype, ticket, uid, gameToken))
 				{
@@ -104,11 +108,14 @@ void QRCodeForScreen::LoginBH3BiliBili()
 	threadPool.setMaxThreadCount(threadNumber);
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
-
 	while (m_stop)
 	{
 		cv::Mat img;
 		cv::resize(screenshot.getScreenshot(), img, { 1280,720 });
+#ifndef SHOW
+		cv::imshow("Video_Stream", img);
+		cv::waitKey(1);
+#endif
 		threadPool.tryStart([&, temp_img = std::move(img)]()
 			{
 				thread_local QRScanner qrScanners;
@@ -172,6 +179,10 @@ void QRCodeForScreen::run()
 {
 	ret = ScanRet::Type::UNKNOW;
 	m_stop = true;
+#ifndef SHOW
+	cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Video_Stream", 1280, 720);
+#endif
 	switch (servertype)
 	{
 	case ServerType::Official:
@@ -183,6 +194,9 @@ void QRCodeForScreen::run()
 	default:
 		break;
 	}
+#ifndef SHOW
+	cv::destroyWindow("Video_Stream");
+#endif
 }
 
 void QRCodeForScreen::stop()

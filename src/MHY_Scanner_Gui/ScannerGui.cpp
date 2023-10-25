@@ -726,13 +726,8 @@ void configInitLoad::run()
 		bool b = data["auto_start"];
 		b = data["auto_login"];
 		b = data["auto_exit"];
-		emit userinfoTrue(true);
-	}
-	catch (...)
-	{
-		emit userinfoTrue(false);
-	}
-	//兼容旧配置文件
+
+		//兼容旧配置文件，将在后续移除
 	for (int i = 0; i < (int)data["num"]; i++)
 	{
 		try
@@ -745,6 +740,13 @@ void configInitLoad::run()
 		}
 	}
 	m_config->updateConfig(data.str());
+
+		emit userinfoTrue(true);
+	}
+	catch (...)
+	{
+		emit userinfoTrue(false);
+	}
 }
 
 configInitLoad::~configInitLoad()
