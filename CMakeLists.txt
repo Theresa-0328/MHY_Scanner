@@ -21,6 +21,7 @@ set(_VERSION_ "v${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
 
 option(Unit_Tests "Unit Tests" ON)
 option(USE_OPENSSL "OPENSSL" ON)
+option(DEV "DEV" OFF)
 
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
@@ -61,6 +62,11 @@ endif()
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 add_definitions(-DSCAN_VER="${_VERSION_}")
+
+if(!DEV)
+	add_definitions(-DTESTSPEED)
+	add_definitions(-DSHOW)
+endif()
 
 add_subdirectory(src)
 

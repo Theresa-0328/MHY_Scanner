@@ -368,6 +368,5 @@ notes.txt
 *.dll
 /src/Config
 /3rdparty/opencv
-/tests/test_video.cpp
 [Bb]uild
 /3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel

@@ -8,17 +8,13 @@ set(SRC_CPP
 	"ScannerGui.cpp" 
 	#"ThreadDownload.cpp" 
 	"ThreadLocalServer.cpp" 
-	"ThreadSacn.cpp" 
+	#"ThreadSacn.cpp" 
 	"QRCodeForStream.cpp"
 	"QRCodeForScreen.cpp" 
 	../rc/ScannerGui.rc
 )
-
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-	add_definitions(-DTESTSPEED)
-	add_definitions(-DSHOW)
     add_executable(${PROJECT_NAME} 
-		WIN32 
 		${SRC_CPP})
 else()
     add_executable(${PROJECT_NAME} 

@@ -9,6 +9,7 @@ QRScanner::QRScanner()
 {
 	detector = cv::makePtr<cv::wechat_qrcode::WeChatQRCode>(DETECT_PROTOTXT_PATH, DETECT_CAFFE_MODEL_PATH,
 		SR_PROTOTXT_PATH, SR_CAFFE_MODEL_PATH);
+	detector->setScaleFactor(0.2);
 }
 
 QRScanner::~QRScanner()
@@ -18,14 +19,19 @@ QRScanner::~QRScanner()
 
 void QRScanner::decodeSingle(const cv::Mat& img, std::string& qrCode)
 {
-	strDecoded = detector->detectAndDecode(img);
+#ifndef TESTSPEED
+	auto startTime = std::chrono::high_resolution_clock::now();
+#endif
+	const std::vector<std::string>& strDecoded = detector->detectAndDecode(img);
 	if (strDecoded.size() > 0)
 	{
 		qrCode = strDecoded[0];
 	}
-#ifdef _DEBUG
-	std::cout << "decode:" << qrCode << std::endl;
-#endif // DEBUG
+#ifndef TESTSPEED
+	auto endTime = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+	std::cout << static_cast<float>(duration) / 1000000 << " decode: " << qrCode << std::endl;
+#endif
 }
 
 void QRScanner::decodeMultiple(const cv::Mat& img, std::string& qrCode)

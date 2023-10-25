@@ -115,13 +115,14 @@ void ThreadStreamProcess::LoginOfficial()
 						}
 						else
 						{
-							emit loginConfirm(m_gametype, true);
+							emit loginConfirm(m_gametype, false);
 						}
 					}
 					else
 					{
 						emit loginResults(ret);
 					}
+					stop();
 				});
 		}
 		av_frame_unref(pAVFrame);
@@ -166,6 +167,10 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			uint8_t* dstData[1] = { img.data };
 			const int dstLinesize[1] = { static_cast<int>(img.step) };
 			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+#ifndef SHOW
+			cv::imshow("Video_Stream", img);
+			cv::waitKey(1);
+#endif
 			threadPool.tryStart([&, temp_img = std::move(img)]()
 				{
 					thread_local QRScanner qrScanners;
@@ -210,168 +215,6 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 	}
 }
 
-//void ThreadStreamProcess::LoginOfficial()
-//{
-//	OfficialApi o;
-//	std::string uuid = o.generateUUID();
-//	do
-//	{
-//
-//	} while (false);
-//	ThreadSacn threadsacn;
-//	VideoProcessor vp;
-//	QThread::msleep(5000);
-//	//错误判断
-//	if (vp.OpenVideo("./Cache/output.flv") != 0)
-//	{
-//	}
-//	int64_t latestTimestamp = av_gettime_relative();
-//	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
-//	//{
-//	//	int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
-//	//		vp.avformatContext->streams[vp.index]->time_base, { 1, AV_TIME_BASE });
-//	//	if (streamTimestamp > latestTimestamp)
-//	//	{
-//	//		latestTimestamp = streamTimestamp;
-//	//	}
-//	//}
-//	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-//	int f = 0;
-//#ifdef _DEBUG
-//	cv::namedWindow("Video");
-//#endif // _DEBUG
-//	while (true)
-//	{
-//		//int64_t video_duration_sec = vp.avformatContext->duration / AV_TIME_BASE;
-//		//size_t timeInSeconds = av_q2d(vp.avstream->time_base);
-//		if (stopStream)
-//		{
-//#ifdef _DEBUG
-//			cv::destroyWindow("Video");
-//#endif // _DEBUG
-//			break;
-//		}
-//		int op1 = vp.read();
-//		if (vp.avPacket->stream_index != vp.index)
-//		{
-//			continue;
-//		}
-//		if (vp.SendPacket() != 0)
-//		{
-//			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-//			QThread::msleep(300);
-//		}
-//		vp.ReceiveFrame();
-//		//转换像素格式
-//		sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
-//			vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
-//		cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-//		//NOTE:可能有1280 1980和60帧 30帧,二维码不一定在屏幕的正中央。
-//		//cv::Mat crop_img = img(cv::Range(300, 800), cv::Range(500, 1186));
-//		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
-//
-//		//cv::Mat _img(720, 1280, CV_8UC3);
-//		//uint8_t* dstData[1] = { _img.data };
-//		//int dstLinesize[1] = { _img.step };
-//		//int code = sws_scale(vp.swsCtx, vp.pFrameBGR->data, vp.pFrameBGR->linesize, 0, vp.avCodecContext->height, dstData, dstLinesize);
-//
-//		if (!threadsacn.isRunning())
-//		{
-//			threadsacn.setImg(_img);
-//			threadsacn.start();
-//			//#ifdef _DEBUG
-//			std::cout << "scan count " << f++ << std::endl;
-//			cv::imshow("Video", _img);
-//			//#endif
-//			cv::waitKey(2);
-//		}
-//		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
-//		{
-//			o.setGameType(GameType::Type::Honkai3);
-//			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-//			emit loginResults(code == 0);
-//			continue;
-//		}
-//		//TODO:Genshin
-//		if (threadsacn.getQRcode().find("biz_key=hkrpg_cn") != std::string::npos)
-//		{
-//			o.setGameType(GameType::Type::StarRail);
-//			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
-//			emit loginResults(code == 0);
-//			continue;
-//		}
-//		av_packet_unref(vp.avPacket);
-//	}
-//}
-
-//void ThreadStreamProcess::LoginBH3BiliBili()
-//{
-//	do
-//	{
-//
-//	} while (false);
-//	Mihoyosdk m;
-//	const std::string LoginData = m.verify(uid, gameToken);
-//	m.setUserName(m_name);
-//	ThreadSacn threadsacn;
-//	QThread::msleep(5000);
-//	VideoProcessor vp;
-//	//错误判断
-//	if (vp.OpenVideo("./Cache/output.flv") != 0)
-//	{
-//		throw std::logic_error("parse number error");
-//	}
-//	int64_t latestTimestamp = av_gettime_relative();
-//	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-//	int f = 0;
-//#ifdef _DEBUG
-//	cv::namedWindow("Video");
-//#endif // _DEBUG
-//	while (true)
-//	{
-//		if (m_stop)
-//		{
-//#ifdef _DEBUG
-//			cv::destroyWindow("Video");
-//#endif // _DEBUG
-//			break;
-//		}
-//		int op1 = vp.read();
-//		if (vp.avPacket->stream_index != vp.index)
-//		{
-//			continue;
-//		}
-//		if (vp.SendPacket() != 0)
-//		{
-//			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
-//			QThread::msleep(300);
-//		}
-//		vp.ReceiveFrame();
-//		// 转换像素格式
-//		sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
-//			vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
-//		cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
-//		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
-//		if (!threadsacn.isRunning())
-//		{
-//			threadsacn.setImg(_img);
-//			threadsacn.start();
-//			//#ifdef _DEBUG
-//			std::cout << "scan count " << f++ << std::endl;
-//			imshow("Video", _img);
-//			//#endif
-//			cv::waitKey(2);
-//		}
-//		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
-//		{
-//			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
-//			emit loginResults(code == 0);
-//			continue;
-//		}
-//		av_packet_unref(vp.avPacket);
-//	}
-//}
-
 void ThreadStreamProcess::stop()
 {
 	QMutexLocker lock(&m_mux);
@@ -385,10 +228,11 @@ void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::str
 	{
 		av_dict_set(&pAvdictionary, it.first.c_str(), it.second.c_str(), 0);
 	}
-	av_dict_set(&pAvdictionary, "max_delay", "2000", 0);
+	av_dict_set(&pAvdictionary, "max_delay", "0", 0);
 	av_dict_set(&pAvdictionary, "probesize", "1024", 0);
 	av_dict_set(&pAvdictionary, "packetsize", "128", 0);
 	av_dict_set(&pAvdictionary, "rtbufsize", "0", 0);
+	av_dict_set(&pAvdictionary, "delay", "0", 0);
 }
 
 auto ThreadStreamProcess::init()->bool
@@ -420,7 +264,10 @@ auto ThreadStreamProcess::init()->bool
 		return false;
 	}
 	videoStremIndex = videoStream->index;
+
+	//const AVCodec* decoder = avcodec_find_decoder_by_name("h264_cuvid");
 	const AVCodec* decoder = avcodec_find_decoder(videoStream->codecpar->codec_id);
+
 	if (decoder == nullptr)
 	{
 		std::cerr << "Codec not found" << std::endl;
@@ -464,6 +311,10 @@ void ThreadStreamProcess::run()
 	m_stop = true;
 	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里
+#ifndef SHOW
+	cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Video_Stream", 1280, 720);
+#endif
 	if (init())
 	{
 		switch (servertype)
@@ -482,6 +333,9 @@ void ThreadStreamProcess::run()
 	{
 		ret = ScanRet::Type::STREAMERROR;
 	}
+#ifndef SHOW
+	cv::destroyWindow("Video_Stream");
+#endif
 	avformat_close_input(&pAVFormatContext);
 	avcodec_free_context(&pAVCodecContext);
 	sws_freeContext(pSwsContext);
@@ -495,3 +349,167 @@ void ThreadStreamProcess::run()
 	pAVFrame = nullptr;
 	pAVPacket = nullptr;
 }
+
+#if 0
+void ThreadStreamProcess::LoginOfficial()
+{
+	OfficialApi o;
+	std::string uuid = o.generateUUID();
+	do
+	{
+
+	} while (false);
+	ThreadSacn threadsacn;
+	VideoProcessor vp;
+	QThread::msleep(5000);
+	//错误判断
+	if (vp.OpenVideo("./Cache/output.flv") != 0)
+	{
+	}
+	int64_t latestTimestamp = av_gettime_relative();
+	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
+//{
+	//	int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
+	//		vp.avformatContext->streams[vp.index]->time_base, { 1, AV_TIME_BASE });
+	//	if (streamTimestamp > latestTimestamp)
+//	{
+	//		latestTimestamp = streamTimestamp;
+//	}
+//}
+	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+	int f = 0;
+#ifdef _DEBUG
+	cv::namedWindow("Video");
+#endif // _DEBUG
+	while (true)
+	{
+		//int64_t video_duration_sec = vp.avformatContext->duration / AV_TIME_BASE;
+		//size_t timeInSeconds = av_q2d(vp.avstream->time_base);
+		if (stopStream)
+		{
+#ifdef _DEBUG
+			cv::destroyWindow("Video");
+#endif // _DEBUG
+			break;
+		}
+		int op1 = vp.read();
+		if (vp.avPacket->stream_index != vp.index)
+		{
+			continue;
+		}
+		if (vp.SendPacket() != 0)
+		{
+			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+			QThread::msleep(300);
+		}
+		vp.ReceiveFrame();
+		//转换像素格式
+		sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
+			vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
+		cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
+		//NOTE:可能有1280 1980和60帧 30帧,二维码不一定在屏幕的正中央。
+		//cv::Mat crop_img = img(cv::Range(300, 800), cv::Range(500, 1186));
+		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
+
+		//cv::Mat _img(720, 1280, CV_8UC3);
+		//uint8_t* dstData[1] = { _img.data };
+		//int dstLinesize[1] = { _img.step };
+		//int code = sws_scale(vp.swsCtx, vp.pFrameBGR->data, vp.pFrameBGR->linesize, 0, vp.avCodecContext->height, dstData, dstLinesize);
+
+		if (!threadsacn.isRunning())
+		{
+			threadsacn.setImg(_img);
+			threadsacn.start();
+//#ifdef _DEBUG
+			std::cout << "scan count " << f++ << std::endl;
+			cv::imshow("Video", _img);
+			//#endif
+			cv::waitKey(2);
+		}
+		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
+		{
+			o.setGameType(GameType::Type::Honkai3);
+			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+			emit loginResults(code == 0);
+			continue;
+		}
+		//TODO:Genshin
+		if (threadsacn.getQRcode().find("biz_key=hkrpg_cn") != std::string::npos)
+		{
+			o.setGameType(GameType::Type::StarRail);
+			int code = o.scanRequest(threadsacn.getTicket(), uid, gameToken, uuid);
+			emit loginResults(code == 0);
+			continue;
+		}
+		av_packet_unref(vp.avPacket);
+	}
+}
+
+void ThreadStreamProcess::LoginBH3BiliBili()
+{
+	do
+	{
+
+	} while (false);
+	Mihoyosdk m;
+	const std::string LoginData = m.verify(uid, gameToken);
+	m.setUserName(m_name);
+	ThreadSacn threadsacn;
+	QThread::msleep(5000);
+	VideoProcessor vp;
+	//错误判断
+	if (vp.OpenVideo("./Cache/output.flv") != 0)
+	{
+		throw std::logic_error("parse number error");
+	}
+	int64_t latestTimestamp = av_gettime_relative();
+	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+	int f = 0;
+#ifdef _DEBUG
+	cv::namedWindow("Video");
+#endif // _DEBUG
+	while (true)
+	{
+		if (m_stop)
+		{
+#ifdef _DEBUG
+			cv::destroyWindow("Video");
+#endif // _DEBUG
+			break;
+		}
+		int op1 = vp.read();
+		if (vp.avPacket->stream_index != vp.index)
+		{
+			continue;
+		}
+		if (vp.SendPacket() != 0)
+		{
+			av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
+			QThread::msleep(300);
+		}
+		vp.ReceiveFrame();
+		// 转换像素格式
+		sws_scale(vp.swsCtx, vp.avframe->data, vp.avframe->linesize, 0,
+			vp.avCodecContext->height, vp.pFrameBGR->data, vp.pFrameBGR->linesize);
+		cv::Mat img(vp.avCodecContext->height, vp.avCodecContext->width, CV_8UC3, vp.pFrameBGR->data[0]);
+		cv::Mat _img = img(cv::Rect(0, 0, 1280, 720));
+		if (!threadsacn.isRunning())
+		{
+			threadsacn.setImg(_img);
+			threadsacn.start();
+//#ifdef _DEBUG
+			std::cout << "scan count " << f++ << std::endl;
+			imshow("Video", _img);
+			//#endif
+			cv::waitKey(2);
+		}
+		if (threadsacn.getQRcode().find("biz_key=bh3_cn") != std::string::npos)
+		{
+			int code = m.scanCheck(threadsacn.getTicket(), LoginData);
+			emit loginResults(code == 0);
+			continue;
+		}
+		av_packet_unref(vp.avPacket);
+	}
+}
+#endif

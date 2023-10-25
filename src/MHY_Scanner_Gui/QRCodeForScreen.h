@@ -38,7 +38,7 @@ private:
 	std::string uid;
 	std::string gameToken;
 	std::string m_name;
-	const std::map<std::string_view, std::function<void()>> setGameType
+	std::map<std::string_view, std::function<void()>> setGameType
 	{
 		{"8F3", [this]() { m_gametype = GameType::Type::Honkai3; }},
 		{"9E&", [this]() { m_gametype = GameType::Type::Genshin; }},
