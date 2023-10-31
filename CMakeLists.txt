@@ -63,7 +63,7 @@ find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 add_definitions(-DSCAN_VER="${_VERSION_}")
 
-if(!DEV)
+if(NOT DEV)
 	add_definitions(-DTESTSPEED)
 	add_definitions(-DSHOW)
 endif()

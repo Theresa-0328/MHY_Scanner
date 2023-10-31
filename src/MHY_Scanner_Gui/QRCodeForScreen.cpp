@@ -180,8 +180,7 @@ void QRCodeForScreen::run()
 	ret = ScanRet::Type::UNKNOW;
 	m_stop = true;
 #ifndef SHOW
-	cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Video_Stream", 1280, 720);
+	cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);
 #endif
 	switch (servertype)
 	{

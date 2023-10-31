@@ -84,6 +84,10 @@ void ThreadStreamProcess::LoginOfficial()
 			uint8_t* dstData[1] = { img.data };
 			const int dstLinesize[1] = { static_cast<int>(img.step) };
 			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+#ifndef SHOW
+			cv::imshow("Video_Stream", img);
+			cv::waitKey(1);
+#endif
 			threadPool.tryStart([&, temp_img = std::move(img)]()
 				{
 					thread_local QRScanner qrScanners;
@@ -98,13 +102,14 @@ void ThreadStreamProcess::LoginOfficial()
 					{
 						return;
 					}
-					setGameType.at(view)();
+					setGameType[view]();
 					const std::string& ticket = str.substr(str.length() - 24);
 					if (!o.scanInit(m_gametype, ticket, uid, gameToken))
 					{
 						return;
 					}
-					if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
+					ret = o.scanRequest();
+					if (ret == ScanRet::Type::SUCCESS)
 					{
 						json::Json config;
 						config.parse(m_config->getConfig());
@@ -233,6 +238,7 @@ void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::str
 	av_dict_set(&pAvdictionary, "packetsize", "128", 0);
 	av_dict_set(&pAvdictionary, "rtbufsize", "0", 0);
 	av_dict_set(&pAvdictionary, "delay", "0", 0);
+	av_dict_set(&pAvdictionary, "buffer_size", "1000", 0);
 }
 
 auto ThreadStreamProcess::init()->bool
@@ -243,7 +249,6 @@ auto ThreadStreamProcess::init()->bool
 		std::cerr << "Error opening input file" << std::endl;
 		return false;
 	}
-
 	if (avformat_find_stream_info(pAVFormatContext, NULL) < 0)
 	{
 		std::cerr << "Error finding stream information" << std::endl;
@@ -312,8 +317,7 @@ void ThreadStreamProcess::run()
 	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里
 #ifndef SHOW
-	cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Video_Stream", 1280, 720);
+	cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);
 #endif
 	if (init())
 	{
@@ -368,14 +372,14 @@ void ThreadStreamProcess::LoginOfficial()
 	}
 	int64_t latestTimestamp = av_gettime_relative();
 	//if (vp.avformatContext->streams[vp.index]->start_time != AV_NOPTS_VALUE)
-//{
+	//{
 	//	int64_t streamTimestamp = av_rescale_q(vp.avformatContext->streams[vp.index]->start_time,
 	//		vp.avformatContext->streams[vp.index]->time_base, { 1, AV_TIME_BASE });
 	//	if (streamTimestamp > latestTimestamp)
-//	{
+	//	{
 	//		latestTimestamp = streamTimestamp;
-//	}
-//}
+	//	}
+	//}
 	av_seek_frame(vp.avformatContext, -1, latestTimestamp, AVSEEK_FLAG_BACKWARD);
 	int f = 0;
 #ifdef _DEBUG
@@ -420,7 +424,7 @@ void ThreadStreamProcess::LoginOfficial()
 		{
 			threadsacn.setImg(_img);
 			threadsacn.start();
-//#ifdef _DEBUG
+			//#ifdef _DEBUG
 			std::cout << "scan count " << f++ << std::endl;
 			cv::imshow("Video", _img);
 			//#endif
@@ -497,7 +501,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 		{
 			threadsacn.setImg(_img);
 			threadsacn.start();
-//#ifdef _DEBUG
+			//#ifdef _DEBUG
 			std::cout << "scan count " << f++ << std::endl;
 			imshow("Video", _img);
 			//#endif

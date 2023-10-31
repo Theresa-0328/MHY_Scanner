@@ -12,7 +12,6 @@ OfficialApi::OfficialApi()
 {
 	scanUrl.reserve(100);
 	confirmUrl.reserve(100);
-	m_sacnRet.reserve(100);
 }
 
 
@@ -24,11 +23,29 @@ std::string OfficialApi::getUid()const
 
 bool OfficialApi::scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
 {
+	std::unique_lock<std::shared_mutex> lock(mutex);
 	if (ticket == m_ticket)
 	{
 		return false;
 	}
-	m_gameType = gameType;
+	switch (gameType)
+	{
+	case GameType::Honkai3:
+		scanUrl = mhy_bh3_qrcode_scan;
+		confirmUrl = mhy_bh3_qrcode_confirm;
+		break;
+	case GameType::Genshin:
+		scanUrl = mhy_hk4e_qrcode_scan;
+		confirmUrl = mhy_hk4e_qrcode_confirm;
+		break;
+	case GameType::StarRail:
+		scanUrl = mhy_hkrpg_qrcode_scan;
+		confirmUrl = mhy_hkrpg_qrcode_confirm;
+		break;
+	default:
+		break;
+	}
+	uuid = generateUUID();
 	m_uid = uid;
 	m_ticket = ticket;
 	m_gameToken = gameToken;
@@ -54,29 +71,10 @@ std::string OfficialApi::getDS2()
 //扫码请求
 ScanRet::Type OfficialApi::scanRequest()
 {
-	uuid = generateUUID();
-	switch (m_gameType)
-	{
-	case GameType::Honkai3:
-		scanUrl = mhy_bh3_qrcode_scan;
-		confirmUrl = mhy_bh3_qrcode_confirm;
-		break;
-	case GameType::Genshin:
-		scanUrl = mhy_hk4e_qrcode_scan;
-		confirmUrl = mhy_hk4e_qrcode_confirm;
-		break;
-	case GameType::StarRail:
-		scanUrl = mhy_hkrpg_qrcode_scan;
-		confirmUrl = mhy_hkrpg_qrcode_confirm;
-		break;
-	default:
-		break;
-	}
+	std::string m_sacnRet{};
 	PostRequest(m_sacnRet, scanUrl, std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, m_ticket));
 	json::Json j;
 	j.parse(m_sacnRet);
-	m_sacnRet.clear();
-	m_sacnRet.reserve(100);
 	if ((int)j["retcode"] != 0)
 	{
 		return ScanRet::Type::FAILURE_1;
