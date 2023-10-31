@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <unordered_map>
+#include <shared_mutex>
 
 #include "HttpClient.h"
 #include "Common.h"
@@ -23,6 +24,7 @@ public:
 	std::string getUid()const;
 	std::string getDS2();
 private:
+	mutable std::shared_mutex mutex;
 	GameType::Type m_gameType = GameType::Type::UNKNOW;
 	std::string m_uid;
 	std::string m_ticket;
@@ -33,7 +35,6 @@ private:
 	std::string uuid;
 	std::string scanUrl;
 	std::string confirmUrl;
-	std::string m_sacnRet;
 	std::map<std::string, std::string> headers =
 	{
 		{"x-rpc-client_type", "2"},
