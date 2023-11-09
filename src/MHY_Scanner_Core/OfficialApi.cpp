@@ -49,6 +49,7 @@ bool OfficialApi::scanInit(const GameType::Type gameType, const std::string& tic
 	m_uid = uid;
 	m_ticket = ticket;
 	m_gameToken = gameToken;
+	m_gameType = gameType;
 	return true;
 }
 

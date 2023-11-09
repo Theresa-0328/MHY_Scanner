@@ -9,7 +9,7 @@ QRScanner::QRScanner()
 {
 	detector = cv::makePtr<cv::wechat_qrcode::WeChatQRCode>(DETECT_PROTOTXT_PATH, DETECT_CAFFE_MODEL_PATH,
 		SR_PROTOTXT_PATH, SR_CAFFE_MODEL_PATH);
-	detector->setScaleFactor(0.2);
+	detector->setScaleFactor(0.4);
 }
 
 QRScanner::~QRScanner()

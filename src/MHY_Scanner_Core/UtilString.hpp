@@ -2,7 +2,7 @@
 
 #include<string>
 
-std::string escapeString(const std::string& input)
+inline std::string escapeString(const std::string& input)
 {
 	std::string escaped;
 	for (char c : input)
@@ -35,7 +35,7 @@ std::string escapeString(const std::string& input)
 	return escaped;
 }
 
-std::string unescapeString(const std::string& input)
+inline std::string unescapeString(const std::string& input)
 {
 	std::string unescaped;
 	bool isEscape = false;
@@ -76,7 +76,7 @@ std::string unescapeString(const std::string& input)
 }
 
 //temp
-void replace0026WithAmpersand(std::string& str)
+inline void replace0026WithAmpersand(std::string& str)
 {
 	std::string searchString = "0026";
 	std::string replacement = "&";

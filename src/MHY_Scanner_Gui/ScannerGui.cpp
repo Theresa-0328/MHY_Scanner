@@ -8,6 +8,7 @@
 #include <QRegularExpressionValidator>
 #include <QStringList> 
 #include <Json.h>
+#include <trrlog.hpp>
 
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
@@ -70,6 +71,9 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.lineEditLiveId->setClearButtonEnabled(true);
 
 	configinitload.start();
+
+	trrlog::SetLogFile("log.txt");
+	trrlog::Log_debug("UI Initialization completed");
 }
 
 ScannerGui::~ScannerGui()
@@ -588,9 +592,8 @@ void ScannerGui::getInfo(int x, int y)
 	QString cellText = item->text();
 	ui.lineEditUname->setText(cellText);
 	countA = x;
-#ifdef _DEBUG
-	std::cout << std::format(R"(row = {} , user_name = {})", x, cellText.toStdString()) << std::endl;
-#endif // _DEBUG
+	std::string s = std::format(R"(row = {} , user_name = {})", x, cellText.toStdString());
+	trrlog::Log_debug("{}",s);
 }
 
 void ScannerGui::pBtSwitch()
@@ -634,9 +637,7 @@ void ScannerGui::pBtDeleteAccount()
 	}
 	userinfo["account"].remove(countA);
 	const std::string& str = userinfo.str();
-#ifdef _DEBUG
-	std::cout << str << std::endl;
-#endif // _DEBUG
+	trrlog::Log_debug("{}", str);
 	m_config->updateConfig(userinfo.str());
 	ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 	ui.tableWidget->removeRow(nCurrentRow);
@@ -728,18 +729,18 @@ void configInitLoad::run()
 		b = data["auto_exit"];
 
 		//兼容旧配置文件，将在后续移除
-	for (int i = 0; i < (int)data["num"]; i++)
-	{
-		try
+		for (int i = 0; i < (int)data["num"]; i++)
 		{
-			const std::string& str = data["account"][i]["note"];
+			try
+			{
+				const std::string& str = data["account"][i]["note"];
+			}
+			catch (...)
+			{
+				data["account"][i]["note"] = "";
+			}
 		}
-		catch (...)
-		{
-			data["account"][i]["note"] = "";
-		}
-	}
-	m_config->updateConfig(data.str());
+		m_config->updateConfig(data.str());
 
 		emit userinfoTrue(true);
 	}
