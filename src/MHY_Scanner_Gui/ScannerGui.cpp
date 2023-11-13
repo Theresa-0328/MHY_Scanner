@@ -115,8 +115,8 @@ void ScannerGui::pBtLoginAccount()
 	{
 		t1.stop();
 		t2.stop();
-		ui.pBtstartScreen->setText("开始监视屏幕");
-		ui.pBtStream->setText("开始监视直播间");
+		ui.pBtstartScreen->setText("监视屏幕");
+		ui.pBtStream->setText("监视直播间");
 	}
 	loginwindow.exec();
 	if (loginwindow.getIsReject())
@@ -218,13 +218,13 @@ void ScannerGui::pBtstartScreen()
 	if (t1.isRunning())
 	{
 		t1.stop();
-		ui.pBtstartScreen->setText("开始监视屏幕");
+		ui.pBtstartScreen->setText("监视屏幕");
 		return;
 	}
 	if (t2.isRunning())
 	{
 		t2.stop();
-		ui.pBtStream->setText("开始监视直播间");
+		ui.pBtStream->setText("监视直播间");
 	}
 	std::string type = userinfo["account"][countA]["type"];
 	if (type == "官服")
@@ -264,7 +264,7 @@ void ScannerGui::pBtstartScreen()
 		return;
 	}
 	t1.start();
-	ui.pBtstartScreen->setText("监视屏幕二维码中");
+	ui.pBtstartScreen->setText("监视屏幕中");
 }
 
 void ScannerGui::pBtStream()
@@ -279,12 +279,12 @@ void ScannerGui::pBtStream()
 	if (t1.isRunning())
 	{
 		t1.stop();
-		ui.pBtstartScreen->setText("开始监视屏幕");
+		ui.pBtstartScreen->setText("监视屏幕");
 	}
 	if (t2.isRunning())
 	{
 		t2.stop();
-		ui.pBtStream->setText("开始监视直播间");
+		ui.pBtStream->setText("监视直播间");
 		return;
 	}
 	//检查直播间状态
@@ -334,7 +334,7 @@ void ScannerGui::pBtStream()
 		return;
 	}
 	t2.start(QThread::Priority::TimeCriticalPriority);
-	ui.pBtStream->setText("监视直播二维码中");
+	ui.pBtStream->setText("监视直播中");
 	return;
 }
 
@@ -354,8 +354,8 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	QMessageBox* messageBox = new QMessageBox(this);
 	auto Show_QMessageBox = [&](const QString& title, const QString& text)
 		{
-			ui.pBtStream->setText("开始监视直播间");
-			ui.pBtstartScreen->setText("开始监视屏幕");
+			ui.pBtStream->setText("监视直播间");
+			ui.pBtstartScreen->setText("监视屏幕");
 			messageBox->setIcon(QMessageBox::Information);
 			messageBox->setWindowTitle(title);
 			messageBox->setText(text);
@@ -415,8 +415,8 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	QMessageBox::StandardButton result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
 	if (result != QMessageBox::Yes)
 	{
-		ui.pBtStream->setText("开始监视直播间");
-		ui.pBtstartScreen->setText("开始监视屏幕");
+		ui.pBtStream->setText("监视直播间");
+		ui.pBtstartScreen->setText("监视屏幕");
 		return;
 	}
 	if (b)
@@ -593,7 +593,7 @@ void ScannerGui::getInfo(int x, int y)
 	ui.lineEditUname->setText(cellText);
 	countA = x;
 	std::string s = std::format(R"(row = {} , user_name = {})", x, cellText.toStdString());
-	trrlog::Log_debug("{}",s);
+	trrlog::Log_debug("{}", s);
 }
 
 void ScannerGui::pBtSwitch()
