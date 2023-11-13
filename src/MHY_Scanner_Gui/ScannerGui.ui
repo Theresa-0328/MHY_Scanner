@@ -339,7 +339,7 @@ QTableWidget::item:selected
      <string>自动二次确认</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="pBtStop">
     <property name="geometry">
      <rect>
       <x>360</x>
