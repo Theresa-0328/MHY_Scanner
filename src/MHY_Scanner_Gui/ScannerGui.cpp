@@ -23,6 +23,7 @@ ScannerGui::ScannerGui(QWidget* parent)
 	ui.setupUi(this);
 	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
+	connect(ui.pBtStop, &QPushButton::clicked, this, &ScannerGui::pBtStop);
 	connect(ui.pBtSwitch, &QPushButton::clicked, this, &ScannerGui::pBtSwitch);
 	connect(ui.pBtDeleteAccount, &QPushButton::clicked, this, &ScannerGui::pBtDeleteAccount);
 	connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
@@ -646,6 +647,12 @@ void ScannerGui::pBtDeleteAccount()
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
+}
+
+void ScannerGui::pBtStop()
+{
+	t1.stop();
+	t2.stop();
 }
 
 void ScannerGui::configInitUpdate(bool b)

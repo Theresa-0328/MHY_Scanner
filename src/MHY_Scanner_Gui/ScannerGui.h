@@ -48,15 +48,17 @@ public:
 public slots:
 	void pBtLoginAccount();
 	void pBtstartScreen();
+	void pBtStream();
+	void pBtStop();
+	void pBtSwitch();
+	void pBtDeleteAccount();
+
 	void islogin(const ScanRet::Type ret);
 	void loginConfirmTip(const GameType::Type gameType, bool b);
 	void checkBoxAutoScreen(bool clicked);
 	void checkBoxAutoExit(bool clicked);
 	void checkBoxAutoLogin(bool clicked);
-	void pBtStream();
 	void getInfo(int x, int y);
-	void pBtSwitch();
-	void pBtDeleteAccount();
 	void configInitUpdate(bool b);
 	void updateNote(QTableWidgetItem* item);
 private:
