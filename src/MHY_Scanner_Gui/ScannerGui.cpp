@@ -21,16 +21,20 @@ ScannerGui::ScannerGui(QWidget* parent)
 	, t2(this)
 {
 	ui.setupUi(this);
-	connect(ui.pBtLoginAccount, &QPushButton::clicked, this, &ScannerGui::pBtLoginAccount);
+	connect(ui.action1_3, &QAction::triggered, this, &ScannerGui::LoginAccount);
+	connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::DeleteAccount);
+	connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
+	connect(ui.action1_2, &QAction::triggered, this, &ScannerGui::About);
+	connect(ui.action2_2, &QAction::triggered, this, &ScannerGui::help);
+
 	connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
 	connect(ui.pBtStop, &QPushButton::clicked, this, &ScannerGui::pBtStop);
-	connect(ui.pBtSwitch, &QPushButton::clicked, this, &ScannerGui::pBtSwitch);
-	connect(ui.pBtDeleteAccount, &QPushButton::clicked, this, &ScannerGui::pBtDeleteAccount);
 	connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
 	connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoExit);
 	connect(ui.checkBoxAutoLogin, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoLogin);
 	connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
 	connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
+
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
 	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
@@ -106,25 +110,17 @@ void ScannerGui::insertTableItems(QString uid, QString userName, QString type, Q
 	}
 }
 
-void ScannerGui::pBtLoginAccount()
+void ScannerGui::LoginAccount()
 {
-	LoginWindow loginwindow;
-	ui.pBtLoginAccount->setEnabled(false);
-	ui.pBtstartScreen->setEnabled(false);
-	ui.pBtStream->setEnabled(false);
+	LoginWindow loginwindow(reinterpret_cast<QDialog*>(this));
 	if (t1.isRunning() || t2.isRunning())
 	{
-		t1.stop();
-		t2.stop();
-		ui.pBtstartScreen->setText("监视屏幕");
-		ui.pBtStream->setText("监视直播间");
+		QMessageBox::information(this, "错误", "请先停止识别！", QMessageBox::Yes);
+		return;
 	}
 	loginwindow.exec();
 	if (loginwindow.getIsReject())
 	{
-		ui.pBtLoginAccount->setEnabled(true);
-		ui.pBtstartScreen->setEnabled(true);
-		ui.pBtStream->setEnabled(true);
 		return;
 	}
 	if (loginwindow.type == 1)
@@ -133,18 +129,12 @@ void ScannerGui::pBtLoginAccount()
 		if (o.cookieParser(loginwindow.cookie) != 0)
 		{
 			QMessageBox::information(this, "错误", "cookie格式错误", QMessageBox::Yes);
-			ui.pBtLoginAccount->setEnabled(true);
-			ui.pBtstartScreen->setEnabled(true);
-			ui.pBtStream->setEnabled(true);
 			return;
 		}
 		std::string uid = o.getUid();
 		if (checkDuplicates(uid))
 		{
 			QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
-			ui.pBtLoginAccount->setEnabled(true);
-			ui.pBtstartScreen->setEnabled(true);
-			ui.pBtStream->setEnabled(true);
 			return;
 		}
 		std::string token;
@@ -182,9 +172,6 @@ void ScannerGui::pBtLoginAccount()
 		if (checkDuplicates(uid))
 		{
 			QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
-			ui.pBtLoginAccount->setEnabled(true);
-			ui.pBtstartScreen->setEnabled(true);
-			ui.pBtStream->setEnabled(true);
 			return;
 		}
 		if (code != 0)
@@ -204,31 +191,19 @@ void ScannerGui::pBtLoginAccount()
 		}
 	}
 	m_config->updateConfig(userinfo.str());
-	ui.pBtLoginAccount->setEnabled(true);
-	ui.pBtstartScreen->setEnabled(true);
-	ui.pBtStream->setEnabled(true);
 }
 
 void ScannerGui::pBtstartScreen()
 {
+	ui.pBtstartScreen->setEnabled(false);
+	ui.pBtStream->setEnabled(false);
+
 	if (countA == -1)
 	{
 		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
-		return;
+		goto exit;
 	}
-	if (t1.isRunning())
-	{
-		t1.stop();
-		ui.pBtstartScreen->setText("监视屏幕");
-		return;
-	}
-	if (t2.isRunning())
-	{
-		t2.stop();
-		ui.pBtStream->setText("监视直播间");
-	}
-	std::string type = userinfo["account"][countA]["type"];
-	if (type == "官服")
+	if (std::string type = userinfo["account"][countA]["type"]; type == "官服")
 	{
 		OfficialApi o;
 		std::string stoken = userinfo["account"][countA]["access_key"];
@@ -239,7 +214,7 @@ void ScannerGui::pBtstartScreen()
 		if (code != 0)
 		{
 			failure();
-			return;
+			goto exit;
 		}
 		t1.setServerType(ServerType::Type::Official);
 		t1.setLoginInfo(uid, gameToken);
@@ -255,50 +230,46 @@ void ScannerGui::pBtstartScreen()
 		if (code != 0)
 		{
 			failure();
-			return;
+			goto exit;
 		}
 		t1.setServerType(ServerType::Type::BH3_BiliBili);
 		t1.setLoginInfo(uid, stoken, name);
 	}
 	else
 	{
-		return;
+		goto exit;
 	}
 	t1.start();
 	ui.pBtstartScreen->setText("监视屏幕中");
+	return;
+exit:
+	ui.pBtstartScreen->setEnabled(true);
+	ui.pBtStream->setEnabled(true);
+	return;
 }
 
 void ScannerGui::pBtStream()
 {
+	ui.pBtstartScreen->setEnabled(false);
+	ui.pBtStream->setEnabled(false);
+
 	std::string stream_link;
 	std::map<std::string, std::string> heards;
 	if (countA == -1)
 	{
 		QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
-		return;
-	}
-	if (t1.isRunning())
-	{
-		t1.stop();
-		ui.pBtstartScreen->setText("监视屏幕");
-	}
-	if (t2.isRunning())
-	{
-		t2.stop();
-		ui.pBtStream->setText("监视直播间");
-		return;
+		goto exit;
 	}
 	//检查直播间状态
 	if (!getStreamLink(ui.lineEditLiveId->text().toStdString(), stream_link, heards))
 	{
-		return;
+		goto exit;
 	}
 	else
 	{
 		t2.setUrl(stream_link, heards);
 	}
-	const std::string& type = userinfo["account"][countA]["type"];
-	if (type == "官服")
+	if (const std::string& type = userinfo["account"][countA]["type"]; type == "官服")
 	{
 		OfficialApi o;
 		std::string stoken = userinfo["account"][countA]["access_key"];
@@ -309,7 +280,7 @@ void ScannerGui::pBtStream()
 		if (code != 0)
 		{
 			failure();
-			return;
+			goto exit;
 		}
 		t2.setServerType(ServerType::Type::Official);
 		t2.setLoginInfo(uid, gameToken);
@@ -325,17 +296,21 @@ void ScannerGui::pBtStream()
 		if (code != 0)
 		{
 			failure();
-			return;
+			goto exit;
 		}
 		t2.setServerType(ServerType::Type::BH3_BiliBili);
 		t2.setLoginInfo(uid, stoken, name);
 	}
 	else
 	{
-		return;
+		goto exit;
 	}
 	t2.start(QThread::Priority::TimeCriticalPriority);
 	ui.pBtStream->setText("监视直播中");
+	return;
+exit:
+	ui.pBtstartScreen->setEnabled(true);
+	ui.pBtStream->setEnabled(true);
 	return;
 }
 
@@ -597,7 +572,7 @@ void ScannerGui::getInfo(int x, int y)
 	trrlog::Log_debug("{}", s);
 }
 
-void ScannerGui::pBtSwitch()
+void ScannerGui::SetDefaultAccount()
 {
 	int nCurrentRow = getSelectedRowIndex();
 	if (nCurrentRow != -1)
@@ -615,7 +590,7 @@ void ScannerGui::pBtSwitch()
 	}
 }
 
-void ScannerGui::pBtDeleteAccount()
+void ScannerGui::DeleteAccount()
 {
 	int nCurrentRow = getSelectedRowIndex();
 	if (nCurrentRow == -1)
@@ -649,10 +624,25 @@ void ScannerGui::pBtDeleteAccount()
 	}
 }
 
+void ScannerGui::About()
+{
+	AboutDialog aboutDialog(reinterpret_cast<QDialog*>(this));
+	aboutDialog.exec();
+}
+
+void ScannerGui::help()
+{
+	ShellExecuteW(NULL, L"open", L"https://github.com/Theresa-0328/MHY_Scanner/issues", NULL, NULL, SW_SHOWNORMAL);
+}
+
 void ScannerGui::pBtStop()
 {
 	t1.stop();
 	t2.stop();
+	ui.pBtstartScreen->setText("监视屏幕");
+	ui.pBtStream->setText("监视直播间");
+	ui.pBtstartScreen->setEnabled(true);
+	ui.pBtStream->setEnabled(true);
 }
 
 void ScannerGui::configInitUpdate(bool b)

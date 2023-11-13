@@ -11,8 +11,8 @@ set(SRC_CPP
 	#"ThreadSacn.cpp" 
 	"QRCodeForStream.cpp"
 	"QRCodeForScreen.cpp" 
-	../rc/ScannerGui.rc
-)
+	../rc/ScannerGui.rc 
+	"About_QDialog.cpp")
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     add_executable(${PROJECT_NAME} 
 		${SRC_CPP})
