@@ -12,6 +12,7 @@
 #include "LiveStreamLink.h"
 #include "Common.h"
 #include "ConfigDate.h"
+#include "About_QDialog.h"
 
 class OnlineUpdate :public QThread
 {
@@ -46,18 +47,22 @@ public:
 	virtual void closeEvent(QCloseEvent* event);
 	virtual void showEvent(QShowEvent* event);
 public slots:
-	void pBtLoginAccount();
+	void LoginAccount();
+	void SetDefaultAccount();
+	void DeleteAccount();
+	void About();
+	void help();
+
 	void pBtstartScreen();
 	void pBtStream();
 	void pBtStop();
-	void pBtSwitch();
-	void pBtDeleteAccount();
 
-	void islogin(const ScanRet::Type ret);
-	void loginConfirmTip(const GameType::Type gameType, bool b);
 	void checkBoxAutoScreen(bool clicked);
 	void checkBoxAutoExit(bool clicked);
 	void checkBoxAutoLogin(bool clicked);
+
+	void islogin(const ScanRet::Type ret);
+	void loginConfirmTip(const GameType::Type gameType, bool b);
 	void getInfo(int x, int y);
 	void configInitUpdate(bool b);
 	void updateNote(QTableWidgetItem* item);
