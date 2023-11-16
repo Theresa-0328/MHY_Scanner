@@ -3,10 +3,6 @@
 #include <string>
 #include <string_view>
 
-#include <QtConcurrent/QtConcurrent>
-#include <QFuture>
-#include <QThreadPool>
-
 #include "QRScanner.h"
 
 ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
@@ -53,9 +49,6 @@ void ThreadStreamProcess::setServerType(const ServerType::Type servertype)
 
 void ThreadStreamProcess::LoginOfficial()
 {
-	QThreadPool threadPool;
-	threadPool.setMaxThreadCount(threadNumber);
-
 	while (m_stop)
 	{
 		if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
@@ -63,14 +56,11 @@ void ThreadStreamProcess::LoginOfficial()
 			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
-
-		avcodec_send_packet(pAVCodecContext, pAVPacket);
 		if (pAVPacket->stream_index != videoStremIndex)
 		{
-			av_packet_unref(pAVPacket);
 			continue;
 		}
-
+		avcodec_send_packet(pAVCodecContext, pAVPacket);
 		if (pAVFrame == nullptr)
 		{
 			std::cerr << "Error allocating frame" << std::endl;
@@ -138,8 +128,6 @@ void ThreadStreamProcess::LoginOfficial()
 
 void ThreadStreamProcess::LoginBH3BiliBili()
 {
-	QThreadPool threadPool;
-	threadPool.setMaxThreadCount(threadNumber);
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
 
@@ -150,15 +138,11 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
-
-		avcodec_send_packet(pAVCodecContext, pAVPacket);
-
 		if (pAVPacket->stream_index != videoStremIndex)
 		{
-			av_packet_unref(pAVPacket);
 			continue;
 		}
-
+		avcodec_send_packet(pAVCodecContext, pAVPacket);
 		if (pAVFrame == nullptr)
 		{
 			std::cerr << "Error allocating frame" << std::endl;
@@ -313,6 +297,7 @@ void ThreadStreamProcess::continueLastLogin()
 
 void ThreadStreamProcess::run()
 {
+	threadPool.setMaxThreadCount(threadNumber);
 	m_stop = true;
 	ret = ScanRet::Type::UNKNOW;
 	//TODO 获取直播流地址放在这里

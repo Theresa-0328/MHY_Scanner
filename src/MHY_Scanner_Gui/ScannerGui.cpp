@@ -366,6 +366,8 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	default:
 		break;
 	}
+	ui.pBtstartScreen->setEnabled(true);
+	ui.pBtStream->setEnabled(true);
 }
 
 void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
@@ -719,26 +721,12 @@ void configInitLoad::run()
 			std::string s = data["account"][i]["uid"];
 			s = data["account"][i]["name"];
 			s = data["account"][i]["type"];
+			s = data["account"][i]["note"];
 		};
 		int i = data["last_account"];
 		bool b = data["auto_start"];
 		b = data["auto_login"];
 		b = data["auto_exit"];
-
-		//兼容旧配置文件，将在后续移除
-		for (int i = 0; i < (int)data["num"]; i++)
-		{
-			try
-			{
-				const std::string& str = data["account"][i]["note"];
-			}
-			catch (...)
-			{
-				data["account"][i]["note"] = "";
-			}
-		}
-		m_config->updateConfig(data.str());
-
 		emit userinfoTrue(true);
 	}
 	catch (...)

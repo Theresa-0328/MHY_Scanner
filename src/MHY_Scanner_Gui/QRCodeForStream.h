@@ -10,6 +10,9 @@ extern "C"
 };
 #include <QThread>
 #include <QMutex>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+#include <QThreadPool>
 #include <Json.h>
 
 #include "OfficialApi.h"
@@ -63,4 +66,5 @@ private:
 	int videoStremIndex = 0;
 	bool m_stop = false;
 	const int threadNumber = 2;
+	QThreadPool threadPool;
 };
