@@ -322,8 +322,8 @@ QTableWidget::item:selected
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>347</x>
-      <y>125</y>
+      <x>310</x>
+      <y>127</y>
       <width>120</width>
       <height>94</height>
      </rect>
@@ -362,7 +362,7 @@ QTableWidget::item:selected
   </action>
   <action name="action2_2">
    <property name="text">
-    <string>帮助</string>
+    <string>帮助和反馈</string>
    </property>
   </action>
   <action name="action1_3">

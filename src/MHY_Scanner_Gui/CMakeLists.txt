@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 set(SRC_CPP
-	#WIN32 # If you need a terminal for debug, please comment this statement 
+	WIN32 # If you need a terminal for debug, please comment this statement 
 	"LoginBili.cpp" 
 	"LoginWindow.cpp"
 	"main.cpp" 
