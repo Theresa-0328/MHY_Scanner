@@ -10,7 +10,7 @@
 
 #include "ScreenScan.h"
 #include "QRScanner.h"
-
+#include "ScreenShotDXGI.hpp"
 
 QRCodeForScreen::QRCodeForScreen(QObject* parent)
 	: QThread(parent)
@@ -44,14 +44,21 @@ void QRCodeForScreen::setLoginInfo(const std::string& uid, const std::string& to
 
 void QRCodeForScreen::LoginOfficial()
 {
-	ScreenScan screenshot;
 	QThreadPool threadPool;
 	threadPool.setMaxThreadCount(threadNumber);
-
+	ScreenShotDXGI screenshotdxgi;
+	int w{ 0 };
+	int h{ 0 };
+	screenshotdxgi.InitDevice();
+	screenshotdxgi.InitDupl(0, w, h);
+	long mBufferSize = w * h * 4;
+	uint8_t* mBuffer = new UCHAR[mBufferSize];
 	while (m_stop)
 	{
+		screenshotdxgi.getFrame(100);
+		screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize);
 		cv::Mat img;
-		cv::resize(screenshot.getScreenshot(), img, { 1280,720 });
+		cv::resize(cv::Mat(h, w, CV_8UC4, mBuffer), img, { 1280,720 });
 #ifndef SHOW
 		cv::imshow("Video_Stream", img);
 		cv::waitKey(1);
@@ -98,20 +105,30 @@ void QRCodeForScreen::LoginOfficial()
 			}
 		);
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		screenshotdxgi.doneWithFrame();
 	}
+	delete[] mBuffer;
 }
 
 void QRCodeForScreen::LoginBH3BiliBili()
 {
-	ScreenScan screenshot;
 	QThreadPool threadPool;
 	threadPool.setMaxThreadCount(threadNumber);
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
+	ScreenShotDXGI screenshotdxgi;
+	int w{ 0 };
+	int h{ 0 };
+	screenshotdxgi.InitDevice();
+	screenshotdxgi.InitDupl(0, w, h);
+	long mBufferSize = w * h * 4;
+	uint8_t* mBuffer = new UCHAR[mBufferSize];
 	while (m_stop)
 	{
+		screenshotdxgi.getFrame(100);
+		screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize);
 		cv::Mat img;
-		cv::resize(screenshot.getScreenshot(), img, { 1280,720 });
+		cv::resize(cv::Mat(h, w, CV_8UC4, mBuffer), img, { 1280,720 });
 #ifndef SHOW
 		cv::imshow("Video_Stream", img);
 		cv::waitKey(1);
@@ -156,7 +173,9 @@ void QRCodeForScreen::LoginBH3BiliBili()
 			}
 		);
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		screenshotdxgi.doneWithFrame();
 	}
+	delete[] mBuffer;
 }
 
 void QRCodeForScreen::continueLastLogin()
