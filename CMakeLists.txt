@@ -70,6 +70,10 @@ endif()
 
 add_subdirectory(src)
 
+if(NOT DEV)
+	#target_link_options(MHY_Scanner PRIVATE "/SUBSYSTEM:WINDOWS")
+	set_target_properties(MHY_Scanner PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
 #target_compile_definitions
 
 if(Unit_Tests)

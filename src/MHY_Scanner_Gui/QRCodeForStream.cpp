@@ -67,7 +67,6 @@ void ThreadStreamProcess::LoginOfficial()
 			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
-
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
 			cv::Mat img(720, 1280, CV_8UC3);
