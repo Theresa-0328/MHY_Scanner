@@ -22,8 +22,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 {
 	ui.setupUi(this);
 	connect(ui.action1_3, &QAction::triggered, this, &ScannerGui::LoginAccount);
-	connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::DeleteAccount);
-	connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
+	connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
+	connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::DeleteAccount);
 	connect(ui.action1_2, &QAction::triggered, this, &ScannerGui::About);
 	connect(ui.action2_2, &QAction::triggered, this, &ScannerGui::help);
 
