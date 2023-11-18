@@ -12,6 +12,8 @@
 #include "QRScanner.h"
 #include "ScreenShotDXGI.hpp"
 
+#define DELAYED 200
+
 QRCodeForScreen::QRCodeForScreen(QObject* parent)
 	: QThread(parent)
 {
@@ -104,7 +106,7 @@ void QRCodeForScreen::LoginOfficial()
 				stop();
 			}
 		);
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
 		screenshotdxgi.doneWithFrame();
 	}
 	delete[] mBuffer;
@@ -172,7 +174,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 				stop();
 			}
 		);
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
 		screenshotdxgi.doneWithFrame();
 	}
 	delete[] mBuffer;

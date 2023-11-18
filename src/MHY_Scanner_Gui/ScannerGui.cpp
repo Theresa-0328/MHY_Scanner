@@ -243,8 +243,7 @@ void ScannerGui::pBtstartScreen()
 	ui.pBtstartScreen->setText("监视屏幕中");
 	return;
 exit:
-	ui.pBtstartScreen->setEnabled(true);
-	ui.pBtStream->setEnabled(true);
+	pBtStop();
 	return;
 }
 
@@ -309,8 +308,7 @@ void ScannerGui::pBtStream()
 	ui.pBtStream->setText("监视直播中");
 	return;
 exit:
-	ui.pBtstartScreen->setEnabled(true);
-	ui.pBtStream->setEnabled(true);
+	pBtStop();
 	return;
 }
 
@@ -393,8 +391,7 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	QMessageBox::StandardButton result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
 	if (result != QMessageBox::Yes)
 	{
-		ui.pBtStream->setText("监视直播间");
-		ui.pBtstartScreen->setText("监视屏幕");
+		pBtStop();
 		return;
 	}
 	if (b)
