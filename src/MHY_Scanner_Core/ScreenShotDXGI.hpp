@@ -208,7 +208,7 @@ public:
 	 * @return 1
 	 * @return 2
 	 */
-	int getFrame(int timeout)
+	int getFrame(int timeout = 100)
 	{
 		if (!m_DeskDupl_state)
 		{
