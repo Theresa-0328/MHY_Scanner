@@ -567,8 +567,8 @@ void ScannerGui::getInfo(int x, int y)
 	QString cellText = item->text();
 	ui.lineEditUname->setText(cellText);
 	countA = x;
-	std::string s = std::format(R"(row = {} , user_name = {})", x, cellText.toStdString());
-	trrlog::Log_debug("{}", s);
+
+	trrlog::Log_debug("{}", std::format(R"(row = {} , user_name = {})", x, cellText.toStdString()));
 }
 
 void ScannerGui::SetDefaultAccount()
@@ -611,8 +611,9 @@ void ScannerGui::DeleteAccount()
 		userinfo["last_account"] = 0;
 	}
 	userinfo["account"].remove(countA);
-	const std::string& str = userinfo.str();
-	trrlog::Log_debug("{}", str);
+
+	trrlog::Log_debug("{}", userinfo.str());
+
 	m_config->updateConfig(userinfo.str());
 	ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 	ui.tableWidget->removeRow(nCurrentRow);
