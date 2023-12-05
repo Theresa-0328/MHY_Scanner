@@ -4,6 +4,7 @@
 
 #include <d3d11.h>
 #include <dxgi1_2.h>
+#include <trrlog.hpp>
 
 #pragma comment(lib,"d3d11.lib")
 
@@ -18,7 +19,6 @@ public:
 		m_monitorIdx(0)
 	{
 	}
-
 	~ScreenShotDXGI()
 	{
 		if (m_AcquiredDesktopImage)
@@ -44,7 +44,6 @@ public:
 			m_Device = nullptr;
 		}
 	}
-
 	/*
 	 * @brief InitDevic
 	 * @param 2
@@ -53,17 +52,9 @@ public:
 	 */
 	bool InitDevice()
 	{
-		HRESULT hr = S_OK;
+		ChooseAdapter();
 
-		// Driver types supported
-		D3D_DRIVER_TYPE DriverTypes[] =
-		{
-			D3D_DRIVER_TYPE_HARDWARE,
-			D3D_DRIVER_TYPE_WARP,
-			D3D_DRIVER_TYPE_REFERENCE,
-		};
-		UINT NumDriverTypes = ARRAYSIZE(DriverTypes);
-
+		HRESULT hr{ S_OK };
 		// Feature levels supported
 		D3D_FEATURE_LEVEL FeatureLevels[] =
 		{
@@ -77,29 +68,28 @@ public:
 		D3D_FEATURE_LEVEL FeatureLevel;
 
 		// Create device
-		for (UINT DriverTypeIndex = 0; DriverTypeIndex < NumDriverTypes; ++DriverTypeIndex)
-		{
-			hr = D3D11CreateDevice(
-				nullptr,
-				DriverTypes[DriverTypeIndex],
-				nullptr,
-				/* D3D11_CREATE_DEVICE_BGRA_SUPPORT
-			* This flag adds support for surfaces with a different
-			* color channel ordering than the API default.
-			* You need it for compatibility with Direct2D. */
-				D3D11_CREATE_DEVICE_BGRA_SUPPORT,
-				FeatureLevels,
-				NumFeatureLevels,
-				D3D11_SDK_VERSION,
-				&m_Device,
-				&FeatureLevel,
-				nullptr);
 
-			if (SUCCEEDED(hr))// Device creation success, no need to loop anymore
-			{
-				return true;
-			}
+		hr = D3D11CreateDevice(
+			selectedAdapter,// 0
+			D3D_DRIVER_TYPE_UNKNOWN,// D3D_DRIVER_TYPE_UNKNOWN
+			nullptr,
+			/* D3D11_CREATE_DEVICE_BGRA_SUPPORT
+		* This flag adds support for surfaces with a different
+		* color channel ordering than the API default.
+		* You need it for compatibility with Direct2D. */
+			D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+			FeatureLevels,
+			NumFeatureLevels,
+			D3D11_SDK_VERSION,
+			&m_Device,
+			&FeatureLevel,
+			nullptr);
+		if (SUCCEEDED(hr))// Device creation success, no need to loop anymore
+		{
+			trrlog::Log_debug("InitDevice success");
+			return true;
 		}
+		trrlog::Log_debug("InitDevice error");
 		return false;
 	}
 
@@ -293,7 +283,7 @@ public:
 			D3D11_TEXTURE2D_DESC desc;
 			m_AcquiredDesktopImage->GetDesc(&desc);
 			// Create CPU access texture m_AcquiredDesktopImage_copy
-			D3D11_TEXTURE2D_DESC copyImageDesc;
+			D3D11_TEXTURE2D_DESC copyImageDesc{};
 			copyImageDesc.Width = desc.Width;
 			copyImageDesc.Height = desc.Height;
 			copyImageDesc.Format = desc.Format;
@@ -359,6 +349,32 @@ public:
 		return true;
 	}
 private:
+	void ChooseAdapter()
+	{
+		IDXGIFactory1* dxgiFactory{ nullptr };
+		HRESULT hr{ CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&dxgiFactory) };
+
+		if (FAILED(hr))
+		{
+			return;
+		}
+		for (UINT i = 0; dxgiFactory->EnumAdapters1(i, &selectedAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
+		{
+			DXGI_ADAPTER_DESC1 desc;
+			HRESULT hr = selectedAdapter->GetDesc1(&desc);
+			char narrowString[100];
+			WideCharToMultiByte(CP_UTF8, 0, desc.Description, -1, narrowString, sizeof(narrowString), NULL, NULL);
+			trrlog::Log_debug("{}", narrowString);
+			if (desc.Flags != DXGI_ADAPTER_FLAG_SOFTWARE)
+			{
+				trrlog::Log_debug("used display adapter{}", narrowString);
+				break;
+			}
+		}
+		dxgiFactory->Release();
+	}
+
+private:
 	ID3D11Device* m_Device;
 	IDXGIOutputDuplication* m_DeskDupl;
 	bool m_DeskDupl_state = false;
@@ -366,4 +382,6 @@ private:
 	UINT m_monitorIdx;
 	ID3D11Texture2D* m_AcquiredDesktopImage;
 	ID3D11Texture2D* m_AcquiredDesktopImage_copy;
+
+	IDXGIAdapter1* selectedAdapter;
 };
