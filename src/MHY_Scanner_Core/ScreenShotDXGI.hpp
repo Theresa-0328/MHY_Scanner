@@ -70,7 +70,7 @@ public:
 		// Create device
 
 		hr = D3D11CreateDevice(
-			selectedAdapter,// 0
+			selectedAdapter,
 			D3D_DRIVER_TYPE_UNKNOWN,// D3D_DRIVER_TYPE_UNKNOWN
 			nullptr,
 			/* D3D11_CREATE_DEVICE_BGRA_SUPPORT
@@ -84,7 +84,7 @@ public:
 			&m_Device,
 			&FeatureLevel,
 			nullptr);
-		if (SUCCEEDED(hr))// Device creation success, no need to loop anymore
+		if (SUCCEEDED(hr))
 		{
 			trrlog::Log_debug("InitDevice success");
 			return true;
@@ -95,29 +95,13 @@ public:
 
 	bool InitDupl(UINT monitorIdx, int& duplWidth, int& duplHeight)
 	{
-		//UpdateDesktop();
-
 		m_monitorIdx = monitorIdx;
-
 		HRESULT hr = S_FALSE;
-
-		//freeMonitorInfos();
-		//hr = loadMonitorInfos();
-		//if (FAILED(hr)) {
-		//	WRITELOG("loadMonitorInfos error");
-		//	return false;
-		//}
-
-
-		// Take a reference on the device
-		//m_Device->AddRef();
-
 		// Get DXGI device
 		IDXGIDevice* DxgiDevice = nullptr;
 		hr = m_Device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&DxgiDevice));
 		if (FAILED(hr))
 		{
-			//LOGE("[0x%08X]: m_Device->QueryInterface failed.", hr);
 			return false;
 		}
 
@@ -128,7 +112,6 @@ public:
 		DxgiDevice = nullptr;
 		if (FAILED(hr))
 		{
-			//LOGE("[0x%08X]: DxgiDevice->GetParent failed.", hr);
 			return false;
 		}
 
@@ -139,12 +122,8 @@ public:
 		DxgiAdapter = nullptr;
 		if (FAILED(hr))
 		{
-			//LOGE("[0x%08X]: DxgiAdapter->EnumOutputs failed.", hr);
 			return false;
 		}
-
-		//DXGI_OUTPUT_DESC outPutDesc;
-		//DxgiOutput->GetDesc(&outPutDesc);
 
 		// QI for Output 1
 		IDXGIOutput1* DxgiOutput1 = nullptr;
@@ -155,7 +134,6 @@ public:
 
 		if (FAILED(hr))
 		{
-			//LOGE("[0x%08X]: DxgiOutput->QueryInterface failed.", hr);
 			return false;
 		}
 
@@ -171,8 +149,8 @@ public:
 				//WRITELOG("DXGI_ERROR_NOT_CURRENTLY_AVAILABLE");
 			}
 			//切换屏幕创建duplication失败时触发的错误
-			char log[100];
-			sprintf_s(log, "[0x%08X]: DxgiOutput1->DuplicateOutput failed.", hr);
+			//char log[100];
+			//sprintf_s(log, "[0x%08X]: DxgiOutput1->DuplicateOutput failed.", hr);
 			//WRITELOG(log);
 			//LOGE("[0x%08X]: DxgiOutput1->DuplicateOutput failed.", hr);
 
@@ -259,13 +237,6 @@ public:
 
 		if (FAILED(hr))
 		{
-			//char log[60];
-			//sprintf_s(log, "[0x%08X]: QueryInterface failed.", hr);
-			//WRITELOG(log);
-
-			//LOGE("[0x%08X]: QueryInterface failed.", hr);
-
-			//return GETFRAME_ERROR;
 			return 2;
 		}
 		//return GETFRAME_SUCCESS;
@@ -306,7 +277,7 @@ public:
 		}
 
 
-		context->CopyResource(m_AcquiredDesktopImage_copy, m_AcquiredDesktopImage);//源Texture2D和目的Texture2D需要有相同的多重采样计数和质量时（就是一些属性相同）
+		context->CopyResource(m_AcquiredDesktopImage_copy, m_AcquiredDesktopImage);//源Texture2D和目的Texture2D需要有相同的多重采样计数和质量时
 
 		D3D11_MAPPED_SUBRESOURCE mapRes;
 		UINT subresource = D3D11CalcSubresource(0, 0, 0);
@@ -317,18 +288,9 @@ public:
 			//LOGE("[0x%08X]: context->Map failed.", hr);
 			return false;
 		}
-		//UINT lBmpRowPitch = desc2.Width * 4;
-		//UINT lRowPitch = std::min<UINT>(lBmpRowPitch, mapRes.RowPitch);
-		//long bufferSize = lRowPitch * desc2.Height;
-		//*buffer = new UCHAR[bufferSize];
-
 		BYTE* dptr = *buffer;
-
 		memcpy_s(dptr, bufferSize, mapRes.pData, bufferSize);
-
 		context->Unmap(m_AcquiredDesktopImage_copy, subresource);
-
-
 		return true;
 	}
 
