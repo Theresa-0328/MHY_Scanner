@@ -8,10 +8,10 @@
 
 #include "CryptoKit.h"
 
-OfficialApi::OfficialApi()
+OfficialApi::OfficialApi() :
+	scanUrl(nullptr),
+	confirmUrl(nullptr)
 {
-	scanUrl.reserve(100);
-	confirmUrl.reserve(100);
 }
 
 
@@ -109,7 +109,7 @@ ScanRet::Type OfficialApi::scanConfirm()
 std::string OfficialApi::getUserName(const std::string& uid)
 {
 	std::string re;
-	GetRequest(re, std::format("{}?uid={}", mhy_mys_uesrinfo, uid));
+	GetRequest(re, std::format("{}?uid={}", mhy_mys_uesrinfo, uid).c_str());
 	json::Json j;
 	j.parse(re);
 	re = j["data"]["user_info"]["nickname"];
@@ -120,7 +120,7 @@ std::string OfficialApi::getUserName(const std::string& uid)
 std::string OfficialApi::getRole()
 {
 	std::string data;
-	const std::string& url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
+	const char* url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
 	headers["DS"] = getDS2();
 	headers["Cookie"] = "stuid=" + cookieMap.at("login_uid") + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
 	std::string re;
@@ -199,7 +199,7 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 		{"token_types","3"},
 	};
 	std::string s;
-	GetRequest(s, std::format("{}?{}", mhy_takumi_multi_token_by_login_ticket, MapToQueryString(params)));
+	GetRequest(s, std::format("{}?{}", mhy_takumi_multi_token_by_login_ticket, MapToQueryString(params)).c_str());
 	json::Json j;
 	j.parse(s);
 	if ((int)j["retcode"] == 0)
@@ -222,7 +222,7 @@ int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid,
 		{"uid",uid},
 	};
 	std::string s;
-	GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, MapToQueryString(params)));
+	GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, MapToQueryString(params)).c_str());
 	const std::string& data = UTF8_To_string(s);
 	json::Json j;
 	j.parse(data);

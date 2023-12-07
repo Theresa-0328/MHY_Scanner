@@ -108,7 +108,7 @@ size_t HttpClient::req_reply(void* ptr, size_t size, size_t nmemb, void* stream)
 	return size * nmemb;
 }
 
-CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, std::map<std::string, std::string> headers)
+CURLcode HttpClient::GetRequest(std::string& response, const char* url, std::map<std::string, std::string> headers)
 {
 	CURL* curl = curl_easy_init();
 	CURLcode res{};
@@ -121,7 +121,7 @@ CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, s
 			headerList = curl_slist_append(headerList, header.c_str());
 		}
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerList);
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_URL, url);
 		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
@@ -140,7 +140,7 @@ CURLcode HttpClient::GetRequest(std::string& response, const std::string& url, s
 	return res;
 }
 
-CURLcode HttpClient::PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers)
+CURLcode HttpClient::PostRequest(std::string& response, const char* url, const std::string& postParams, std::map<std::string, std::string> headers)
 {
 	CURL* curl = curl_easy_init();
 	CURLcode res{};
@@ -159,7 +159,7 @@ CURLcode HttpClient::PostRequest(std::string& response, const std::string& url, 
 		//设置请求为post请求
 		curl_easy_setopt(curl, CURLOPT_POST, 1);
 		//设置请求的URL地址
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_URL, url);
 		//设置post请求的参数
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postParams.c_str());
 		//设置ssl验证
