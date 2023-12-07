@@ -11,8 +11,8 @@
 class HttpClient
 {
 public:
-	CURLcode GetRequest(std::string& response, const std::string& url, std::map<std::string, std::string> headers = {});
-	CURLcode PostRequest(std::string& response, const std::string& url, const std::string& postParams, std::map<std::string, std::string> headers = {});
+	CURLcode GetRequest(std::string& response, const char* url, std::map<std::string, std::string> headers = {});
+	CURLcode PostRequest(std::string& response, const char* url, const std::string& postParams, std::map<std::string, std::string> headers = {});
 	std::string MapToQueryString(const std::map<std::string, std::string>& params);
 	std::map<std::string, std::string> QueryStringToMap(const std::string& str);
 	int getCurrentUnixTime()const;

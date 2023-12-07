@@ -33,8 +33,8 @@ private:
 	const std::string& salt = "PVeGWIZACpxXZ1ibMVJPi9inCY4Nd4y2";
 	const std::string& app_version = "2.38.1";
 	std::string uuid;
-	std::string scanUrl;
-	std::string confirmUrl;
+	const char* scanUrl;
+	const char* confirmUrl;
 	std::map<std::string, std::string> headers =
 	{
 		{"x-rpc-client_type", "2"},
