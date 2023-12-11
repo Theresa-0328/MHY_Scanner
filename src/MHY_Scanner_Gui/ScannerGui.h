@@ -14,7 +14,8 @@
 #include "ConfigDate.h"
 #include "About_QDialog.h"
 
-class OnlineUpdate :public QThread
+class OnlineUpdate :
+	public QThread
 {
 public:
 	OnlineUpdate() = default;
@@ -22,7 +23,8 @@ public:
 	~OnlineUpdate();
 };
 
-class configInitLoad :public QThread
+class configInitLoad :
+	public QThread
 {
 	Q_OBJECT
 public:
@@ -35,8 +37,8 @@ private:
 	ConfigDate* m_config = &ConfigDate::getInstance();
 };
 
-class ScannerGui
-	: public QMainWindow
+class ScannerGui :
+	public QMainWindow
 {
 	Q_OBJECT
 

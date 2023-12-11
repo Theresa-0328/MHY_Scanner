@@ -7,6 +7,7 @@
 #include <Json.h>
 
 #include "CryptoKit.h"
+#include "UtilString.hpp"
 
 OfficialApi::OfficialApi() :
 	scanUrl(nullptr),
