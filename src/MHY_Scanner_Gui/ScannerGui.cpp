@@ -605,7 +605,7 @@ void ScannerGui::DeleteAccount()
 		return;
 	}
 	userinfo["num"] = (int)userinfo["num"] - 1;
-	//判断删除的账号是否是启动默认账号
+	//判断删除的账号是否为启动默认账号
 	if (static_cast<int>(userinfo["last_account"]) == countA + 1)
 	{
 		userinfo["last_account"] = 0;
@@ -615,13 +615,15 @@ void ScannerGui::DeleteAccount()
 	trrlog::Log_debug("{}", userinfo.str());
 
 	m_config->updateConfig(userinfo.str());
-	ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
+	//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 	ui.tableWidget->removeRow(nCurrentRow);
+	disconnect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
 	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{
 		QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
 		ui.tableWidget->setItem(i, 0, item);
 	}
+	connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
 }
 
 void ScannerGui::About()
