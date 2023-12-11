@@ -2,6 +2,7 @@
 
 #include "LiveStreamLink.h"
 #include "QRScanner.h"
+#include "UtilString.hpp"
 
 TEST(LiveDoyin, Test1)
 {
@@ -15,7 +16,7 @@ TEST(URLEncode, test1)
 	HttpClient h;
 	std::string s1 = "Hello%23World%22";
 	std::string s3 = R"(Hello#World")";
-	std::string s2 = h.urlDecode(s1);
+	std::string s2 = urlDecode(s1);
 	EXPECT_EQ(s2, s3);
 }
 

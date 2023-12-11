@@ -3,6 +3,7 @@
 #include <format>
 
 #include "CryptoKit.h"
+#include "UtilString.hpp"
 
 std::string BiliGameApi::remove_quotes(std::string str)
 {
