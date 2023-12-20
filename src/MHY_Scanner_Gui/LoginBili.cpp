@@ -21,12 +21,11 @@ int LoginBili::loginBiliKey(std::string& name, const std::string& uid, const std
 	json::Json userInfoJ;
 	userInfoJ.parse(userInfo);
 	int code = (int)userInfoJ["code"];
-	const std::string uname = userInfoJ["uname"];
 	if (code != 0)
 	{
 		return code;
 	}
-	name = uname;
+	name = userInfoJ["uname"];
 	return 0;
 }
 
