@@ -617,6 +617,10 @@ void ScannerGui::DeleteAccount()
 	m_config->updateConfig(userinfo.str());
 	//ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
 	ui.tableWidget->removeRow(nCurrentRow);
+	ui.tableWidget->clearSelection();
+	ui.lineEditUname->setText("未选中");
+	countA = -1;
+
 	disconnect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
 	for (int i = 0; i < (int)userinfo["num"]; i++)
 	{

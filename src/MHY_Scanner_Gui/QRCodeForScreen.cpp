@@ -14,8 +14,8 @@
 
 #define DELAYED 200
 
-QRCodeForScreen::QRCodeForScreen(QObject* parent)
-	: QThread(parent)
+QRCodeForScreen::QRCodeForScreen(QObject* parent) :
+	QThread(parent)
 {
 	m_config = &ConfigDate::getInstance();
 }
