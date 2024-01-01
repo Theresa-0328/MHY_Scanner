@@ -174,6 +174,11 @@ void ScannerGui::LoginAccount()
 			QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
 			return;
 		}
+		if (code == 500002)
+		{
+			QMessageBox::information(this, "错误", "账号或密码错误，请重新输入", QMessageBox::Yes);
+			return;
+		}
 		if (code != 0)
 		{
 			QMessageBox::information(this, "提示", QString::fromStdString(message), QMessageBox::Yes);
