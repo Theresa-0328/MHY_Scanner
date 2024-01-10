@@ -12,7 +12,8 @@
 #include "CryptoKit.h"
 #include "UtilString.hpp"
 
-LiveBili::LiveBili(const std::string& roomID) :m_roomID(roomID)
+LiveBili::LiveBili(const std::string& roomID) :
+	m_roomID(roomID)
 {
 
 }
