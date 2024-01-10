@@ -17,5 +17,5 @@ private:
 	std::string loadConfig();
 	std::string readConfigFile(const std::string& filePath);
 	void createDefaultConfigFile(const std::string& filePath, const std::string& Config);
-	const std::string& ConfigFilePath = "./Config/userinfo.json";
+	inline static const char* ConfigFilePath{ "./Config/userinfo.json" };
 };
