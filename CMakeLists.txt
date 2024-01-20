@@ -143,13 +143,15 @@ if(Unit_Tests)
 	target_link_libraries(test_video_hw PRIVATE ${PROJECT_LIBRARIES})
 endif()
 
+set(Install_Directory "${PROJECT_NAME}_${_VERSION_}")
+
 install(TARGETS ${PROJECT_NAME}
-	RUNTIME DESTINATION MHY_Scanner
+	RUNTIME DESTINATION ${Install_Directory}
 )
 install(
     DIRECTORY
     src/geetest
 	src/ScanModel
     DESTINATION
-    MHY_Scanner
+    ${Install_Directory}
 )
