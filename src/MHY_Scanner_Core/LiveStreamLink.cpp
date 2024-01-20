@@ -96,18 +96,17 @@ std::string LiveBili::GetStreamUrl(const std::string& url, const std::map<std::s
 
 	json::Json j;
 	j.parse(str);
-	const std::string& base_url = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"];
-	const std::string& extra = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"];
-	const std::string& host = j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"];
-
-	std::string stream_url = std::format("{}{}{}", host, base_url, extra);
-
+	const std::string& base_url{ j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"] };
+	const std::string& extra{ j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"] };
+	const std::string& host{ j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"] };
+	std::string stream_url{ host + base_url + extra };
 	//FIXME
 	replace0026WithAmpersand(stream_url);
 	return stream_url;
 }
 
-LiveHuya::LiveHuya(const std::string& roomID) :m_roomID(roomID)
+LiveHuya::LiveHuya(const std::string& roomID) :
+	m_roomID(roomID)
 {
 
 }
@@ -217,7 +216,8 @@ std::string LiveHuya::getUUID()
 	return std::to_string(uuid);
 }
 
-LiveDouyin::LiveDouyin(const std::string& roomID) :m_roomID(roomID)
+LiveDouyin::LiveDouyin(const std::string& roomID) :
+	m_roomID(roomID)
 {
 
 }

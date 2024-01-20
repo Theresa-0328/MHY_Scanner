@@ -12,7 +12,7 @@ inline std::string urlEncode(const std::string& str)
 	escaped.fill('0');
 	escaped << std::hex;
 
-	for (auto itr = str.begin(), end = str.end(); itr != end; ++itr)
+	for (auto itr = str.cbegin(), end = str.cend(); itr != end; ++itr)
 	{
 		const unsigned char c = *itr;
 
