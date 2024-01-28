@@ -44,8 +44,9 @@ include_directories(./3rdparty/httplib)
 include_directories(./3rdparty/boost)
 
 #ffmpeg
-include_directories(D:/Dev/ffmpeg/include)
+include_directories(./3rdparty/ffmpeg/include)
 link_directories(D:/Dev/ffmpeg/lib)
+link_directories(./3rdparty/ffmpeg/lib)
 
 #curl
 include_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/include)
@@ -81,6 +82,32 @@ if(Unit_Tests)
 	add_subdirectory(tests)
 endif()
 
+set(FFMPEG_LIBRARIES)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	list(APPEND FFMPEG_LIBRARIES 
+	libavcodec
+	libavdevice
+	libavfilter
+	libavformat
+	libavutil
+	libpostproc
+	libswresample
+	libswscale
+	)
+else()
+	list(APPEND FFMPEG_LIBRARIES 
+	avcodec
+	avdevice
+	avfilter
+	avformat
+	avutil
+	postproc
+	swresample
+	swscale
+	)
+endif()
+
 set(PROJECT_LIBRARIES
 	MHY_Scanner_Core
 	TrrJson
@@ -110,16 +137,9 @@ set(PROJECT_LIBRARIES
 	opencv_world480$<$<CONFIG:Debug>:d>
 	#quirc$<$<CONFIG:Debug>:d>
 	zlib$<$<CONFIG:Debug>:d>
-
+	
 	# ffmpeg
-	avcodec
-	avdevice
-	avfilter
-	avformat
-	avutil
-	postproc
-	swresample
-	swscale
+	${FFMPEG_LIBRARIES}
 
 	# curl
 	libcurl_a
