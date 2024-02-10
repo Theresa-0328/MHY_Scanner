@@ -56,7 +56,7 @@ void ThreadStreamProcess::LoginOfficial()
 			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
-		if (pAVPacket->stream_index != videoStremIndex)
+		if (pAVPacket->stream_index != videoStreamIndex)
 		{
 			continue;
 		}
@@ -69,7 +69,7 @@ void ThreadStreamProcess::LoginOfficial()
 		}
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			cv::Mat img(720, 1280, CV_8UC3);
+			cv::Mat img(videoStreamHeight, videoStreamWidth, CV_8UC3);
 			uint8_t* dstData[1] = { img.data };
 			const int dstLinesize[1] = { static_cast<int>(img.step) };
 			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
@@ -137,7 +137,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 			ret = ScanRet::Type::LIVESTOP;
 			break;
 		}
-		if (pAVPacket->stream_index != videoStremIndex)
+		if (pAVPacket->stream_index != videoStreamIndex)
 		{
 			continue;
 		}
@@ -151,7 +151,7 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 
 		while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
 		{
-			cv::Mat img(720, 1280, CV_8UC3);
+			cv::Mat img(videoStreamHeight, videoStreamWidth, CV_8UC3);
 			uint8_t* dstData[1] = { img.data };
 			const int dstLinesize[1] = { static_cast<int>(img.step) };
 			sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
@@ -251,7 +251,7 @@ auto ThreadStreamProcess::init()->bool
 		std::cerr << "No video stream found" << std::endl;
 		return false;
 	}
-	videoStremIndex = videoStream->index;
+	videoStreamIndex = videoStream->index;
 
 	//const AVCodec* decoder = avcodec_find_decoder_by_name("h264_cuvid");
 	const AVCodec* decoder = avcodec_find_decoder(videoStream->codecpar->codec_id);
@@ -268,9 +268,19 @@ auto ThreadStreamProcess::init()->bool
 		std::cerr << "Error opening codec" << std::endl;
 		return false;
 	}
+	if (pAVCodecContext->width > 1280)
+	{
+		videoStreamWidth = pAVCodecContext->width / 1.5;
+		videoStreamHeight = pAVCodecContext->height / 1.5;
+	}
+	else
+	{
+		videoStreamWidth = pAVCodecContext->width;
+		videoStreamHeight = pAVCodecContext->height;
+	}
 	pSwsContext = sws_getContext(
 		pAVCodecContext->width, pAVCodecContext->height, pAVCodecContext->pix_fmt,
-		1280, 720, AV_PIX_FMT_BGR24,
+		videoStreamWidth, videoStreamHeight, AV_PIX_FMT_BGR24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
 	pAVPacket = av_packet_alloc();

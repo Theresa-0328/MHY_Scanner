@@ -63,8 +63,10 @@ private:
 	SwsContext* pSwsContext;
 	AVFrame* pAVFrame;
 	AVPacket* pAVPacket;
-	int videoStremIndex = 0;
-	bool m_stop = false;
-	const int threadNumber = 2;
+	int videoStreamIndex{ 0 };
+	int videoStreamWidth{};
+	int videoStreamHeight{};
+	bool m_stop{ false };
+	const int threadNumber{ 2 };
 	QThreadPool threadPool;
 };
