@@ -96,9 +96,9 @@ std::string LiveBili::GetStreamUrl(const std::string& url, const std::map<std::s
 
 	json::Json j;
 	j.parse(str);
-	const std::string& base_url{ j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"] };
-	const std::string& extra{ j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"] };
-	const std::string& host{ j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"] };
+	const std::string& base_url{ static_cast<std::string>(j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"]) };
+	const std::string& extra{ static_cast<std::string>(j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"]) };
+	const std::string& host{ static_cast<std::string>(j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"]) };
 	std::string stream_url{ host + base_url + extra };
 	//FIXME
 	replace0026WithAmpersand(stream_url);
@@ -108,7 +108,6 @@ std::string LiveBili::GetStreamUrl(const std::string& url, const std::map<std::s
 LiveHuya::LiveHuya(const std::string& roomID) :
 	m_roomID(roomID)
 {
-
 }
 
 LiveStreamStatus::Status LiveHuya::GetLiveStreamStatus()
@@ -117,7 +116,7 @@ LiveStreamStatus::Status LiveHuya::GetLiveStreamStatus()
 	const std::map <std::string, std::string>& header =
 	{
 		{"Content-Type","text/html; charset=utf-8"},
-		{"User-Agent","Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Mobile Safari/537.36"},
+		{"User-Agent","Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"},
 		{"Accept-Encoding",""}
 	};
 	GetRequest(ret, std::format("{}/{}", live_huya, m_roomID).c_str(), header);
@@ -157,7 +156,7 @@ LiveStreamStatus::Status LiveHuya::GetLiveStreamStatus()
 
 std::string LiveHuya::GetLiveStreamLink()const
 {
-	return m_flvUrl;;
+	return m_flvUrl;
 }
 
 LiveHuya::~LiveHuya()
