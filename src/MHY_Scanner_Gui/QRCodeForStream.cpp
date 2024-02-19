@@ -5,7 +5,7 @@
 
 #include "QRScanner.h"
 
-ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
+QRCodeForStream::QRCodeForStream(QObject* parent)
 	: QThread(parent),
 	pAvdictionary(nullptr),
 	pAVFormatContext(nullptr),
@@ -18,7 +18,7 @@ ThreadStreamProcess::ThreadStreamProcess(QObject* parent)
 	m_config = &(ConfigDate::getInstance());
 }
 
-ThreadStreamProcess::~ThreadStreamProcess()
+QRCodeForStream::~QRCodeForStream()
 {
 	if (!this->isInterruptionRequested())
 	{
@@ -29,25 +29,25 @@ ThreadStreamProcess::~ThreadStreamProcess()
 	this->wait();
 }
 
-void ThreadStreamProcess::setLoginInfo(const std::string& uid, const std::string& gameToken)
+void QRCodeForStream::setLoginInfo(const std::string& uid, const std::string& gameToken)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
 }
 
-void ThreadStreamProcess::setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name)
+void QRCodeForStream::setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name)
 {
 	this->uid = uid;
 	this->gameToken = gameToken;
 	this->m_name = name;
 }
 
-void ThreadStreamProcess::setServerType(const ServerType::Type servertype)
+void QRCodeForStream::setServerType(const ServerType::Type servertype)
 {
 	this->servertype = servertype;
 }
 
-void ThreadStreamProcess::LoginOfficial()
+void QRCodeForStream::LoginOfficial()
 {
 	while (m_stop)
 	{
@@ -125,7 +125,7 @@ void ThreadStreamProcess::LoginOfficial()
 }
 
 
-void ThreadStreamProcess::LoginBH3BiliBili()
+void QRCodeForStream::LoginBH3BiliBili()
 {
 	const std::string& LoginData = m.verify(uid, gameToken);
 	m.setUserName(m_name);
@@ -203,13 +203,27 @@ void ThreadStreamProcess::LoginBH3BiliBili()
 	}
 }
 
-void ThreadStreamProcess::stop()
+void QRCodeForStream::setStreamHW()
+{
+	if (pAVCodecContext->width < pAVCodecContext->height)
+	{
+		videoStreamWidth = pAVCodecContext->width;
+		videoStreamHeight = pAVCodecContext->height;
+	}
+	else
+	{
+		videoStreamWidth = 1280;
+		videoStreamHeight = 720;
+	}
+}
+
+void QRCodeForStream::stop()
 {
 	QMutexLocker lock(&m_mux);
 	m_stop = false;
 }
 
-void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::string, std::string> heard)
+void QRCodeForStream::setUrl(const std::string& url, const std::map<std::string, std::string> heard)
 {
 	m_url = url;
 	for (const auto& it : heard)
@@ -224,7 +238,7 @@ void ThreadStreamProcess::setUrl(const std::string& url, const std::map<std::str
 	av_dict_set(&pAvdictionary, "buffer_size", "1000", 0);
 }
 
-auto ThreadStreamProcess::init()->bool
+auto QRCodeForStream::init()->bool
 {
 	pAVFormatContext = avformat_alloc_context();
 	if (avformat_open_input(&pAVFormatContext, m_url.c_str(), NULL, &pAvdictionary) != 0)
@@ -252,10 +266,8 @@ auto ThreadStreamProcess::init()->bool
 		return false;
 	}
 	videoStreamIndex = videoStream->index;
-
-	//const AVCodec* decoder = avcodec_find_decoder_by_name("h264_cuvid");
-	const AVCodec* decoder = avcodec_find_decoder(videoStream->codecpar->codec_id);
-
+	//const AVCodec* decoder{ avcodec_find_decoder_by_name("h264_cuvid") };
+	const AVCodec* decoder{ avcodec_find_decoder(videoStream->codecpar->codec_id) };
 	if (decoder == nullptr)
 	{
 		std::cerr << "Codec not found" << std::endl;
@@ -268,16 +280,7 @@ auto ThreadStreamProcess::init()->bool
 		std::cerr << "Error opening codec" << std::endl;
 		return false;
 	}
-	if (pAVCodecContext->width > 1280)
-	{
-		videoStreamWidth = pAVCodecContext->width / 1.5;
-		videoStreamHeight = pAVCodecContext->height / 1.5;
-	}
-	else
-	{
-		videoStreamWidth = pAVCodecContext->width;
-		videoStreamHeight = pAVCodecContext->height;
-	}
+	setStreamHW();
 	pSwsContext = sws_getContext(
 		pAVCodecContext->width, pAVCodecContext->height, pAVCodecContext->pix_fmt,
 		videoStreamWidth, videoStreamHeight, AV_PIX_FMT_BGR24,
@@ -288,7 +291,7 @@ auto ThreadStreamProcess::init()->bool
 	return true;
 }
 
-void ThreadStreamProcess::continueLastLogin()
+void QRCodeForStream::continueLastLogin()
 {
 	switch (servertype)
 	{
@@ -304,7 +307,7 @@ void ThreadStreamProcess::continueLastLogin()
 	emit loginResults(ret);
 }
 
-void ThreadStreamProcess::run()
+void QRCodeForStream::run()
 {
 	threadPool.setMaxThreadCount(threadNumber);
 	m_stop = true;
@@ -330,6 +333,7 @@ void ThreadStreamProcess::run()
 	else
 	{
 		ret = ScanRet::Type::STREAMERROR;
+		emit loginResults(ret);
 	}
 #ifndef SHOW
 	cv::destroyWindow("Video_Stream");
@@ -349,7 +353,7 @@ void ThreadStreamProcess::run()
 }
 
 #if 0
-void ThreadStreamProcess::LoginOfficial()
+void QRCodeForStream::LoginOfficial()
 {
 	OfficialApi o;
 	std::string uuid = o.generateUUID();
@@ -443,7 +447,7 @@ void ThreadStreamProcess::LoginOfficial()
 	}
 }
 
-void ThreadStreamProcess::LoginBH3BiliBili()
+void QRCodeForStream::LoginBH3BiliBili()
 {
 	do
 	{

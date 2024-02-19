@@ -2,13 +2,13 @@
 
 #include <functional>
 
-#include <QThread>
 #include <QMutex>
+#include <QThread>
 
 #include "Common.h"
+#include "ConfigDate.h"
 #include "Mihoyosdk.h"
 #include "OfficialApi.h"
-#include "ConfigDate.h"
 
 class QRCodeForScreen
 	: public QThread

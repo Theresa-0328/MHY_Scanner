@@ -3,13 +3,13 @@
 #include <chrono>
 #include <thread>
 
-#include <QtConcurrent/QtConcurrent>
+#include <Json.h>
 #include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 #include <QThreadPool>
-#include <json.h>
 
-#include "ScreenScan.h"
 #include "QRScanner.h"
+#include "ScreenScan.h"
 #include "ScreenShotDXGI.hpp"
 
 #define DELAYED 200
