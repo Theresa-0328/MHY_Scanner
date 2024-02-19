@@ -619,6 +619,10 @@ void ScannerGui::DeleteAccount()
 	{
 		userinfo["last_account"] = 0;
 	}
+	else if (static_cast<int>(userinfo["last_account"]) > countA + 1)
+	{
+		userinfo["last_account"] = static_cast<int>(userinfo["last_account"]) - 1;
+	}
 	userinfo["account"].remove(countA);
 
 	trrlog::Log_debug("{}", userinfo.str());
