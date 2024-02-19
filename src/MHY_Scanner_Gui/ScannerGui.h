@@ -2,17 +2,17 @@
 
 #include <vector>
 
-#include <QtWidgets/QMainWindow>
-#include <QRunnable>
 #include <Json.h>
+#include <QRunnable>
+#include <QtWidgets/QMainWindow>
 
-#include "ui_ScannerGui.h"
-#include "QRCodeForScreen.h"
-#include "QRCodeForStream.h"
-#include "LiveStreamLink.h"
+#include "About_QDialog.h"
 #include "Common.h"
 #include "ConfigDate.h"
-#include "About_QDialog.h"
+#include "LiveStreamLink.h"
+#include "QRCodeForScreen.h"
+#include "QRCodeForStream.h"
+#include "ui_ScannerGui.h"
 
 class OnlineUpdate :
 	public QThread
@@ -75,7 +75,7 @@ private:
 	ConfigDate* m_config = &ConfigDate::getInstance();
 	json::Json userinfo;
 	QRCodeForScreen t1;
-	ThreadStreamProcess t2;
+	QRCodeForStream t2;
 	int liveIdError(const LiveStreamStatus::Status data);
 	int getSelectedRowIndex();
 	bool checkDuplicates(const std::string uid);

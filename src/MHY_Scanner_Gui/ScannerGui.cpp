@@ -37,8 +37,8 @@ ScannerGui::ScannerGui(QWidget* parent)
 
 	connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
 	connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
-	connect(&t2, &ThreadStreamProcess::loginResults, this, &ScannerGui::islogin);
-	connect(&t2, &ThreadStreamProcess::loginConfirm, this, &ScannerGui::loginConfirmTip);
+	connect(&t2, &QRCodeForStream::loginResults, this, &ScannerGui::islogin);
+	connect(&t2, &QRCodeForStream::loginConfirm, this, &ScannerGui::loginConfirmTip);
 	connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
 
 	o.start();

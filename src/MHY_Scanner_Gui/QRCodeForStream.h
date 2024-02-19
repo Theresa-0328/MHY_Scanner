@@ -20,12 +20,12 @@ extern "C"
 #include "Common.h"
 #include "ConfigDate.h"
 
-class ThreadStreamProcess : public QThread
+class QRCodeForStream : public QThread
 {
 	Q_OBJECT
 public:
-	ThreadStreamProcess(QObject* parent = nullptr);
-	~ThreadStreamProcess();
+	QRCodeForStream(QObject* parent = nullptr);
+	~QRCodeForStream();
 	void setLoginInfo(const std::string& uid, const std::string& gameToken);
 	void setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name);
 	void setServerType(const ServerType::Type servertype);
@@ -43,6 +43,7 @@ private:
 	std::string m_url;
 	void LoginOfficial();
 	void LoginBH3BiliBili();
+	void setStreamHW();
 	QMutex m_mux;
 	std::string uid;
 	std::string gameToken;
