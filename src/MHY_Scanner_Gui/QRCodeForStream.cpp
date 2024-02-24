@@ -330,11 +330,8 @@ void QRCodeForStream::run()
 			break;
 		}
 	}
-	else
-	{
 		ret = ScanRet::Type::STREAMERROR;
 		emit loginResults(ret);
-	}
 #ifndef SHOW
 	cv::destroyWindow("Video_Stream");
 #endif
