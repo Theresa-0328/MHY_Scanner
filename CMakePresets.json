@@ -12,7 +12,7 @@
 				"CMAKE_C_COMPILER": "cl.exe",
 				"CMAKE_CXX_COMPILER": "cl.exe",
 				"INSTALL_GTEST": false,
-				"DEV": false
+				"DEV": true
 			},
 			"condition": {
 				"type": "equals",
