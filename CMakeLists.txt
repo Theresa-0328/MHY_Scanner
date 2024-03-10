@@ -27,11 +27,9 @@ if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /sdl")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /sdl")
-endif()
-
-# Specify MSVC UTF-8 encoding   
-add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+	# Specify MSVC UTF-8 encoding   
+	add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+	add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
 #opencv
