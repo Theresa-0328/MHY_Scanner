@@ -331,6 +331,7 @@ void ScannerGui::showEvent(QShowEvent* event)
 void ScannerGui::islogin(const ScanRet::Type ret)
 {
 	QMessageBox* messageBox = new QMessageBox(this);
+	setWindowToFront();
 	auto Show_QMessageBox = [&](const QString& title, const QString& text)
 		{
 			ui.pBtStream->setText("监视直播间");
@@ -375,6 +376,7 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 
 void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 {
+	setWindowToFront();
 	QString info("将用账号" + ui.lineEditUname->text());
 	switch (gameType)
 	{
@@ -558,6 +560,15 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
 		break;
 	}
 	return true;
+}
+
+void ScannerGui::setWindowToFront()
+{
+	HWND hwnd = reinterpret_cast<HWND>(winId());
+	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	SetForegroundWindow(hwnd);
+	ShowWindow(hwnd, SW_SHOWNORMAL);
+	SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
 
 void ScannerGui::failure()
