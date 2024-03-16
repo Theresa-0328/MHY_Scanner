@@ -82,4 +82,5 @@ private:
 	bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
 	OnlineUpdate o;
 	configInitLoad configinitload;
+	void setWindowToFront();
 };
