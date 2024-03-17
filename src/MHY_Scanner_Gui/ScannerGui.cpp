@@ -331,7 +331,6 @@ void ScannerGui::showEvent(QShowEvent* event)
 void ScannerGui::islogin(const ScanRet::Type ret)
 {
 	QMessageBox* messageBox = new QMessageBox(this);
-	setWindowToFront();
 	auto Show_QMessageBox = [&](const QString& title, const QString& text)
 		{
 			ui.pBtStream->setText("监视直播间");
@@ -372,11 +371,11 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	}
 	ui.pBtstartScreen->setEnabled(true);
 	ui.pBtStream->setEnabled(true);
+	setWindowToFront();
 }
 
 void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 {
-	setWindowToFront();
 	QString info("将用账号" + ui.lineEditUname->text());
 	switch (gameType)
 	{
@@ -409,6 +408,7 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	{
 		t2.continueLastLogin();
 	}
+	setWindowToFront();
 }
 
 void ScannerGui::checkBoxAutoScreen(bool clicked)
