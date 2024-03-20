@@ -205,15 +205,17 @@ void QRCodeForStream::LoginBH3BiliBili()
 
 void QRCodeForStream::setStreamHW()
 {
-	if (pAVCodecContext->width < pAVCodecContext->height)
+	if (pAVCodecContext->width < pAVCodecContext->height
+		|| pAVCodecContext->height == 480
+		|| pAVCodecContext->height == 720)
 	{
 		videoStreamWidth = pAVCodecContext->width;
 		videoStreamHeight = pAVCodecContext->height;
 	}
 	else
 	{
-		videoStreamWidth = 1280;
-		videoStreamHeight = 720;
+		videoStreamWidth = pAVCodecContext->width / 1.5;
+		videoStreamHeight = pAVCodecContext->height / 1.5;
 	}
 }
 
