@@ -53,7 +53,7 @@ std::string Mihoyosdk::getOAServer()
 	//GetRequest(feedback, oaMainUrl + param);
 
 	std::string oaserver;
-	GetRequest(oaserver, "http://api.flamescion.top/getoaserver");
+	GetRequest(oaserver, "https://mi-m-cpjgtouitx.cn-hangzhou.fcapp.run");
 	if (oaserver.empty())
 	{
 		exit(0);

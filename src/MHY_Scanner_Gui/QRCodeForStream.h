@@ -20,7 +20,8 @@ extern "C"
 #include "Common.h"
 #include "ConfigDate.h"
 
-class QRCodeForStream : public QThread
+class QRCodeForStream final :
+	public QThread
 {
 	Q_OBJECT
 public:
