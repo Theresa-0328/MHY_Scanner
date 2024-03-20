@@ -394,6 +394,7 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	default:
 		break;
 	}
+	setWindowToFront();
 	QMessageBox::StandardButton result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
 	if (result != QMessageBox::Yes)
 	{
@@ -408,7 +409,6 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	{
 		t2.continueLastLogin();
 	}
-	setWindowToFront();
 }
 
 void ScannerGui::checkBoxAutoScreen(bool clicked)

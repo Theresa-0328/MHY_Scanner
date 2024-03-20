@@ -10,8 +10,8 @@
 #include "Mihoyosdk.h"
 #include "OfficialApi.h"
 
-class QRCodeForScreen
-	: public QThread
+class QRCodeForScreen final :
+	public QThread
 {
 	Q_OBJECT
 public:

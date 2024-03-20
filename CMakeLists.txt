@@ -7,6 +7,7 @@ set(CMAKE_PREFIX_PATH "C:/Qt/6.2.3/msvc2019_64") # Qt Kit Dir
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -59,6 +60,7 @@ if(USE_OPENSSL)
 	add_definitions(-DUSE_OPENSSL)
 endif()
 
+#QT
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 add_definitions(-DSCAN_VER="${_VERSION_}")
@@ -118,7 +120,7 @@ set(PROJECT_LIBRARIES
 	Crypt32
 	Normaliz
 
-	# Qt6 Shared Library
+	# Qt6
 	Qt6::Core
 	Qt6::Widgets
 
@@ -151,9 +153,7 @@ if(USE_OPENSSL)
 		libcrypto_static)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE 
-	${PROJECT_LIBRARIES}
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 
 if(Unit_Tests)
 	target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})

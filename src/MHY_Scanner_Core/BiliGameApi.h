@@ -15,7 +15,7 @@ public:
 	std::string makeCaptchUrl();
 private:
 	void captcha();
-	std::string setSign(std::map<std::string, std::string> data);
+	std::string setSign(std::map<std::string, std::string> data) const;
 	std::string remove_quotes(std::string str);
 	json::Json captchaJ;
 	const std::map<std::string, std::string> headers =

@@ -20,7 +20,7 @@ std::string BiliGameApi::remove_quotes(std::string str)
 	return result;
 }
 
-std::string BiliGameApi::setSign(std::map<std::string, std::string> data)
+std::string BiliGameApi::setSign(std::map<std::string, std::string> data) const
 {
 	for (auto it = data.begin(); it != data.end(); ++it)
 	{
