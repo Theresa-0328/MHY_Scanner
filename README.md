@@ -27,8 +27,6 @@
 ## 使用说明
 下载解压后运行 MHY_Scanner.exe
 
-如果报错无法定位程序输入点说明你没有安装vc运行时库，[最新支持的Visual C++下载](https://learn.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-
 点击菜单栏 **账号管理->添加账号**，官服使用cookie登录，崩坏3B服账号密码。本地保存登录信息在config/uesrinfo.json
 
 如果你不知道怎么获得米游社Cookie，[点击这里](./doc/Cookie.md)
@@ -52,9 +50,9 @@
 目前没有进行大量测试，如果有任何建议和问题欢迎提Issues。
 
 ## 常见问题
-1. 崩坏3从BiliBili服切换到官服时会游戏客户端可能会提示"渠道错误"。
+1. 崩坏3从BiliBili服切换到官服时会游戏客户端可能会提示"渠道错误"。该错误与本项目无关。
+2. 启动报错无法定位程序输入点。说明你没有安装最新的vc运行时库，[最新支持的Visual C++下载](https://learn.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
-&emsp;该错误与本项目无关。
 ## 依赖
 - qt v6.2.3
 - curl v8.2.1
