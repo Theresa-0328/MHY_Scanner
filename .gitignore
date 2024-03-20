@@ -364,7 +364,7 @@ FodyWeavers.xsd
 
 ##
 *.flv
-notes.txt
+Notes.md
 *.dll
 /src/Config
 /3rdparty/opencv
