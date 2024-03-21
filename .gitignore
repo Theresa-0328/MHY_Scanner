@@ -372,3 +372,4 @@ Notes.md
 /3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel
 /3rdparty/ffmpeg
 log.txt
+/CMakeUserPresets.json
