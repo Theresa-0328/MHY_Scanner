@@ -330,6 +330,11 @@ void ScannerGui::showEvent(QShowEvent* event)
 
 void ScannerGui::islogin(const ScanRet::Type ret)
 {
+	if (ret == ScanRet::SUCCESS && (bool)userinfo["auto_exit"] == true)
+	{
+		exit(0);
+	}
+	setWindowToFront();
 	QMessageBox* messageBox = new QMessageBox(this);
 	auto Show_QMessageBox = [&](const QString& title, const QString& text)
 		{
@@ -354,15 +359,6 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	case ScanRet::LIVESTOP:
 		Show_QMessageBox("提示", "直播中断!");
 		break;
-	case ScanRet::SUCCESS:
-	{
-		Show_QMessageBox("提示", "扫码成功!");
-		if (userinfo["auto_exit"])
-		{
-			exit(0);
-		}
-		break;
-	}
 	case ScanRet::STREAMERROR:
 		Show_QMessageBox("提示", "直播流初始化失败!");
 		break;
@@ -371,12 +367,11 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	}
 	ui.pBtstartScreen->setEnabled(true);
 	ui.pBtStream->setEnabled(true);
-	setWindowToFront();
 }
 
 void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 {
-	QString info("将用账号" + ui.lineEditUname->text());
+	QString info("正在使用账号" + ui.lineEditUname->text());
 	switch (gameType)
 	{
 	case GameType::Type::Honkai3:
@@ -395,8 +390,13 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 		break;
 	}
 	setWindowToFront();
-	QMessageBox::StandardButton result = QMessageBox::information(this, "提示", info + "确认登录？", QMessageBox::Yes | QMessageBox::No);
-	if (result != QMessageBox::Yes)
+	QMessageBox* messageBox = new QMessageBox(this);
+	messageBox->setWindowTitle("登录确认");
+	messageBox->setText(info + "确认登录？");
+	QAbstractButton* yesButton = messageBox->addButton("登录", QMessageBox::YesRole);
+	QAbstractButton* noButton = messageBox->addButton("取消", QMessageBox::NoRole);
+	QMessageBox::StandardButton result = static_cast<QMessageBox::StandardButton>(messageBox->exec());
+	if (messageBox->clickedButton() != yesButton)
 	{
 		pBtStop();
 		return;
@@ -565,9 +565,10 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
 void ScannerGui::setWindowToFront()
 {
 	HWND hwnd = reinterpret_cast<HWND>(winId());
+	ShowWindow(hwnd, SW_MINIMIZE);
+	ShowWindow(hwnd, SW_SHOWNORMAL);
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	SetForegroundWindow(hwnd);
-	ShowWindow(hwnd, SW_SHOWNORMAL);
 	SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
 
