@@ -19,10 +19,10 @@
 - 表格化管理多账号，方便切换游戏账号。
 
 ## 目前可用的平台
-| 崩坏3 | 原神 | 星穹铁道 |
-|:-----:|:-----:|:-----:|
-| 官服| 官服 | 官服 |
-| bilibili服 |  |  |
+|   崩坏3    | 原神  | 星穹铁道 |
+| :--------: | :---: | :------: |
+|    官服    | 官服  |   官服   |
+| bilibili服 |       |          |
 
 ## 使用说明
 下载解压后运行 MHY_Scanner.exe
@@ -41,11 +41,11 @@
 
 `RID`是纯数字，一般从直播间链接中获得。
 
-| 平台| `<RID>` 位置 |
-|:--------------------:|:--------------------------------------:|
-|[B 站](https://live.bilibili.com/)|  `https://live.bilibili.com/<RID>`     |
-|[抖音](https://live.douyin.com/)    |   `https://live.douyin.com/<RID>`     |
-|[虎牙](https://huya.com/) |`https://www.huya.com/<RID>`  |
+|                平台                |           `<RID>` 位置            |
+| :--------------------------------: | :-------------------------------: |
+| [B 站](https://live.bilibili.com/) | `https://live.bilibili.com/<RID>` |
+|  [抖音](https://live.douyin.com/)  |  `https://live.douyin.com/<RID>`  |
+|     [虎牙](https://huya.com/)      |   `https://www.huya.com/<RID>`    |
 
 目前没有进行大量测试，如果有任何建议和问题欢迎提Issues。
 
