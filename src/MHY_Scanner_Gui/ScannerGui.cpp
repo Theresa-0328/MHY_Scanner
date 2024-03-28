@@ -362,6 +362,9 @@ void ScannerGui::islogin(const ScanRet::Type ret)
 	case ScanRet::STREAMERROR:
 		Show_QMessageBox("提示", "直播流初始化失败!");
 		break;
+	case ScanRet::SUCCESS:
+		Show_QMessageBox("提示", "扫码成功!");
+		break;
 	default:
 		break;
 	}
@@ -395,7 +398,7 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
 	messageBox->setText(info + "确认登录？");
 	QAbstractButton* yesButton = messageBox->addButton("登录", QMessageBox::YesRole);
 	QAbstractButton* noButton = messageBox->addButton("取消", QMessageBox::NoRole);
-	QMessageBox::StandardButton result = static_cast<QMessageBox::StandardButton>(messageBox->exec());
+	messageBox->exec();
 	if (messageBox->clickedButton() != yesButton)
 	{
 		pBtStop();
@@ -565,6 +568,8 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
 void ScannerGui::setWindowToFront()
 {
 	HWND hwnd = reinterpret_cast<HWND>(winId());
+	if (GetForegroundWindow() == hwnd)
+		return;
 	ShowWindow(hwnd, SW_MINIMIZE);
 	ShowWindow(hwnd, SW_SHOWNORMAL);
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
