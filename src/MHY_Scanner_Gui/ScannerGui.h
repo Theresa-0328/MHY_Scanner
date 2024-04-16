@@ -15,72 +15,74 @@
 #include "ui_ScannerGui.h"
 
 class OnlineUpdate :
-	public QThread
+    public QThread
 {
 public:
-	OnlineUpdate() = default;
-	void run();
-	~OnlineUpdate();
+    OnlineUpdate() = default;
+    void run();
+    ~OnlineUpdate();
 };
 
 class configInitLoad :
-	public QThread
+    public QThread
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	configInitLoad() = default;
-	void run();
-	~configInitLoad();
+    configInitLoad() = default;
+    void run();
+    ~configInitLoad();
 signals:
-	void userinfoTrue(bool b);
+    void userinfoTrue(bool b);
+
 private:
-	ConfigDate* m_config = &ConfigDate::getInstance();
+    ConfigDate* m_config = &ConfigDate::getInstance();
 };
 
 class ScannerGui :
-	public QMainWindow
+    public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ScannerGui(QWidget* parent = nullptr);
-	~ScannerGui();
-	void insertTableItems(QString uid, QString userName, QString type, QString notes);
-	virtual void closeEvent(QCloseEvent* event);
-	virtual void showEvent(QShowEvent* event);
+    ScannerGui(QWidget* parent = nullptr);
+    ~ScannerGui();
+    void insertTableItems(QString uid, QString userName, QString type, QString notes);
+    virtual void closeEvent(QCloseEvent* event);
+    virtual void showEvent(QShowEvent* event);
 public slots:
-	void LoginAccount();
-	void SetDefaultAccount();
-	void DeleteAccount();
-	void About();
-	void help();
+    void LoginAccount();
+    void SetDefaultAccount();
+    void DeleteAccount();
+    void About();
+    void help();
 
-	void pBtstartScreen();
-	void pBtStream();
-	void pBtStop();
+    void pBtstartScreen();
+    void pBtStream();
+    void pBtStop();
 
-	void checkBoxAutoScreen(bool clicked);
-	void checkBoxAutoExit(bool clicked);
-	void checkBoxAutoLogin(bool clicked);
+    void checkBoxAutoScreen(bool clicked);
+    void checkBoxAutoExit(bool clicked);
+    void checkBoxAutoLogin(bool clicked);
 
-	void islogin(const ScanRet::Type ret);
-	void loginConfirmTip(const GameType::Type gameType, bool b);
-	void getInfo(int x, int y);
-	void configInitUpdate(bool b);
-	void updateNote(QTableWidgetItem* item);
+    void islogin(const ScanRet::Type ret);
+    void loginConfirmTip(const GameType::Type gameType, bool b);
+    void getInfo(int x, int y);
+    void configInitUpdate(bool b);
+    void updateNote(QTableWidgetItem* item);
+
 private:
-	void failure();
-	int countA = -1;
-	Ui::ScannerGuiClass ui;
-	ConfigDate* m_config = &ConfigDate::getInstance();
-	json::Json userinfo;
-	QRCodeForScreen t1;
-	QRCodeForStream t2;
-	int liveIdError(const LiveStreamStatus::Status data);
-	int getSelectedRowIndex();
-	bool checkDuplicates(const std::string uid);
-	bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
-	OnlineUpdate o;
-	configInitLoad configinitload;
-	void setWindowToFront();
+    void failure();
+    int countA = -1;
+    Ui::ScannerGuiClass ui;
+    ConfigDate* m_config = &ConfigDate::getInstance();
+    json::Json userinfo;
+    QRCodeForScreen t1;
+    QRCodeForStream t2;
+    int liveIdError(const LiveStreamStatus::Status data);
+    int getSelectedRowIndex();
+    bool checkDuplicates(const std::string uid);
+    bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
+    OnlineUpdate o;
+    configInitLoad configinitload;
+    void setWindowToFront() const;
 };
