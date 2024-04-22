@@ -26,11 +26,9 @@ option(DEV "DEV" OFF)
 
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /sdl")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /sdl")
-	# Specify MSVC UTF-8 encoding   
-	add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-	add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /sdl /utf-8 /arch:AVX2")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /sdl /utf-8 /arch:AVX2")
+	#add_compile_options("/analyze:external-")
 endif()
 
 #opencv
@@ -163,12 +161,15 @@ if(Unit_Tests)
 endif()
 
 set(Install_Directory "${PROJECT_NAME}_${_VERSION_}")
-
 install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${Install_Directory}
 )
 install(
-    DIRECTORY
+	FILES ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.pdb
+    DESTINATION ${Install_Directory}
+)
+install(
+	DIRECTORY
     src/geetest
 	src/ScanModel
     DESTINATION
