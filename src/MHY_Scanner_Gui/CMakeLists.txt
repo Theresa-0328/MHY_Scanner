@@ -13,13 +13,8 @@ set(SRC_CPP
 	"QRCodeForScreen.cpp" 
 	../rc/ScannerGui.rc 
 	"About_QDialog.cpp")
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_executable(${PROJECT_NAME} 
-		${SRC_CPP})
-else()
-    add_executable(${PROJECT_NAME} 
-		${SRC_CPP})
-endif()
+
+add_executable(${PROJECT_NAME} ${SRC_CPP})
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
 	../TrrJson

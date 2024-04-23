@@ -26,9 +26,11 @@ option(DEV "DEV" OFF)
 
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /sdl /utf-8 /arch:AVX2")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /sdl /utf-8 /arch:AVX2")
+	add_compile_options(/Zi /sdl /utf-8 /arch:AVX2)
 	#add_compile_options("/analyze:external-")
+	if(CMAKE_BUILD_TYPE STREQUAL "Release")
+		add_link_options(/DEBUG /OPT:REF,ICF,LBR)
+	endif()
 endif()
 
 #opencv
