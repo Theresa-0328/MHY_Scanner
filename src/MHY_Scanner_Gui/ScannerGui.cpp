@@ -336,11 +336,10 @@ void ScannerGui::islogin(const ScanRet::Type ret)
     {
         exit(0);
     }
+    pBtStop();
     setWindowToFront();
     QMessageBox* messageBox = new QMessageBox(this);
     auto Show_QMessageBox = [&](const QString& title, const QString& text) {
-        ui.pBtStream->setText("监视直播间");
-        ui.pBtstartScreen->setText("监视屏幕");
         messageBox->setIcon(QMessageBox::Information);
         messageBox->setWindowTitle(title);
         messageBox->setText(text);
@@ -369,8 +368,6 @@ void ScannerGui::islogin(const ScanRet::Type ret)
     default:
         break;
     }
-    ui.pBtstartScreen->setEnabled(true);
-    ui.pBtStream->setEnabled(true);
 }
 
 void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
@@ -400,9 +397,9 @@ void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
     QAbstractButton* yesButton = messageBox->addButton("登录", QMessageBox::YesRole);
     QAbstractButton* noButton = messageBox->addButton("取消", QMessageBox::NoRole);
     messageBox->exec();
+    pBtStop();
     if (messageBox->clickedButton() != yesButton)
     {
-        pBtStop();
         return;
     }
     if (b)

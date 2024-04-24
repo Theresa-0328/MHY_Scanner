@@ -12,7 +12,3 @@ add_library(MHY_Scanner_Core STATIC
 	ConfigDate.cpp
 	#VideoProcessor.cpp
 )
-
-target_include_directories(MHY_Scanner_Core PUBLIC 
-	../TrrJson
-)

@@ -8,14 +8,17 @@
 
 #pragma comment(lib, "Dbghelp.lib")
 
-bool isOpen()
+static std::mutex mtx;
+
+static bool isOpen()
 {
     HANDLE hMutex = CreateMutex(NULL, true, TEXT("T08lJ8CJmJiyoxdV"));
     return GetLastError() == ERROR_ALREADY_EXISTS;
 }
 
-long ExceptionFilter(_EXCEPTION_POINTERS* ExceptionInfo)
+static long ExceptionFilter(_EXCEPTION_POINTERS* ExceptionInfo)
 {
+    std::lock_guard<std::mutex> lock(mtx);
     WCHAR szFileName[MAX_PATH]{ 0 };
     WCHAR szVersion[]{ TEXT("MHY_Scanner") };
     SYSTEMTIME stLocalTime;
@@ -37,19 +40,6 @@ long ExceptionFilter(_EXCEPTION_POINTERS* ExceptionInfo)
         LPCWSTR lpCaption = L"意外崩溃！";
         UINT uType = MB_OK | MB_ICONINFORMATION;
         MessageBoxW(NULL, lpText, lpCaption, uType);
-        if (!bOK)
-        {
-            DWORD dw = GetLastError();
-            return EXCEPTION_CONTINUE_SEARCH;
-        }
-        else
-        {
-            return EXCEPTION_EXECUTE_HANDLER;
-        }
-    }
-    else
-    {
-        return EXCEPTION_CONTINUE_SEARCH;
     }
     return EXCEPTION_EXECUTE_HANDLER;
 }

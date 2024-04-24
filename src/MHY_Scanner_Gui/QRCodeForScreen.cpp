@@ -15,7 +15,8 @@
 #define DELAYED 200
 
 QRCodeForScreen::QRCodeForScreen(QObject* parent) :
-    QThread(parent)
+    QThread(parent),
+    m_stop(false)
 {
     m_config = &ConfigDate::getInstance();
 }
@@ -24,8 +25,7 @@ QRCodeForScreen::~QRCodeForScreen()
 {
     if (!this->isInterruptionRequested())
     {
-        QMutexLocker lock(&m_mux);
-        m_stop = false;
+        m_stop.store(false);
     }
     this->requestInterruption();
     this->wait();
@@ -48,6 +48,7 @@ void QRCodeForScreen::LoginOfficial()
 {
     QThreadPool threadPool;
     threadPool.setMaxThreadCount(threadNumber);
+    std::mutex mtx;
     ScreenShotDXGI screenshotdxgi;
     int w{ 0 };
     int h{ 0 };
@@ -55,7 +56,7 @@ void QRCodeForScreen::LoginOfficial()
     screenshotdxgi.InitDupl(0, w, h);
     long mBufferSize = w * h * 4;
     uint8_t* mBuffer = new UCHAR[mBufferSize];
-    while (m_stop)
+    while (m_stop.load())
     {
         screenshotdxgi.getFrame(100);
         screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize);
@@ -80,27 +81,32 @@ void QRCodeForScreen::LoginOfficial()
             }
             setGameType[view]();
             const std::string& ticket = str.substr(str.length() - 24);
-            if (!o.scanInit(m_gametype, ticket, uid, gameToken))
+            if (o.validityCheck(ticket) || !m_stop.load())
             {
                 return;
             }
-            if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
+            if (mtx.try_lock())
             {
-                json::Json config;
-                config.parse(m_config->getConfig());
-                if (config["auto_login"])
+                o.scanInit(m_gametype, ticket, uid, gameToken);
+                if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
                 {
-                    ret = o.scanConfirm();
-                    emit loginResults(ret);
+                    json::Json config;
+                    config.parse(m_config->getConfig());
+                    if (config["auto_login"])
+                    {
+                        ret = o.scanConfirm();
+                        emit loginResults(ret);
+                    }
+                    else
+                    {
+                        emit loginConfirm(m_gametype, true);
+                    }
                 }
                 else
                 {
-                    emit loginConfirm(m_gametype, true);
+                    emit loginResults(ret);
                 }
-            }
-            else
-            {
-                emit loginResults(ret);
+                mtx.unlock();
             }
             stop();
         });
@@ -114,6 +120,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
 {
     QThreadPool threadPool;
     threadPool.setMaxThreadCount(threadNumber);
+    std::mutex mtx;
     const std::string& LoginData = m.verify(uid, gameToken);
     m.setUserName(m_name);
     ScreenShotDXGI screenshotdxgi;
@@ -123,7 +130,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
     screenshotdxgi.InitDupl(0, w, h);
     long mBufferSize = w * h * 4;
     uint8_t* mBuffer = new UCHAR[mBufferSize];
-    while (m_stop)
+    while (m_stop.load())
     {
         screenshotdxgi.getFrame(100);
         screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize);
@@ -146,27 +153,32 @@ void QRCodeForScreen::LoginBH3BiliBili()
                 return;
             }
             const std::string& ticket = str.substr(str.length() - 24);
-            if (!m.scanInit(ticket, LoginData))
+            if (m.validityCheck(ticket) || !m_stop.load())
             {
                 return;
             }
-            if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
+            if (mtx.try_lock())
             {
-                json::Json config;
-                config.parse(m_config->getConfig());
-                if (config["auto_login"])
+                m.scanInit(ticket, LoginData);
+                if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
                 {
-                    ret = m.scanConfirm();
-                    emit loginResults(ret);
+                    json::Json config;
+                    config.parse(m_config->getConfig());
+                    if (config["auto_login"])
+                    {
+                        ret = m.scanConfirm();
+                        emit loginResults(ret);
+                    }
+                    else
+                    {
+                        emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+                    }
                 }
                 else
                 {
-                    emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+                    emit loginResults(ret);
                 }
-            }
-            else
-            {
-                emit loginResults(ret);
+                mtx.unlock();
             }
             stop();
         });
@@ -195,7 +207,7 @@ void QRCodeForScreen::continueLastLogin()
 void QRCodeForScreen::run()
 {
     ret = ScanRet::Type::UNKNOW;
-    m_stop = true;
+    m_stop.store(true);
 #ifndef SHOW
     cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);
 #endif
@@ -217,7 +229,7 @@ void QRCodeForScreen::run()
 
 void QRCodeForScreen::stop()
 {
-    m_stop = false;
+    m_stop.store(false);
 }
 
 void QRCodeForScreen::setServerType(const ServerType::Type& servertype)

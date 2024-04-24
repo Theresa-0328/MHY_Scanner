@@ -33,8 +33,7 @@ private:
     ConfigDate* m_config;
     void LoginOfficial();
     void LoginBH3BiliBili();
-    bool m_stop = false;
-    QMutex m_mux;
+    std::atomic<bool> m_stop;
     std::string uid;
     std::string gameToken;
     std::string m_name;
