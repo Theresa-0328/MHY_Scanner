@@ -19,6 +19,7 @@ set(MAJOR_VERSION 1)
 set(MINOR_VERSION 1)
 set(MICRO_VERSION 7)
 set(_VERSION_ "v${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
+add_definitions(-DSCAN_VER="${_VERSION_}")
 
 option(Unit_Tests "Unit Tests" ON)
 option(USE_OPENSSL "OPENSSL" ON)
@@ -26,7 +27,7 @@ option(DEV "DEV" OFF)
 
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-	add_compile_options(/Zi /sdl /utf-8 /arch:AVX2)
+	add_compile_options(/Zi /sdl /arch:AVX2 /utf-8)
 	#add_compile_options("/analyze:external-")
 	if(CMAKE_BUILD_TYPE STREQUAL "Release")
 		add_link_options(/DEBUG /OPT:REF,ICF,LBR)
@@ -63,14 +64,17 @@ endif()
 #QT
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
-add_definitions(-DSCAN_VER="${_VERSION_}")
-
 if(NOT DEV)
 	add_definitions(-DTESTSPEED)
 	add_definitions(-DSHOW)
 endif()
 
-add_subdirectory(src)
+include_directories(src/TrrJson)
+include_directories(src/MHY_Scanner_Core)
+
+add_subdirectory(src/MHY_Scanner_Gui)
+add_subdirectory(src/MHY_Scanner_Core)
+add_subdirectory(src/TrrJson)
 
 if(NOT DEV)
 	#target_link_options(MHY_Scanner PRIVATE "/SUBSYSTEM:WINDOWS")

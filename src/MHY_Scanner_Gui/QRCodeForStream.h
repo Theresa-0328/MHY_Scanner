@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <atomic>
+
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -47,7 +49,6 @@ private:
     void LoginOfficial();
     void LoginBH3BiliBili();
     void setStreamHW();
-    QMutex m_mux;
     std::string uid;
     std::string gameToken;
     std::string m_name;
@@ -69,7 +70,7 @@ private:
     int videoStreamIndex{ 0 };
     int videoStreamWidth{};
     int videoStreamHeight{};
-    bool m_stop{ false };
     const int threadNumber{ 2 };
     QThreadPool threadPool;
+    std::atomic<bool> m_stop;
 };

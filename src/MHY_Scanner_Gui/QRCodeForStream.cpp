@@ -12,7 +12,9 @@ QRCodeForStream::QRCodeForStream(QObject* parent) :
     pSwsContext(nullptr),
     pAVFrame(nullptr),
     pAVPacket(nullptr),
-    pAVCodecContext(nullptr)
+    pAVCodecContext(nullptr),
+    m_stop(false)
+
 {
     av_log_set_level(AV_LOG_FATAL);
     m_config = &(ConfigDate::getInstance());
@@ -22,8 +24,7 @@ QRCodeForStream::~QRCodeForStream()
 {
     if (!this->isInterruptionRequested())
     {
-        QMutexLocker lock(&m_mux);
-        m_stop = false;
+        m_stop.store(false);
     }
     this->requestInterruption();
     this->wait();
@@ -49,7 +50,8 @@ void QRCodeForStream::setServerType(const ServerType::Type servertype)
 
 void QRCodeForStream::LoginOfficial()
 {
-    while (m_stop)
+    std::mutex mtx;
+    while (m_stop.load())
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
         {
@@ -92,10 +94,13 @@ void QRCodeForStream::LoginOfficial()
                 }
                 setGameType[view]();
                 const std::string& ticket = str.substr(str.length() - 24);
-                if (!o.scanInit(m_gametype, ticket, uid, gameToken))
+                if (o.validityCheck(ticket) || !m_stop.load())
                 {
                     return;
                 }
+                if (mtx.try_lock())
+                {
+                    o.scanInit(m_gametype, ticket, uid, gameToken);
                 ret = o.scanRequest();
                 if (ret == ScanRet::Type::SUCCESS)
                 {
@@ -115,6 +120,8 @@ void QRCodeForStream::LoginOfficial()
                 {
                     emit loginResults(ret);
                 }
+                    mtx.unlock();
+                }
                 stop();
             });
         }
@@ -125,10 +132,11 @@ void QRCodeForStream::LoginOfficial()
 
 void QRCodeForStream::LoginBH3BiliBili()
 {
+    std::once_flag flag;
     const std::string& LoginData = m.verify(uid, gameToken);
     m.setUserName(m_name);
-
-    while (m_stop)
+    std::mutex mtx;
+    while (m_stop.load())
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
         {
@@ -169,11 +177,15 @@ void QRCodeForStream::LoginBH3BiliBili()
                 {
                     return;
                 }
+                std::call_once(flag, [&]() {
                 const std::string& ticket = str.substr(str.length() - 24);
-                if (!m.scanInit(ticket, LoginData))
+                if (m.validityCheck(ticket) || !m_stop.load())
                 {
                     return;
                 }
+                if (mtx.try_lock())
+                {
+                    m.scanInit(ticket, LoginData);
                 if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
                 {
                     json::Json config;
@@ -191,6 +203,8 @@ void QRCodeForStream::LoginBH3BiliBili()
                 else
                 {
                     emit loginResults(ret);
+                }
+                    mtx.unlock();
                 }
                 stop();
             });
@@ -218,8 +232,7 @@ void QRCodeForStream::setStreamHW()
 
 void QRCodeForStream::stop()
 {
-    QMutexLocker lock(&m_mux);
-    m_stop = false;
+    m_stop.store(false);
 }
 
 void QRCodeForStream::setUrl(const std::string& url, const std::map<std::string, std::string> heard)
@@ -307,7 +320,7 @@ void QRCodeForStream::continueLastLogin()
 void QRCodeForStream::run()
 {
     threadPool.setMaxThreadCount(threadNumber);
-    m_stop = true;
+    m_stop.store(true);
     ret = ScanRet::Type::UNKNOW;
     //TODO 获取直播流地址放在这里
 #ifndef SHOW

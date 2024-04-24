@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
 
-set(SRC_CPP
-	#WIN32 # If you need a terminal for debug, please comment this statement 
+add_executable(${PROJECT_NAME}
 	"LoginBili.cpp" 
 	"LoginWindow.cpp"
 	"main.cpp" 
@@ -13,10 +12,3 @@ set(SRC_CPP
 	"QRCodeForScreen.cpp" 
 	../rc/ScannerGui.rc 
 	"About_QDialog.cpp")
-
-add_executable(${PROJECT_NAME} ${SRC_CPP})
-
-target_include_directories(${PROJECT_NAME} PUBLIC 
-	../TrrJson
-	../MHY_Scanner_Core
-)
