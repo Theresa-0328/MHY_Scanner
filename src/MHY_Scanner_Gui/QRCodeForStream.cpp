@@ -79,10 +79,10 @@ void QRCodeForStream::LoginOfficial()
             cv::imshow("Video_Stream", img);
             cv::waitKey(1);
 #endif
-            threadPool.tryStart([&, temp_img = std::move(img)]() {
+            threadPool.tryStart([&, img = std::move(img)]() {
                 thread_local QRScanner qrScanners;
                 std::string str;
-                qrScanners.decodeSingle(temp_img, str);
+                qrScanners.decodeSingle(img, str);
                 if (str.size() < 85)
                 {
                     return;
@@ -94,12 +94,17 @@ void QRCodeForStream::LoginOfficial()
                 }
                 setGameType[view]();
                 const std::string& ticket = str.substr(str.length() - 24);
-                if (o.validityCheck(ticket) || !m_stop.load())
+                if (o.validityCheck(ticket))
                 {
                     return;
                 }
                 if (mtx.try_lock())
                 {
+                    if (!m_stop.load())
+                    {
+                        mtx.unlock();
+                        return;
+                    }
                     o.scanInit(m_gametype, ticket, uid, gameToken);
                 ret = o.scanRequest();
                 if (ret == ScanRet::Type::SUCCESS)
@@ -120,6 +125,7 @@ void QRCodeForStream::LoginOfficial()
                 {
                     emit loginResults(ret);
                 }
+                    stop();
                     mtx.unlock();
                 }
                 stop();
@@ -132,7 +138,6 @@ void QRCodeForStream::LoginOfficial()
 
 void QRCodeForStream::LoginBH3BiliBili()
 {
-    std::once_flag flag;
     const std::string& LoginData = m.verify(uid, gameToken);
     m.setUserName(m_name);
     std::mutex mtx;
@@ -165,10 +170,10 @@ void QRCodeForStream::LoginBH3BiliBili()
             cv::imshow("Video_Stream", img);
             cv::waitKey(1);
 #endif
-            threadPool.tryStart([&, temp_img = std::move(img)]() {
+            threadPool.tryStart([&, img = std::move(img)]() {
                 thread_local QRScanner qrScanners;
                 std::string str;
-                qrScanners.decodeSingle(temp_img, str);
+                qrScanners.decodeSingle(img, str);
                 if (str.size() < 85)
                 {
                     return;
@@ -179,12 +184,17 @@ void QRCodeForStream::LoginBH3BiliBili()
                 }
                 std::call_once(flag, [&]() {
                 const std::string& ticket = str.substr(str.length() - 24);
-                if (m.validityCheck(ticket) || !m_stop.load())
+                if (m.validityCheck(ticket))
                 {
                     return;
                 }
                 if (mtx.try_lock())
                 {
+                    if (!m_stop.load())
+                    {
+                        mtx.unlock();
+                        return;
+                    }
                     m.scanInit(ticket, LoginData);
                 if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
                 {
@@ -204,6 +214,7 @@ void QRCodeForStream::LoginBH3BiliBili()
                 {
                     emit loginResults(ret);
                 }
+                    stop();
                     mtx.unlock();
                 }
                 stop();
