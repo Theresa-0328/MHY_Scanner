@@ -182,7 +182,6 @@ void QRCodeForStream::LoginBH3BiliBili()
                 {
                     return;
                 }
-                std::call_once(flag, [&]() {
                 const std::string& ticket = str.substr(str.length() - 24);
                 if (m.validityCheck(ticket))
                 {
