@@ -66,10 +66,10 @@ void QRCodeForScreen::LoginOfficial()
         cv::imshow("Video_Stream", img);
         cv::waitKey(1);
 #endif
-        threadPool.tryStart([&, temp_img = std::move(img)]() {
+        threadPool.tryStart([&, img = std::move(img)]() {
             thread_local QRScanner qrScanners;
             std::string str;
-            qrScanners.decodeSingle(temp_img, str);
+            qrScanners.decodeSingle(img, str);
             if (str.size() < 85)
             {
                 return;
@@ -81,12 +81,17 @@ void QRCodeForScreen::LoginOfficial()
             }
             setGameType[view]();
             const std::string& ticket = str.substr(str.length() - 24);
-            if (o.validityCheck(ticket) || !m_stop.load())
+            if (o.validityCheck(ticket))
             {
                 return;
             }
             if (mtx.try_lock())
             {
+                if (!m_stop.load())
+                {
+                    mtx.unlock();
+                    return;
+                }
                 o.scanInit(m_gametype, ticket, uid, gameToken);
                 if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
                 {
@@ -106,9 +111,9 @@ void QRCodeForScreen::LoginOfficial()
                 {
                     emit loginResults(ret);
                 }
+                stop();
                 mtx.unlock();
             }
-            stop();
         });
         std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
         screenshotdxgi.doneWithFrame();
@@ -140,10 +145,10 @@ void QRCodeForScreen::LoginBH3BiliBili()
         cv::imshow("Video_Stream", img);
         cv::waitKey(1);
 #endif
-        threadPool.tryStart([&, temp_img = std::move(img)]() {
+        threadPool.tryStart([&, img = std::move(img)]() {
             thread_local QRScanner qrScanners;
             std::string str;
-            qrScanners.decodeSingle(temp_img, str);
+            qrScanners.decodeSingle(img, str);
             if (str.size() < 85)
             {
                 return;
@@ -153,12 +158,17 @@ void QRCodeForScreen::LoginBH3BiliBili()
                 return;
             }
             const std::string& ticket = str.substr(str.length() - 24);
-            if (m.validityCheck(ticket) || !m_stop.load())
+            if (m.validityCheck(ticket))
             {
                 return;
             }
             if (mtx.try_lock())
             {
+                if (!m_stop.load())
+                {
+                    mtx.unlock();
+                    return;
+                }
                 m.scanInit(ticket, LoginData);
                 if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
                 {
@@ -178,9 +188,9 @@ void QRCodeForScreen::LoginBH3BiliBili()
                 {
                     emit loginResults(ret);
                 }
+                stop();
                 mtx.unlock();
             }
-            stop();
         });
         std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
         screenshotdxgi.doneWithFrame();
