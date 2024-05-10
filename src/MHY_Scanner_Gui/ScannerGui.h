@@ -78,7 +78,7 @@ private:
     json::Json userinfo;
     QRCodeForScreen t1;
     QRCodeForStream t2;
-    int liveIdError(const LiveStreamStatus::Status data);
+    int liveIdError(const LiveStreamStatus data);
     int getSelectedRowIndex();
     bool checkDuplicates(const std::string uid);
     bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
