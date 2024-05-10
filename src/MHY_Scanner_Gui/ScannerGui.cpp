@@ -224,7 +224,7 @@ void ScannerGui::pBtstartScreen()
             failure();
             goto exit;
         }
-        t1.setServerType(ServerType::Type::Official);
+        t1.setServerType(ServerType::Official);
         t1.setLoginInfo(uid, gameToken);
     }
     else if (type == "崩坏3B服")
@@ -240,7 +240,7 @@ void ScannerGui::pBtstartScreen()
             failure();
             goto exit;
         }
-        t1.setServerType(ServerType::Type::BH3_BiliBili);
+        t1.setServerType(ServerType::BH3_BiliBili);
         t1.setLoginInfo(uid, stoken, name);
     }
     else
@@ -289,7 +289,7 @@ void ScannerGui::pBtStream()
             failure();
             goto exit;
         }
-        t2.setServerType(ServerType::Type::Official);
+        t2.setServerType(ServerType::Official);
         t2.setLoginInfo(uid, gameToken);
     }
     else if (type == "崩坏3B服")
@@ -305,7 +305,7 @@ void ScannerGui::pBtStream()
             failure();
             goto exit;
         }
-        t2.setServerType(ServerType::Type::BH3_BiliBili);
+        t2.setServerType(ServerType::BH3_BiliBili);
         t2.setLoginInfo(uid, stoken, name);
     }
     else
@@ -462,21 +462,22 @@ void ScannerGui::checkBoxAutoLogin(bool clicked)
     m_config->updateConfig(userinfo.str());
 }
 
-int ScannerGui::liveIdError(const LiveStreamStatus::Status data)
+int ScannerGui::liveIdError(const LiveStreamStatus data)
 {
     switch (data)
     {
-    case LiveStreamStatus::Absent:
+        using enum LiveStreamStatus;
+    case Absent:
     {
         QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
         return 1;
     }
-    case LiveStreamStatus::NotLive:
+    case NotLive:
     {
         QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
         return 1;
     }
-    case LiveStreamStatus::Error:
+    case Error:
     {
         QMessageBox::information(this, "提示", "直播间未知错误!", QMessageBox::Yes);
         return 1;

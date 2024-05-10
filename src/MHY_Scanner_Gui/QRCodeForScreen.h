@@ -43,7 +43,7 @@ private:
         { "8F%", [this]() { m_gametype = GameType::Type::StarRail; } },
     };
     GameType::Type m_gametype = GameType::Type::UNKNOW;
-    ServerType::Type servertype = ServerType::Type::UNKNOW;
+    ServerType::Type servertype;
     ScanRet::Type ret = ScanRet::Type::UNKNOW;
     const int threadNumber = 1;
 };

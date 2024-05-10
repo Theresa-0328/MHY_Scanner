@@ -32,7 +32,7 @@ public:
     ~QRCodeForStream();
     void setLoginInfo(const std::string& uid, const std::string& gameToken);
     void setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name);
-    void setServerType(const ServerType::Type servertype);
+    void setServerType(const ServerType servertype);
     void setUrl(const std::string& url, const std::map<std::string, std::string> heard = {});
     auto init() -> bool;
     void run();
@@ -59,7 +59,7 @@ private:
         { "8F%", [this]() { m_gametype = GameType::Type::StarRail; } }
     };
     GameType::Type m_gametype = GameType::Type::UNKNOW;
-    ServerType::Type servertype = ServerType::Type::UNKNOW;
+    ServerType servertype;
     ScanRet::Type ret = ScanRet::Type::UNKNOW;
     AVDictionary* pAvdictionary;
     AVFormatContext* pAVFormatContext;

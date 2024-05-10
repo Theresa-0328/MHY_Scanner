@@ -13,7 +13,8 @@ QRCodeForStream::QRCodeForStream(QObject* parent) :
     pAVFrame(nullptr),
     pAVPacket(nullptr),
     pAVCodecContext(nullptr),
-    m_stop(false)
+    m_stop(false),
+    servertype(ServerType::Official)
 
 {
     av_log_set_level(AV_LOG_FATAL);
@@ -43,7 +44,7 @@ void QRCodeForStream::setLoginInfo(const std::string& uid, const std::string& ga
     this->m_name = name;
 }
 
-void QRCodeForStream::setServerType(const ServerType::Type servertype)
+void QRCodeForStream::setServerType(const ServerType servertype)
 {
     this->servertype = servertype;
 }
@@ -128,7 +129,6 @@ void QRCodeForStream::LoginOfficial()
                     stop();
                     mtx.unlock();
                 }
-                stop();
             });
         }
         av_frame_unref(pAVFrame);
@@ -216,7 +216,6 @@ void QRCodeForStream::LoginBH3BiliBili()
                     stop();
                     mtx.unlock();
                 }
-                stop();
             });
         }
         av_frame_unref(pAVFrame);

@@ -1,41 +1,37 @@
 ﻿#pragma once
 
-class ServerType
+enum class ServerType : uint8_t
 {
-public:
-	enum Type
-	{
-		UNKNOW = 0,
-		Official = 1,
-		BH3_BiliBili = 2
-	};
+    UNKNOW [[deprecated]] = 0,
+    Official = 1,
+    BH3_BiliBili = 2
 };
 
 class GameType
 {
 public:
-	enum Type
-	{
-		UNKNOW = 0,
-		Honkai3 = 1,
-		Genshin = 4,
-		StarRail = 8,
-		Honkai3_BiliBili = 10000
-	};
+    enum Type
+    {
+        UNKNOW = 0,
+        Honkai3 = 1,
+        Genshin = 4,
+        StarRail = 8,
+        Honkai3_BiliBili = 10000
+    };
 };
 
 class ScanRet
 {
 public:
-	enum Type
-	{
-		UNKNOW = 0,
-		SUCCESS = 1,
-		FAILURE_1 = 3,
-		FAILURE_2 = 4,
-		LIVESTOP = 5,
-		STREAMERROR = 6
-	};
+    enum Type
+    {
+        UNKNOW = 0,
+        SUCCESS = 1,
+        FAILURE_1 = 3,
+        FAILURE_2 = 4,
+        LIVESTOP = 5,
+        STREAMERROR = 6
+    };
 };
 
 constexpr const char* game_bili_userinfo = "https://line1-sdk-center-login-sh.biligame.net/api/client/user.info";
