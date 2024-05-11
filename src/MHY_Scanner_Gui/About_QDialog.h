@@ -6,8 +6,8 @@
 
 class AboutDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	AboutDialog(QDialog* parent = nullptr);
+    AboutDialog(QDialog* parent = nullptr);
 };
