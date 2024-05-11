@@ -64,6 +64,12 @@ endif()
 #QT
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
+#QR-Code-generator
+include_directories(./3rdparty/QR-Code-generator/cpp)
+add_library(QR_Code_generator STATIC 3rdparty/QR-Code-generator/cpp/qrcodegen.cpp)
+#add_executable(QrCodeGeneratorDemo 3rdparty/QR-Code-generator/cpp/QrCodeGeneratorDemo.cpp)
+#target_link_libraries(QrCodeGeneratorDemo QR_Code_generator)
+
 if(NOT DEV)
 	add_definitions(-DTESTSPEED)
 	add_definitions(-DSHOW)
@@ -148,7 +154,11 @@ set(PROJECT_LIBRARIES
 
 	# curl
 	libcurl_a
+
+	QR_Code_generator
 )
+
+#target_link_libraries(QrCodeGeneratorDemo ${PROJECT_LIBRARIES})
 
 if(USE_OPENSSL)
 	target_link_libraries(MHY_Scanner_Core PRIVATE 
