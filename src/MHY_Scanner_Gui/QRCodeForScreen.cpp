@@ -202,10 +202,11 @@ void QRCodeForScreen::continueLastLogin()
 {
     switch (servertype)
     {
-    case ServerType::Official:
+        using enum ServerType;
+    case Official:
         ret = o.scanConfirm();
         break;
-    case ServerType::BH3_BiliBili:
+    case BH3_BiliBili:
         ret = m.scanConfirm();
         break;
     default:
@@ -242,7 +243,7 @@ void QRCodeForScreen::stop()
     m_stop.store(false);
 }
 
-void QRCodeForScreen::setServerType(const ServerType::Type& servertype)
+void QRCodeForScreen::setServerType(const ServerType servertype)
 {
     this->servertype = servertype;
 }

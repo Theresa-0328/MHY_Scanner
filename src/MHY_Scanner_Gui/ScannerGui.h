@@ -47,8 +47,8 @@ public:
     ScannerGui(QWidget* parent = nullptr);
     ~ScannerGui();
     void insertTableItems(QString uid, QString userName, QString type, QString notes);
-    virtual void closeEvent(QCloseEvent* event);
-    virtual void showEvent(QShowEvent* event);
+    void closeEvent(QCloseEvent* event) override;
+    void showEvent(QShowEvent* event) override;
 public slots:
     void LoginAccount();
     void SetDefaultAccount();

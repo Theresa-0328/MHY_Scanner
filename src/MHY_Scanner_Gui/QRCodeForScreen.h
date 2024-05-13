@@ -19,7 +19,7 @@ public:
     ~QRCodeForScreen();
     void setLoginInfo(const std::string& uid, const std::string& token);
     void setLoginInfo(const std::string& uid, const std::string& token, const std::string& name);
-    void setServerType(const ServerType::Type& servertype);
+    void setServerType(const ServerType servertype);
     void continueLastLogin();
     void run();
     void stop();
@@ -43,7 +43,7 @@ private:
         { "8F%", [this]() { m_gametype = GameType::Type::StarRail; } },
     };
     GameType::Type m_gametype = GameType::Type::UNKNOW;
-    ServerType::Type servertype;
+    ServerType servertype;
     ScanRet::Type ret = ScanRet::Type::UNKNOW;
     const int threadNumber = 1;
 };
