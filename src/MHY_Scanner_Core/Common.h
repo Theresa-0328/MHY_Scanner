@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <cstdint>
 
 enum class ServerType : uint8_t
 {
