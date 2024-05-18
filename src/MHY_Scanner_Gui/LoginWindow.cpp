@@ -1,7 +1,10 @@
 ﻿#include "LoginWindow.h"
 
+#include <Windows.h>
+
 #include <QRegularExpressionValidator>
-#include <iostream>
+
+static std::string_view qrcodeString{ "https://user.mihoyo.com/qr_code_in_game.html?app_id=4&app_name=%E5%8E%9F%E7%A5%9E&bbs=true&biz_key=hk4e_cn&expire=1713656071&ticket=661db98757e55304f24d8fa2" };
 
 LoginWindow::LoginWindow(QDialog* Dialog) :
     QRCodewidget(new QWidget(Dialog)),
@@ -89,13 +92,12 @@ void LoginWindow::controlQRCodeImage(int index)
     case 0:
     {
     }
-        break;
+    break;
     case 1:
     {
         UpdateQrcodeButton->hide();
         QRCodeImage.fill(255);
         QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeImage));
-        //std::cout << threadPool.activeThreadCount() << std::endl;
         threadPool.clear();
         threadPool.start([&]() {showQRcodeImage = true; LoginWindow::qrcodeThreadFun(index); });
     }
@@ -103,9 +105,9 @@ void LoginWindow::controlQRCodeImage(int index)
     case 2:
     {
     }
-        break;
+    break;
     default:
-        break;
+        __assume(0);
     }
 }
 
@@ -140,32 +142,6 @@ void LoginWindow::ClearInputBox()
     ui.lineEditCookie->setText("");
 }
 
-cv::Mat LoginWindow::createQrCodeToCvMat(const std::string_view qrcodeString) const
-{
-    qrcodegen::QrCode qr{ qrcodegen::QrCode::encodeText(qrcodeString.data(), qrcodegen::QrCode::Ecc::QUARTILE) };
-    int size{ qr.getSize() };
-    int scale{ 5 };
-    int padding{ 0 };
-    cv::Mat qrImage(size * scale + padding * 2, size * scale + padding * 2, CV_8UC1, cv::Scalar(255));
-    for (int y = 0; y < size; y++)
-    {
-        for (int x = 0; x < size; x++)
-        {
-            bool isDark = qr.getModule(x, y);
-            for (int i = 0; i < scale; i++)
-            {
-                for (int j = 0; j < scale; j++)
-                {
-                    qrImage.at<uchar>(y * scale + i + padding, x * scale + j + padding) = isDark ? 0 : 255;
-                }
-            }
-        }
-    }
-    //cv::imshow("QR Code", qrImage);
-    //cv::waitKey(0);
-    return qrImage;
-}
-
 void LoginWindow::qrcodeThreadFun(int index)
 {
     enum class QRCodeState
@@ -177,17 +153,16 @@ void LoginWindow::qrcodeThreadFun(int index)
     };
     Sleep(1500); //模拟获取二维码访问接口时间
     QrcodeMat = createQrCodeToCvMat(qrcodeString);
-    QRCodeImage = Mat2QImage(QrcodeMat);
+    QRCodeImage = CV_8UC1_MatToQImage(QrcodeMat);
     QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeImage));
-    Sleep(1500);
     int kk{ 5 };
     while (showQRcodeImage && kk > 0)
     {
         kk--;
-        std::cout << __LINE__ << "---" << timer.elapsed() << " seconds" << std::endl;
+        std::cout << __LINE__ << "---" << std::endl;
         QRCodeState state = static_cast<QRCodeState>(0);
         if (kk < 3)
-            state = static_cast<QRCodeState>(1);
+            state = static_cast<QRCodeState>(3);
         //访问接口
         switch (state)
         {
@@ -214,7 +189,7 @@ void LoginWindow::qrcodeThreadFun(int index)
         }
         break;
         default:
-            break;
+            __assume(0);
         }
         Sleep(1000);
     }
@@ -228,7 +203,7 @@ void LoginWindow::hideQrcodeButtonFun()
 
 void LoginWindow::showQrcodeButtonFun()
 {
-    QRCodeImage = Mat2QImage(QrcodeMat - cv::Scalar(200));
+    QRCodeImage = CV_8UC1_MatToQImage(QrcodeMat - cv::Scalar(200));
     QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeImage));
     showQRcodeImage = false;
     UpdateQrcodeButton->setVisible(true);

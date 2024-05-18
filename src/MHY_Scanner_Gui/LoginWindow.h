@@ -15,6 +15,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "ui_LoginWindow.h"
+#include "UtilMat.hpp"
 
 enum class LoginType
 {
@@ -47,7 +48,6 @@ signals:
 private:
     Ui::Dialog ui;
     void ClearInputBox();
-    cv::Mat createQrCodeToCvMat(const std::string_view qrcodeString) const;
     void qrcodeThreadFun(int index);
     void hideQrcodeButtonFun();
     void showQrcodeButtonFun();
@@ -61,5 +61,4 @@ private:
     QPushButton* UpdateQrcodeButton;
     QThreadPool threadPool;
     cv::Mat QrcodeMat;
-    std::mutex mtx;
 };
