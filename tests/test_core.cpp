@@ -3,6 +3,13 @@
 #include "LiveStreamLink.h"
 #include "QRScanner.h"
 #include "UtilString.hpp"
+#include "MhyApi.hpp"
+
+TEST(UUID, Test1)
+{
+    std::string s{ createUUID4() };
+    EXPECT_TRUE(s.size() > 35);
+}
 
 TEST(LiveDoyin, Test1)
 {

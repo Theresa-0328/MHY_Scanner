@@ -64,3 +64,5 @@ constexpr const char* mhy_takumi_multi_token_by_login_ticket = "https://api-taku
 constexpr const char* mhy_takumi_game_token = "https://api-takumi.mihoyo.com/auth/api/getGameToken";
 
 constexpr const char* mhy_mys_uesrinfo = "https://bbs-api.miyoushe.com/user/api/getUserFullInfo";
+
+constexpr const char* hk4e_qrcode{ "https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/fetch" };

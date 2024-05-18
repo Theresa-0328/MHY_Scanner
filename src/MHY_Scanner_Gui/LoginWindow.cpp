@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 #include <QRegularExpressionValidator>
+#include <MhyApi.hpp>
 
 static std::string_view qrcodeString{ "https://user.mihoyo.com/qr_code_in_game.html?app_id=4&app_name=%E5%8E%9F%E7%A5%9E&bbs=true&biz_key=hk4e_cn&expire=1713656071&ticket=661db98757e55304f24d8fa2" };
 
@@ -151,8 +152,8 @@ void LoginWindow::qrcodeThreadFun(int index)
         Confirmed = 2,
         Expired = 3
     };
-    Sleep(1500); //模拟获取二维码访问接口时间
-    QrcodeMat = createQrCodeToCvMat(qrcodeString);
+    std::string deviceID{ createUUID4() };
+    QrcodeMat = createQrCodeToCvMat(GetLoginQrcodeUrl(deviceID));
     QRCodeImage = CV_8UC1_MatToQImage(QrcodeMat);
     QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeImage));
     int kk{ 5 };
