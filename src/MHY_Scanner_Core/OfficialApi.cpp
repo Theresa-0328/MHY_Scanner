@@ -8,6 +8,7 @@
 
 #include "CryptoKit.h"
 #include "UtilString.hpp"
+#include "MhyApi.hpp"
 
 OfficialApi::OfficialApi() :
     scanUrl(nullptr),
@@ -39,7 +40,7 @@ void OfficialApi::scanInit(const GameType::Type gameType, const std::string& tic
     default:
         break;
     }
-    uuid = generateUUID();
+    uuid = createUUID4();
     m_uid = uid;
     m_ticket = ticket;
     m_gameToken = gameToken;
@@ -166,30 +167,6 @@ int OfficialApi::cookieParser(const std::string& cookieString)
         return 0;
     }
     return -1;
-}
-
-std::string OfficialApi::generateUUID()
-{
-    static const char chars[] = "0123456789abcdef";
-    std::random_device rd;
-    std::mt19937 generator(rd());
-    std::uniform_int_distribution<int> distribution(0, 16);
-    constexpr int UUID_LENGTH = 36;
-    char uuid[UUID_LENGTH + 1]{};
-    for (int i = 0; i < UUID_LENGTH; ++i)
-    {
-        if (i == 8 || i == 13 || i == 18 || i == 23)
-        {
-            uuid[i] = '-';
-        }
-        else
-        {
-            int randomDigit = distribution(generator);
-            uuid[i] = chars[randomDigit];
-        }
-    }
-    uuid[UUID_LENGTH] = '\0';
-    return std::string(uuid);
 }
 
 int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
