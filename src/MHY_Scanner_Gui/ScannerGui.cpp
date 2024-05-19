@@ -14,6 +14,7 @@
 #include "Mihoyosdk.h"
 #include "LoginBili.h"
 #include "LoginWindow.h"
+#include "MhyApi.hpp"
 
 ScannerGui::ScannerGui(QWidget* parent) :
     QMainWindow(parent),
@@ -197,6 +198,26 @@ void ScannerGui::LoginAccount()
             userinfo["account"][num]["note"] = "";
             userinfo["num"] = num + 1;
         }
+    }
+    if (loginwindow.type == 3)
+    {
+        std::string pwd;
+        std::string uid;
+        loginwindow.getAccountPwd(uid, pwd);
+        if (checkDuplicates(uid))
+        {
+            QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
+            return;
+        }
+        std::string name{ getMysUserName(uid) };
+        int num = userinfo["num"];
+        insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "");
+        userinfo["account"][num]["access_key"] = pwd;
+        userinfo["account"][num]["uid"] = uid;
+        userinfo["account"][num]["name"] = name;
+        userinfo["account"][num]["type"] = "官服";
+        userinfo["account"][num]["note"] = "";
+        userinfo["num"] = num + 1;
     }
     m_config->updateConfig(userinfo.str());
 }

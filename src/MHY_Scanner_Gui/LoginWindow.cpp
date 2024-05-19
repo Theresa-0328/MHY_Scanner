@@ -3,9 +3,9 @@
 #include <Windows.h>
 
 #include <QRegularExpressionValidator>
-#include <MhyApi.hpp>
 
-static std::string_view qrcodeString{ "https://user.mihoyo.com/qr_code_in_game.html?app_id=4&app_name=%E5%8E%9F%E7%A5%9E&bbs=true&biz_key=hk4e_cn&expire=1713656071&ticket=661db98757e55304f24d8fa2" };
+#include "MhyApi.hpp"
+#include "UtilString.hpp"
 
 LoginWindow::LoginWindow(QDialog* Dialog) :
     QRCodewidget(new QWidget(Dialog)),
@@ -145,26 +145,17 @@ void LoginWindow::ClearInputBox()
 
 void LoginWindow::qrcodeThreadFun(int index)
 {
-    enum class QRCodeState
-    {
-        Init = 0,
-        Scanned = 1,
-        Confirmed = 2,
-        Expired = 3
-    };
-    std::string deviceID{ createUUID4() };
-    QrcodeMat = createQrCodeToCvMat(GetLoginQrcodeUrl(deviceID));
+    const std::string deviceID{ createUUID4() };
+    std::string qrcodeString{ GetLoginQrcodeUrl(deviceID) };
+    replace0026WithAmpersand(qrcodeString);
+    const std::string_view ticket{ qrcodeString.c_str() + qrcodeString.size() - 24, 24 };
+    std::string accountData;
+    QrcodeMat = createQrCodeToCvMat(qrcodeString);
     QRCodeImage = CV_8UC1_MatToQImage(QrcodeMat);
     QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeImage));
-    int kk{ 5 };
-    while (showQRcodeImage && kk > 0)
+    while (showQRcodeImage)
     {
-        kk--;
-        std::cout << __LINE__ << "---" << std::endl;
-        QRCodeState state = static_cast<QRCodeState>(0);
-        if (kk < 3)
-            state = static_cast<QRCodeState>(3);
-        //访问接口
+        QRCodeState state{ GetQRCodeState(deviceID, ticket, accountData) };
         switch (state)
         {
             using enum QRCodeState;
@@ -180,6 +171,12 @@ void LoginWindow::qrcodeThreadFun(int index)
         case Confirmed:
         {
             QRCodelabel->setText("登录成功！");
+            json::Json j;
+            std::string str{ unescapeString(accountData) };
+            j.parse(str);
+            Account = j["uid"];
+            Pwd = j["token"];
+            type = 3;
             this->close();
         }
         break;
