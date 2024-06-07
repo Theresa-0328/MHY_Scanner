@@ -65,4 +65,5 @@ constexpr const char* mhy_takumi_game_token = "https://api-takumi.mihoyo.com/aut
 
 constexpr const char* mhy_mys_uesrinfo = "https://bbs-api.miyoushe.com/user/api/getUserFullInfo";
 
-constexpr const char* hk4e_qrcode{ "https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/fetch" };
+constexpr const char* hk4e_qrcode_fetch{ "https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/fetch" };
+constexpr const char* hk4e_qrcode_query{ "https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/query" };
