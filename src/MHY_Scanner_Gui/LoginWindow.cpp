@@ -148,7 +148,7 @@ void LoginWindow::qrcodeThreadFun(int index)
     const std::string deviceID{ createUUID4() };
     std::string qrcodeString{ GetLoginQrcodeUrl(deviceID) };
     replace0026WithAmpersand(qrcodeString);
-    const std::string_view ticket{ qrcodeString.c_str() + qrcodeString.size() - 24, 24 };
+    const std::string_view ticket{ qrcodeString.data() + qrcodeString.size() - 24, 24 };
     std::string accountData;
     QrcodeMat = createQrCodeToCvMat(qrcodeString);
     QRCodeImage = CV_8UC1_MatToQImage(QrcodeMat);
