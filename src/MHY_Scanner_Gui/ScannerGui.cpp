@@ -212,8 +212,14 @@ void ScannerGui::LoginAccount()
         std::string name{ getMysUserName(uid) };
         int num = userinfo["num"];
         insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "");
-        userinfo["account"][num]["access_key"] = getStokenByGameToken(uid, pwd);
-        userinfo["account"][num]["uid"] = uid;
+        const auto result = getStokenByGameToken(uid, pwd);
+        if (!result)
+        {
+            return;
+        }
+        const auto& [mid, key] = *result;
+        userinfo["account"][num]["access_key"] = key;
+        userinfo["account"][num]["uid"] = mid;
         userinfo["account"][num]["name"] = name;
         userinfo["account"][num]["type"] = "官服";
         userinfo["account"][num]["note"] = "";

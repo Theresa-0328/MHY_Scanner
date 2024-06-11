@@ -60,6 +60,8 @@ LoginWindow::LoginWindow(QDialog* Dialog) :
 
     threadPool.setMaxThreadCount(1);
     //int currentIndex = ui.tabWidget->currentIndex();
+
+    ui.pBtofficialLogin->setEnabled(false);
 }
 
 LoginWindow::~LoginWindow()

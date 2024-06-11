@@ -5,6 +5,12 @@
 #include "UtilString.hpp"
 #include "MhyApi.hpp"
 
+TEST(API, Test1)
+{
+    auto result = getStokenByGameToken("", "");
+    EXPECT_TRUE(result);
+}
+
 TEST(UUID, Test1)
 {
     std::string s{ createUUID4() };
