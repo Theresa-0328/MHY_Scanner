@@ -47,7 +47,6 @@ void OfficialApi::scanInit(const GameType::Type gameType, const std::string& tic
     m_gameType = gameType;
 }
 
-//暂时用不上
 std::string OfficialApi::getDS2()
 {
     std::string time_now = std::to_string(getCurrentUnixTime());
@@ -195,9 +194,16 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken)
 {
     std::map<std::string, std::string> params = {
-        { "stoken", stoken },
-        { "uid", uid },
+        { "stoken", stoken }
     };
+    if (std::string_view(stoken.cbegin(), stoken.cbegin() + 2) == "v2")
+    {
+        params.emplace("mid", uid);
+    }
+    else
+    {
+        params.emplace("uid", uid);
+    }
     std::string s;
     GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, MapToQueryString(params)).c_str());
     const std::string& data = UTF8_To_string(s);

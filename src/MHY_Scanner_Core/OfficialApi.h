@@ -13,6 +13,7 @@ public:
     OfficialApi();
     //获取账号上所有的角色,当前不可用！
     [[deprecated("This function is temporarily deprecated!")]] std::string getRole();
+
     int getMultiTokenByLoginTicket(std::string& data);
     std::string getUserName(const std::string& uid);
     int cookieParser(const std::string& cookieString);
