@@ -22,7 +22,7 @@ ScannerGui::ScannerGui(QWidget* parent) :
     t2(this)
 {
     ui.setupUi(this);
-    connect(ui.action1_3, &QAction::triggered, this, &ScannerGui::LoginAccount);
+    connect(ui.action1_3, &QAction::triggered, this, &ScannerGui::AddAccount);
     connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
     connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::DeleteAccount);
     connect(ui.action1_2, &QAction::triggered, this, &ScannerGui::About);
@@ -114,7 +114,7 @@ void ScannerGui::insertTableItems(QString uid, QString userName, QString type, Q
     }
 }
 
-void ScannerGui::LoginAccount()
+void ScannerGui::AddAccount()
 {
     LoginWindow loginwindow(reinterpret_cast<QDialog*>(this));
     if (t1.isRunning() || t2.isRunning())
@@ -219,10 +219,11 @@ void ScannerGui::LoginAccount()
         }
         const auto& [mid, key] = *result;
         userinfo["account"][num]["access_key"] = key;
-        userinfo["account"][num]["uid"] = mid;
+        userinfo["account"][num]["uid"] = uid;
         userinfo["account"][num]["name"] = name;
         userinfo["account"][num]["type"] = "官服";
         userinfo["account"][num]["note"] = "";
+        userinfo["account"][num]["mid"] = mid;
         userinfo["num"] = num + 1;
     }
     m_config->updateConfig(userinfo.str());
@@ -243,9 +244,10 @@ void ScannerGui::pBtstartScreen()
         OfficialApi o;
         std::string stoken = userinfo["account"][countA]["access_key"];
         std::string uid = userinfo["account"][countA]["uid"];
+        std::string mid = userinfo["account"][countA]["mid"];
         std::string gameToken;
         //可用性检查
-        int code = o.getGameToken(stoken, uid, gameToken);
+        int code = o.getGameToken(stoken, mid, gameToken);
         if (code != 0)
         {
             failure();

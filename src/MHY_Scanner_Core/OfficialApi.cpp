@@ -193,17 +193,10 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
 
 int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken)
 {
-    std::map<std::string, std::string> params = {
-        { "stoken", stoken }
+    std::map<std::string, std::string> params{
+        { "stoken", stoken },
+        { "mid", uid },
     };
-    if (std::string_view(stoken.cbegin(), stoken.cbegin() + 2) == "v2")
-    {
-        params.emplace("mid", uid);
-    }
-    else
-    {
-        params.emplace("uid", uid);
-    }
     std::string s;
     GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, MapToQueryString(params)).c_str());
     const std::string& data = UTF8_To_string(s);
