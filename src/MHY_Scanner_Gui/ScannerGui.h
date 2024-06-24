@@ -86,9 +86,3 @@ private:
     configInitLoad configinitload;
     void setWindowToFront() const;
 };
-
-template<typename... Types>
-void Log_11(std::format_string<Types...> Fmt, Types&&... Args)
-{
-    return;
-}

@@ -310,9 +310,10 @@ void ScannerGui::pBtStream()
         OfficialApi o;
         std::string stoken = userinfo["account"][countA]["access_key"];
         std::string uid = userinfo["account"][countA]["uid"];
+        std::string mid = userinfo["account"][countA]["mid"];
         std::string gameToken;
         //可用性检查
-        int code = o.getGameToken(stoken, uid, gameToken);
+        int code = o.getGameToken(stoken, mid, gameToken);
         if (code != 0)
         {
             failure();

@@ -75,7 +75,8 @@ void QRCodeForStream::LoginOfficial()
             cv::Mat img(videoStreamHeight, videoStreamWidth, CV_8UC3);
             uint8_t* dstData[1] = { img.data };
             const int dstLinesize[1] = { static_cast<int>(img.step) };
-            sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+            sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height,
+                      dstData, dstLinesize);
 #ifndef SHOW
             cv::imshow("Video_Stream", img);
             cv::waitKey(1);
@@ -107,25 +108,25 @@ void QRCodeForStream::LoginOfficial()
                         return;
                     }
                     o.scanInit(m_gametype, ticket, uid, gameToken);
-                ret = o.scanRequest();
-                if (ret == ScanRet::Type::SUCCESS)
-                {
-                    json::Json config;
-                    config.parse(m_config->getConfig());
-                    if (config["auto_login"])
+                    ret = o.scanRequest();
+                    if (ret == ScanRet::Type::SUCCESS)
                     {
-                        ret = o.scanConfirm();
-                        emit loginResults(ret);
+                        json::Json config;
+                        config.parse(m_config->getConfig());
+                        if (config["auto_login"])
+                        {
+                            ret = o.scanConfirm();
+                            emit loginResults(ret);
+                        }
+                        else
+                        {
+                            emit loginConfirm(m_gametype, false);
+                        }
                     }
                     else
                     {
-                        emit loginConfirm(m_gametype, false);
+                        emit loginResults(ret);
                     }
-                }
-                else
-                {
-                    emit loginResults(ret);
-                }
                     stop();
                     mtx.unlock();
                 }
@@ -165,7 +166,8 @@ void QRCodeForStream::LoginBH3BiliBili()
             cv::Mat img(videoStreamHeight, videoStreamWidth, CV_8UC3);
             uint8_t* dstData[1] = { img.data };
             const int dstLinesize[1] = { static_cast<int>(img.step) };
-            sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height, dstData, dstLinesize);
+            sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height,
+                      dstData, dstLinesize);
 #ifndef SHOW
             cv::imshow("Video_Stream", img);
             cv::waitKey(1);
@@ -195,24 +197,24 @@ void QRCodeForStream::LoginBH3BiliBili()
                         return;
                     }
                     m.scanInit(ticket, LoginData);
-                if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
-                {
-                    json::Json config;
-                    config.parse(m_config->getConfig());
-                    if (config["auto_login"])
+                    if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
                     {
-                        ret = m.scanConfirm();
-                        emit loginResults(ret);
+                        json::Json config;
+                        config.parse(m_config->getConfig());
+                        if (config["auto_login"])
+                        {
+                            ret = m.scanConfirm();
+                            emit loginResults(ret);
+                        }
+                        else
+                        {
+                            emit loginConfirm(GameType::Type::Honkai3_BiliBili, false);
+                        }
                     }
                     else
                     {
-                        emit loginConfirm(GameType::Type::Honkai3_BiliBili, false);
+                        emit loginResults(ret);
                     }
-                }
-                else
-                {
-                    emit loginResults(ret);
-                }
                     stop();
                     mtx.unlock();
                 }
@@ -314,10 +316,11 @@ void QRCodeForStream::continueLastLogin()
 {
     switch (servertype)
     {
-    case ServerType::Official:
+        using enum ServerType;
+    case Official:
         ret = o.scanConfirm();
         break;
-    case ServerType::BH3_BiliBili:
+    case BH3_BiliBili:
         ret = m.scanConfirm();
         break;
     default:
@@ -332,17 +335,19 @@ void QRCodeForStream::run()
     m_stop.store(true);
     ret = ScanRet::Type::UNKNOW;
     //TODO 获取直播流地址放在这里
-#ifndef SHOW
-    cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);
-#endif
     if (init())
     {
+#ifndef SHOW
+        cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
+        cv::resizeWindow("Video_Stream", videoStreamWidth / 2, videoStreamHeight / 2);
+#endif
         switch (servertype)
         {
-        case ServerType::Official:
+            using enum ServerType;
+        case Official:
             LoginOfficial();
             break;
-        case ServerType::BH3_BiliBili:
+        case BH3_BiliBili:
             LoginBH3BiliBili();
             break;
         default:
