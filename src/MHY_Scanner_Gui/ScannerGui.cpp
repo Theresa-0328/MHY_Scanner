@@ -196,6 +196,7 @@ void ScannerGui::AddAccount()
             userinfo["account"][num]["name"] = name;
             userinfo["account"][num]["type"] = "崩坏3B服";
             userinfo["account"][num]["note"] = "";
+            userinfo["account"][num]["mid"] = "";
             userinfo["num"] = num + 1;
         }
     }
@@ -779,6 +780,7 @@ void configInitLoad::run()
             s = data["account"][i]["name"];
             s = data["account"][i]["type"];
             s = data["account"][i]["note"];
+            s = data["account"][i]["mid"];
         };
         int i = data["last_account"];
         bool b = data["auto_start"];
