@@ -29,5 +29,7 @@ add_executable(test_video_hw "test_video_hw.cpp")
 target_link_libraries(test_video_hw PUBLIC gtest gtest_main)
 target_include_directories(test_video_hw PUBLIC ../3rdparty/googletest-1.13.0/include)
 
+add_executable(test_streamlink "test_streamlink.cpp")
+
 #add_test(NAME test_video COMMAND test_video)
 #set_tests_properties(test_video PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)

@@ -174,6 +174,8 @@ if(Unit_Tests)
 	target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
 	target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
 	target_link_libraries(test_video_hw PRIVATE ${PROJECT_LIBRARIES})
+	target_link_libraries(test_streamlink PRIVATE ${PROJECT_LIBRARIES})
+
 endif()
 
 set(Install_Directory "${PROJECT_NAME}_${_VERSION_}")
