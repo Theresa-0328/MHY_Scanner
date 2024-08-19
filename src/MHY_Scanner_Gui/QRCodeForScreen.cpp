@@ -93,7 +93,7 @@ void QRCodeForScreen::LoginOfficial()
                     return;
                 }
                 o.scanInit(m_gametype, ticket, uid, gameToken);
-                if (ret = o.scanRequest(); ret == ScanRet::Type::SUCCESS)
+                if (ret = o.scanRequest(); ret == ScanRet::SUCCESS)
                 {
                     json::Json config;
                     config.parse(m_config->getConfig());
@@ -115,7 +115,7 @@ void QRCodeForScreen::LoginOfficial()
                 mtx.unlock();
             }
         });
-        std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
         screenshotdxgi.doneWithFrame();
     }
     delete[] mBuffer;
@@ -170,7 +170,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
                     return;
                 }
                 m.scanInit(ticket, LoginData);
-                if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
+                if (ret = m.scanCheck(); ret == ScanRet::SUCCESS)
                 {
                     json::Json config;
                     config.parse(m_config->getConfig());
@@ -181,7 +181,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
                     }
                     else
                     {
-                        emit loginConfirm(GameType::Type::Honkai3_BiliBili, true);
+                        emit loginConfirm(GameType::Honkai3_BiliBili, true);
                     }
                 }
                 else
@@ -217,7 +217,7 @@ void QRCodeForScreen::continueLastLogin()
 
 void QRCodeForScreen::run()
 {
-    ret = ScanRet::Type::UNKNOW;
+    ret = ScanRet::UNKNOW;
     m_stop.store(true);
 #ifndef SHOW
     cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);

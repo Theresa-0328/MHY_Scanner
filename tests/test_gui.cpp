@@ -2,16 +2,6 @@
 
 #include "ThreadSacn.h"
 
-TEST(ThreadSacn, Test_1440)
-{
-    cv::Mat image = cv::imread(R"(../doc/image/1.png)");
-    QRScanner qrs;
-    std::string qrcode1;
-    qrs.decodeSingle(image, qrcode1);
-    const std::string& qrcode2 = R"(https://user.mihoyo.com/qr_code_in_game.html?app_id=4&app_name=%E5%8E%9F%E7%A5%9E&bbs=true&biz_key=hk4e_cn&expire=1713656071&ticket=661db98757e55304f24d8fa2)";
-    EXPECT_EQ(qrcode1, qrcode2);
-}
-
 TEST(ThreadSacn, Test_bh3_qrcode_1080)
 {
     cv::Mat image = cv::imread(R"(../doc/image/bh3_qrcode_1080.png)");

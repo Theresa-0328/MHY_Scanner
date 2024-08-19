@@ -8,31 +8,31 @@ enum class ServerType : uint8_t
     BH3_BiliBili = 2
 };
 
-class GameType
+enum class GameType
 {
-public:
-    enum Type
-    {
-        UNKNOW = 0,
-        Honkai3 = 1,
-        Genshin = 4,
-        StarRail = 8,
-        Honkai3_BiliBili = 10000
-    };
+    UNKNOW = 0,
+    TearsOfThemis = 2,
+    Honkai3 = 1,
+    Genshin = 4,
+    PlatformApp = 5,
+    Honkai2 = 7,
+    HonkaiStarRail = 8,
+    CloudGame = 9,
+    _3NNN = 10,
+    PJSH = 11,
+    ZenlessZoneZero = 12,
+    HYG = 13,
+    Honkai3_BiliBili = 10000
 };
 
-class ScanRet
+enum class ScanRet
 {
-public:
-    enum Type
-    {
-        UNKNOW = 0,
-        SUCCESS = 1,
-        FAILURE_1 = 3,
-        FAILURE_2 = 4,
-        LIVESTOP = 5,
-        STREAMERROR = 6
-    };
+    UNKNOW = 0,
+    SUCCESS = 1,
+    FAILURE_1 = 3,
+    FAILURE_2 = 4,
+    LIVESTOP = 5,
+    STREAMERROR = 6
 };
 
 constexpr const char* game_bili_userinfo = "https://line1-sdk-center-login-sh.biligame.net/api/client/user.info";

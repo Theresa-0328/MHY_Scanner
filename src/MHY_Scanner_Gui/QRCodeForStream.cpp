@@ -56,7 +56,7 @@ void QRCodeForStream::LoginOfficial()
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
         {
-            ret = ScanRet::Type::LIVESTOP;
+            ret = ScanRet::LIVESTOP;
             break;
         }
         if (pAVPacket->stream_index != videoStreamIndex)
@@ -67,7 +67,7 @@ void QRCodeForStream::LoginOfficial()
         if (pAVFrame == nullptr)
         {
             std::cerr << "Error allocating frame" << std::endl;
-            ret = ScanRet::Type::LIVESTOP;
+            ret = ScanRet::LIVESTOP;
             break;
         }
         while (avcodec_receive_frame(pAVCodecContext, pAVFrame) == 0)
@@ -109,7 +109,7 @@ void QRCodeForStream::LoginOfficial()
                     }
                     o.scanInit(m_gametype, ticket, uid, gameToken);
                     ret = o.scanRequest();
-                    if (ret == ScanRet::Type::SUCCESS)
+                    if (ret == ScanRet::SUCCESS)
                     {
                         json::Json config;
                         config.parse(m_config->getConfig());
@@ -146,7 +146,7 @@ void QRCodeForStream::LoginBH3BiliBili()
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
         {
-            ret = ScanRet::Type::LIVESTOP;
+            ret = ScanRet::LIVESTOP;
             break;
         }
         if (pAVPacket->stream_index != videoStreamIndex)
@@ -157,7 +157,7 @@ void QRCodeForStream::LoginBH3BiliBili()
         if (pAVFrame == nullptr)
         {
             std::cerr << "Error allocating frame" << std::endl;
-            ret = ScanRet::Type::LIVESTOP;
+            ret = ScanRet::LIVESTOP;
             break;
         }
 
@@ -197,7 +197,7 @@ void QRCodeForStream::LoginBH3BiliBili()
                         return;
                     }
                     m.scanInit(ticket, LoginData);
-                    if (ret = m.scanCheck(); ret == ScanRet::Type::SUCCESS)
+                    if (ret = m.scanCheck(); ret == ScanRet::SUCCESS)
                     {
                         json::Json config;
                         config.parse(m_config->getConfig());
@@ -208,7 +208,7 @@ void QRCodeForStream::LoginBH3BiliBili()
                         }
                         else
                         {
-                            emit loginConfirm(GameType::Type::Honkai3_BiliBili, false);
+                            emit loginConfirm(GameType::Honkai3_BiliBili, false);
                         }
                     }
                     else
@@ -333,7 +333,7 @@ void QRCodeForStream::run()
 {
     threadPool.setMaxThreadCount(threadNumber);
     m_stop.store(true);
-    ret = ScanRet::Type::UNKNOW;
+    ret = ScanRet::UNKNOW;
     //TODO 获取直播流地址放在这里
     if (init())
     {
@@ -354,7 +354,7 @@ void QRCodeForStream::run()
             break;
         }
     }
-    if (ret == ScanRet::Type::LIVESTOP)
+    if (ret == ScanRet::LIVESTOP)
     {
         emit loginResults(ret);
     }

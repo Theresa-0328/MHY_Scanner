@@ -24,8 +24,8 @@ public:
     void run();
     void stop();
 signals:
-    void loginResults(const ScanRet::Type ret);
-    void loginConfirm(const GameType::Type gameType, bool b);
+    void loginResults(const ScanRet ret);
+    void loginConfirm(const GameType gameType, bool b);
 
 private:
     OfficialApi o;
@@ -38,12 +38,12 @@ private:
     std::string gameToken;
     std::string m_name;
     std::map<std::string_view, std::function<void()>> setGameType{
-        { "8F3", [this]() { m_gametype = GameType::Type::Honkai3; } },
-        { "9E&", [this]() { m_gametype = GameType::Type::Genshin; } },
-        { "8F%", [this]() { m_gametype = GameType::Type::StarRail; } },
+        { "8F3", [this]() { m_gametype = GameType::Honkai3; } },
+        { "9E&", [this]() { m_gametype = GameType::Genshin; } },
+        { "8F%", [this]() { m_gametype = GameType::HonkaiStarRail; } },
     };
-    GameType::Type m_gametype = GameType::Type::UNKNOW;
+    GameType m_gametype = GameType::UNKNOW;
     ServerType servertype;
-    ScanRet::Type ret = ScanRet::Type::UNKNOW;
+    ScanRet ret = ScanRet::UNKNOW;
     const int threadNumber = 1;
 };
