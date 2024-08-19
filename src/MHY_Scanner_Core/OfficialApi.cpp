@@ -21,7 +21,7 @@ std::string OfficialApi::getUid() const
     return cookieMap.at("login_uid");
 }
 
-void OfficialApi::scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
+void OfficialApi::scanInit(const GameType gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
 {
     switch (gameType)
     {
@@ -33,7 +33,7 @@ void OfficialApi::scanInit(const GameType::Type gameType, const std::string& tic
         scanUrl = mhy_hk4e_qrcode_scan;
         confirmUrl = mhy_hk4e_qrcode_confirm;
         break;
-    case GameType::StarRail:
+    case GameType::HonkaiStarRail:
         scanUrl = mhy_hkrpg_qrcode_scan;
         confirmUrl = mhy_hkrpg_qrcode_confirm;
         break;
@@ -72,7 +72,7 @@ bool OfficialApi::validityCheck(std::string_view ticket)
 }
 
 //扫码请求
-ScanRet::Type OfficialApi::scanRequest()
+ScanRet OfficialApi::scanRequest()
 {
     std::string m_sacnRet{};
     PostRequest(m_sacnRet, scanUrl, std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, m_ticket));
@@ -80,20 +80,20 @@ ScanRet::Type OfficialApi::scanRequest()
     j.parse(m_sacnRet);
     if ((int)j["retcode"] != 0)
     {
-        return ScanRet::Type::FAILURE_1;
+        return ScanRet::FAILURE_1;
     }
-    return ScanRet::Type::SUCCESS;
+    return ScanRet::SUCCESS;
 }
 
 //扫码确认
-ScanRet::Type OfficialApi::scanConfirm()
+ScanRet OfficialApi::scanConfirm()
 {
     std::string s;
     json::Json payload;
     payload["proto"] = "Account";
     payload["raw"] = std::format(R"({{\"uid\":\"{}\",\"token\":\"{}\"}})", m_uid, m_gameToken);
     json::Json data;
-    data["app_id"] = m_gameType;
+    data["app_id"] = static_cast<int>(m_gameType);
     data["device"] = uuid;
     data["payload"] = payload;
     data["ticket"] = m_ticket;
@@ -102,9 +102,9 @@ ScanRet::Type OfficialApi::scanConfirm()
     j.parse(s);
     if ((int)j["retcode"] != 0)
     {
-        return ScanRet::Type::FAILURE_2;
+        return ScanRet::FAILURE_2;
     }
-    return ScanRet::Type::SUCCESS;
+    return ScanRet::SUCCESS;
 }
 
 //获取用户完整信息

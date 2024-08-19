@@ -12,8 +12,8 @@ public:
     Mihoyosdk();
     std::string verify(const std::string& uid, const std::string& access_key);
     void scanInit(const std::string& ticket, const std::string& bhInfo);
-    ScanRet::Type scanCheck();
-    ScanRet::Type scanConfirm();
+    ScanRet scanCheck();
+    ScanRet scanConfirm();
     void setUserName(const std::string& name);
     void setBHVer(const std::string& s);
     void setOAServer();

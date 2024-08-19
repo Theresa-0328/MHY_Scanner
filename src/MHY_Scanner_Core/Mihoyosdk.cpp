@@ -88,7 +88,7 @@ void Mihoyosdk::scanInit(const std::string& ticket, const std::string& bhInfo)
     m_bhInfo = bhInfo;
 }
 
-ScanRet::Type Mihoyosdk::scanCheck()
+ScanRet Mihoyosdk::scanCheck()
 {
     json::Json check;
     check.parse(scanCheckS);
@@ -102,12 +102,12 @@ ScanRet::Type Mihoyosdk::scanCheck()
     check.clear();
     if (retcode != 0)
     {
-        return ScanRet::Type::FAILURE_1;
+        return ScanRet::FAILURE_1;
     }
-    return ScanRet::Type::SUCCESS;
+    return ScanRet::SUCCESS;
 }
 
-ScanRet::Type Mihoyosdk::scanConfirm()
+ScanRet Mihoyosdk::scanConfirm()
 {
     json::Json bhInfoJ;
     bhInfoJ.parse(m_bhInfo);
@@ -162,13 +162,13 @@ ScanRet::Type Mihoyosdk::scanConfirm()
     postBodyJ.parse(response);
     if ((int)postBodyJ["retcode"] == 0)
     {
-        return ScanRet::Type::SUCCESS;
+        return ScanRet::SUCCESS;
     }
     else
     {
-        return ScanRet::Type::FAILURE_2;
+        return ScanRet::FAILURE_2;
     }
-    return ScanRet::Type::FAILURE_2;
+    return ScanRet::FAILURE_2;
 }
 
 void Mihoyosdk::setUserName(const std::string& name)

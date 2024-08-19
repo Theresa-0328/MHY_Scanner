@@ -361,7 +361,7 @@ void ScannerGui::showEvent(QShowEvent* event)
 {
 }
 
-void ScannerGui::islogin(const ScanRet::Type ret)
+void ScannerGui::islogin(const ScanRet ret)
 {
     if (ret == ScanRet::SUCCESS && (bool)userinfo["auto_exit"] == true)
     {
@@ -401,21 +401,21 @@ void ScannerGui::islogin(const ScanRet::Type ret)
     }
 }
 
-void ScannerGui::loginConfirmTip(const GameType::Type gameType, bool b)
+void ScannerGui::loginConfirmTip(const GameType gameType, bool b)
 {
     QString info("正在使用账号" + ui.lineEditUname->text());
     switch (gameType)
     {
-    case GameType::Type::Honkai3:
+    case GameType::Honkai3:
         info += "\n登录崩坏3\n";
         break;
-    case GameType::Type::Honkai3_BiliBili:
+    case GameType::Honkai3_BiliBili:
         info += "\n登录BiliBili崩坏3\n";
         break;
-    case GameType::Type::Genshin:
+    case GameType::Genshin:
         info += "\n登录原神\n";
         break;
-    case GameType::Type::StarRail:
+    case GameType::HonkaiStarRail:
         info += "\n登录星穹铁道\n";
         break;
     default:

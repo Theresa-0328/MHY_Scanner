@@ -64,8 +64,8 @@ public slots:
     void checkBoxAutoExit(bool clicked);
     void checkBoxAutoLogin(bool clicked);
 
-    void islogin(const ScanRet::Type ret);
-    void loginConfirmTip(const GameType::Type gameType, bool b);
+    void islogin(const ScanRet ret);
+    void loginConfirmTip(const GameType gameType, bool b);
     void getInfo(int x, int y);
     void configInitUpdate(bool b);
     void updateNote(QTableWidgetItem* item);

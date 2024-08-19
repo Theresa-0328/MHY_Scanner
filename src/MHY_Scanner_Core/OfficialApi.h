@@ -17,16 +17,16 @@ public:
     int getMultiTokenByLoginTicket(std::string& data);
     std::string getUserName(const std::string& uid);
     int cookieParser(const std::string& cookieString);
-    void scanInit(const GameType::Type gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
-    ScanRet::Type scanRequest();
-    ScanRet::Type scanConfirm();
+    void scanInit(const GameType gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
+    ScanRet scanRequest();
+    ScanRet scanConfirm();
     int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
     std::string getUid() const;
     std::string getDS2();
     bool validityCheck(std::string_view ticket);
 
 private:
-    GameType::Type m_gameType = GameType::Type::UNKNOW;
+    GameType m_gameType = GameType::UNKNOW;
     std::string m_uid;
     std::string m_ticket;
     std::string m_gameToken;

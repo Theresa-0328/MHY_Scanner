@@ -251,7 +251,6 @@ LiveStreamStatus LiveDouyin::GetLiveStreamStatus()
 
 std::string LiveDouyin::GetLiveStreamLink() const
 {
-    std::cout << m_flvUrl << std::endl;
     return m_flvUrl;
 }
 

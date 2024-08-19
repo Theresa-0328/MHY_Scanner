@@ -21,6 +21,8 @@ enum class QRCodeState : uint8_t
     Expired = 3
 };
 
+static GameType loginType{ GameType::TearsOfThemis };
+
 [[nodiscard]] inline std::string createUUID4()
 {
     static const char chars[] = "0123456789abcdef";
@@ -43,25 +45,27 @@ enum class QRCodeState : uint8_t
     return std::string(uuid);
 }
 
-inline std::string GetLoginQrcodeUrl(const std::string_view deviece, const int gameTypeID = 4)
+inline std::string GetLoginQrcodeUrl(const std::string_view deviece, const GameType type = loginType)
 {
     HttpClient h;
     std::string res;
-    h.PostRequest(res, mhy_hk4e_qrcode_fetch, std::format(R"({{"app_id":{},"device":"{}"}})", gameTypeID, deviece));
+    h.PostRequest(res, mhy_hk4e_qrcode_fetch, std::format(R"({{"app_id":{},"device":"{}"}})", static_cast<int>(type), deviece));
     json::Json j;
     j.parse(res);
-    return static_cast<std::string>(j["data"]["url"]);
+    std::string QrcodeString{ static_cast<std::string>(j["data"]["url"]) };
+    replace0026WithAmpersand(QrcodeString);
+    return QrcodeString;
 }
 
 inline QRCodeState GetQRCodeState(const std::string_view deviece,
                                   const std::string_view ticket,
                                   std::string& accountData,
-                                  const int gameTypeID = 4)
+                                  const GameType type = loginType)
 {
     HttpClient h;
     std::string res;
     h.PostRequest(res, mhy_hk4e_qrcode_query,
-                  std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", gameTypeID, deviece, ticket));
+                  std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(type), deviece, ticket));
     //std::cout << __LINE__ << res << std::endl;
     json::Json j;
     j.parse(res);

@@ -44,7 +44,7 @@ LoginWindow::LoginWindow(QDialog* Dialog) :
     QRCodeImage.fill(Qt::white);
     QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeImage));
     QRCodelabel->setAlignment(Qt::AlignCenter);
-    QRCodelabel->setFixedSize(QSize(305, 305));
+    QRCodelabel->setFixedSize(QSize(325, 325));
     int labelWidth = QRCodelabel->width();
     int labelHeight = QRCodelabel->height();
     QRCodelabel->move((ui.tabWidget->width() - labelWidth) / 2, (ui.tabWidget->height() - labelHeight) / 2);
@@ -149,7 +149,6 @@ void LoginWindow::qrcodeThreadFun(int index)
 {
     const std::string deviceID{ createUUID4() };
     std::string qrcodeString{ GetLoginQrcodeUrl(deviceID) };
-    replace0026WithAmpersand(qrcodeString);
     const std::string_view ticket{ qrcodeString.data() + qrcodeString.size() - 24, 24 };
     std::string accountData;
     QrcodeMat = createQrCodeToCvMat(qrcodeString);
