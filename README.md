@@ -49,7 +49,7 @@
 
 ## 常见问题
 1. 崩坏3从BiliBili服切换到官服时会游戏客户端可能会提示"渠道错误"。该错误与本项目无关。
-2. 启动报错无法定位程序输入点。说明你没有安装最新的vc运行时库，[最新支持的Visual C++下载](https://learn.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+2. 启动报错无法定位程序输入点。说明你没有安装最新的vc运行时库。[下载最新支持的Visual C++](https://aka.ms/vs/17/release/vc_redist.x64.exe)，详细解释查看[Microsoft官方文档](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)。
 
 ## 依赖
 - qt v6.2.3
@@ -60,9 +60,6 @@
 - googletest
 - boost
 - httplib
-
-## 未来目标
-- [ ] 优化cpu占用
 
 ## 参考和感谢
 - [BililiveRecorder/BililiveRecorder](https://github.com/BililiveRecorder/BililiveRecorder)
