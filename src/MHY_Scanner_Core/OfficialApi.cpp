@@ -75,7 +75,9 @@ bool OfficialApi::validityCheck(std::string_view ticket)
 ScanRet OfficialApi::scanRequest()
 {
     std::string m_sacnRet{};
-    PostRequest(m_sacnRet, scanUrl, std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, m_ticket));
+    PostRequest(m_sacnRet,
+                scanUrl,
+                std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(m_gameType), uuid, m_ticket));
     json::Json j;
     j.parse(m_sacnRet);
     if ((int)j["retcode"] != 0)
