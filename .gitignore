@@ -372,4 +372,4 @@ FodyWeavers.xsd
 /3rdparty/ffmpeg
 log.txt
 /CMakeUserPresets.json
-/doc/note
+note
