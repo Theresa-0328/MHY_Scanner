@@ -2,6 +2,20 @@
 
 #include "ThreadSacn.h"
 
+TEST(ThreadSacn, Test_ZZZ_qrcode_1440)
+{
+    cv::Mat image = cv::imread(R"(../doc/image/zzz_qrcode_1440.png)");
+    ThreadSacn t;
+    t.setImg(image);
+    t.start();
+    cv::waitKey(100);
+    t.stop();
+    t.wait();
+    const std::string& qrcode1 = t.getQRcode();
+    const std::string& qrcode2 = R"(https://user.mihoyo.com/qr_code_in_game.html?app_id=12&app_name=%E7%BB%9D%E5%8C%BA%E9%9B%B6&bbs=true&biz_key=nap_cn&expire=1725289083&ticket=66cf3afb2a1c7a308832bd56)";
+    EXPECT_EQ(qrcode1, qrcode2);
+}
+
 TEST(ThreadSacn, Test_bh3_qrcode_1080)
 {
     cv::Mat image = cv::imread(R"(../doc/image/bh3_qrcode_1080.png)");

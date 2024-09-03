@@ -37,8 +37,10 @@ void OfficialApi::scanInit(const GameType gameType, const std::string& ticket, c
         scanUrl = mhy_hkrpg_qrcode_scan;
         confirmUrl = mhy_hkrpg_qrcode_confirm;
         break;
-    default:
+    case GameType::ZenlessZoneZero:
         break;
+    default:
+        __assume(0);
     }
     uuid = createUUID4();
     m_uid = uid;
@@ -126,7 +128,7 @@ std::string OfficialApi::getRole()
     std::string data;
     const char* url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
     headers["DS"] = getDS2();
-    headers["Cookie"] = "stuid=" + cookieMap.at("login_uid") + ";" + "stoken=" + data + ";" + "mid=" + "043co169fb_mhy";
+    headers["Cookie"] = "stuid=" + cookieMap.at("login_uid") + ";" + "stoken=" + data + ";" + "mid=" + "";
     std::string re;
     GetRequest(re, url, headers);
     headers.erase("Cookie");
@@ -143,14 +145,11 @@ int OfficialApi::cookieParser(const std::string& cookieString)
     size_t pos = 0;
     while (pos < cookieString.length())
     {
-        // 查找键值对的结束位置
         size_t endPos = cookieString.find(';', pos);
         if (endPos == std::string::npos)
         {
             endPos = cookieString.length();
         }
-
-        // 提取键值对
         size_t equalPos = cookieString.find('=', pos);
         if (equalPos != std::string::npos && equalPos < endPos)
         {
@@ -159,11 +158,9 @@ int OfficialApi::cookieParser(const std::string& cookieString)
             const std::string& value = cookieString.substr(equalPos + 1, endPos - equalPos - 1);
             cookieMap[key] = value;
         }
-
-        // 更新位置
         pos = endPos + 1;
     }
-    if ((cookieMap.count("login_ticket") > 0) && (cookieMap.count("login_uid") > 0))
+    if ((cookieMap.count("stoken") > 0) && ((cookieMap.count("stuid") > 0) || (cookieMap.count("ltuid")) || (cookieMap.count("account_id"))))
     {
         return 0;
     }

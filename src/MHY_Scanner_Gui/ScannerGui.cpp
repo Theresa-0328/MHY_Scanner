@@ -135,7 +135,7 @@ void ScannerGui::AddAccount()
             QMessageBox::information(this, "错误", "cookie格式错误", QMessageBox::Yes);
             return;
         }
-        std::string uid = o.getUid();
+        std::string uid{ o.getUid() };
         if (checkDuplicates(uid))
         {
             QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
