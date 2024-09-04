@@ -14,9 +14,9 @@ public:
     //获取账号上所有的角色,当前不可用！
     [[deprecated("This function is temporarily deprecated!")]] std::string getRole();
 
-    int getMultiTokenByLoginTicket(std::string& data);
+    std::string getStoken() const;
     std::string getUserName(const std::string& uid);
-    int cookieParser(const std::string& cookieString);
+    bool cookieParser(const std::string& cookieString);
     void scanInit(const GameType gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
     ScanRet scanRequest();
     ScanRet scanConfirm();
@@ -24,6 +24,7 @@ public:
     std::string getUid() const;
     std::string getDS2();
     bool validityCheck(std::string_view ticket);
+    std::string getMid() const;
 
 private:
     GameType m_gameType = GameType::UNKNOW;

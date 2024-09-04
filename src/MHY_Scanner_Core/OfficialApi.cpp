@@ -3,6 +3,9 @@
 #include <random>
 #include <sstream>
 #include <format>
+#include <vector>
+#include <algorithm>
+#include <array>
 
 #include <Json.h>
 
@@ -14,11 +17,6 @@ OfficialApi::OfficialApi() :
     scanUrl(nullptr),
     confirmUrl(nullptr)
 {
-}
-
-std::string OfficialApi::getUid() const
-{
-    return cookieMap.at("login_uid");
 }
 
 void OfficialApi::scanInit(const GameType gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken)
@@ -135,11 +133,11 @@ std::string OfficialApi::getRole()
     return std::string();
 }
 
-int OfficialApi::cookieParser(const std::string& cookieString)
+bool OfficialApi::cookieParser(const std::string& cookieString)
 {
     if (cookieString == "")
     {
-        return -1;
+        return false;
     }
     // 切割 cookie 字符串
     size_t pos = 0;
@@ -160,15 +158,19 @@ int OfficialApi::cookieParser(const std::string& cookieString)
         }
         pos = endPos + 1;
     }
-    if ((cookieMap.count("stoken") > 0) && ((cookieMap.count("stuid") > 0) || (cookieMap.count("ltuid")) || (cookieMap.count("account_id"))))
+    if ((cookieMap.count("stoken") > 0) &&
+        ((cookieMap.count("stuid") > 0) || (cookieMap.count("ltuid")) || (cookieMap.count("account_id"))) &&
+        cookieMap.count("mid"))
     {
-        return 0;
+        return true;
     }
-    return -1;
+    return false;
 }
 
-int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
+std::string OfficialApi::getStoken() const
 {
+    return cookieMap.at("stoken");
+#if 0
     std::map<std::string, std::string> params = {
         { "login_ticket", cookieMap.at("login_ticket") },
         { "uid", cookieMap.at("login_uid") },
@@ -188,6 +190,24 @@ int OfficialApi::getMultiTokenByLoginTicket(std::string& data)
         data = j["message"];
         return -1;
     }
+#endif
+}
+
+std::string OfficialApi::getUid() const
+{
+    std::array<std::string, 3> keys = { "stuid", "ltuid", "account_id" };
+    auto it = std::find_if(keys.begin(), keys.end(), [&cookieMap = cookieMap](std::string key) {
+        return cookieMap.find(key) != cookieMap.end();
+    });
+    if (it != keys.end())
+    {
+        return cookieMap.at(*it);
+    }
+}
+
+std::string OfficialApi::getMid() const
+{
+    return cookieMap.at("mid");
 }
 
 int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken)
