@@ -130,7 +130,7 @@ void ScannerGui::AddAccount()
     if (loginwindow.type == 1)
     {
         OfficialApi o;
-        if (o.cookieParser(loginwindow.cookie) != 0)
+        if (o.cookieParser(loginwindow.cookie) != true)
         {
             QMessageBox::information(this, "错误", "cookie格式错误", QMessageBox::Yes);
             return;
@@ -141,24 +141,26 @@ void ScannerGui::AddAccount()
             QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
             return;
         }
-        std::string token;
-        int code = o.getMultiTokenByLoginTicket(token);
+        std::string stoken{ o.getStoken() };
+        std::string mid{ o.getMid() };
+        std::string gameToken{};
+        int code = o.getGameToken(stoken, mid, gameToken);
         if (code == 0)
         {
-            std::string name = o.getUserName(uid);
-
+            std::string name{ o.getUserName(uid) };
             int num = userinfo["num"];
             insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "");
-            userinfo["account"][num]["access_key"] = token;
+            userinfo["account"][num]["access_key"] = stoken;
             userinfo["account"][num]["uid"] = uid;
             userinfo["account"][num]["name"] = name;
             userinfo["account"][num]["type"] = "官服";
             userinfo["account"][num]["note"] = "";
+            userinfo["account"][num]["mid"] = mid;
             userinfo["num"] = num + 1;
         }
         else
         {
-            QString info = QString::fromStdString(token);
+            QString info = QString::fromStdString("验证失败,cookie可能过期");
             QMessageBox::information(this, "错误", info, QMessageBox::Yes);
         }
     }
