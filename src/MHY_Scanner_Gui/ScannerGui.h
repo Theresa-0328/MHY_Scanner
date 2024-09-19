@@ -55,6 +55,7 @@ public slots:
     void DeleteAccount();
     void About();
     void help();
+    void OpenConfigPath();
 
     void pBtstartScreen();
     void pBtStream();

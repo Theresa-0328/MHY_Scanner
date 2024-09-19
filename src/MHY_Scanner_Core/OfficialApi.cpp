@@ -140,7 +140,7 @@ bool OfficialApi::cookieParser(const std::string& cookieString)
         return false;
     }
     // 切割 cookie 字符串
-    size_t pos = 0;
+    size_t pos{};
     while (pos < cookieString.length())
     {
         size_t endPos = cookieString.find(';', pos);
@@ -195,14 +195,11 @@ std::string OfficialApi::getStoken() const
 
 std::string OfficialApi::getUid() const
 {
-    std::array<std::string, 3> keys = { "stuid", "ltuid", "account_id" };
+    static const std::array<std::string, 3> keys{ "stuid", "ltuid", "account_id" };
     auto it = std::find_if(keys.begin(), keys.end(), [&cookieMap = cookieMap](std::string key) {
         return cookieMap.find(key) != cookieMap.end();
     });
-    if (it != keys.end())
-    {
-        return cookieMap.at(*it);
-    }
+    return cookieMap.at(*it);
 }
 
 std::string OfficialApi::getMid() const

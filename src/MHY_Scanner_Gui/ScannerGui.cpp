@@ -27,6 +27,7 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::DeleteAccount);
     connect(ui.action1_2, &QAction::triggered, this, &ScannerGui::About);
     connect(ui.action2_2, &QAction::triggered, this, &ScannerGui::help);
+    connect(ui.action1_5, &QAction::triggered, this, &ScannerGui::OpenConfigPath);
 
     connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
     connect(ui.pBtStop, &QPushButton::clicked, this, &ScannerGui::pBtStop);
@@ -695,6 +696,11 @@ void ScannerGui::About()
 void ScannerGui::help()
 {
     ShellExecuteW(NULL, L"open", L"https://github.com/Theresa-0328/MHY_Scanner/issues", NULL, NULL, SW_SHOWNORMAL);
+}
+
+void ScannerGui::OpenConfigPath()
+{
+    ShellExecuteW(NULL, L"open", L"config", NULL, NULL, SW_SHOWDEFAULT);
 }
 
 void ScannerGui::pBtStop()
