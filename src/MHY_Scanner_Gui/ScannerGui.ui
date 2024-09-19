@@ -318,6 +318,7 @@ QTableWidget::item:selected
     <addaction name="action1_3"/>
     <addaction name="action2_3"/>
     <addaction name="action1_4"/>
+    <addaction name="action1_5"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
@@ -378,6 +379,11 @@ QTableWidget::item:selected
   <action name="action1_4">
    <property name="text">
     <string>设为默认账号</string>
+   </property>
+  </action>
+  <action name="action1_5">
+   <property name="text">
+    <string>打开配置文件</string>
    </property>
   </action>
  </widget>
