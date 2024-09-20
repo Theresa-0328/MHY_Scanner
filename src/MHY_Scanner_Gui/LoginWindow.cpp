@@ -32,7 +32,7 @@ LoginWindow::LoginWindow(QDialog* Dialog) :
     ui.lineEditPwd->setEchoMode(QLineEdit::Password);
 
     ui.lineEditCookie->setFont(QFont("宋体", 13));
-    ui.lineEditCookie->setPlaceholderText("在这里粘贴Cookie...");
+    ui.lineEditCookie->setPlaceholderText("在这里粘贴包含SToken的Cookie...");
     ui.lineEditCookie->setClearButtonEnabled(true);
 
     ui.tabWidget->setTabText(0, "官服Cookie");
