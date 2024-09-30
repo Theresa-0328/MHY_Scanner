@@ -53,12 +53,9 @@ public slots:
     void AddAccount();
     void SetDefaultAccount();
     void DeleteAccount();
-    void About();
-    void help();
-    void OpenConfigPath();
 
-    void pBtstartScreen();
-    void pBtStream();
+    void pBtstartScreen(bool clicked);
+    void pBtStream(bool clicked);
     void pBtStop();
 
     void checkBoxAutoScreen(bool clicked);
@@ -70,6 +67,13 @@ public slots:
     void getInfo(int x, int y);
     void configInitUpdate(bool b);
     void updateNote(QTableWidgetItem* item);
+signals:
+    void StopScanner();
+    void StarScanScreen();
+    void AccountError();
+    void StarScanLive();
+    void LiveStreamLinkError(LiveStreamStatus status);
+    void AccountNotSelected();
 
 private:
     void failure();
@@ -79,11 +83,12 @@ private:
     json::Json userinfo;
     QRCodeForScreen t1;
     QRCodeForStream t2;
-    int liveIdError(const LiveStreamStatus data);
+    void liveIdError(const LiveStreamStatus status);
     int getSelectedRowIndex();
     bool checkDuplicates(const std::string uid);
     bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
     OnlineUpdate o;
     configInitLoad configinitload;
     void setWindowToFront() const;
+    QThreadPool* gPool{ QThreadPool::globalInstance() };
 };

@@ -158,9 +158,9 @@ bool OfficialApi::cookieParser(const std::string& cookieString)
         }
         pos = endPos + 1;
     }
-    if ((cookieMap.count("stoken") > 0) &&
-        ((cookieMap.count("stuid") > 0) || (cookieMap.count("ltuid")) || (cookieMap.count("account_id"))) &&
-        cookieMap.count("mid"))
+    if (cookieMap.contains("stoken") &&
+        (cookieMap.contains("stuid") || cookieMap.contains("ltuid") || cookieMap.contains("account_id")) &&
+        cookieMap.contains("mid"))
     {
         return true;
     }
