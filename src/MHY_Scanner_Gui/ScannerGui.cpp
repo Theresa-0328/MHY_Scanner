@@ -69,6 +69,7 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(&t2, &QRCodeForStream::loginResults, this, &ScannerGui::islogin);
     connect(&t2, &QRCodeForStream::loginConfirm, this, &ScannerGui::loginConfirmTip);
     connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
+    connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
     gPool->setMaxThreadCount(QThread::idealThreadCount());
     o.start();
     ui.tableWidget->setColumnCount(5);
@@ -273,6 +274,7 @@ void ScannerGui::pBtstartScreen(bool clicked)
             emit StopScanner();
             return;
         }
+        //FIXME 没有及时更新
         if (countA == -1)
         {
             emit AccountNotSelected();
@@ -734,6 +736,7 @@ void ScannerGui::pBtStop()
 
 void ScannerGui::configInitUpdate(bool b)
 {
+    ui.tableWidget->blockSignals(true);
     if (!b)
     {
         int result = QMessageBox::information(this, "错误", "配置文件错误！\n重置配置文件为默认？", QMessageBox::Yes | QMessageBox::No);
@@ -772,7 +775,7 @@ void ScannerGui::configInitUpdate(bool b)
     {
         ui.checkBoxAutoLogin->setChecked(true);
     }
-    connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
+    ui.tableWidget->blockSignals(false);
 }
 
 void ScannerGui::updateNote(QTableWidgetItem* item)
