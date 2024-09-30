@@ -25,12 +25,39 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(ui.action1_3, &QAction::triggered, this, &ScannerGui::AddAccount);
     connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
     connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::DeleteAccount);
-    connect(ui.action1_2, &QAction::triggered, this, &ScannerGui::About);
-    connect(ui.action2_2, &QAction::triggered, this, &ScannerGui::help);
-    connect(ui.action1_5, &QAction::triggered, this, &ScannerGui::OpenConfigPath);
-
+    connect(ui.action1_2, &QAction::triggered, this, [this]() {
+        AboutDialog aboutDialog(this);
+        aboutDialog.exec();
+    });
+    connect(ui.action2_2, &QAction::triggered, this, []() {
+        ShellExecuteW(NULL, L"open", L"https://github.com/Theresa-0328/MHY_Scanner/issues", NULL, NULL, SW_SHOWNORMAL);
+    });
+    connect(ui.action1_5, &QAction::triggered, this, []() {
+        ShellExecuteW(NULL, L"open", L"config", NULL, NULL, SW_SHOWDEFAULT);
+    });
     connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
-    connect(ui.pBtStop, &QPushButton::clicked, this, &ScannerGui::pBtStop);
+    //connect(ui.pBtStop, &QPushButton::clicked, this, &ScannerGui::pBtStop);
+    connect(this, &ScannerGui::StopScanner, this, &ScannerGui::pBtStop);
+    connect(this, &ScannerGui::StarScanScreen, this, [&]() {
+        ui.pBtstartScreen->setText("监视屏幕中");
+        ui.pBtstartScreen->setEnabled(true);
+    });
+    connect(this, &ScannerGui::AccountError, this, [&]() {
+        failure();
+        pBtStop();
+    });
+    connect(this, &ScannerGui::StarScanScreen, this, [&]() {
+        ui.pBtStream->setText("监视直播中");
+        ui.pBtStream->setEnabled(true);
+    });
+    connect(this, &ScannerGui::LiveStreamLinkError, this, [&](LiveStreamStatus status) {
+        liveIdError(status);
+    });
+    connect(this, &ScannerGui::AccountNotSelected, this, [&]() {
+        QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+        pBtStop();
+    });
+
     connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
     connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoExit);
     connect(ui.checkBoxAutoLogin, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoLogin);
@@ -42,7 +69,7 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(&t2, &QRCodeForStream::loginResults, this, &ScannerGui::islogin);
     connect(&t2, &QRCodeForStream::loginConfirm, this, &ScannerGui::loginConfirmTip);
     connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
-
+    gPool->setMaxThreadCount(QThread::idealThreadCount());
     o.start();
     ui.tableWidget->setColumnCount(5);
     QStringList header;
@@ -233,125 +260,128 @@ void ScannerGui::AddAccount()
     m_config->updateConfig(userinfo.str());
 }
 
-void ScannerGui::pBtstartScreen()
+void ScannerGui::pBtstartScreen(bool clicked)
 {
     ui.pBtstartScreen->setEnabled(false);
     ui.pBtStream->setEnabled(false);
+    ui.pBtstartScreen->setText("加载中。。。");
+    QApplication::processEvents();
 
-    if (countA == -1)
-    {
-        QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
-        goto exit;
-    }
-    if (std::string type = userinfo["account"][countA]["type"]; type == "官服")
-    {
-        OfficialApi o;
-        std::string stoken = userinfo["account"][countA]["access_key"];
-        std::string uid = userinfo["account"][countA]["uid"];
-        std::string mid = userinfo["account"][countA]["mid"];
-        std::string gameToken;
-        //可用性检查
-        int code = o.getGameToken(stoken, mid, gameToken);
-        if (code != 0)
+    gPool->start([&, clicked]() {
+        if (!clicked)
         {
-            failure();
-            goto exit;
+            emit StopScanner();
+            return;
         }
-        t1.setServerType(ServerType::Official);
-        t1.setLoginInfo(uid, gameToken);
-    }
-    else if (type == "崩坏3B服")
-    {
-        LoginBili b;
-        std::string stoken = userinfo["account"][countA]["access_key"];
-        std::string uid = userinfo["account"][countA]["uid"];
-        std::string name;
-        //可用性检查
-        int code = b.loginBiliKey(name, uid, stoken);
-        if (code != 0)
+        if (countA == -1)
         {
-            failure();
-            goto exit;
+            emit AccountNotSelected();
+            return;
         }
-        t1.setServerType(ServerType::BH3_BiliBili);
-        t1.setLoginInfo(uid, stoken, name);
-    }
-    else
-    {
-        goto exit;
-    }
-    t1.start();
-    ui.pBtstartScreen->setText("监视屏幕中");
-    return;
-exit:
-    pBtStop();
-    return;
+        if (std::string type = userinfo["account"][countA]["type"]; type == "官服")
+        {
+            OfficialApi o;
+            std::string stoken = userinfo["account"][countA]["access_key"];
+            std::string uid = userinfo["account"][countA]["uid"];
+            std::string mid = userinfo["account"][countA]["mid"];
+            std::string gameToken;
+            //可用性检查
+            int code = o.getGameToken(stoken, mid, gameToken);
+            if (code != 0)
+            {
+                emit AccountError();
+                return;
+            }
+            t1.setServerType(ServerType::Official);
+            t1.setLoginInfo(uid, gameToken);
+        }
+        else if (type == "崩坏3B服")
+        {
+            LoginBili b;
+            std::string stoken = userinfo["account"][countA]["access_key"];
+            std::string uid = userinfo["account"][countA]["uid"];
+            std::string name;
+            //可用性检查
+            int code = b.loginBiliKey(name, uid, stoken);
+            if (code != 0)
+            {
+                emit AccountError();
+                return;
+            }
+            t1.setServerType(ServerType::BH3_BiliBili);
+            t1.setLoginInfo(uid, stoken, name);
+        }
+        t1.start();
+        emit StarScanScreen();
+    });
 }
 
-void ScannerGui::pBtStream()
+void ScannerGui::pBtStream(bool clicked)
 {
     ui.pBtstartScreen->setEnabled(false);
     ui.pBtStream->setEnabled(false);
+    ui.pBtStream->setText("加载中。。。");
+    QApplication::processEvents();
 
-    std::string stream_link;
-    std::map<std::string, std::string> heards;
-    if (countA == -1)
-    {
-        QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
-        goto exit;
-    }
-    //检查直播间状态
-    if (!getStreamLink(ui.lineEditLiveId->text().toStdString(), stream_link, heards))
-    {
-        goto exit;
-    }
-    else
-    {
-        t2.setUrl(stream_link, heards);
-    }
-    if (const std::string& type = userinfo["account"][countA]["type"]; type == "官服")
-    {
-        OfficialApi o;
-        std::string stoken = userinfo["account"][countA]["access_key"];
-        std::string uid = userinfo["account"][countA]["uid"];
-        std::string mid = userinfo["account"][countA]["mid"];
-        std::string gameToken;
-        //可用性检查
-        int code = o.getGameToken(stoken, mid, gameToken);
-        if (code != 0)
+    gPool->start([&, clicked]() {
+        if (!clicked)
         {
-            failure();
-            goto exit;
+            emit StopScanner();
+            return;
         }
-        t2.setServerType(ServerType::Official);
-        t2.setLoginInfo(uid, gameToken);
-    }
-    else if (type == "崩坏3B服")
-    {
-        LoginBili b;
-        std::string stoken = userinfo["account"][countA]["access_key"];
-        std::string uid = userinfo["account"][countA]["uid"];
-        std::string name;
-        //可用性检查
-        int code = b.loginBiliKey(name, uid, stoken);
-        if (code != 0)
+        if (countA == -1)
         {
-            failure();
-            goto exit;
+            emit AccountNotSelected();
+            return;
         }
-        t2.setServerType(ServerType::BH3_BiliBili);
-        t2.setLoginInfo(uid, stoken, name);
-    }
-    else
-    {
-        goto exit;
-    }
-    t2.start(QThread::Priority::TimeCriticalPriority);
-    ui.pBtStream->setText("监视直播中");
-    return;
-exit:
-    pBtStop();
-    return;
+        std::string stream_link;
+        std::map<std::string, std::string> heards;
+        //检查直播间状态
+        if (!getStreamLink(ui.lineEditLiveId->text().toStdString(), stream_link, heards))
+        {
+            emit StopScanner();
+            return;
+        }
+        else
+        {
+            t2.setUrl(stream_link, heards);
+        }
+        if (const std::string& type = userinfo["account"][countA]["type"]; type == "官服")
+        {
+            OfficialApi o;
+            std::string stoken = userinfo["account"][countA]["access_key"];
+            std::string uid = userinfo["account"][countA]["uid"];
+            std::string mid = userinfo["account"][countA]["mid"];
+            std::string gameToken;
+            //可用性检查
+            int code = o.getGameToken(stoken, mid, gameToken);
+            if (code != 0)
+            {
+                emit AccountError();
+                return;
+            }
+            t2.setServerType(ServerType::Official);
+            t2.setLoginInfo(uid, gameToken);
+        }
+        else if (type == "崩坏3B服")
+        {
+            LoginBili b;
+            std::string stoken = userinfo["account"][countA]["access_key"];
+            std::string uid = userinfo["account"][countA]["uid"];
+            std::string name;
+            //可用性检查
+            int code = b.loginBiliKey(name, uid, stoken);
+            if (code != 0)
+            {
+                emit AccountError();
+                return;
+            }
+            t2.setServerType(ServerType::BH3_BiliBili);
+            t2.setLoginInfo(uid, stoken, name);
+        }
+        t2.start();
+        emit StarScanLive();
+    });
 }
 
 void ScannerGui::closeEvent(QCloseEvent* event)
@@ -496,30 +526,30 @@ void ScannerGui::checkBoxAutoLogin(bool clicked)
     m_config->updateConfig(userinfo.str());
 }
 
-int ScannerGui::liveIdError(const LiveStreamStatus data)
+void ScannerGui::liveIdError(const LiveStreamStatus status)
 {
-    switch (data)
+    switch (status)
     {
         using enum LiveStreamStatus;
     case Absent:
     {
         QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
-        return 1;
+        return;
     }
     case NotLive:
     {
         QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
-        return 1;
+        return;
     }
     case Error:
     {
         QMessageBox::information(this, "提示", "直播间未知错误!", QMessageBox::Yes);
-        return 1;
+        return;
     }
     default:
-        return 0;
+        return;
     }
-    return 0;
+    return;
 }
 
 int ScannerGui::getSelectedRowIndex()
@@ -553,8 +583,9 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
     case 0:
     {
         LiveBili live(roomid);
-        if (liveIdError(live.GetLiveStreamStatus()) != 0)
+        if (LiveStreamStatus status = live.GetLiveStreamStatus(); status != LiveStreamStatus::Normal)
         {
+            emit LiveStreamLinkError(status);
             return false;
         }
         heards = {
@@ -568,8 +599,9 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
     case 1:
     {
         LiveDouyin live(roomid);
-        if (liveIdError(live.GetLiveStreamStatus()) != 0)
+        if (LiveStreamStatus status = live.GetLiveStreamStatus(); status != LiveStreamStatus::Normal)
         {
+            emit LiveStreamLinkError(status);
             return false;
         }
         url = live.GetLiveStreamLink();
@@ -578,8 +610,9 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
     case 2:
     {
         LiveHuya live(roomid);
-        if (liveIdError(live.GetLiveStreamStatus()) != 0)
+        if (LiveStreamStatus status = live.GetLiveStreamStatus(); status != LiveStreamStatus::Normal)
         {
+            emit LiveStreamLinkError(status);
             return false;
         }
         heards = {
@@ -687,28 +720,14 @@ void ScannerGui::DeleteAccount()
     connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
 }
 
-void ScannerGui::About()
-{
-    AboutDialog aboutDialog(reinterpret_cast<QDialog*>(this));
-    aboutDialog.exec();
-}
-
-void ScannerGui::help()
-{
-    ShellExecuteW(NULL, L"open", L"https://github.com/Theresa-0328/MHY_Scanner/issues", NULL, NULL, SW_SHOWNORMAL);
-}
-
-void ScannerGui::OpenConfigPath()
-{
-    ShellExecuteW(NULL, L"open", L"config", NULL, NULL, SW_SHOWDEFAULT);
-}
-
 void ScannerGui::pBtStop()
 {
     t1.stop();
     t2.stop();
     ui.pBtstartScreen->setText("监视屏幕");
     ui.pBtStream->setText("监视直播间");
+    ui.pBtstartScreen->setChecked(false);
+    ui.pBtStream->setChecked(false);
     ui.pBtstartScreen->setEnabled(true);
     ui.pBtStream->setEnabled(true);
 }
@@ -784,14 +803,14 @@ void configInitLoad::run()
         int num = data["num"];
         for (int i = 0; i < num; i++)
         {
-            std::string s = data["account"][i]["uid"];
+            [[maybe_unused]] std::string s = data["account"][i]["uid"];
             s = data["account"][i]["name"];
             s = data["account"][i]["type"];
             s = data["account"][i]["note"];
             s = data["account"][i]["mid"];
         };
-        int i = data["last_account"];
-        bool b = data["auto_start"];
+        [[maybe_unused]] int i = data["last_account"];
+        [[maybe_unused]] bool b = data["auto_start"];
         b = data["auto_login"];
         b = data["auto_exit"];
         emit userinfoTrue(true);
