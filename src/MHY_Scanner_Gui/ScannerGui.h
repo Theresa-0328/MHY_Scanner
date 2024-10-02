@@ -69,11 +69,11 @@ public slots:
     void updateNote(QTableWidgetItem* item);
 signals:
     void StopScanner();
-    void StarScanScreen();
     void AccountError();
-    void StarScanLive();
     void LiveStreamLinkError(LiveStreamStatus status);
     void AccountNotSelected();
+    void StartScanScreen();
+    void StartScanLive();
 
 private:
     void failure();
