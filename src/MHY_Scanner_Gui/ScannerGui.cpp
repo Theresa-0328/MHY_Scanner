@@ -36,9 +36,8 @@ ScannerGui::ScannerGui(QWidget* parent) :
         ShellExecuteW(NULL, L"open", L"config", NULL, NULL, SW_SHOWDEFAULT);
     });
     connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
-    //connect(ui.pBtStop, &QPushButton::clicked, this, &ScannerGui::pBtStop);
     connect(this, &ScannerGui::StopScanner, this, &ScannerGui::pBtStop);
-    connect(this, &ScannerGui::StarScanScreen, this, [&]() {
+    connect(this, &ScannerGui::StartScanScreen, this, [&]() {
         ui.pBtstartScreen->setText("监视屏幕中");
         ui.pBtstartScreen->setEnabled(true);
     });
@@ -46,7 +45,7 @@ ScannerGui::ScannerGui(QWidget* parent) :
         failure();
         pBtStop();
     });
-    connect(this, &ScannerGui::StarScanScreen, this, [&]() {
+    connect(this, &ScannerGui::StartScanLive, this, [&]() {
         ui.pBtStream->setText("监视直播中");
         ui.pBtStream->setEnabled(true);
     });
@@ -57,13 +56,11 @@ ScannerGui::ScannerGui(QWidget* parent) :
         QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
         pBtStop();
     });
-
     connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
     connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoExit);
     connect(ui.checkBoxAutoLogin, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoLogin);
     connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
     connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
-
     connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
     connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
     connect(&t2, &QRCodeForStream::loginResults, this, &ScannerGui::islogin);
@@ -314,7 +311,7 @@ void ScannerGui::pBtstartScreen(bool clicked)
             t1.setLoginInfo(uid, stoken, name);
         }
         t1.start();
-        emit StarScanScreen();
+        emit StartScanScreen();
     });
 }
 
@@ -382,7 +379,7 @@ void ScannerGui::pBtStream(bool clicked)
             t2.setLoginInfo(uid, stoken, name);
         }
         t2.start();
-        emit StarScanLive();
+        emit StartScanLive();
     });
 }
 
@@ -669,7 +666,7 @@ void ScannerGui::SetDefaultAccount()
         //ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
         userinfo["last_account"] = nCurrentRow + 1;
         m_config->updateConfig(userinfo.str());
-        QMessageBox::information(this, "设置成功！", "勾选下方\"启动时自动监视屏幕\"将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
+        QMessageBox::information(this, "设置成功！", "勾选下方\"启动时自动监视屏幕\"\n将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
         return;
     }
     else
