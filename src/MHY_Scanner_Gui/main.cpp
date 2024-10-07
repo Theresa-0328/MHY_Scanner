@@ -36,7 +36,7 @@ static long ExceptionFilter(_EXCEPTION_POINTERS* ExceptionInfo)
         //写入 dmp 文件
         BOOL bOK{ MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL) };
         CloseHandle(hFile);
-        LPCWSTR lpText = L"已写入小型内存转储";
+        LPCWSTR lpText = L"即将退出，已写入小型内存转储";
         LPCWSTR lpCaption = L"意外崩溃！";
         UINT uType = MB_OK | MB_ICONINFORMATION;
         MessageBoxW(NULL, lpText, lpCaption, uType);

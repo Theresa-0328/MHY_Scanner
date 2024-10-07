@@ -264,7 +264,6 @@ void ScannerGui::pBtstartScreen(bool clicked)
     ui.pBtStream->setEnabled(false);
     ui.pBtstartScreen->setText("加载中。。。");
     QApplication::processEvents();
-
     gPool->start([&, clicked]() {
         if (!clicked)
         {
@@ -336,7 +335,7 @@ void ScannerGui::pBtStream(bool clicked)
         std::string stream_link;
         std::map<std::string, std::string> heards;
         //检查直播间状态
-        if (!getStreamLink(ui.lineEditLiveId->text().toStdString(), stream_link, heards))
+        if (!GetStreamLink(ui.lineEditLiveId->text().toStdString(), stream_link, heards))
         {
             emit StopScanner();
             return;
@@ -400,7 +399,7 @@ void ScannerGui::islogin(const ScanRet ret)
         exit(0);
     }
     pBtStop();
-    setWindowToFront();
+    SetWindowToFront();
     QMessageBox* messageBox = new QMessageBox(this);
     auto Show_QMessageBox = [&](const QString& title, const QString& text) {
         messageBox->setIcon(QMessageBox::Information);
@@ -453,7 +452,7 @@ void ScannerGui::loginConfirmTip(const GameType gameType, bool b)
     default:
         break;
     }
-    setWindowToFront();
+    SetWindowToFront();
     QMessageBox* messageBox = new QMessageBox(this);
     messageBox->setWindowTitle("登录确认");
     messageBox->setText(info + "确认登录？");
@@ -574,7 +573,7 @@ bool ScannerGui::checkDuplicates(const std::string uid)
     return false;
 }
 
-bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
+bool ScannerGui::GetStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
 {
     std::uint32_t live_type = ui.comboBox->currentIndex();
     switch (live_type)
@@ -626,7 +625,7 @@ bool ScannerGui::getStreamLink(const std::string& roomid, std::string& url, std:
     return true;
 }
 
-void ScannerGui::setWindowToFront() const
+void ScannerGui::SetWindowToFront() const
 {
     HWND hwnd = reinterpret_cast<HWND>(winId());
     if (GetForegroundWindow() == hwnd)
@@ -759,7 +758,8 @@ void ScannerGui::configInitUpdate(bool b)
     if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
     {
         countA = static_cast<int>(userinfo["last_account"]) - 1;
-        ui.pBtstartScreen->clicked();
+        ui.pBtstartScreen->clicked(true);
+        ui.pBtstartScreen->setChecked(true);
         ui.checkBoxAutoScreen->setChecked(true);
         ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
         ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);

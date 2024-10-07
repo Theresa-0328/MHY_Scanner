@@ -86,9 +86,9 @@ private:
     void liveIdError(const LiveStreamStatus status);
     int getSelectedRowIndex();
     bool checkDuplicates(const std::string uid);
-    bool getStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
+    bool GetStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards);
     OnlineUpdate o;
     configInitLoad configinitload;
-    void setWindowToFront() const;
+    void SetWindowToFront() const;
     QThreadPool* gPool{ QThreadPool::globalInstance() };
 };
