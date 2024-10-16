@@ -29,35 +29,6 @@
    <string>MHY扫码器</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QCheckBox" name="checkBoxAutoScreen">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>450</y>
-      <width>131</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>启动时自动监视屏幕</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBoxAutoExit">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>450</y>
-      <width>131</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>扫码成功后自动退出</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="lineEditUname">
     <property name="enabled">
      <bool>true</bool>
@@ -249,29 +220,25 @@ QTableWidget::item:selected
      <string>直播平台：</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBoxAutoLogin">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>450</y>
-      <width>131</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>自动二次确认</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>0</x>
       <y>370</y>
-      <width>411</width>
+      <width>501</width>
       <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>100</number>
+     </property>
+     <property name="leftMargin">
+      <number>60</number>
+     </property>
+     <property name="rightMargin">
+      <number>60</number>
+     </property>
      <item>
       <widget class="QPushButton" name="pBtstartScreen">
        <property name="sizePolicy">
@@ -298,22 +265,6 @@ QTableWidget::item:selected
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>80</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
       <widget class="QPushButton" name="pBtStream">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -326,6 +277,48 @@ QTableWidget::item:selected
        </property>
        <property name="checkable">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>460</y>
+      <width>501</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="leftMargin">
+      <number>30</number>
+     </property>
+     <property name="rightMargin">
+      <number>30</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="checkBoxAutoLogin">
+       <property name="text">
+        <string>自动二次确认</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxAutoScreen">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>启动时自动监视屏幕</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxAutoExit">
+       <property name="text">
+        <string>扫码成功后自动退出</string>
        </property>
       </widget>
      </item>

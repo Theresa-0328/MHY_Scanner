@@ -115,7 +115,7 @@ void QRCodeForScreen::LoginOfficial()
                 mtx.unlock();
             }
         });
-        //std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
+        std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
         screenshotdxgi.doneWithFrame();
     }
     delete[] mBuffer;
