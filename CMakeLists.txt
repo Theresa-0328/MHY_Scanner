@@ -17,7 +17,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(MAJOR_VERSION 1)
 set(MINOR_VERSION 1)
-set(MICRO_VERSION 10)
+set(MICRO_VERSION 11)
 set(_VERSION_ "v${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
 add_definitions(-DSCAN_VER="${_VERSION_}")
 
@@ -26,12 +26,12 @@ option(USE_OPENSSL "OPENSSL" ON)
 option(DEV "DEV" OFF)
 
 if(MSVC)
-	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-	add_compile_options(/Zi /sdl /arch:AVX2 /utf-8)
-	#add_compile_options("/analyze:external-")
-	if(CMAKE_BUILD_TYPE STREQUAL "Release")
-		add_link_options(/DEBUG /OPT:REF,ICF,LBR)
-	endif()
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+    add_compile_options(/Zi /sdl /arch:AVX2 /utf-8)
+    #add_compile_options("/analyze:external-")
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        add_link_options(/DEBUG /OPT:REF,ICF,LBR)
+    endif()
 endif()
 
 #opencv
@@ -56,9 +56,9 @@ add_definitions(-DCURL_STATICLIB)
 
 #OpenSSL
 if(USE_OPENSSL)
-	include_directories(D:/Dev/OpenSSL-Win64/include)
-	link_directories(D:/Dev/OpenSSL-Win64/lib)
-	add_definitions(-DUSE_OPENSSL)
+    include_directories(D:/Dev/OpenSSL-Win64/include)
+    link_directories(D:/Dev/OpenSSL-Win64/lib)
+    add_definitions(-DUSE_OPENSSL)
 endif()
 
 #QT
@@ -71,8 +71,8 @@ add_library(QR_Code_generator STATIC 3rdparty/QR-Code-generator/cpp/qrcodegen.cp
 #target_link_libraries(QrCodeGeneratorDemo QR_Code_generator)
 
 if(NOT DEV)
-	add_definitions(-DTESTSPEED)
-	add_definitions(-DSHOW)
+    add_definitions(-DTESTSPEED)
+    add_definitions(-DSHOW)
 endif()
 
 include_directories(src/TrrJson)
@@ -83,113 +83,113 @@ add_subdirectory(src/MHY_Scanner_Core)
 add_subdirectory(src/TrrJson)
 
 if(NOT DEV)
-	#target_link_options(MHY_Scanner PRIVATE "/SUBSYSTEM:WINDOWS")
-	set_target_properties(MHY_Scanner PROPERTIES WIN32_EXECUTABLE TRUE)
+    #target_link_options(MHY_Scanner PRIVATE "/SUBSYSTEM:WINDOWS")
+    set_target_properties(MHY_Scanner PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
 #target_compile_definitions
 
 if(Unit_Tests)
-	enable_testing()
-	add_subdirectory(tests)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
 
 set(FFMPEG_LIBRARIES)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-	list(APPEND FFMPEG_LIBRARIES 
-	libavcodec
-	libavdevice
-	libavfilter
-	libavformat
-	libavutil
-	libpostproc
-	libswresample
-	libswscale
-	)
+    list(APPEND FFMPEG_LIBRARIES 
+    libavcodec
+    libavdevice
+    libavfilter
+    libavformat
+    libavutil
+    libpostproc
+    libswresample
+    libswscale
+    )
 else()
-	list(APPEND FFMPEG_LIBRARIES 
-	avcodec
-	avdevice
-	avfilter
-	avformat
-	avutil
-	postproc
-	swresample
-	swscale
-	)
+    list(APPEND FFMPEG_LIBRARIES 
+    avcodec
+    avdevice
+    avfilter
+    avformat
+    avutil
+    postproc
+    swresample
+    swscale
+    )
 endif()
 
 set(PROJECT_LIBRARIES
-	MHY_Scanner_Core
-	TrrJson
+    MHY_Scanner_Core
+    TrrJson
 
-	# windows
-	Ws2_32
-	wldap32
-	winmm
-	Crypt32
-	Normaliz
+    # windows
+    Ws2_32
+    wldap32
+    winmm
+    Crypt32
+    Normaliz
 
-	# Qt6
-	Qt6::Core
-	Qt6::Widgets
+    # Qt6
+    Qt6::Core
+    Qt6::Widgets
 
-	# opencv
-	#ade$<$<CONFIG:Debug>:d>
-	IlmImf$<$<CONFIG:Debug>:d>
-	ittnotify$<$<CONFIG:Debug>:d>
-	libjpeg-turbo$<$<CONFIG:Debug>:d>
-	libopenjp2$<$<CONFIG:Debug>:d>
-	libpng$<$<CONFIG:Debug>:d>
-	libprotobuf$<$<CONFIG:Debug>:d>
-	libtiff$<$<CONFIG:Debug>:d>
-	libwebp$<$<CONFIG:Debug>:d>
-	opencv_img_hash480$<$<CONFIG:Debug>:d>
-	opencv_world480$<$<CONFIG:Debug>:d>
-	#quirc$<$<CONFIG:Debug>:d>
-	zlib$<$<CONFIG:Debug>:d>
-	
-	# ffmpeg
-	${FFMPEG_LIBRARIES}
+    # opencv
+    #ade$<$<CONFIG:Debug>:d>
+    IlmImf$<$<CONFIG:Debug>:d>
+    ittnotify$<$<CONFIG:Debug>:d>
+    libjpeg-turbo$<$<CONFIG:Debug>:d>
+    libopenjp2$<$<CONFIG:Debug>:d>
+    libpng$<$<CONFIG:Debug>:d>
+    libprotobuf$<$<CONFIG:Debug>:d>
+    libtiff$<$<CONFIG:Debug>:d>
+    libwebp$<$<CONFIG:Debug>:d>
+    opencv_img_hash480$<$<CONFIG:Debug>:d>
+    opencv_world480$<$<CONFIG:Debug>:d>
+    #quirc$<$<CONFIG:Debug>:d>
+    zlib$<$<CONFIG:Debug>:d>
+    
+    # ffmpeg
+    ${FFMPEG_LIBRARIES}
 
-	# curl
-	libcurl_a
+    # curl
+    libcurl_a
 
-	QR_Code_generator
+    QR_Code_generator
 )
 
 #target_link_libraries(QrCodeGeneratorDemo ${PROJECT_LIBRARIES})
 
 if(USE_OPENSSL)
-	target_link_libraries(MHY_Scanner_Core PRIVATE 
-		# OpenSSL
-		libssl_static
-		libcrypto_static)
+    target_link_libraries(MHY_Scanner_Core PRIVATE 
+        # OpenSSL
+        libssl_static
+        libcrypto_static)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 
 if(Unit_Tests)
-	target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
-	target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
-	target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
-	target_link_libraries(test_video_hw PRIVATE ${PROJECT_LIBRARIES})
-	target_link_libraries(test_streamlink PRIVATE ${PROJECT_LIBRARIES})
+    target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
+    target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
+    target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
+    target_link_libraries(test_video_hw PRIVATE ${PROJECT_LIBRARIES})
+    target_link_libraries(test_streamlink PRIVATE ${PROJECT_LIBRARIES})
 
 endif()
 
 set(Install_Directory "${PROJECT_NAME}_${_VERSION_}")
 install(TARGETS ${PROJECT_NAME}
-	RUNTIME DESTINATION ${Install_Directory}
+    RUNTIME DESTINATION ${Install_Directory}
 )
 install(
-	FILES ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.pdb
+    FILES ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.pdb
     DESTINATION ${Install_Directory}
 )
 install(
-	DIRECTORY
+    DIRECTORY
     src/geetest
-	src/ScanModel
+    src/ScanModel
     DESTINATION
     ${Install_Directory}
 )
