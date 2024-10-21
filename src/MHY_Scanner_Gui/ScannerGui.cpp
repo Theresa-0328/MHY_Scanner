@@ -12,9 +12,9 @@
 
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
+#include "MhyApi.hpp"
 #include "LoginBili.h"
 #include "LoginWindow.h"
-#include "MhyApi.hpp"
 
 ScannerGui::ScannerGui(QWidget* parent) :
     QMainWindow(parent),
@@ -67,7 +67,7 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(&t2, &QRCodeForStream::loginConfirm, this, &ScannerGui::loginConfirmTip);
     connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
     connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
-    gPool->setMaxThreadCount(QThread::idealThreadCount());
+    QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
     o.start();
     ui.tableWidget->setColumnCount(5);
     QStringList header;
@@ -264,7 +264,7 @@ void ScannerGui::pBtstartScreen(bool clicked)
     ui.pBtStream->setEnabled(false);
     ui.pBtstartScreen->setText("加载中。。。");
     QApplication::processEvents();
-    gPool->start([&, clicked]() {
+    QThreadPool::globalInstance()->start([&, clicked]() {
         if (!clicked)
         {
             emit StopScanner();
@@ -321,7 +321,7 @@ void ScannerGui::pBtStream(bool clicked)
     ui.pBtStream->setText("加载中。。。");
     QApplication::processEvents();
 
-    gPool->start([&, clicked]() {
+    QThreadPool::globalInstance()->start([&, clicked]() {
         if (!clicked)
         {
             emit StopScanner();

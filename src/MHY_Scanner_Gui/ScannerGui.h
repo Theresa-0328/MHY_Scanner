@@ -6,13 +6,14 @@
 #include <QRunnable>
 #include <QtWidgets/QMainWindow>
 
-#include "About_QDialog.h"
 #include "Common.h"
 #include "ConfigDate.h"
 #include "LiveStreamLink.h"
 #include "QRCodeForScreen.h"
 #include "QRCodeForStream.h"
 #include "ui_ScannerGui.h"
+#include "WindowLogin.h"
+#include "WindowAbout.h"
 
 class OnlineUpdate :
     public QThread
@@ -90,5 +91,5 @@ private:
     OnlineUpdate o;
     configInitLoad configinitload;
     void SetWindowToFront() const;
-    QThreadPool* gPool{ QThreadPool::globalInstance() };
+    WindowLogin m_windowLogin{ this };
 };

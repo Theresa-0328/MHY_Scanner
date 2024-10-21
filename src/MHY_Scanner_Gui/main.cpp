@@ -6,8 +6,6 @@
 #include <QMessageBox>
 #include <opencv2/core/utils/logger.hpp>
 
-#pragma comment(lib, "Dbghelp.lib")
-
 static std::mutex mtx;
 
 static bool isOpen()
