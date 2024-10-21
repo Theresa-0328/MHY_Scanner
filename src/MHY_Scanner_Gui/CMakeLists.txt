@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.26)
 add_executable(${PROJECT_NAME}
 	"LoginBili.cpp" 
 	"LoginWindow.cpp"
-	"main.cpp" 
+	"Main.cpp" 
 	"ScannerGui.cpp" 
 	#"ThreadDownload.cpp" 
 	"ThreadLocalServer.cpp" 

@@ -17,6 +17,8 @@ class QRCodeForScreen final :
 public:
     QRCodeForScreen(QObject* parent);
     ~QRCodeForScreen();
+    Q_DISABLE_COPY_MOVE(QRCodeForScreen)
+
     void setLoginInfo(const std::string& uid, const std::string& token);
     void setLoginInfo(const std::string& uid, const std::string& token, const std::string& name);
     void setServerType(const ServerType servertype);

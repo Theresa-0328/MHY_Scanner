@@ -30,6 +30,8 @@ class QRCodeForStream final :
 public:
     QRCodeForStream(QObject* parent = nullptr);
     ~QRCodeForStream();
+    Q_DISABLE_COPY_MOVE(QRCodeForStream)
+
     void setLoginInfo(const std::string& uid, const std::string& gameToken);
     void setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name);
     void setServerType(const ServerType servertype);

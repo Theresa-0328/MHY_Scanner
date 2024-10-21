@@ -129,6 +129,7 @@ set(PROJECT_LIBRARIES
     winmm
     Crypt32
     Normaliz
+	Dbghelp
 
     # Qt6
     Qt6::Core
