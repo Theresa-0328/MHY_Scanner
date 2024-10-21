@@ -11,4 +11,7 @@ add_executable(${PROJECT_NAME}
 	"QRCodeForStream.cpp"
 	"QRCodeForScreen.cpp" 
 	../rc/ScannerGui.rc 
-	"About_QDialog.cpp")
+	"WindowAbout.cpp" 
+	"WindowAbout.h" 
+	"WindowLogin.h"
+	"WindowLogin.cpp")

@@ -1,6 +1,6 @@
-﻿#include "About_QDialog.h"
+﻿#include "WindowAbout.h"
 
-AboutDialog::AboutDialog(QWidget* parent) :
+WindowAbout::WindowAbout(QWidget* parent) :
     QDialog(parent)
 {
     setFixedSize(400, 200);

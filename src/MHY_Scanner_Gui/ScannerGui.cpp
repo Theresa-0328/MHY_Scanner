@@ -26,8 +26,8 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
     connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::DeleteAccount);
     connect(ui.action1_2, &QAction::triggered, this, [this]() {
-        AboutDialog aboutDialog(this);
-        aboutDialog.exec();
+        WindowAbout WindowAbout(this);
+        WindowAbout.exec();
     });
     connect(ui.action2_2, &QAction::triggered, this, []() {
         ShellExecuteW(NULL, L"open", L"https://github.com/Theresa-0328/MHY_Scanner/issues", NULL, NULL, SW_SHOWNORMAL);
