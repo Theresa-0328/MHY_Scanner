@@ -21,8 +21,6 @@ enum class QRCodeState : uint8_t
     Expired = 3
 };
 
-static GameType loginType{ GameType::TearsOfThemis };
-
 [[nodiscard]] inline std::string createUUID4()
 {
     static const char chars[] = "0123456789abcdef";
@@ -44,6 +42,8 @@ static GameType loginType{ GameType::TearsOfThemis };
     uuid[UUID_LENGTH] = '\0';
     return std::string(uuid);
 }
+
+static GameType loginType{ GameType::TearsOfThemis };
 
 inline std::string GetLoginQrcodeUrl(const std::string_view deviece, const GameType type = loginType)
 {
@@ -131,4 +131,12 @@ inline auto getStokenByGameToken(const std::string_view uid, const std::string_v
     {
         return std::nullopt;
     }
+}
+
+inline bool scanQRLogin()
+{
+}
+
+inline bool confirmQRLogin()
+{
 }

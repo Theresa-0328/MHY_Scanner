@@ -56,7 +56,8 @@ private:
     std::map<std::string_view, std::function<void()>> setGameType{
         { "8F3", [this]() { m_gametype = GameType::Honkai3; } },
         { "9E&", [this]() { m_gametype = GameType::Genshin; } },
-        { "8F%", [this]() { m_gametype = GameType::HonkaiStarRail; } }
+        { "8F%", [this]() { m_gametype = GameType::HonkaiStarRail; } },
+        { "%BA", [this]() { m_gametype = GameType::ZenlessZoneZero; } },
     };
     GameType m_gametype = GameType::UNKNOW;
     ServerType servertype;
