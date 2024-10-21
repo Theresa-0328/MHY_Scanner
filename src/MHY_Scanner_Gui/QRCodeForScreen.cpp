@@ -75,7 +75,7 @@ void QRCodeForScreen::LoginOfficial()
                 return;
             }
             std::string_view view(str.c_str() + 79, 3);
-            if (setGameType.count(view) == 0)
+            if (!setGameType.contains(view))
             {
                 return;
             }

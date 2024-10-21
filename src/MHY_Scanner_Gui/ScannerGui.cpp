@@ -449,6 +449,9 @@ void ScannerGui::loginConfirmTip(const GameType gameType, bool b)
     case GameType::HonkaiStarRail:
         info += "\n登录星穹铁道\n";
         break;
+    case GameType::ZenlessZoneZero:
+        info += "\n登录绝区零\n";
+        break;
     default:
         break;
     }
@@ -588,7 +591,7 @@ bool ScannerGui::GetStreamLink(const std::string& roomid, std::string& url, std:
         }
         heards = {
             { "user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
-			Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41" },
+            Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41" },
             { "referer", "https://live.bilibili.com" }
         };
         url = live.GetLiveStreamLink();

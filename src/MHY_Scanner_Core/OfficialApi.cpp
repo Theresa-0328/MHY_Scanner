@@ -36,6 +36,8 @@ void OfficialApi::scanInit(const GameType gameType, const std::string& ticket, c
         confirmUrl = mhy_hkrpg_qrcode_confirm;
         break;
     case GameType::ZenlessZoneZero:
+        scanUrl = mhy_nap_cn_qrcode_scan;
+        confirmUrl = mhy_nap_cn_qrcode_confirm;
         break;
     default:
         __assume(0);
