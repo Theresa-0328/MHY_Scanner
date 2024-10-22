@@ -14,4 +14,6 @@ add_executable(${PROJECT_NAME}
 	"WindowAbout.cpp" 
 	"WindowAbout.h" 
 	"WindowLogin.h"
-	"WindowLogin.cpp")
+	"WindowLogin.cpp" 
+	"WindowGeeTest.h" 
+	"WindowGeeTest.cpp")
