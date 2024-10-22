@@ -88,10 +88,10 @@ if(NOT DEV)
 endif()
 
 include_directories(src/TrrJson)
-include_directories(src/MHY_Scanner_Core)
+include_directories(src/Core)
 
 add_subdirectory(src/MHY_Scanner_Gui)
-add_subdirectory(src/MHY_Scanner_Core)
+add_subdirectory(src/Core)
 add_subdirectory(src/TrrJson)
 
 if(NOT DEV)
