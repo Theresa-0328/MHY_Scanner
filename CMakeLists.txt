@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.26)
 project(MHY_Scanner LANGUAGES CXX)
 
-
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "C:/Qt/6.2.3/msvc2019_64") # Qt Kit Dir
+set(CMAKE_PREFIX_PATH "C:/Qt/6.2.3/msvc2019_64")
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -33,6 +32,19 @@ if(MSVC)
         add_link_options(/DEBUG /OPT:REF,ICF,LBR)
     endif()
 endif()
+
+find_program(NUGET_EXE NAMES nuget PATHS ${CMAKE_CURRENT_SOURCE_DIR})
+if(NOT NUGET_EXE)
+	message("NUGET.EXE not found.")
+	message(FATAL_ERROR "Please install this executable, and run CMake again.")
+endif()
+
+execute_process(COMMAND ${NUGET_EXE} install "Microsoft.Web.WebView2"-ExcludeVersion -OutputDirectory ${CMAKE_BINARY_DIR}/packages)
+execute_process(COMMAND ${NUGET_EXE} install "Microsoft.Windows.ImplementationLibrary" -ExcludeVersion -OutputDirectory ${CMAKE_BINARY_DIR}/packages) 
+
+include_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Web.WebView2/build/native/include)
+link_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Web.WebView2//build/native/x64)
+include_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.ImplementationLibrary/include)
 
 #opencv
 include_directories(./3rdparty/opencv/include)
@@ -129,7 +141,7 @@ set(PROJECT_LIBRARIES
     winmm
     Crypt32
     Normaliz
-	Dbghelp
+    Dbghelp
 
     # Qt6
     Qt6::Core
@@ -157,6 +169,8 @@ set(PROJECT_LIBRARIES
     libcurl_a
 
     QR_Code_generator
+
+	WebView2LoaderStatic
 )
 
 #target_link_libraries(QrCodeGeneratorDemo ${PROJECT_LIBRARIES})

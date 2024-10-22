@@ -373,3 +373,4 @@ FodyWeavers.xsd
 log.txt
 /CMakeUserPresets.json
 note
+/nuget.exe

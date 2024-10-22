@@ -4,7 +4,7 @@
 
 #include <Json.h>
 #include <QRunnable>
-#include <QtWidgets/QMainWindow>
+#include <QMainWindow>
 
 #include "Common.h"
 #include "ConfigDate.h"
