@@ -8,14 +8,15 @@ WindowLogin::WindowLogin(QWidget* parent) :
 {
     setWindowFlags(Qt::Dialog);
     setWindowModality(Qt::WindowModal);
-    setMinimumSize(QSize(450, 450));
-    setMaximumSize(QSize(450, 450));
-    tabWidget->setMinimumSize(QSize(450, 450));
-    tabWidget->setMaximumSize(QSize(450, 450));
+    setMinimumSize(QSize(500, 550));
+    setMaximumSize(QSize(500, 550));
+    tabWidget->setMinimumSize(QSize(500, 550));
+    tabWidget->setMaximumSize(QSize(500, 550));
     for (size_t i{}; i < tabs.size(); i++)
     {
         tabs[i] = new QWidget();
         tabWidget->addTab(tabs[i], tabsName[i]);
+        tabWidget->setFont(QFont("微软雅黑", 11));
     }
     InitTabs0();
     InitTabs1();
@@ -34,40 +35,65 @@ WindowLogin::~WindowLogin()
 
 void WindowLogin::InitTabs0()
 {
-    Tab0MainHLayout = new QHBoxLayout(tabs[0]);
+    Tab0MainVLayout = new QVBoxLayout(tabs[0]);
+    Tab0MainVLayout->setSpacing(0);
+    Tab0MainVLayout->setContentsMargins(15, 15, 15, 15);
 
-    Tab0VLayout = new QVBoxLayout();
-    Tab0VLayout->setSpacing(0);
-    Tab0VLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-    Tab0VLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
-    Tab0VLayout->setContentsMargins(0, 80, 0, 0);
+    Tab0HLayout0 = new QHBoxLayout();
+    Tab0HLayout0->setSpacing(10);
+    Tab0HLayout0->setContentsMargins(30, 60, 30, 0);
 
-    lineEditCookie = new QLineEdit(tabs[0]);
-    lineEditCookie->setObjectName(QString::fromUtf8("lineEditCookie"));
-    lineEditCookie->setMinimumSize(QSize(0, 50));
-    lineEditCookie->setAlignment(Qt::AlignLeading | Qt::AlignLeft | Qt::AlignVCenter);
-    lineEditCookie->setFont(QFont("宋体", 14));
-    lineEditCookie->setPlaceholderText("在这里粘贴包含SToken的Cookie...");
-    lineEditCookie->setClearButtonEnabled(true);
-    Tab0VLayout->addWidget(lineEditCookie);
+    AreaCodeLabel = new QLabel(tabs[0]);
+    AreaCodeLabel->setAlignment(Qt::AlignCenter);
+    AreaCodeLabel->setFont(QFont("微软雅黑", 14));
+    AreaCodeLabel->setText("+86");
+    Tab0HLayout0->addWidget(AreaCodeLabel);
 
-    pBtofficialLogin = new QPushButton(tabs[0]);
-    pBtofficialLogin->setMinimumSize(QSize(0, 50));
-    pBtofficialLogin->setText("登录");
-    pBtofficialLogin->setFont(QFont("宋体", 13));
-    pBtofficialreject = new QPushButton(tabs[0]);
-    pBtofficialreject->setMinimumSize(QSize(0, 50));
-    pBtofficialreject->setText("取消");
-    pBtofficialreject->setFont(QFont("宋体", 13));
+    phoneNumberLineEdit = new QLineEdit(tabs[0]);
+    phoneNumberLineEdit->setMinimumSize(QSize(0, 50));
+    phoneNumberLineEdit->setFont(QFont("微软雅黑", 14));
+    phoneNumberLineEdit->setPlaceholderText("请输入手机号码");
+    Tab0HLayout0->addWidget(phoneNumberLineEdit);
 
-    Tab0ButtonHLayout = new QHBoxLayout();
-    Tab0ButtonHLayout->addWidget(pBtofficialLogin);
-    Tab0ButtonHLayout->addWidget(pBtofficialreject);
-    Tab0ButtonHLayout->setContentsMargins(10, 50, 10, 60);
-    Tab0ButtonHLayout->setSpacing(50);
-    Tab0VLayout->addLayout(Tab0ButtonHLayout);
+    pbtSend = new QPushButton(tabs[0]);
+    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(pbtSend->sizePolicy().hasHeightForWidth());
+    pbtSend->setSizePolicy(sizePolicy);
+    pbtSend->setMinimumSize(QSize(50, 50));
+    pbtSend->setFont(QFont("微软雅黑", 14));
+    pbtSend->setText("发送");
+    Tab0HLayout0->addWidget(pbtSend);
 
-    Tab0MainHLayout->addLayout(Tab0VLayout);
+    Tab0MainVLayout->addLayout(Tab0HLayout0);
+
+    Tab0HLayout1 = new QHBoxLayout();
+    Tab0HLayout1->setSpacing(0);
+    Tab0HLayout1->setContentsMargins(30, -1, 30, 30);
+    verifyCodeLineEdit = new QLineEdit(tabs[0]);
+    verifyCodeLineEdit->setMinimumSize(QSize(0, 50));
+    verifyCodeLineEdit->setFont(QFont("微软雅黑", 14));
+    verifyCodeLineEdit->setPlaceholderText("请输入收到的验证码");
+    Tab0HLayout1->addWidget(verifyCodeLineEdit);
+
+    Tab0MainVLayout->addLayout(Tab0HLayout1);
+
+    Tab0HLayout2 = new QHBoxLayout();
+    Tab0HLayout2->setSpacing(50);
+    Tab0HLayout2->setContentsMargins(30, -1, 30, 80);
+    Tab0pbtConfirm = new QPushButton(tabs[0]);
+    Tab0pbtConfirm->setMinimumSize(QSize(0, 50));
+    Tab0pbtConfirm->setFont(QFont("微软雅黑", 14));
+    Tab0pbtConfirm->setText("确认");
+    Tab0HLayout2->addWidget(Tab0pbtConfirm);
+    Tab0pbtCancel = new QPushButton(tabs[0]);
+    Tab0pbtCancel->setFont(QFont("微软雅黑", 14));
+    Tab0pbtCancel->setText("取消");
+    Tab0pbtCancel->setMinimumSize(QSize(0, 50));
+    Tab0HLayout2->addWidget(Tab0pbtCancel);
+
+    Tab0MainVLayout->addLayout(Tab0HLayout2);
 }
 
 void WindowLogin::InitTabs1()
@@ -76,6 +102,36 @@ void WindowLogin::InitTabs1()
 
 void WindowLogin::InitTabs2()
 {
+    Tab2MainVLayout = new QVBoxLayout(tabs[2]);
+    Tab2MainVLayout->setSpacing(0);
+    Tab2MainVLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+    Tab2MainVLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
+    Tab2MainVLayout->setContentsMargins(30, 80, 30, 0);
+
+    lineEditCookie = new QLineEdit(tabs[2]);
+    lineEditCookie->setObjectName(QString::fromUtf8("lineEditCookie"));
+    lineEditCookie->setMinimumSize(QSize(0, 50));
+    lineEditCookie->setAlignment(Qt::AlignLeading | Qt::AlignLeft | Qt::AlignVCenter);
+    lineEditCookie->setFont(QFont("微软雅黑", 14));
+    lineEditCookie->setPlaceholderText("在这里粘贴包含SToken的Cookie...");
+    lineEditCookie->setClearButtonEnabled(true);
+    Tab2MainVLayout->addWidget(lineEditCookie);
+
+    pBtofficialLogin = new QPushButton(tabs[2]);
+    pBtofficialLogin->setMinimumSize(QSize(0, 50));
+    pBtofficialLogin->setText("登录");
+    pBtofficialLogin->setFont(QFont("微软雅黑", 13));
+    pBtofficialreject = new QPushButton(tabs[2]);
+    pBtofficialreject->setMinimumSize(QSize(0, 50));
+    pBtofficialreject->setText("取消");
+    pBtofficialreject->setFont(QFont("微软雅黑", 13));
+
+    Tab2ButtonHLayout = new QHBoxLayout();
+    Tab2ButtonHLayout->addWidget(pBtofficialLogin);
+    Tab2ButtonHLayout->addWidget(pBtofficialreject);
+    Tab2ButtonHLayout->setContentsMargins(10, 50, 10, 60);
+    Tab2ButtonHLayout->setSpacing(50);
+    Tab2MainVLayout->addLayout(Tab2ButtonHLayout);
 }
 
 void WindowLogin::InitTabs3()
