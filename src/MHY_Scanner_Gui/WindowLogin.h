@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QBoxLayout>
+#include <QLabel>
 
 class WindowLogin : public QWidget
 {
@@ -27,21 +28,29 @@ private:
     QHBoxLayout* MainHLayout{};
 
     void InitTabs0();
-    QHBoxLayout* Tab0MainHLayout;
+    QVBoxLayout* Tab0MainVLayout{};
+    QLabel* AreaCodeLabel{};
+    QLineEdit* phoneNumberLineEdit{};
+    QPushButton* pbtSend{};
+    QHBoxLayout* Tab0HLayout0{};
+    QLineEdit* verifyCodeLineEdit{};
+    QHBoxLayout* Tab0HLayout1{};
+    QPushButton* Tab0pbtConfirm{};
+    QPushButton* Tab0pbtCancel{};
+    QHBoxLayout* Tab0HLayout2{};
+
+    void InitTabs1();
+    QHBoxLayout* Tab1MainHLayout{};
+
+    void InitTabs2();
+    QVBoxLayout* Tab2MainVLayout{};
     QLineEdit* lineEditCookie{};
     QPushButton* pBtofficialLogin{};
     QPushButton* pBtofficialreject{};
-    QHBoxLayout* Tab0ButtonHLayout;
-    QVBoxLayout* Tab0VLayout;
-
-    void InitTabs1();
-    QHBoxLayout* Tab1MainHLayout;
-
-    void InitTabs2();
-    QHBoxLayout* Tab2MainHLayout;
+    QHBoxLayout* Tab2ButtonHLayout{};
 
     void InitTabs3();
-    QHBoxLayout* Tab3MainHLayout;
+    QHBoxLayout* Tab3MainHLayout{};
 
     void Initconnect();
 };
