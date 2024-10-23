@@ -67,6 +67,13 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(&t2, &QRCodeForStream::loginConfirm, this, &ScannerGui::loginConfirmTip);
     connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
     connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
+
+    //connect(&m_windowLogin, &WindowLogin::showMessagebox, this, [this]() {
+    //    QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
+    //    //有未知信号触发
+    //    insertTableItems(QString::fromStdString("111"), QString::fromStdString("2222"), "官服", "");
+    //});
+
     QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
     o.start();
     ui.tableWidget->setColumnCount(5);
@@ -142,6 +149,9 @@ void ScannerGui::insertTableItems(QString uid, QString userName, QString type, Q
 
 void ScannerGui::AddAccount()
 {
+#if 1
+    m_windowLogin.show();
+#else
     LoginWindow loginwindow(reinterpret_cast<QDialog*>(this));
     if (t1.isRunning() || t2.isRunning())
     {
@@ -256,6 +266,7 @@ void ScannerGui::AddAccount()
         userinfo["num"] = num + 1;
     }
     m_config->updateConfig(userinfo.str());
+#endif // 0
 }
 
 void ScannerGui::pBtstartScreen(bool clicked)

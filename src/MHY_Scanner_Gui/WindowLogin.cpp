@@ -1,6 +1,11 @@
 ﻿#include "WindowLogin.h"
 
+#include <Windows.h>
+
 #include <QThread>
+#include <Base64.hpp>
+
+#include "MhyApi.hpp"
 
 WindowLogin::WindowLogin(QWidget* parent) :
     QWidget(parent),
@@ -33,6 +38,11 @@ WindowLogin::~WindowLogin()
 {
 }
 
+void WindowLogin::closeEvent(QCloseEvent* event)
+{
+    pbtSend->setEnabled(true);
+}
+
 void WindowLogin::InitTabs0()
 {
     Tab0MainVLayout = new QVBoxLayout(tabs[0]);
@@ -52,6 +62,9 @@ void WindowLogin::InitTabs0()
     phoneNumberLineEdit = new QLineEdit(tabs[0]);
     phoneNumberLineEdit->setMinimumSize(QSize(0, 50));
     phoneNumberLineEdit->setFont(QFont("微软雅黑", 14));
+    QRegularExpression regex("^[1][3-9][0-9]{9}$");
+    QRegularExpressionValidator* validator = new QRegularExpressionValidator(regex, this);
+    phoneNumberLineEdit->setValidator(validator);
     phoneNumberLineEdit->setPlaceholderText("请输入手机号码");
     Tab0HLayout0->addWidget(phoneNumberLineEdit);
 
@@ -140,7 +153,46 @@ void WindowLogin::InitTabs3()
 
 void WindowLogin::Initconnect()
 {
-    connect(pBtofficialLogin, &QPushButton::clicked, this, [this]() {
-        emit signals_test1();
+    connect(this, &WindowLogin::showMessagebox, this, [this](const QString& Message) {
+        QMessageBox::information(this, "提示", Message, QMessageBox::Yes);
+    });
+
+    connect(this, &WindowLogin::showWindowGeeTest, this, [this](const bool show) {
+        if (show)
+        {
+            m_WindowGeeTest.show();
+        }
+        else
+        {
+            m_WindowGeeTest.close();
+        }
+    });
+
+    connect(&m_WindowGeeTest, &WindowGeeTest::postMessage, this, [this](const QString& Message) {
+        m_WindowGeeTest.close();
+        thpool.start([this, Message]() {
+            std::string str{ GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString() };
+            auto r = CreateLoginCaptcha(phoneNumberLineEdit->text().toStdString(), str);
+        });
+    });
+
+    connect(pbtSend, &QPushButton::clicked, this, [this] {
+        pbtSend->setEnabled(false);
+        thpool.start([this] {
+            auto geetestdata{ CreateLoginCaptcha(phoneNumberLineEdit->text().toStdString()) };
+            if (geetestdata.mmt_type)
+            {
+                GeetestSessionId = geetestdata.session_id;
+                m_WindowGeeTest.Init(stringTowstring(geetestdata.gt), stringTowstring(geetestdata.challenge));
+                emit showWindowGeeTest(true);
+            }
+            //TODO 无需进行人机验证 else...
+        });
+    });
+
+    connect(Tab0pbtConfirm, &QPushButton::clicked, this, [this] {
+        QMessageBox::information(this, "提示", "Message", QMessageBox::Yes);
+        thpool.start([this] {
+        });
     });
 }
