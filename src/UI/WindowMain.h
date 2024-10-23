@@ -11,7 +11,7 @@
 #include "LiveStreamLink.h"
 #include "QRCodeForScreen.h"
 #include "QRCodeForStream.h"
-#include "ui_ScannerGui.h"
+#include "ui_WindowMain.h"
 #include "WindowLogin.h"
 #include "WindowAbout.h"
 
@@ -39,14 +39,14 @@ private:
     ConfigDate* m_config = &ConfigDate::getInstance();
 };
 
-class ScannerGui :
+class WindowMain :
     public QMainWindow
 {
     Q_OBJECT
 
 public:
-    ScannerGui(QWidget* parent = nullptr);
-    ~ScannerGui();
+    WindowMain(QWidget* parent = nullptr);
+    ~WindowMain();
     void insertTableItems(QString uid, QString userName, QString type, QString notes);
     void closeEvent(QCloseEvent* event) override;
     void showEvent(QShowEvent* event) override;

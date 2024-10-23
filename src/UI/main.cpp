@@ -1,4 +1,4 @@
-﻿#include "ScannerGui.h"
+﻿#include "WindowMain.h"
 
 #include <Windows.h>
 #include <DbgHelp.h>
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
         QMessageBox::warning(NULL, "错误", "程序正在运行");
         return -1;
     }
-    ScannerGui w;
+    WindowMain w;
     w.show();
     return a.exec();
 }
