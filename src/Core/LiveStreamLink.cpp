@@ -11,6 +11,7 @@
 
 #include "CryptoKit.h"
 #include "UtilString.hpp"
+#include "TimeStamp.hpp"
 
 LiveBili::LiveBili(const std::string& roomID) :
     m_roomID(roomID)
@@ -177,7 +178,7 @@ std::string LiveHuya::process_anticode(const std::string& anticode, const std::s
     std::map<std::string, std::string> m = QueryStringToMap(urlDecode(anticode));
     m["ver"] = "1";
     m["sv"] = "2110211124";
-    m["seqid"] = std::to_string(getCurrentUnixTime() * 1000 + std::stoll(uid));
+    m["seqid"] = std::to_string(GetUnixTimeStampSeconds() * 1000 + std::stoll(uid));
     m["uid"] = uid;
     m["uuid"] = getUUID();
     const std::string& ss = Md5(std::format("{}|{}|{}", m["seqid"], m["ctype"], m["t"]));

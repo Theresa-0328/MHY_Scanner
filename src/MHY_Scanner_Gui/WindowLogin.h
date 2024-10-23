@@ -9,6 +9,13 @@
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QLabel>
+#include <QThread>
+#include <QThreadPool>
+#include <QMessagebox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+
+#include "WindowGeeTest.h"
 
 class WindowLogin : public QWidget
 {
@@ -17,11 +24,20 @@ public:
     WindowLogin(QWidget* parent = nullptr);
     ~WindowLogin();
     Q_DISABLE_COPY(WindowLogin)
+
 signals:
-    void signals_test1();
+    void showMessagebox(const QString& Message);
+    void showWindowGeeTest(const bool show);
+
 private slots:
 
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
 private:
+    WindowGeeTest m_WindowGeeTest{ this };
+    std::string GeetestSessionId{};
+    QThreadPool thpool;
     std::array<QWidget*, 4> tabs{};
     static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili登录" };
     QTabWidget* tabWidget{};

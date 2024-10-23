@@ -7,6 +7,7 @@
 
 #include "CryptoKit.h"
 #include "UtilString.hpp"
+#include "TimeStamp.hpp"
 
 Mihoyosdk::Mihoyosdk()
 {
@@ -93,7 +94,7 @@ ScanRet Mihoyosdk::scanCheck()
     json::Json check;
     check.parse(scanCheckS);
     check["ticket"] = m_ticket;
-    check["ts"] = getCurrentUnixTime();
+    check["ts"] = (int)GetUnixTimeStampSeconds();
     std::string postBody = makeSign(check.str());
     std::string feedback;
     PostRequest(feedback, mhy_bh3_qrcode_scan, postBody); //扫码请求
@@ -141,7 +142,7 @@ ScanRet Mihoyosdk::scanConfirm()
     scanPayLoadJ["raw"] = scanRawJ;
     scanPayLoadJ["ext"] = scanExtJ;
     scanResultJ["payload"] = scanPayLoadJ;
-    scanResultJ["ts"] = getCurrentUnixTime();
+    scanResultJ["ts"] = (int)GetUnixTimeStampSeconds();
     scanResultJ["ticket"] = m_ticket;
     std::string postBody = scanResultJ.str();
     postBody = makeSign(postBody);

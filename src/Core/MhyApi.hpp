@@ -13,6 +13,7 @@
 #include "HttpClient.h"
 #include "UtilString.hpp"
 #include "CryptoKit.h"
+#include "TimeStamp.hpp"
 
 enum class QRCodeState : uint8_t
 {
@@ -28,8 +29,6 @@ constexpr std::string_view mihoyobbs_salt_web{ "zZDfHqEcwTqvvKDmqRcHyqqurxGgLfBV
 constexpr std::string_view mihoyobbs_salt_x4{ "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs" };
 constexpr std::string_view mihoyobbs_salt_x6{ "t0qEgfub6cvueAPgR5m9aQWWVciEer7v" };
 
-constexpr std::string_view mihoyobbs_verify_key{ "bll8iq97cem8" };
-
 constexpr std::string_view mihoyobbs_version{ "2.75.2" };
 
 [[nodiscard]] inline std::string DataSignAlgorithmVersionGen1()
@@ -39,7 +38,7 @@ constexpr std::string_view mihoyobbs_version{ "2.75.2" };
 
 [[nodiscard]] inline std::string DataSignAlgorithmVersionGen2(const std::string_view body, const std::string_view query)
 {
-    const std::string time_now{ std::to_string(getCurrentUnixTime()) };
+    const std::string time_now{ std::to_string(GetUnixTimeStampSeconds()) };
     std::random_device rd{};
     std::mt19937 gen{ rd() };
     int lower_bound{ 100001 };
@@ -48,6 +47,23 @@ constexpr std::string_view mihoyobbs_version{ "2.75.2" };
     const std::string rand{ std::to_string(dist(gen)) };
     std::string m{ "salt=" + std::string(mihoyobbs_salt_x6) + "&t=" + time_now + "&r=" + rand + "&b=" + std::string(body) + "&q=" + std::string(query) };
     return time_now + "," + rand + "," + Md5(m);
+}
+
+inline std::map<std::string, std::string> GetRequestHeader()
+{
+    static std::map<std::string, std::string> header{
+        { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/2.76.1" },
+        { "Accept", "application/json" },
+        { "x-rpc-app_id", "bll8iq97cem8" },
+        { "x-rpc-app_version", "2.76.1" },
+        { "x-rpc-client_type", "2" },
+        { "x-rpc-device_id", "62bc0778-126f-4c63-be81-d5a86a6ba9b9" },
+        { "x-rpc-device_name", "" },
+        { "x-rpc-game_biz", "bbs_cn" },
+        { "x-rpc-sdk_version", "2.16.0" }
+
+    };
+    return header;
 }
 
 [[nodiscard]] inline std::string createUUID4()
@@ -160,6 +176,85 @@ inline auto getStokenByGameToken(const std::string_view uid, const std::string_v
     {
         return std::nullopt;
     }
+}
+
+inline std::string Encrypt(const std::string_view source)
+{
+    constexpr const char* PublicKey{
+        "-----BEGIN PUBLIC KEY-----\n"
+        "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7"
+        "cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs"
+        "9ExXCdvqrn51qELbqj0XxtMTIpaCHFSI50PfPpTFV9Xt/hmyVwokoOXFlAEgCn+Q"
+        "CgGs52bFoYMtyi+xEQIDAQAB\n"
+        "-----END PUBLIC KEY-----"
+    };
+    return rsaEncrypt(source.data(), PublicKey);
+}
+
+inline auto CreateLoginCaptcha(const std::string_view mobile, const std::string_view aigis = "")
+{
+    struct
+    {
+        int retcode{};
+        std::string action_type{};
+        std::string session_id{};
+        int mmt_type{};
+        std::string gt{};
+        std::string challenge{};
+    } GeetestData;
+
+    const std::string RequestBody{ std::format(R"({{"area_code":"{}","mobile":"{}"}})", Encrypt("+86"), Encrypt(mobile)) };
+    std::map<std::string, std::string> headers{ GetRequestHeader() };
+    headers["DS"] = DataSignAlgorithmVersionGen2(RequestBody, "");
+    if (!aigis.empty())
+    {
+        headers["X-Rpc-Aigis"] = aigis;
+    }
+    HttpClient h;
+    std::string s;
+    h.PostRequest(s, mhy_passport_account_verifier, RequestBody, headers, true);
+    std::string bodystr{};
+    if (size_t startPos = s.find_last_of("\n"); startPos != std::string::npos)
+    {
+        bodystr = s.substr(startPos + 1, bodystr.size() - startPos);
+    }
+    json::Json body{};
+    body.parse(bodystr);
+    if ((int)body["retcode"] == 0)
+    {
+        GeetestData.retcode = body["retcode"];
+        GeetestData.action_type = body["data"]["action_type"];
+    }
+    else
+    {
+        constexpr std::string_view headerKey{ "X-Rpc-Aigis: " };
+        std::string Aigis;
+        if (size_t startPos = s.find(headerKey); startPos != std::string::npos)
+        {
+            startPos += headerKey.length();
+            size_t endPos = s.find("\n", startPos);
+            Aigis = s.substr(startPos, endPos - startPos);
+        }
+        json::Json j1{};
+        j1.parse(Aigis);
+        std::string data{ j1["data"] };
+        data = unescapeString(data);
+        json::Json j2{};
+        j2.parse(data);
+
+        json::Json body{};
+        body.parse(bodystr);
+        GeetestData.retcode = body["retcode"];
+        GeetestData.session_id = j1["session_id"];
+        GeetestData.mmt_type = j1["mmt_type"];
+        GeetestData.gt = j2["gt"];
+        GeetestData.challenge = j2["challenge"];
+    }
+    return GeetestData;
+}
+
+inline bool LoginByMobileCaptcha()
+{
 }
 
 inline bool scanQRLogin()
