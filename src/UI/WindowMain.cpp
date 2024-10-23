@@ -1,4 +1,4 @@
-﻿#include "ScannerGui.h"
+﻿#include "WindowMain.h"
 
 #include <fstream>
 #include <filesystem>
@@ -16,15 +16,15 @@
 #include "LoginBili.h"
 #include "LoginWindow.h"
 
-ScannerGui::ScannerGui(QWidget* parent) :
+WindowMain::WindowMain(QWidget* parent) :
     QMainWindow(parent),
     t1(this),
     t2(this)
 {
     ui.setupUi(this);
-    connect(ui.action1_3, &QAction::triggered, this, &ScannerGui::AddAccount);
-    connect(ui.action1_4, &QAction::triggered, this, &ScannerGui::SetDefaultAccount);
-    connect(ui.action2_3, &QAction::triggered, this, &ScannerGui::DeleteAccount);
+    connect(ui.action1_3, &QAction::triggered, this, &WindowMain::AddAccount);
+    connect(ui.action1_4, &QAction::triggered, this, &WindowMain::SetDefaultAccount);
+    connect(ui.action2_3, &QAction::triggered, this, &WindowMain::DeleteAccount);
     connect(ui.action1_2, &QAction::triggered, this, [this]() {
         WindowAbout WindowAbout(this);
         WindowAbout.exec();
@@ -35,38 +35,38 @@ ScannerGui::ScannerGui(QWidget* parent) :
     connect(ui.action1_5, &QAction::triggered, this, []() {
         ShellExecuteW(NULL, L"open", L"config", NULL, NULL, SW_SHOWDEFAULT);
     });
-    connect(ui.pBtstartScreen, &QPushButton::clicked, this, &ScannerGui::pBtstartScreen);
-    connect(this, &ScannerGui::StopScanner, this, &ScannerGui::pBtStop);
-    connect(this, &ScannerGui::StartScanScreen, this, [&]() {
+    connect(ui.pBtstartScreen, &QPushButton::clicked, this, &WindowMain::pBtstartScreen);
+    connect(this, &WindowMain::StopScanner, this, &WindowMain::pBtStop);
+    connect(this, &WindowMain::StartScanScreen, this, [&]() {
         ui.pBtstartScreen->setText("监视屏幕中");
         ui.pBtstartScreen->setEnabled(true);
     });
-    connect(this, &ScannerGui::AccountError, this, [&]() {
+    connect(this, &WindowMain::AccountError, this, [&]() {
         failure();
         pBtStop();
     });
-    connect(this, &ScannerGui::StartScanLive, this, [&]() {
+    connect(this, &WindowMain::StartScanLive, this, [&]() {
         ui.pBtStream->setText("监视直播中");
         ui.pBtStream->setEnabled(true);
     });
-    connect(this, &ScannerGui::LiveStreamLinkError, this, [&](LiveStreamStatus status) {
+    connect(this, &WindowMain::LiveStreamLinkError, this, [&](LiveStreamStatus status) {
         liveIdError(status);
     });
-    connect(this, &ScannerGui::AccountNotSelected, this, [&]() {
+    connect(this, &WindowMain::AccountNotSelected, this, [&]() {
         QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
         pBtStop();
     });
-    connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoScreen);
-    connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoExit);
-    connect(ui.checkBoxAutoLogin, &QCheckBox::clicked, this, &ScannerGui::checkBoxAutoLogin);
-    connect(ui.pBtStream, &QPushButton::clicked, this, &ScannerGui::pBtStream);
-    connect(ui.tableWidget, &QTableWidget::cellClicked, this, &ScannerGui::getInfo);
-    connect(&t1, &QRCodeForScreen::loginResults, this, &ScannerGui::islogin);
-    connect(&t1, &QRCodeForScreen::loginConfirm, this, &ScannerGui::loginConfirmTip);
-    connect(&t2, &QRCodeForStream::loginResults, this, &ScannerGui::islogin);
-    connect(&t2, &QRCodeForStream::loginConfirm, this, &ScannerGui::loginConfirmTip);
-    connect(&configinitload, &configInitLoad::userinfoTrue, this, &ScannerGui::configInitUpdate);
-    connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
+    connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &WindowMain::checkBoxAutoScreen);
+    connect(ui.checkBoxAutoExit, &QCheckBox::clicked, this, &WindowMain::checkBoxAutoExit);
+    connect(ui.checkBoxAutoLogin, &QCheckBox::clicked, this, &WindowMain::checkBoxAutoLogin);
+    connect(ui.pBtStream, &QPushButton::clicked, this, &WindowMain::pBtStream);
+    connect(ui.tableWidget, &QTableWidget::cellClicked, this, &WindowMain::getInfo);
+    connect(&t1, &QRCodeForScreen::loginResults, this, &WindowMain::islogin);
+    connect(&t1, &QRCodeForScreen::loginConfirm, this, &WindowMain::loginConfirmTip);
+    connect(&t2, &QRCodeForStream::loginResults, this, &WindowMain::islogin);
+    connect(&t2, &QRCodeForStream::loginConfirm, this, &WindowMain::loginConfirmTip);
+    connect(&configinitload, &configInitLoad::userinfoTrue, this, &WindowMain::configInitUpdate);
+    connect(ui.tableWidget, &QTableWidget::itemChanged, this, &WindowMain::updateNote);
 
     //connect(&m_windowLogin, &WindowLogin::showMessagebox, this, [this]() {
     //    QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
@@ -118,13 +118,13 @@ ScannerGui::ScannerGui(QWidget* parent) :
     trrlog::Log_debug("UI Initialization completed");
 }
 
-ScannerGui::~ScannerGui()
+WindowMain::~WindowMain()
 {
     t1.stop();
     t2.stop();
 }
 
-void ScannerGui::insertTableItems(QString uid, QString userName, QString type, QString notes)
+void WindowMain::insertTableItems(QString uid, QString userName, QString type, QString notes)
 {
     QTableWidgetItem* item[5]{};
     int nCount = ui.tableWidget->rowCount();
@@ -147,7 +147,7 @@ void ScannerGui::insertTableItems(QString uid, QString userName, QString type, Q
     }
 }
 
-void ScannerGui::AddAccount()
+void WindowMain::AddAccount()
 {
 #if 1
     m_windowLogin.show();
@@ -269,7 +269,7 @@ void ScannerGui::AddAccount()
 #endif // 0
 }
 
-void ScannerGui::pBtstartScreen(bool clicked)
+void WindowMain::pBtstartScreen(bool clicked)
 {
     ui.pBtstartScreen->setEnabled(false);
     ui.pBtStream->setEnabled(false);
@@ -325,7 +325,7 @@ void ScannerGui::pBtstartScreen(bool clicked)
     });
 }
 
-void ScannerGui::pBtStream(bool clicked)
+void WindowMain::pBtStream(bool clicked)
 {
     ui.pBtstartScreen->setEnabled(false);
     ui.pBtStream->setEnabled(false);
@@ -393,17 +393,17 @@ void ScannerGui::pBtStream(bool clicked)
     });
 }
 
-void ScannerGui::closeEvent(QCloseEvent* event)
+void WindowMain::closeEvent(QCloseEvent* event)
 {
     t1.stop();
     t2.stop();
 }
 
-void ScannerGui::showEvent(QShowEvent* event)
+void WindowMain::showEvent(QShowEvent* event)
 {
 }
 
-void ScannerGui::islogin(const ScanRet ret)
+void WindowMain::islogin(const ScanRet ret)
 {
     if (ret == ScanRet::SUCCESS && (bool)userinfo["auto_exit"] == true)
     {
@@ -443,7 +443,7 @@ void ScannerGui::islogin(const ScanRet ret)
     }
 }
 
-void ScannerGui::loginConfirmTip(const GameType gameType, bool b)
+void WindowMain::loginConfirmTip(const GameType gameType, bool b)
 {
     QString info("正在使用账号" + ui.lineEditUname->text());
     switch (gameType)
@@ -488,7 +488,7 @@ void ScannerGui::loginConfirmTip(const GameType gameType, bool b)
     }
 }
 
-void ScannerGui::checkBoxAutoScreen(bool clicked)
+void WindowMain::checkBoxAutoScreen(bool clicked)
 {
     int state = ui.checkBoxAutoScreen->checkState();
     if ((int)userinfo["last_account"] == 0)
@@ -510,7 +510,7 @@ void ScannerGui::checkBoxAutoScreen(bool clicked)
     m_config->updateConfig(userinfo.str());
 }
 
-void ScannerGui::checkBoxAutoExit(bool clicked)
+void WindowMain::checkBoxAutoExit(bool clicked)
 {
     int state = ui.checkBoxAutoExit->checkState();
     if (state == Qt::Checked)
@@ -524,7 +524,7 @@ void ScannerGui::checkBoxAutoExit(bool clicked)
     m_config->updateConfig(userinfo.str());
 }
 
-void ScannerGui::checkBoxAutoLogin(bool clicked)
+void WindowMain::checkBoxAutoLogin(bool clicked)
 {
     int state = ui.checkBoxAutoLogin->checkState();
     if (state == Qt::Checked)
@@ -538,7 +538,7 @@ void ScannerGui::checkBoxAutoLogin(bool clicked)
     m_config->updateConfig(userinfo.str());
 }
 
-void ScannerGui::liveIdError(const LiveStreamStatus status)
+void WindowMain::liveIdError(const LiveStreamStatus status)
 {
     switch (status)
     {
@@ -564,7 +564,7 @@ void ScannerGui::liveIdError(const LiveStreamStatus status)
     return;
 }
 
-int ScannerGui::getSelectedRowIndex()
+int WindowMain::getSelectedRowIndex()
 {
     QList<QTableWidgetItem*> item = ui.tableWidget->selectedItems();
     if (item.count() == 0)
@@ -574,7 +574,7 @@ int ScannerGui::getSelectedRowIndex()
     return ui.tableWidget->row(item.at(0));
 }
 
-bool ScannerGui::checkDuplicates(const std::string uid)
+bool WindowMain::checkDuplicates(const std::string uid)
 {
     for (int i = 0; i < (int)userinfo["num"]; i++)
     {
@@ -587,7 +587,7 @@ bool ScannerGui::checkDuplicates(const std::string uid)
     return false;
 }
 
-bool ScannerGui::GetStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
+bool WindowMain::GetStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
 {
     std::uint32_t live_type = ui.comboBox->currentIndex();
     switch (live_type)
@@ -639,7 +639,7 @@ bool ScannerGui::GetStreamLink(const std::string& roomid, std::string& url, std:
     return true;
 }
 
-void ScannerGui::SetWindowToFront() const
+void WindowMain::SetWindowToFront() const
 {
     HWND hwnd = reinterpret_cast<HWND>(winId());
     if (GetForegroundWindow() == hwnd)
@@ -651,7 +651,7 @@ void ScannerGui::SetWindowToFront() const
     SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
 
-void ScannerGui::failure()
+void WindowMain::failure()
 {
     QMessageBox* messageBox = new QMessageBox(this);
     messageBox->setAttribute(Qt::WA_DeleteOnClose);
@@ -661,7 +661,7 @@ void ScannerGui::failure()
     messageBox->show();
 }
 
-void ScannerGui::getInfo(int x, int y)
+void WindowMain::getInfo(int x, int y)
 {
     QTableWidgetItem* item = ui.tableWidget->item(x, 2);
     QString cellText = item->text();
@@ -671,7 +671,7 @@ void ScannerGui::getInfo(int x, int y)
     trrlog::Log_debug("{}", std::format(R"(row = {} , user_name = {})", x, cellText.toStdString()));
 }
 
-void ScannerGui::SetDefaultAccount()
+void WindowMain::SetDefaultAccount()
 {
     int nCurrentRow = getSelectedRowIndex();
     if (nCurrentRow != -1)
@@ -689,7 +689,7 @@ void ScannerGui::SetDefaultAccount()
     }
 }
 
-void ScannerGui::DeleteAccount()
+void WindowMain::DeleteAccount()
 {
     int nCurrentRow = getSelectedRowIndex();
     if (nCurrentRow == -1)
@@ -723,16 +723,16 @@ void ScannerGui::DeleteAccount()
     ui.lineEditUname->setText("未选中");
     countA = -1;
 
-    disconnect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
+    disconnect(ui.tableWidget, &QTableWidget::itemChanged, this, &WindowMain::updateNote);
     for (int i = 0; i < (int)userinfo["num"]; i++)
     {
         QTableWidgetItem* item = new QTableWidgetItem(QString("%1").arg(i + 1));
         ui.tableWidget->setItem(i, 0, item);
     }
-    connect(ui.tableWidget, &QTableWidget::itemChanged, this, &ScannerGui::updateNote);
+    connect(ui.tableWidget, &QTableWidget::itemChanged, this, &WindowMain::updateNote);
 }
 
-void ScannerGui::pBtStop()
+void WindowMain::pBtStop()
 {
     t1.stop();
     t2.stop();
@@ -744,7 +744,7 @@ void ScannerGui::pBtStop()
     ui.pBtStream->setEnabled(true);
 }
 
-void ScannerGui::configInitUpdate(bool b)
+void WindowMain::configInitUpdate(bool b)
 {
     ui.tableWidget->blockSignals(true);
     if (!b)
@@ -789,7 +789,7 @@ void ScannerGui::configInitUpdate(bool b)
     ui.tableWidget->blockSignals(false);
 }
 
-void ScannerGui::updateNote(QTableWidgetItem* item)
+void WindowMain::updateNote(QTableWidgetItem* item)
 {
     QString text = item->text();
     userinfo["account"][item->row()]["note"] = text.toStdString();

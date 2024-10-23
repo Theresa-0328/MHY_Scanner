@@ -90,7 +90,7 @@ endif()
 include_directories(src/TrrJson)
 include_directories(src/Core)
 
-add_subdirectory(src/MHY_Scanner_Gui)
+add_subdirectory(src/UI)
 add_subdirectory(src/Core)
 add_subdirectory(src/TrrJson)
 
