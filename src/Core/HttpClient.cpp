@@ -108,7 +108,7 @@ bool HttpClient::GetRequest(std::string& response, const char* url, std::map<std
     return true;
 }
 
-bool HttpClient::PostRequest(std::string& response, const char* url, const std::string& postParams, std::map<std::string, std::string> headers)
+bool HttpClient::PostRequest(std::string& response, const char* url, const std::string& postParams, std::map<std::string, std::string> headers, bool header)
 {
     CURLcode res{};
     if (!curl)
@@ -137,6 +137,7 @@ bool HttpClient::PostRequest(std::string& response, const char* url, const std::
     curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+    curl_easy_setopt(curl, CURLOPT_HEADER, header);
 
     res = curl_easy_perform(curl);
 
@@ -146,9 +147,4 @@ bool HttpClient::PostRequest(std::string& response, const char* url, const std::
         return false;
     }
     return true;
-}
-
-int HttpClient::getCurrentUnixTime() const
-{
-    return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }

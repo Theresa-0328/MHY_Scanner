@@ -338,7 +338,7 @@ void QRCodeForStream::run()
     if (init())
     {
 #ifndef SHOW
-        cv::namedWindow("Video_Stream", cv::WINDOW_NORMAL);
+        cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);
         cv::resizeWindow("Video_Stream", videoStreamWidth / 2, videoStreamHeight / 2);
 #endif
         switch (servertype)

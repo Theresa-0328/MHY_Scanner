@@ -49,21 +49,6 @@ void OfficialApi::scanInit(const GameType gameType, const std::string& ticket, c
     m_gameType = gameType;
 }
 
-std::string OfficialApi::getDS2()
-{
-    std::string time_now = std::to_string(getCurrentUnixTime());
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    // 定义范围
-    int lower_bound = 100001;
-    int upper_bound = 200000;
-    std::uniform_int_distribution<int> dist(lower_bound, upper_bound);
-    std::string rand = std::to_string(dist(gen));
-    std::string m = "salt=" + salt + "&t=" + time_now + "&r=" + rand;
-    Md5(m);
-    return time_now + "," + rand + "," + m;
-}
-
 bool OfficialApi::validityCheck(std::string_view ticket)
 {
     if (ticket == m_ticket)
@@ -127,7 +112,7 @@ std::string OfficialApi::getRole()
 {
     std::string data;
     const char* url = "https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken";
-    headers["DS"] = getDS2();
+    //headers["DS"] = getDS2();
     headers["Cookie"] = "stuid=" + cookieMap.at("login_uid") + ";" + "stoken=" + data + ";" + "mid=" + "";
     std::string re;
     GetRequest(re, url, headers);

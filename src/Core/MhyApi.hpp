@@ -12,6 +12,7 @@
 #include "Common.h"
 #include "HttpClient.h"
 #include "UtilString.hpp"
+#include "CryptoKit.h"
 
 enum class QRCodeState : uint8_t
 {
@@ -20,6 +21,34 @@ enum class QRCodeState : uint8_t
     Confirmed = 2,
     Expired = 3
 };
+
+constexpr std::string_view mihoyobbs_salt{ "oqrJbPCoFhWhFBNDvVRuldbrbiVxyWsP" };
+constexpr std::string_view mihoyobbs_salt_web{ "zZDfHqEcwTqvvKDmqRcHyqqurxGgLfBV" };
+
+constexpr std::string_view mihoyobbs_salt_x4{ "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs" };
+constexpr std::string_view mihoyobbs_salt_x6{ "t0qEgfub6cvueAPgR5m9aQWWVciEer7v" };
+
+constexpr std::string_view mihoyobbs_verify_key{ "bll8iq97cem8" };
+
+constexpr std::string_view mihoyobbs_version{ "2.75.2" };
+
+[[nodiscard]] inline std::string DataSignAlgorithmVersionGen1()
+{
+    return "";
+}
+
+[[nodiscard]] inline std::string DataSignAlgorithmVersionGen2(const std::string_view body, const std::string_view query)
+{
+    const std::string time_now{ std::to_string(getCurrentUnixTime()) };
+    std::random_device rd{};
+    std::mt19937 gen{ rd() };
+    int lower_bound{ 100001 };
+    int upper_bound{ 200000 };
+    std::uniform_int_distribution<int> dist(lower_bound, upper_bound);
+    const std::string rand{ std::to_string(dist(gen)) };
+    std::string m{ "salt=" + std::string(mihoyobbs_salt_x6) + "&t=" + time_now + "&r=" + rand + "&b=" + std::string(body) + "&q=" + std::string(query) };
+    return time_now + "," + rand + "," + Md5(m);
+}
 
 [[nodiscard]] inline std::string createUUID4()
 {
