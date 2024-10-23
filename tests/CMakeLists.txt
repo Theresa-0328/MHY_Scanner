@@ -11,7 +11,7 @@ target_include_directories(test_core PUBLIC ../src/MHY_Scanner_Core)
 add_test(NAME test_core COMMAND test_core)
 set_tests_properties(test_core PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 
-add_executable(test_gui test_gui.cpp ../src/MHY_Scanner_Gui/ThreadSacn.cpp)
+add_executable(test_gui test_gui.cpp )
 target_link_libraries(test_gui PUBLIC gtest gtest_main)
 target_include_directories(test_gui PUBLIC ../3rdparty/googletest-1.13.0/include)
 target_include_directories(test_gui PUBLIC ../src/MHY_Scanner_Gui)

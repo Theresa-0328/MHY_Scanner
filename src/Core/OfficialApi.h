@@ -22,7 +22,6 @@ public:
     ScanRet scanConfirm();
     int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
     std::string getUid() const;
-    std::string getDS2();
     bool validityCheck(std::string_view ticket);
     std::string getMid() const;
 

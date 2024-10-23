@@ -5,9 +5,7 @@ add_executable(${PROJECT_NAME}
 	"LoginWindow.cpp"
 	"Main.cpp" 
 	"ScannerGui.cpp" 
-	#"ThreadDownload.cpp" 
 	"ThreadLocalServer.cpp" 
-	#"ThreadSacn.cpp" 
 	"QRCodeForStream.cpp"
 	"QRCodeForScreen.cpp" 
 	../rc/ScannerGui.rc 
