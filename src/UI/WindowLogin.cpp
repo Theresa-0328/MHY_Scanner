@@ -34,13 +34,11 @@ WindowLogin::WindowLogin(QWidget* parent) :
     Initconnect();
 }
 
-WindowLogin::~WindowLogin()
-{
-}
+WindowLogin::~WindowLogin() = default;
 
 void WindowLogin::closeEvent(QCloseEvent* event)
 {
-    pbtSend->setEnabled(true);
+    emit Destroy();
 }
 
 void WindowLogin::InitTabs0()
@@ -170,29 +168,50 @@ void WindowLogin::Initconnect()
 
     connect(&m_WindowGeeTest, &WindowGeeTest::postMessage, this, [this](const QString& Message) {
         m_WindowGeeTest.close();
+        GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
         thpool.start([this, Message]() {
-            std::string str{ GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString() };
-            auto r = CreateLoginCaptcha(phoneNumberLineEdit->text().toStdString(), str);
+            auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
+            if (result.retcode == 0)
+            {
+                GeeTestInfo.action_type = result.action_type;
+            }
+            else if (result.retcode == -3006)
+            {
+                emit showMessagebox("请求过于频繁，请稍后再试");
+            }
         });
     });
 
     connect(pbtSend, &QPushButton::clicked, this, [this] {
         pbtSend->setEnabled(false);
         thpool.start([this] {
-            auto geetestdata{ CreateLoginCaptcha(phoneNumberLineEdit->text().toStdString()) };
-            if (geetestdata.mmt_type)
+            GeeTestInfo.phoneNumber = phoneNumberLineEdit->text().toStdString();
+            auto result{ CreateLoginCaptcha(GeeTestInfo.phoneNumber) };
+            if (result.mmt_type)
             {
-                GeetestSessionId = geetestdata.session_id;
-                m_WindowGeeTest.Init(stringTowstring(geetestdata.gt), stringTowstring(geetestdata.challenge));
+                GeeTestInfo.GeetestSessionId = result.session_id;
+                m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
                 emit showWindowGeeTest(true);
             }
-            //TODO 无需进行人机验证 else...
+            //TODO 无需进行人机验证
+            else
+            {
+            }
         });
     });
 
     connect(Tab0pbtConfirm, &QPushButton::clicked, this, [this] {
-        QMessageBox::information(this, "提示", "Message", QMessageBox::Yes);
         thpool.start([this] {
+            auto result = LoginByMobileCaptcha(GeeTestInfo.action_type, GeeTestInfo.phoneNumber, verifyCodeLineEdit->text().toStdString());
+            if (result.retcode == -3205)
+            {
+                emit showMessagebox("验证码错误");
+            }
+            else if (result.retcode == 0)
+            {
+                const std::string name{ getMysUserName(result.data.aid) };
+                emit AddUserInfo(name, result.data.V2Token, result.data.aid, result.data.mid, "官服");
+            }
         });
     });
 }
