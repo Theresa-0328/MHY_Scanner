@@ -6,6 +6,7 @@
 #include <Base64.hpp>
 
 #include "MhyApi.hpp"
+#include "BH3Api.hpp"
 
 WindowLogin::WindowLogin(QWidget* parent) :
     QWidget(parent),
@@ -152,11 +153,18 @@ void WindowLogin::InitTabs3()
     Tab3MainVLayout->setStretch(2, 2);
 
     Tab3VLayout0 = new QVBoxLayout();
-    Tab3VLayout0->setSpacing(100);
-    Tab3VLayout0->setContentsMargins(50, 20, 50, 50);
+    Tab3VLayout0->setSpacing(40);
+    Tab3VLayout0->setContentsMargins(50, 20, 50, -1);
     lineEditAccount = new QLineEdit(tabs[3]);
+    lineEditAccount->setMaximumSize(QSize(400, 40));
+    lineEditAccount->setPlaceholderText("请输入账号...");
+    lineEditAccount->setClearButtonEnabled(true);
     Tab3VLayout0->addWidget(lineEditAccount);
     lineEditPwd = new QLineEdit(tabs[3]);
+    lineEditPwd->setMaximumSize(QSize(400, 40));
+    lineEditPwd->setPlaceholderText("请输入密码...");
+    lineEditPwd->setClearButtonEnabled(true);
+    lineEditPwd->setEchoMode(QLineEdit::Password);
     Tab3VLayout0->addWidget(lineEditPwd);
 
     Tab3MainVLayout->addLayout(Tab3VLayout0);
@@ -171,13 +179,15 @@ void WindowLogin::InitTabs3()
 
     Tab3HLayout2 = new QHBoxLayout();
     Tab3HLayout2->setSpacing(40);
-    Tab3HLayout2->setContentsMargins(50, 30, 50, 100);
-    pBt1 = new QPushButton(tabs[3]);
-    pBt1->setText("登录");
-    Tab3HLayout2->addWidget(pBt1);
-    pBt2 = new QPushButton(tabs[3]);
-    pBt2->setText("取消");
-    Tab3HLayout2->addWidget(pBt2);
+    Tab3HLayout2->setContentsMargins(50, 30, 50, 125);
+    Tab3pBtConfirm = new QPushButton(tabs[3]);
+    Tab3pBtConfirm->setText("登录");
+    Tab3pBtConfirm->setMinimumSize(120, 35);
+    Tab3HLayout2->addWidget(Tab3pBtConfirm);
+    Tab3pBtCancel = new QPushButton(tabs[3]);
+    Tab3pBtCancel->setText("取消");
+    Tab3pBtCancel->setMinimumSize(120, 35);
+    Tab3HLayout2->addWidget(Tab3pBtCancel);
 
     Tab3MainVLayout->addLayout(Tab3HLayout2);
 }
@@ -202,17 +212,31 @@ void WindowLogin::Initconnect()
     connect(&m_WindowGeeTest, &WindowGeeTest::postMessage, this, [this](const QString& Message) {
         m_WindowGeeTest.close();
         GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
-        thpool.start([this, Message]() {
-            auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
-            if (result.retcode == 0)
-            {
-                GeeTestInfo.action_type = result.action_type;
-            }
-            else if (result.retcode == -3006)
-            {
-                emit showMessagebox("请求过于频繁，请稍后再试");
-            }
-        });
+        if (GeeTestType == BiLi)
+        {
+            thpool.start([this, Message]() {
+                QJsonObject json{ QJsonDocument{ QJsonDocument::fromJson(Message.toUtf8()) }.object() };
+                auto result{ BH3API::BILI::LoginByPassWord(lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString(),
+                                                           GeeTestInfo.gt_user_id,
+                                                           json.value("geetest_challenge").toString().toStdString(),
+                                                           json.value("geetest_validate").toString().toStdString()) };
+                ResultByLoginBH3BiLiBiLi(result);
+            });
+        }
+        else if (GeeTestType == Official)
+        {
+            thpool.start([this, Message]() {
+                auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
+                if (result.retcode == 0)
+                {
+                    GeeTestInfo.action_type = result.action_type;
+                }
+                else if (result.retcode == -3006)
+                {
+                    emit showMessagebox("请求过于频繁，请稍后再试");
+                }
+            });
+        }
     });
 
     connect(pbtSend, &QPushButton::clicked, this, [this] {
@@ -223,6 +247,7 @@ void WindowLogin::Initconnect()
             if (result.mmt_type)
             {
                 GeeTestInfo.GeetestSessionId = result.session_id;
+                GeeTestType = Official;
                 m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
                 emit showWindowGeeTest(true);
             }
@@ -238,7 +263,7 @@ void WindowLogin::Initconnect()
             auto result = LoginByMobileCaptcha(GeeTestInfo.action_type, GeeTestInfo.phoneNumber, verifyCodeLineEdit->text().toStdString());
             if (result.retcode == -3205)
             {
-                emit showMessagebox("验证码错误");
+                emit showMessagebox("短信验证码错误");
             }
             else if (result.retcode == 0)
             {
@@ -247,4 +272,36 @@ void WindowLogin::Initconnect()
             }
         });
     });
+
+    connect(Tab3pBtConfirm, &QPushButton::clicked, this, [this] {
+        pbtSend->setEnabled(false);
+        thpool.start([this] {
+            auto result{ BH3API::BILI::LoginByPassWord(lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString()) };
+            ResultByLoginBH3BiLiBiLi(result);
+        });
+    });
+}
+
+void WindowLogin::ResultByLoginBH3BiLiBiLi(const auto& result)
+{
+    if (result.code == 0)
+    {
+        emit AddUserInfo(result.uname, result.access_key, result.uid, "", "崩坏3B服");
+    }
+    else if (result.code == 200000)
+    {
+        auto result = BH3API::BILI::CaptchaCaptcha();
+        GeeTestInfo.gt_user_id = result.gt_user_id;
+        GeeTestType = BiLi;
+        m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
+        emit showWindowGeeTest(true);
+    }
+    else if (result.code == 500002)
+    {
+        emit showMessagebox("密码错误");
+    }
+    else if (result.code != 0)
+    {
+        emit showMessagebox(QString::fromStdString(result.message));
+    }
 }

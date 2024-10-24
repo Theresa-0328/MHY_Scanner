@@ -13,8 +13,8 @@
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
 #include "MhyApi.hpp"
-#include "LoginBili.h"
 #include "LoginWindow.h"
+#include "BH3Api.hpp"
 
 WindowMain::WindowMain(QWidget* parent) :
     QMainWindow(parent),
@@ -327,19 +327,17 @@ void WindowMain::pBtstartScreen(bool clicked)
         }
         else if (type == "崩坏3B服")
         {
-            LoginBili b;
-            std::string stoken = userinfo["account"][countA]["access_key"];
-            std::string uid = userinfo["account"][countA]["uid"];
-            std::string name;
+            std::string stoken{ userinfo["account"][countA]["access_key"] };
+            std::string uid{ userinfo["account"][countA]["uid"] };
             //可用性检查
-            int code = b.loginBiliKey(name, uid, stoken);
-            if (code != 0)
+            auto result{ BH3API::BILI::GetUserInfo(uid, stoken) };
+            if (result.code != 0)
             {
                 emit AccountError();
                 return;
             }
             t1.setServerType(ServerType::BH3_BiliBili);
-            t1.setLoginInfo(uid, stoken, name);
+            t1.setLoginInfo(uid, stoken, result.uname);
         }
         t1.start();
         emit StartScanScreen();
@@ -395,19 +393,17 @@ void WindowMain::pBtStream(bool clicked)
         }
         else if (type == "崩坏3B服")
         {
-            LoginBili b;
-            std::string stoken = userinfo["account"][countA]["access_key"];
-            std::string uid = userinfo["account"][countA]["uid"];
-            std::string name;
+            std::string stoken{ userinfo["account"][countA]["access_key"] };
+            std::string uid{ userinfo["account"][countA]["uid"] };
             //可用性检查
-            int code = b.loginBiliKey(name, uid, stoken);
-            if (code != 0)
+            auto result{ BH3API::BILI::GetUserInfo(uid, stoken) };
+            if (result.code != 0)
             {
                 emit AccountError();
                 return;
             }
             t2.setServerType(ServerType::BH3_BiliBili);
-            t2.setLoginInfo(uid, stoken, name);
+            t2.setLoginInfo(uid, stoken, result.uname);
         }
         t2.start();
         emit StartScanLive();
