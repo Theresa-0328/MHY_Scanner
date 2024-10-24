@@ -15,9 +15,11 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QCheckBox>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QTimer>
 
 #include "WindowGeeTest.h"
-#include "BiliBH3Api.hpp"
 
 class WindowLogin : public QWidget
 {
@@ -40,7 +42,7 @@ private:
     WindowGeeTest m_WindowGeeTest{ this };
     QThreadPool thpool;
     std::array<QWidget*, 4> tabs{};
-    static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili登录" };
+    static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili崩坏3登录" };
     QTabWidget* tabWidget{};
     QHBoxLayout* MainHLayout{};
 
@@ -74,8 +76,8 @@ private:
     QVBoxLayout* Tab3VLayout1{};
     QCheckBox* checkBoxShowPw{};
     QHBoxLayout* Tab3HLayout2{};
-    QPushButton* pBt1{};
-    QPushButton* pBt2{};
+    QPushButton* Tab3pBtConfirm{};
+    QPushButton* Tab3pBtCancel{};
 
     void Initconnect();
 
@@ -85,5 +87,14 @@ private:
         std::string action_type{};
         std::string Aigis{};
         std::string phoneNumber{};
+        std::string gt_user_id{};
     } GeeTestInfo;
+
+    enum
+    {
+        Official,
+        BiLi
+    } GeeTestType;
+
+    void ResultByLoginBH3BiLiBiLi(const auto& result);
 };

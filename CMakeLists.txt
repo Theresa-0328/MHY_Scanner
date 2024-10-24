@@ -35,8 +35,8 @@ endif()
 
 find_program(NUGET_EXE NAMES nuget PATHS ${CMAKE_CURRENT_SOURCE_DIR})
 if(NOT NUGET_EXE)
-	message("NUGET.EXE not found.")
-	message(FATAL_ERROR "Please install this executable, and run CMake again.")
+    message("NUGET.EXE not found.")
+    message(FATAL_ERROR "Please install this executable, and run CMake again.")
 endif()
 
 execute_process(COMMAND ${NUGET_EXE} install "Microsoft.Web.WebView2"-ExcludeVersion -OutputDirectory ${CMAKE_BINARY_DIR}/packages)
@@ -170,7 +170,7 @@ set(PROJECT_LIBRARIES
 
     QR_Code_generator
 
-	WebView2LoaderStatic
+    WebView2LoaderStatic
 )
 
 #target_link_libraries(QrCodeGeneratorDemo ${PROJECT_LIBRARIES})
@@ -203,7 +203,6 @@ install(
 )
 install(
     DIRECTORY
-    src/geetest
     src/ScanModel
     DESTINATION
     ${Install_Directory}

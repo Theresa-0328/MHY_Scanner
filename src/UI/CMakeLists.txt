@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 
 add_executable(${PROJECT_NAME}
     ../Resources/MHY_Scanner.rc 
-    "LoginBili.cpp" 
+    #"LoginBili.cpp" 
     "LoginWindow.cpp"
     "Main.cpp" 
     "ThreadLocalServer.cpp" 
