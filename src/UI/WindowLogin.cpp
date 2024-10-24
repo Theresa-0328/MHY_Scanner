@@ -38,7 +38,7 @@ WindowLogin::~WindowLogin() = default;
 
 void WindowLogin::closeEvent(QCloseEvent* event)
 {
-    emit Destroy();
+    deleteLater();
 }
 
 void WindowLogin::InitTabs0()
@@ -147,6 +147,39 @@ void WindowLogin::InitTabs2()
 
 void WindowLogin::InitTabs3()
 {
+    Tab3MainVLayout = new QVBoxLayout(tabs[3]);
+    Tab3MainVLayout->setStretch(0, 3);
+    Tab3MainVLayout->setStretch(2, 2);
+
+    Tab3VLayout0 = new QVBoxLayout();
+    Tab3VLayout0->setSpacing(100);
+    Tab3VLayout0->setContentsMargins(50, 20, 50, 50);
+    lineEditAccount = new QLineEdit(tabs[3]);
+    Tab3VLayout0->addWidget(lineEditAccount);
+    lineEditPwd = new QLineEdit(tabs[3]);
+    Tab3VLayout0->addWidget(lineEditPwd);
+
+    Tab3MainVLayout->addLayout(Tab3VLayout0);
+
+    Tab3VLayout1 = new QVBoxLayout();
+    Tab3VLayout1->setContentsMargins(300, -1, -1, -1);
+    checkBoxShowPw = new QCheckBox(tabs[3]);
+    checkBoxShowPw->setText("显示密码");
+    Tab3VLayout1->addWidget(checkBoxShowPw);
+
+    Tab3MainVLayout->addLayout(Tab3VLayout1);
+
+    Tab3HLayout2 = new QHBoxLayout();
+    Tab3HLayout2->setSpacing(40);
+    Tab3HLayout2->setContentsMargins(50, 30, 50, 100);
+    pBt1 = new QPushButton(tabs[3]);
+    pBt1->setText("登录");
+    Tab3HLayout2->addWidget(pBt1);
+    pBt2 = new QPushButton(tabs[3]);
+    pBt2->setText("取消");
+    Tab3HLayout2->addWidget(pBt2);
+
+    Tab3MainVLayout->addLayout(Tab3HLayout2);
 }
 
 void WindowLogin::Initconnect()

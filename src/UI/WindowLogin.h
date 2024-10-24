@@ -14,8 +14,10 @@
 #include <QMessagebox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QCheckBox>
 
 #include "WindowGeeTest.h"
+#include "BiliBH3Api.hpp"
 
 class WindowLogin : public QWidget
 {
@@ -28,8 +30,7 @@ public:
 signals:
     void showMessagebox(const QString& Message);
     void showWindowGeeTest(const bool show);
-    void AddUserInfo(const std::string& name, const std::string& V2Token, const std::string& uid, const std::string& mid, const std::string& type);
-    void Destroy();
+    void AddUserInfo(const std::string& name, const std::string token, const std::string uid, const std::string mid, const std::string type);
 private slots:
 
 protected:
@@ -66,7 +67,15 @@ private:
     QHBoxLayout* Tab2ButtonHLayout{};
 
     void InitTabs3();
-    QHBoxLayout* Tab3MainHLayout{};
+    QVBoxLayout* Tab3MainVLayout{};
+    QVBoxLayout* Tab3VLayout0{};
+    QLineEdit* lineEditAccount{};
+    QLineEdit* lineEditPwd{};
+    QVBoxLayout* Tab3VLayout1{};
+    QCheckBox* checkBoxShowPw{};
+    QHBoxLayout* Tab3HLayout2{};
+    QPushButton* pBt1{};
+    QPushButton* pBt2{};
 
     void Initconnect();
 

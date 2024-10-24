@@ -202,7 +202,6 @@ inline auto CreateLoginCaptcha(const std::string_view mobile, const std::string_
         std::string gt{};
         std::string challenge{};
     } GeetestData;
-
     const std::string RequestBody{ std::format(R"({{"area_code":"{}","mobile":"{}"}})", Encrypt("+86"), Encrypt(mobile)) };
     std::map<std::string, std::string> headers{ GetRequestHeader() };
     headers["DS"] = DataSignAlgorithmVersionGen2(RequestBody, "");
@@ -213,6 +212,7 @@ inline auto CreateLoginCaptcha(const std::string_view mobile, const std::string_
     HttpClient h;
     std::string s;
     h.PostRequest(s, mhy_passport_account_verifier, RequestBody, headers, true);
+    //std::cout << s << std::endl;
     std::string bodystr{};
     if (size_t startPos = s.find_last_of("\n"); startPos != std::string::npos)
     {
@@ -279,7 +279,8 @@ inline auto LoginByMobileCaptcha(const std::string_view actionType, const std::s
     }
     HttpClient h;
     std::string s;
-    h.PostRequest(s, URL_LoginByMobileCaptcha, RequestBody, headers, false);
+    h.PostRequest(s, URL_LoginByMobileCaptcha, RequestBody, headers);
+    //std::cout << s << std::endl;
     json::Json j{};
     j.parse(s);
     result.retcode = j["retcode"];
@@ -288,7 +289,7 @@ inline auto LoginByMobileCaptcha(const std::string_view actionType, const std::s
         return result;
     }
     else if (result.retcode == 0)
-{
+    {
         result.data.V2Token = j["data"]["token"]["token"];
         result.data.aid = j["data"]["user_info"]["aid"];
         result.data.mid = j["data"]["user_info"]["mid"];
