@@ -64,7 +64,7 @@ void WindowGeeTest::Init(const std::wstring_view gt, const std::wstring_view cha
                     );
               </script>
             </html>)" };
-    indexHtml = std::vformat(TemplateHtml, std::make_wformat_args(gt, challenge));
+    indexHtml = std::format(TemplateHtml, gt, challenge);
 }
 
 void WindowGeeTest::showEvent(QShowEvent* event)

@@ -68,12 +68,6 @@ WindowMain::WindowMain(QWidget* parent) :
     connect(&configinitload, &configInitLoad::userinfoTrue, this, &WindowMain::configInitUpdate);
     connect(ui.tableWidget, &QTableWidget::itemChanged, this, &WindowMain::updateNote);
 
-    //connect(&m_windowLogin, &WindowLogin::showMessagebox, this, [this]() {
-    //    QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
-    //    //有未知信号触发
-    //    insertTableItems(QString::fromStdString("111"), QString::fromStdString("2222"), "官服", "");
-    //});
-
     QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
     o.start();
     ui.tableWidget->setColumnCount(5);
@@ -150,7 +144,37 @@ void WindowMain::insertTableItems(QString uid, QString userName, QString type, Q
 void WindowMain::AddAccount()
 {
 #if 1
-    m_windowLogin.show();
+    if (t1.isRunning() || t2.isRunning())
+    {
+        QMessageBox::information(this, "错误", "请先停止识别！", QMessageBox::Yes);
+        return;
+    }
+    m_windowLogin = new WindowLogin(this);
+    connect(m_windowLogin, &WindowLogin::AddUserInfo, this, [this](const std::string& name, const std::string& V2Token, const std::string& uid, const std::string& mid, const std::string& type) {
+        if (checkDuplicates(uid.data()))
+        {
+            QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
+            return;
+        }
+        //TODO 有预期外信号触发,潜在bug
+        insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), QString::fromStdString(type), "");
+        QThreadPool::globalInstance()->start([this, V2Token, uid, name, type, mid] {
+            int num{ userinfo["num"] };
+            userinfo["account"][num]["access_key"] = V2Token;
+            userinfo["account"][num]["uid"] = uid;
+            userinfo["account"][num]["name"] = name;
+            userinfo["account"][num]["type"] = type;
+            userinfo["account"][num]["note"] = "";
+            userinfo["account"][num]["mid"] = mid;
+            userinfo["num"] = num + 1;
+            m_config->updateConfig(userinfo.str());
+        });
+        QMessageBox::information(this, "提示", "添加成功", QMessageBox::Yes);
+    });
+    connect(m_windowLogin, &WindowLogin::Destroy, this, [this] {
+        m_windowLogin->deleteLater();
+    });
+    m_windowLogin->show();
 #else
     LoginWindow loginwindow(reinterpret_cast<QDialog*>(this));
     if (t1.isRunning() || t2.isRunning())

@@ -66,3 +66,4 @@ constexpr const char* mhy_hk4e_qrcode_fetch{ "https://hk4e-sdk.mihoyo.com/hk4e_c
 constexpr const char* mhy_hk4e_qrcode_query{ "https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/query" };
 
 constexpr const char* mhy_passport_account_verifier{ "https://passport-api.mihoyo.com/account/ma-cn-verifier/verifier/createLoginCaptcha" };
+constexpr const char* URL_LoginByMobileCaptcha{ "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByMobileCaptcha" };

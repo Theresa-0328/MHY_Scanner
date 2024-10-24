@@ -220,12 +220,17 @@ inline auto CreateLoginCaptcha(const std::string_view mobile, const std::string_
     }
     json::Json body{};
     body.parse(bodystr);
-    if ((int)body["retcode"] == 0)
+    GeetestData.retcode = body["retcode"];
+    if (GeetestData.retcode == 0)
     {
         GeetestData.retcode = body["retcode"];
         GeetestData.action_type = body["data"]["action_type"];
     }
-    else
+    else if (GeetestData.retcode == -3006)
+    {
+        return GeetestData;
+    }
+    else if (GeetestData.retcode == -3101)
     {
         constexpr std::string_view headerKey{ "X-Rpc-Aigis: " };
         std::string Aigis;
@@ -253,8 +258,42 @@ inline auto CreateLoginCaptcha(const std::string_view mobile, const std::string_
     return GeetestData;
 }
 
-inline bool LoginByMobileCaptcha()
+inline auto LoginByMobileCaptcha(const std::string_view actionType, const std::string_view mobile, const std::string_view captcha, const std::string_view aigis = "")
 {
+    struct
+    {
+        int retcode{};
+        struct
+        {
+            std::string V2Token{};
+            std::string aid{};
+            std::string mid{};
+        } data;
+    } result;
+    const std::string RequestBody{ std::format(R"({{"area_code":"{}","action_type":"{}","captcha":"{}","mobile":"{}"}})", Encrypt("+86"), actionType, captcha, Encrypt(mobile)) };
+    std::map<std::string, std::string> headers{ GetRequestHeader() };
+    headers["DS"] = DataSignAlgorithmVersionGen2(RequestBody, "");
+    if (!aigis.empty())
+    {
+        headers["X-Rpc-Aigis"] = aigis;
+    }
+    HttpClient h;
+    std::string s;
+    h.PostRequest(s, URL_LoginByMobileCaptcha, RequestBody, headers, false);
+    json::Json j{};
+    j.parse(s);
+    result.retcode = j["retcode"];
+    if (result.retcode == -3205)
+    {
+        return result;
+    }
+    else if (result.retcode == 0)
+{
+        result.data.V2Token = j["data"]["token"]["token"];
+        result.data.aid = j["data"]["user_info"]["aid"];
+        result.data.mid = j["data"]["user_info"]["mid"];
+    }
+    return result;
 }
 
 inline bool scanQRLogin()

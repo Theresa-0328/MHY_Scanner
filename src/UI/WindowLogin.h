@@ -28,7 +28,8 @@ public:
 signals:
     void showMessagebox(const QString& Message);
     void showWindowGeeTest(const bool show);
-
+    void AddUserInfo(const std::string& name, const std::string& V2Token, const std::string& uid, const std::string& mid, const std::string& type);
+    void Destroy();
 private slots:
 
 protected:
@@ -36,7 +37,6 @@ protected:
 
 private:
     WindowGeeTest m_WindowGeeTest{ this };
-    std::string GeetestSessionId{};
     QThreadPool thpool;
     std::array<QWidget*, 4> tabs{};
     static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili登录" };
@@ -69,4 +69,12 @@ private:
     QHBoxLayout* Tab3MainHLayout{};
 
     void Initconnect();
+
+    struct
+    {
+        std::string GeetestSessionId{};
+        std::string action_type{};
+        std::string Aigis{};
+        std::string phoneNumber{};
+    } GeeTestInfo;
 };

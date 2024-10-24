@@ -100,7 +100,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>v1.x.x</string>
+     <string>version</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -412,7 +412,7 @@ QTableWidget::item:selected
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../rc/ScannerGui.qrc"/>
+  <include location="../Resources/ScannerGui.qrc"/>
  </resources>
  <connections/>
 </ui>
