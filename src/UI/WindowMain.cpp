@@ -150,7 +150,7 @@ void WindowMain::AddAccount()
         return;
     }
     m_windowLogin = new WindowLogin(this);
-    connect(m_windowLogin, &WindowLogin::AddUserInfo, this, [this](const std::string& name, const std::string& V2Token, const std::string& uid, const std::string& mid, const std::string& type) {
+    connect(m_windowLogin, &WindowLogin::AddUserInfo, this, [this](const std::string name, const std::string token, const std::string uid, const std::string mid, const std::string type) {
         if (checkDuplicates(uid.data()))
         {
             QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
@@ -158,9 +158,9 @@ void WindowMain::AddAccount()
         }
         //TODO 有预期外信号触发,潜在bug
         insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), QString::fromStdString(type), "");
-        QThreadPool::globalInstance()->start([this, V2Token, uid, name, type, mid] {
+        QThreadPool::globalInstance()->start([this, token, uid, name, type, mid] {
             int num{ userinfo["num"] };
-            userinfo["account"][num]["access_key"] = V2Token;
+            userinfo["account"][num]["access_key"] = token;
             userinfo["account"][num]["uid"] = uid;
             userinfo["account"][num]["name"] = name;
             userinfo["account"][num]["type"] = type;
@@ -170,9 +170,6 @@ void WindowMain::AddAccount()
             m_config->updateConfig(userinfo.str());
         });
         QMessageBox::information(this, "提示", "添加成功", QMessageBox::Yes);
-    });
-    connect(m_windowLogin, &WindowLogin::Destroy, this, [this] {
-        m_windowLogin->deleteLater();
     });
     m_windowLogin->show();
 #else
