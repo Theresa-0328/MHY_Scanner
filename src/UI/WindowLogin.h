@@ -3,6 +3,7 @@
 #include <array>
 #include <iostream>
 
+#include <opencv2/opencv.hpp>
 #include <QTabwidget>
 #include <QWidget>
 #include <QLineEdit>
@@ -18,6 +19,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTimer>
+#include <QImage>
 
 #include "WindowGeeTest.h"
 
@@ -33,6 +35,8 @@ signals:
     void showMessagebox(const QString& Message);
     void showWindowGeeTest(const bool show);
     void AddUserInfo(const std::string& name, const std::string token, const std::string uid, const std::string mid, const std::string type);
+    void sendQrcodeButtonVisible();
+
 private slots:
 
 protected:
@@ -59,7 +63,14 @@ private:
     QHBoxLayout* Tab0HLayout2{};
 
     void InitTabs1();
-    QHBoxLayout* Tab1MainHLayout{};
+    QVBoxLayout* Tab1MainVLayout{};
+    QPushButton* UpdateQrcodeButton{};
+    QImage QRCodeQImage{ 305, 305, QImage::Format_Indexed8 };
+    cv::Mat QrcodeMat{};
+    QThreadPool QrcodePool{};
+    bool showQRcodeImage{};
+    QLabel* QRCodelabel{};
+    QLabel* Prompt{};
 
     void InitTabs2();
     QVBoxLayout* Tab2MainVLayout{};
@@ -97,4 +108,6 @@ private:
     } GeeTestType;
 
     void ResultByLoginBH3BiLiBiLi(const auto& result);
+    void ResultByLoginOfficial(const auto& result);
+    void StartQRCodeLogin();
 };

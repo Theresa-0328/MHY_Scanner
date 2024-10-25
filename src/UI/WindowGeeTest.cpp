@@ -86,6 +86,8 @@ void WindowGeeTest::showEvent(QShowEvent* event)
                                                   m_webViewController = controller;
                                                   m_webViewController->get_CoreWebView2(&m_webView);
                                                   m_webViewController->put_Bounds({ 0, 0, width(), height() });
+                                                  m_webView->get_Settings(&m_settings);
+                                                  m_settings->put_IsStatusBarEnabled(false);
                                                   m_webView->NavigateToString(indexHtml.c_str());
                                                   //m_webView->Navigate(L"https://www.bing.com/");
                                                   m_webView->add_NewWindowRequested(

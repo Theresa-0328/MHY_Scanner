@@ -15,8 +15,6 @@ public:
     [[deprecated("This function is temporarily deprecated!")]] std::string getRole();
 
     std::string getStoken() const;
-    std::string getUserName(const std::string& uid);
-    bool cookieParser(const std::string& cookieString);
     void scanInit(const GameType gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
     ScanRet scanRequest();
     ScanRet scanConfirm();

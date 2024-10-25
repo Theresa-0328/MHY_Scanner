@@ -42,7 +42,7 @@ void OfficialApi::scanInit(const GameType gameType, const std::string& ticket, c
     default:
         __assume(0);
     }
-    uuid = createUUID4();
+    uuid = CreateUUID::CreateUUID4();
     m_uid = uid;
     m_ticket = ticket;
     m_gameToken = gameToken;
@@ -96,17 +96,6 @@ ScanRet OfficialApi::scanConfirm()
     return ScanRet::SUCCESS;
 }
 
-//获取用户完整信息
-std::string OfficialApi::getUserName(const std::string& uid)
-{
-    std::string re;
-    GetRequest(re, std::format("{}?uid={}", mhy_mys_uesrinfo, uid).c_str());
-    json::Json j;
-    j.parse(re);
-    re = j["data"]["user_info"]["nickname"];
-    return re;
-}
-
 //暂时用不上
 std::string OfficialApi::getRole()
 {
@@ -118,40 +107,6 @@ std::string OfficialApi::getRole()
     GetRequest(re, url, headers);
     headers.erase("Cookie");
     return std::string();
-}
-
-bool OfficialApi::cookieParser(const std::string& cookieString)
-{
-    if (cookieString == "")
-    {
-        return false;
-    }
-    // 切割 cookie 字符串
-    size_t pos{};
-    while (pos < cookieString.length())
-    {
-        size_t endPos = cookieString.find(';', pos);
-        if (endPos == std::string::npos)
-        {
-            endPos = cookieString.length();
-        }
-        size_t equalPos = cookieString.find('=', pos);
-        if (equalPos != std::string::npos && equalPos < endPos)
-        {
-            std::string key = cookieString.substr(pos, equalPos - pos);
-            key.erase(std::remove(key.begin(), key.end(), ' '), key.end());
-            const std::string& value = cookieString.substr(equalPos + 1, endPos - equalPos - 1);
-            cookieMap[key] = value;
-        }
-        pos = endPos + 1;
-    }
-    if (cookieMap.contains("stoken") &&
-        (cookieMap.contains("stuid") || cookieMap.contains("ltuid") || cookieMap.contains("account_id")) &&
-        cookieMap.contains("mid"))
-    {
-        return true;
-    }
-    return false;
 }
 
 std::string OfficialApi::getStoken() const

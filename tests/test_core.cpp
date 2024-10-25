@@ -13,7 +13,7 @@ TEST(API, Test1)
 
 TEST(UUID, Test1)
 {
-    std::string s{ createUUID4() };
+    std::string s{ CreateUUID::CreateUUID4() };
     EXPECT_TRUE(s.size() > 35);
 }
 
