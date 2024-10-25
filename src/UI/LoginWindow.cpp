@@ -147,7 +147,7 @@ void LoginWindow::ClearInputBox()
 
 void LoginWindow::qrcodeThreadFun(int index)
 {
-    const std::string deviceID{ createUUID4() };
+    const std::string deviceID{ CreateUUID::CreateUUID4() };
     std::string qrcodeString{ GetLoginQrcodeUrl(deviceID) };
     const std::string_view ticket{ qrcodeString.data() + qrcodeString.size() - 24, 24 };
     std::string accountData;

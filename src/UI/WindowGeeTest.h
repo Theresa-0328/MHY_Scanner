@@ -25,6 +25,7 @@ protected:
 private:
     wil::com_ptr<ICoreWebView2Controller> m_webViewController{};
     wil::com_ptr<ICoreWebView2> m_webView{};
+    wil::com_ptr<ICoreWebView2Settings> m_settings;
     EventRegistrationToken m_webResourceRequestedToken{};
     std::wstring indexHtml{};
 };

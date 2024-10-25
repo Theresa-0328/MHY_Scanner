@@ -14,6 +14,7 @@
 #include "UtilString.hpp"
 #include "CryptoKit.h"
 #include "TimeStamp.hpp"
+#include "CreateUUID.hpp"
 
 enum class QRCodeState : uint8_t
 {
@@ -23,13 +24,15 @@ enum class QRCodeState : uint8_t
     Expired = 3
 };
 
-constexpr std::string_view mihoyobbs_salt{ "oqrJbPCoFhWhFBNDvVRuldbrbiVxyWsP" };
-constexpr std::string_view mihoyobbs_salt_web{ "zZDfHqEcwTqvvKDmqRcHyqqurxGgLfBV" };
+constinit const std::string_view mihoyobbs_salt{ "oqrJbPCoFhWhFBNDvVRuldbrbiVxyWsP" };
+constinit const std::string_view mihoyobbs_salt_web{ "zZDfHqEcwTqvvKDmqRcHyqqurxGgLfBV" };
 
-constexpr std::string_view mihoyobbs_salt_x4{ "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs" };
-constexpr std::string_view mihoyobbs_salt_x6{ "t0qEgfub6cvueAPgR5m9aQWWVciEer7v" };
+constinit const std::string_view mihoyobbs_salt_x4{ "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs" };
+constinit const std::string_view mihoyobbs_salt_x6{ "t0qEgfub6cvueAPgR5m9aQWWVciEer7v" };
 
-constexpr std::string_view mihoyobbs_version{ "2.75.2" };
+constinit const std::string_view mihoyobbs_version{ "2.75.2" };
+
+static const std::string device_id{ CreateUUID::CreateUUID4() };
 
 [[nodiscard]] inline std::string DataSignAlgorithmVersionGen1()
 {
@@ -51,13 +54,13 @@ constexpr std::string_view mihoyobbs_version{ "2.75.2" };
 
 inline std::map<std::string, std::string> GetRequestHeader()
 {
-    static std::map<std::string, std::string> header{
+    static const std::map<std::string, std::string> header{
         { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/2.76.1" },
         { "Accept", "application/json" },
         { "x-rpc-app_id", "bll8iq97cem8" },
         { "x-rpc-app_version", "2.76.1" },
         { "x-rpc-client_type", "2" },
-        { "x-rpc-device_id", "62bc0778-126f-4c63-be81-d5a86a6ba9b9" },
+        { "x-rpc-device_id", device_id },
         { "x-rpc-device_name", "" },
         { "x-rpc-game_biz", "bbs_cn" },
         { "x-rpc-sdk_version", "2.16.0" }
@@ -66,35 +69,13 @@ inline std::map<std::string, std::string> GetRequestHeader()
     return header;
 }
 
-[[nodiscard]] inline std::string createUUID4()
-{
-    static const char chars[] = "0123456789abcdef";
-    std::random_device rd;
-    std::mt19937 generator(rd());
-    std::uniform_int_distribution<int> distribution(0, 15);
-    constexpr int UUID_LENGTH = 36;
-    char uuid[UUID_LENGTH + 1]{};
-    for (int i = 0; i < UUID_LENGTH; ++i)
-    {
-        if (i == 8 || i == 13 || i == 18 || i == 23)
-        {
-            uuid[i] = '-';
-            continue;
-        }
-        int randomDigit = distribution(generator);
-        uuid[i] = chars[randomDigit];
-    }
-    uuid[UUID_LENGTH] = '\0';
-    return std::string(uuid);
-}
-
 static GameType loginType{ GameType::TearsOfThemis };
 
-inline std::string GetLoginQrcodeUrl(const std::string_view deviece, const GameType type = loginType)
+inline std::string GetLoginQrcodeUrl(const GameType type = loginType)
 {
     HttpClient h;
     std::string res;
-    h.PostRequest(res, mhy_hk4e_qrcode_fetch, std::format(R"({{"app_id":{},"device":"{}"}})", static_cast<int>(type), deviece));
+    h.PostRequest(res, mhy_hk4e_qrcode_fetch, std::format(R"({{"app_id":{},"device":"{}"}})", static_cast<int>(type), device_id));
     json::Json j;
     j.parse(res);
     std::string QrcodeString{ static_cast<std::string>(j["data"]["url"]) };
@@ -102,41 +83,54 @@ inline std::string GetLoginQrcodeUrl(const std::string_view deviece, const GameT
     return QrcodeString;
 }
 
-inline QRCodeState GetQRCodeState(const std::string_view deviece,
-                                  const std::string_view ticket,
-                                  std::string& accountData,
-                                  const GameType type = loginType)
+inline auto GetQRCodeState(
+    const std::string_view ticket,
+    const GameType type = loginType)
 {
     HttpClient h;
     std::string res;
     h.PostRequest(res, mhy_hk4e_qrcode_query,
-                  std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(type), deviece, ticket));
+                  std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(type), device_id, ticket));
     //std::cout << __LINE__ << res << std::endl;
     json::Json j;
     j.parse(res);
-    QRCodeState state{};
-    using enum QRCodeState;
+    struct
+    {
+        enum
+        {
+            Init = 0,
+            Scanned = 1,
+            Confirmed = 2,
+            Expired = 3
+        } StateType;
+        int retcode{};
+        std::string uid{};
+        std::string token{};
+    } result;
     if (static_cast<int>(j["retcode"]) == 0)
     {
         if (static_cast<std::string>(j["data"]["stat"]) == "Init")
         {
-            state = Init;
+            result.StateType = result.Init;
         }
         else if (static_cast<std::string>(j["data"]["stat"]) == "Scanned")
         {
-            state = Scanned;
+            result.StateType = result.Scanned;
         }
         else if (static_cast<std::string>(j["data"]["stat"]) == "Confirmed")
         {
-            accountData = j["data"]["payload"]["raw"];
-            state = Confirmed;
+            std::string str{ unescapeString(j["data"]["payload"]["raw"]) };
+            j.parse(str);
+            result.uid = j["uid"];
+            result.token = j["token"];
+            result.StateType = result.Confirmed;
         }
     }
     else //retcode == -106
     {
-        state = Expired;
+        result.StateType = result.Expired;
     }
-    return state;
+    return result;
 }
 
 inline std::string getMysUserName(const std::string_view uid)
@@ -180,7 +174,7 @@ inline auto getStokenByGameToken(const std::string_view uid, const std::string_v
 
 inline std::string Encrypt(const std::string_view source)
 {
-    constexpr const char* PublicKey{
+    static constinit const char* PublicKey{
         "-----BEGIN PUBLIC KEY-----\n"
         "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7"
         "cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs"
