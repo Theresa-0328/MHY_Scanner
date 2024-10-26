@@ -2,6 +2,7 @@
 
 #include <array>
 #include <iostream>
+#include <atomic>
 
 #include <opencv2/opencv.hpp>
 #include <QTabwidget>
@@ -20,6 +21,7 @@
 #include <QJsonObject>
 #include <QTimer>
 #include <QImage>
+#include <QMutex>
 
 #include "WindowGeeTest.h"
 
@@ -35,7 +37,8 @@ signals:
     void showMessagebox(const QString& Message);
     void showWindowGeeTest(const bool show);
     void AddUserInfo(const std::string& name, const std::string token, const std::string uid, const std::string mid, const std::string type);
-    void sendQrcodeButtonVisible();
+    void QrcodeLoginResult(bool result);
+    void StartQRCodeTimer();
 
 private slots:
 
@@ -44,7 +47,7 @@ protected:
 
 private:
     WindowGeeTest m_WindowGeeTest{ this };
-    QThreadPool thpool;
+    QThreadPool thpool{};
     std::array<QWidget*, 4> tabs{};
     static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili崩坏3登录" };
     QTabWidget* tabWidget{};
@@ -67,10 +70,12 @@ private:
     QPushButton* UpdateQrcodeButton{};
     QImage QRCodeQImage{ 305, 305, QImage::Format_Indexed8 };
     cv::Mat QrcodeMat{};
-    QThreadPool QrcodePool{};
-    bool showQRcodeImage{};
+    inline static QThreadPool QrcodePool{};
     QLabel* QRCodelabel{};
     QLabel* Prompt{};
+    QTimer* QrcodeTimer;
+    std::string ticket;
+    std::atomic_bool AllowDrawQRCode{};
 
     void InitTabs2();
     QVBoxLayout* Tab2MainVLayout{};
@@ -99,15 +104,15 @@ private:
         std::string Aigis{};
         std::string phoneNumber{};
         std::string gt_user_id{};
+        enum
+        {
+            Official,
+            BiLi
+        } GeeTestType{};
     } GeeTestInfo;
-
-    enum
-    {
-        Official,
-        BiLi
-    } GeeTestType;
 
     void ResultByLoginBH3BiLiBiLi(const auto& result);
     void ResultByLoginOfficial(const auto& result);
     void StartQRCodeLogin();
+    void CheckQRCodeLoginState();
 };
