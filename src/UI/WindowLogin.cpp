@@ -72,6 +72,7 @@ void WindowLogin::InitTabs0()
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(regex, this);
     phoneNumberLineEdit->setValidator(validator);
     phoneNumberLineEdit->setPlaceholderText("请输入手机号码");
+    phoneNumberLineEdit->setClearButtonEnabled(true);
     Tab0HLayout0->addWidget(phoneNumberLineEdit);
 
     pbtSend = new QPushButton(tabs[0]);
@@ -94,6 +95,7 @@ void WindowLogin::InitTabs0()
     verifyCodeLineEdit->setMinimumSize(QSize(0, 50));
     verifyCodeLineEdit->setFont(QFont("微软雅黑", 14));
     verifyCodeLineEdit->setPlaceholderText("请输入收到的验证码");
+    verifyCodeLineEdit->setClearButtonEnabled(true);
     Tab0HLayout1->addWidget(verifyCodeLineEdit);
 
     Tab0MainVLayout->addLayout(Tab0HLayout1);
@@ -113,6 +115,8 @@ void WindowLogin::InitTabs0()
     Tab0HLayout2->addWidget(Tab0pbtCancel);
 
     Tab0MainVLayout->addLayout(Tab0HLayout2);
+
+    Tabs0Timer = new QTimer(this);
 }
 
 void WindowLogin::InitTabs1()
@@ -293,10 +297,11 @@ void WindowLogin::Initconnect()
         {
             thpool.start([this, Message]() {
                 QJsonObject json{ QJsonDocument{ QJsonDocument::fromJson(Message.toUtf8()) }.object() };
-                auto result{ BH3API::BILI::LoginByPassWord(lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString(),
-                                                           GeeTestInfo.gt_user_id,
-                                                           json.value("geetest_challenge").toString().toStdString(),
-                                                           json.value("geetest_validate").toString().toStdString()) };
+                auto result{ BH3API::BILI::LoginByPassWord(
+                    lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString(),
+                    GeeTestInfo.gt_user_id,
+                    json.value("geetest_challenge").toString().toStdString(),
+                    json.value("geetest_validate").toString().toStdString()) };
                 ResultByLoginBH3BiLiBiLi(result);
             });
         }
@@ -316,8 +321,21 @@ void WindowLogin::Initconnect()
         }
     });
 
+    connect(Tabs0Timer, &QTimer::timeout, this, [this]() {
+        remainingSeconds--;
+        pbtSend->setText(QString::number(remainingSeconds) + "秒");
+        if (remainingSeconds <= 0)
+        {
+            Tabs0Timer->stop();
+            pbtSend->setEnabled(true);
+            pbtSend->setText("发送");
+        }
+    });
+
     connect(pbtSend, &QPushButton::clicked, this, [this] {
         pbtSend->setEnabled(false);
+        Tabs0Timer->start(1000);
+        remainingSeconds = 60;
         thpool.start([this] {
             GeeTestInfo.phoneNumber = phoneNumberLineEdit->text().toStdString();
             auto result{ CreateLoginCaptcha(GeeTestInfo.phoneNumber) };
@@ -328,9 +346,9 @@ void WindowLogin::Initconnect()
                 m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
                 emit showWindowGeeTest(true);
             }
-            //TODO 无需进行人机验证
-            else
+            else if (result.retcode == -3008)
             {
+                emit showMessagebox("手机号错误");
             }
         });
     });

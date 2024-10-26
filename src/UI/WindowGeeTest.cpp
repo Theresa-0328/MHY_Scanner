@@ -8,6 +8,7 @@ WindowGeeTest::WindowGeeTest(QWidget* parent) :
 {
     setWindowFlags(Qt::Window);
     setMinimumSize(QSize(400, 450));
+    setWindowTitle("请完成验证");
 }
 
 WindowGeeTest::~WindowGeeTest()
@@ -31,7 +32,7 @@ void WindowGeeTest::Init(const std::wstring_view gt, const std::wstring_view cha
     constexpr std::wstring_view TemplateHtml{ LR"(
             <html>
                 <head>
-                    <title>{{SH.UIXamlViewWindowWebView2GeetestHeader}}</title>
+                    <title>GeeTest</title>
                     <style>
                         #geetest-div {{
                             aligin-items:center
@@ -86,10 +87,13 @@ void WindowGeeTest::showEvent(QShowEvent* event)
                                                   m_webViewController = controller;
                                                   m_webViewController->get_CoreWebView2(&m_webView);
                                                   m_webViewController->put_Bounds({ 0, 0, width(), height() });
+
                                                   m_webView->get_Settings(&m_settings);
                                                   m_settings->put_IsStatusBarEnabled(false);
+
                                                   m_webView->NavigateToString(indexHtml.c_str());
                                                   //m_webView->Navigate(L"https://www.bing.com/");
+
                                                   m_webView->add_NewWindowRequested(
                                                       Microsoft::WRL::Callback<ICoreWebView2NewWindowRequestedEventHandler>(
                                                           [this](ICoreWebView2* sender, ICoreWebView2NewWindowRequestedEventArgs* args) {
@@ -98,6 +102,7 @@ void WindowGeeTest::showEvent(QShowEvent* event)
                                                           })
                                                           .Get(),
                                                       &m_webResourceRequestedToken);
+
                                                   m_webView->add_WebMessageReceived(
                                                       Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                                           [this](ICoreWebView2* sender, ICoreWebView2WebMessageReceivedEventArgs* args) {
