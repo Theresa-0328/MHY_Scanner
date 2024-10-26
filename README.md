@@ -59,6 +59,8 @@
 - httplib
 
 ## 参考和感谢
+- [HonkaiScanner](https://github.com/HonkaiScanner)
+
 - [BililiveRecorder/BililiveRecorder](https://github.com/BililiveRecorder/BililiveRecorder)
 
-- [HonkaiScanner](https://github.com/HonkaiScanner)
+- [Snap.Hutao](https://github.com/DGP-Studio/Snap.Hutao)
