@@ -5,6 +5,13 @@
 #include "UtilString.hpp"
 #include "MhyApi.hpp"
 
+TEST(API, Test2)
+{
+    HttpClient h;
+    std::string s{};
+    h.GetRequest(s, "https://techain.baidu.com/srcmon");
+}
+
 TEST(API, Test1)
 {
     auto result = getStokenByGameToken("", "");

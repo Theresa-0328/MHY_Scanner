@@ -1,5 +1,7 @@
 ﻿#include "WindowLogin.h"
 
+#include <thread>
+
 #include <Windows.h>
 
 #include <Base64.hpp>
@@ -39,7 +41,7 @@ WindowLogin::WindowLogin(QWidget* parent) :
 
 WindowLogin::~WindowLogin()
 {
-    showQRcodeImage = false;
+    QrcodePool.clear();
 }
 
 void WindowLogin::closeEvent(QCloseEvent* event)
@@ -129,15 +131,21 @@ void WindowLogin::InitTabs1()
 
     Tab1MainVLayout->addWidget(QRCodelabel);
 
-    QRCodeQImage.fill(Qt::white);
+    QRCodeQImage.fill(255);
     QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeQImage));
     QRCodelabel->setAlignment(Qt::AlignCenter);
+    QRCodelabel->setText("二维码加载中");
+    QRCodelabel->setFont(QFont("微软雅黑", 15));
     //QRCodelabel->setStyleSheet("border: 2px solid black;");
 
     UpdateQrcodeButton = new QPushButton("二维码已过期\n点击刷新二维码", tabs[1]);
     UpdateQrcodeButton->setFont(QFont("微软雅黑", 13));
     UpdateQrcodeButton->setFixedSize(170, 170);
     UpdateQrcodeButton->setVisible(false);
+
+    QrcodeTimer = new QTimer(this);
+
+    QrcodePool.setMaxThreadCount(1);
 }
 
 void WindowLogin::InitTabs2()
@@ -237,19 +245,27 @@ void WindowLogin::Initconnect()
         }
     });
 
-    connect(this, &WindowLogin::sendQrcodeButtonVisible, this, [this] {
-        QRCodeQImage = CV_8UC1_MatToQImage(QrcodeMat - cv::Scalar(200));
-        QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeQImage));
-        showQRcodeImage = false;
-        UpdateQrcodeButton->setVisible(true);
+    connect(this, &WindowLogin::QrcodeLoginResult, this, [this](bool result) {
+        if (result)
+        {
+            QrcodeTimer->stop();
+        }
+        else
+        {
+            QRCodeQImage = CV_8UC1_MatToQImage(QrcodeMat - cv::Scalar(200));
+            QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeQImage));
+            UpdateQrcodeButton->setVisible(true);
+        }
     });
 
     connect(tabWidget, &QTabWidget::currentChanged, this, [this](int index) {
+        QrcodeTimer->stop();
+        QRCodeQImage.fill(255);
+        QRCodelabel->setText("二维码加载中");
         switch (index)
         {
         case 0:
         {
-            QRCodeQImage.fill(Qt::white);
             break;
         }
         case 1:
@@ -259,12 +275,10 @@ void WindowLogin::Initconnect()
         }
         case 2:
         {
-            QRCodeQImage.fill(Qt::white);
             break;
         }
         case 3:
         {
-            QRCodeQImage.fill(Qt::white);
             break;
         }
         default:
@@ -275,7 +289,7 @@ void WindowLogin::Initconnect()
     connect(&m_WindowGeeTest, &WindowGeeTest::postMessage, this, [this](const QString& Message) {
         m_WindowGeeTest.close();
         GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
-        if (GeeTestType == BiLi)
+        if (GeeTestInfo.GeeTestType == GeeTestInfo.BiLi)
         {
             thpool.start([this, Message]() {
                 QJsonObject json{ QJsonDocument{ QJsonDocument::fromJson(Message.toUtf8()) }.object() };
@@ -286,7 +300,7 @@ void WindowLogin::Initconnect()
                 ResultByLoginBH3BiLiBiLi(result);
             });
         }
-        else if (GeeTestType == Official)
+        else if (GeeTestInfo.GeeTestType == GeeTestInfo.Official)
         {
             thpool.start([this, Message]() {
                 auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
@@ -310,7 +324,7 @@ void WindowLogin::Initconnect()
             if (result.mmt_type)
             {
                 GeeTestInfo.GeetestSessionId = result.session_id;
-                GeeTestType = Official;
+                GeeTestInfo.GeeTestType = GeeTestInfo.Official;
                 m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
                 emit showWindowGeeTest(true);
             }
@@ -388,8 +402,31 @@ void WindowLogin::Initconnect()
         });
     });
 
-    connect(UpdateQrcodeButton, &QPushButton::clicked, this, [this] {
-        StartQRCodeLogin();
+    connect(UpdateQrcodeButton, &QPushButton::clicked, this, &WindowLogin::StartQRCodeLogin);
+
+    connect(QrcodeTimer, &QTimer::timeout, this, [this]() {
+        QThreadPool::globalInstance()->start([this]() {
+            CheckQRCodeLoginState();
+        });
+    });
+
+    connect(this, &WindowLogin::StartQRCodeTimer, this, [this]() {
+        if (!QrcodeTimer->isActive())
+        {
+            QrcodeTimer->start(1000);
+        }
+    });
+
+    connect(checkBoxShowPw, &QCheckBox::stateChanged, this, [this](int state) {
+        if (state == Qt::Checked)
+        {
+            lineEditPwd->setEchoMode(QLineEdit::Normal);
+            lineEditPwd->setInputMethodHints(Qt::ImhHiddenText);
+        }
+        else if (state == Qt::Unchecked)
+        {
+            lineEditPwd->setEchoMode(QLineEdit::Password);
+        }
     });
 }
 
@@ -403,7 +440,7 @@ void WindowLogin::ResultByLoginBH3BiLiBiLi(const auto& result)
     {
         auto result = BH3API::BILI::CaptchaCaptcha();
         GeeTestInfo.gt_user_id = result.gt_user_id;
-        GeeTestType = BiLi;
+        GeeTestInfo.GeeTestType = GeeTestInfo.BiLi;
         m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
         emit showWindowGeeTest(true);
     }
@@ -423,61 +460,66 @@ void WindowLogin::ResultByLoginOfficial(const auto& result)
 
 void WindowLogin::StartQRCodeLogin()
 {
+    QrcodeTimer->stop();
+    UpdateQrcodeButton->hide();
     UpdateQrcodeButton->move(QRCodelabel->x() + (QRCodelabel->width() - 170) / 2, QRCodelabel->y() + (QRCodelabel->height() - 170) / 2);
-    QrcodePool.clear();
-    QrcodePool.start([&]() {
-        showQRcodeImage = true;
-
+    AllowDrawQRCode.store(true);
+    QrcodePool.start([this]() {
+        QrcodePool.clear();
+        QRCodeQImage.fill(255);
+        QRCodelabel->setText("二维码加载中");
+        AllowDrawQRCode.store(false);
         const std::string qrcodeString{ GetLoginQrcodeUrl() };
-        const std::string_view ticket{ qrcodeString.data() + qrcodeString.size() - 24, 24 };
-        std::string accountData;
-
+        ticket = std::string{ qrcodeString.data() + qrcodeString.size() - 24, 24 };
         QrcodeMat = createQrCodeToCvMat(qrcodeString);
         QRCodeQImage = CV_8UC1_MatToQImage(QrcodeMat);
-        QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeQImage));
-        int i{};
-        while (showQRcodeImage)
+        if (AllowDrawQRCode.load())
         {
-            auto result{ GetQRCodeState(ticket) };
-            switch (result.StateType)
-            {
-            case result.Init:
-            {
-            }
-            break;
-            case result.Scanned:
-            {
-                QRCodelabel->setText("正在登录\n\n请在手机上点击「确认登录」");
-            }
-            break;
-            case result.Confirmed:
-            {
-                const auto stoken{ getStokenByGameToken(result.uid, result.token) };
-                if (const auto resultStoken{ getStokenByGameToken(result.uid, result.token) }; resultStoken.has_value())
-                {
-                    std::string name{ getMysUserName(result.uid) };
-                    const auto& [mid, stoken] = *resultStoken;
-                    emit AddUserInfo(name, stoken, result.uid, mid, "官服");
-                    QRCodelabel->setText("登录成功！");
-                    return;
-                }
-                else
-                {
-                    emit showMessagebox("获取STOKEN失败！");
-                }
-                return;
-            }
-            break;
-            case result.Expired:
-            {
-                emit sendQrcodeButtonVisible();
-                return;
-            }
-            break;
-            default:
-                __assume(0);
-            }
-            Sleep(1000);
+            return;
         }
+        QRCodelabel->setPixmap(QPixmap::fromImage(QRCodeQImage));
+        emit StartQRCodeTimer();
     });
+}
+
+void WindowLogin::CheckQRCodeLoginState()
+{
+    auto result{ GetQRCodeState(ticket) };
+    switch (result.StateType)
+    {
+    case result.Init:
+    {
+    }
+    break;
+    case result.Scanned:
+    {
+        QRCodelabel->setText("正在登录\n\n请在手机上点击「确认登录」");
+    }
+    break;
+    case result.Confirmed:
+    {
+        if (const auto resultStoken{ getStokenByGameToken(result.uid, result.token) }; resultStoken.has_value())
+        {
+            std::string name{ getMysUserName(result.uid) };
+            const auto& [mid, stoken] = *resultStoken;
+            emit AddUserInfo(name, stoken, result.uid, mid, "官服");
+            QRCodelabel->setText("登录成功！");
+            emit QrcodeLoginResult(true);
+        }
+        else
+        {
+            emit showMessagebox("获取STOKEN失败！");
+        }
+        return;
+    }
+    break;
+    case result.Expired:
+    {
+        emit QrcodeLoginResult(false);
+        return;
+    }
+    break;
+    default:
+        __assume(0);
+    }
 }

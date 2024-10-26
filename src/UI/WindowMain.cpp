@@ -13,7 +13,6 @@
 #include "OfficialApi.h"
 #include "Mihoyosdk.h"
 #include "MhyApi.hpp"
-#include "LoginWindow.h"
 #include "BH3Api.hpp"
 
 WindowMain::WindowMain(QWidget* parent) :
