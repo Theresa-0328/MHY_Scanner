@@ -64,6 +64,8 @@ private:
     QPushButton* Tab0pbtConfirm{};
     QPushButton* Tab0pbtCancel{};
     QHBoxLayout* Tab0HLayout2{};
+    QTimer* Tabs0Timer;
+    int remainingSeconds{};
 
     void InitTabs1();
     QVBoxLayout* Tab1MainVLayout{};

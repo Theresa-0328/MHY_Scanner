@@ -16,6 +16,8 @@ namespace BH3API
 {
 namespace BILI
 {
+namespace detail
+{
 constinit const std::string_view userinfoParam{ R"({"cur_buvid":"XZA2FA4AC240F665E2F27F603ABF98C615C29","client_timestamp":"1667057013442","sdk_type":"1","isRoot":"0","merchant_id":"590","dp":"1280 * 720",
 "mac":"08:00 : 27 : 53 : DD : 12","uid":"437470182","support_abis":"x86, armeabi - v7a, armeabi","apk_sign":"4502a02a00395dec05a4134ad593224d","platform_type":"3","old_buvid":"XZA2FA4AC240F665E2F27F603ABF98C615C29",
 "operators":"5","fingerprint":"","model":"MuMu","udid":"XXA31CBAB6CBA63E432E087B58411A213BFB7","net":"5","app_id":"180","brand":"Android","oaid":"","game_id":"180","timestamp":"1667057013275","ver":"6.1.0","c":"1",
@@ -79,11 +81,11 @@ inline std::string SetSign(std::map<std::string, std::string> data)
     sign += "dbf8f1b4496f430b8a3c0f436a35b931";
     return std::format("{}{}{}", data2, "sign=", Md5(sign));
 }
-
+}
 inline auto GetUserInfo(const std::string& uid, const std::string& accessKey)
 {
     json::Json userinfoParamj;
-    userinfoParamj.parse(userinfoParam.data());
+    userinfoParamj.parse(detail::userinfoParam.data());
     userinfoParamj["uid"] = uid;
     userinfoParamj["access_key"] = accessKey;
     std::map<std::string, std::string> m = userinfoParamj.objToMap();
@@ -104,10 +106,10 @@ inline auto GetUserInfo(const std::string& uid, const std::string& accessKey)
             return result;
         }();
     }
-    std::string s{ SetSign(m) };
+    std::string s{ detail::SetSign(m) };
     std::string t;
     HttpClient h{};
-    h.PostRequest(t, game_bili_userinfo, s, headers);
+    h.PostRequest(t, game_bili_userinfo, s, detail::headers);
 #ifdef _DEBUG
     std::cout << "BiliBili用户信息：" << t << std::endl;
 #endif // _DEBUG
@@ -135,16 +137,16 @@ inline auto LoginByPassWord(
     const std::string_view validate = "")
 {
     json::Json data;
-    data.parse(rsaParam.data());
+    data.parse(detail::rsaParam.data());
     std::map<std::string, std::string> dataM = data.objToMap();
-    std::string p1 = SetSign(dataM);
+    std::string p1 = detail::SetSign(dataM);
     std::string re;
     HttpClient h;
-    h.PostRequest(re, game_bili_rsa, p1, headers);
+    h.PostRequest(re, game_bili_rsa, p1, detail::headers);
 #ifdef _DEBUG
     std::cout << re << std::endl;
 #endif // _DEBUG
-    data.parse(loginParam.data());
+    data.parse(detail::loginParam.data());
     json::Json re1J;
     re1J.parse(re.data());
     std::string publicKey = re1J["rsa_key"];
@@ -166,11 +168,11 @@ inline auto LoginByPassWord(
     std::cout << data.str() << std::endl;
 #endif // _DEBUG
     std::map<std::string, std::string> dataR = data.objToMap();
-    std::string p2 = SetSign(dataR);
+    std::string p2 = detail::SetSign(dataR);
     re.clear();
     data.clear();
     re1J.clear();
-    h.PostRequest(re, game_bili_login, p2, headers);
+    h.PostRequest(re, game_bili_login, p2, detail::headers);
     json::Json j1;
     j1.parse(re);
     struct
@@ -204,12 +206,12 @@ inline auto LoginByPassWord(
 inline auto CaptchaCaptcha()
 {
     json::Json data;
-    data.parse(captchaParam.data());
+    data.parse(detail::captchaParam.data());
     std::map<std::string, std::string> info = data.objToMap();
-    std::string data1 = SetSign(info);
+    std::string data1 = detail::SetSign(info);
     std::string data2;
     HttpClient h;
-    h.PostRequest(data2, game_bili_start_captcha, data1, headers);
+    h.PostRequest(data2, game_bili_start_captcha, data1, detail::headers);
     json::Json captchaJ;
     captchaJ.parse(data2);
     struct

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <random>
 
 namespace CreateUUID
 {
 [[nodiscard]] inline std::string CreateUUID4()
 {
-    static const char chars[] = "0123456789abcdef";
+    static constinit const std::string_view chars{ "0123456789abcdef" };
     std::random_device rd;
     std::mt19937 generator(rd());
     std::uniform_int_distribution<int> distribution(0, 15);

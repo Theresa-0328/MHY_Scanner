@@ -10,8 +10,8 @@ add_library(MHY_Scanner_Core STATIC
     ScreenScan.cpp
     ConfigDate.cpp
     BH3Api.hpp
-	"CookieParser.hpp"
-	CreateUUID.hpp
+    "CookieParser.hpp"
+    CreateUUID.hpp
     #BiliGameApi.cpp
     #VideoProcessor.cpp
 )
