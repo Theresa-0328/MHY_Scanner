@@ -295,7 +295,7 @@ void WindowLogin::Initconnect()
         GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
         if (GeeTestInfo.GeeTestType == GeeTestInfo.BiLi)
         {
-            thpool.start([this, Message]() {
+            QThreadPool::globalInstance()->start([this, Message]() {
                 QJsonObject json{ QJsonDocument{ QJsonDocument::fromJson(Message.toUtf8()) }.object() };
                 auto result{ BH3API::BILI::LoginByPassWord(
                     lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString(),
@@ -307,7 +307,7 @@ void WindowLogin::Initconnect()
         }
         else if (GeeTestInfo.GeeTestType == GeeTestInfo.Official)
         {
-            thpool.start([this, Message]() {
+            QThreadPool::globalInstance()->start([this, Message]() {
                 auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
                 if (result.retcode == 0)
                 {
@@ -336,7 +336,7 @@ void WindowLogin::Initconnect()
         pbtSend->setEnabled(false);
         Tabs0Timer->start(1000);
         remainingSeconds = 60;
-        thpool.start([this] {
+        QThreadPool::globalInstance()->start([this] {
             GeeTestInfo.phoneNumber = phoneNumberLineEdit->text().toStdString();
             auto result{ CreateLoginCaptcha(GeeTestInfo.phoneNumber) };
             if (result.mmt_type)
@@ -354,7 +354,7 @@ void WindowLogin::Initconnect()
     });
 
     connect(Tab0pbtConfirm, &QPushButton::clicked, this, [this] {
-        thpool.start([this] {
+        QThreadPool::globalInstance()->start([this] {
             auto result = LoginByMobileCaptcha(GeeTestInfo.action_type, GeeTestInfo.phoneNumber, verifyCodeLineEdit->text().toStdString());
             if (result.retcode == -3205)
             {
@@ -369,14 +369,14 @@ void WindowLogin::Initconnect()
     });
 
     connect(Tab3pBtConfirm, &QPushButton::clicked, this, [this] {
-        thpool.start([this] {
+        QThreadPool::globalInstance()->start([this] {
             auto result{ BH3API::BILI::LoginByPassWord(lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString()) };
             ResultByLoginBH3BiLiBiLi(result);
         });
     });
 
     connect(pBtofficialLogin, &QPushButton::clicked, this, [this] {
-        thpool.start([this] {
+        QThreadPool::globalInstance()->start([this] {
             std::string CookieString{ lineEditCookie->text().toStdString() };
             CookieParser cp(CookieString);
             std::string uid{}, stoken{}, mid{};
@@ -502,8 +502,7 @@ void WindowLogin::StartQRCodeLogin()
 
 void WindowLogin::CheckQRCodeLoginState()
 {
-    auto result{ GetQRCodeState(ticket) };
-    switch (result.StateType)
+    switch (auto result{ GetQRCodeState(ticket) }; result.StateType)
     {
     case result.Init:
     {
