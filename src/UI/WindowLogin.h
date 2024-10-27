@@ -47,7 +47,6 @@ protected:
 
 private:
     WindowGeeTest m_WindowGeeTest{ this };
-    QThreadPool thpool{};
     std::array<QWidget*, 4> tabs{};
     static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili崩坏3登录" };
     QTabWidget* tabWidget{};

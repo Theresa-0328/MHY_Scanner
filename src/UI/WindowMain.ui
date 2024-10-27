@@ -139,9 +139,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>0</y>
       <width>481</width>
-      <height>231</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -167,19 +167,6 @@ QTableWidget::item:selected
     color:red;        
     background:#cecbd7;
 }</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>0</y>
-      <width>53</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>账号列表</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboBox">

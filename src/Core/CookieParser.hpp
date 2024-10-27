@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <string_view>
@@ -29,14 +29,15 @@ public:
             pos = endPos + 1;
         }
     }
+
     std::unordered_map<std::string, std::string>& GetCookieMap()
     {
         return CookieMap;
     }
 
-    std::optional<std::string> GetCookieValue(const std::string& key)
+    std::optional<std::string> GetCookieValue(const std::string_view key)
     {
-        auto it{ CookieMap.find(key) };
+        auto it{ CookieMap.find(key.data()) };
         if (it != CookieMap.end())
         {
             return std::make_optional(it->second);
