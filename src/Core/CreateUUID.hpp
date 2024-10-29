@@ -15,7 +15,7 @@ namespace CreateUUID
     std::mt19937 generator(rd());
     std::uniform_int_distribution<int> distribution(0, 15);
     std::array<char, UUID_LENGTH + 1> uuid{};
-    for (int i{}; i < UUID_LENGTH; ++i)
+    for (size_t i{}; i < UUID_LENGTH; ++i)
     {
         if (i == 8 || i == 13 || i == 18 || i == 23)
         {

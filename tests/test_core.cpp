@@ -24,13 +24,6 @@ TEST(UUID, Test1)
     EXPECT_TRUE(s.size() > 35);
 }
 
-TEST(LiveDoyin, Test1)
-{
-    LiveDouyin l("85614521087");
-    l.GetLiveStreamStatus();
-    EXPECT_TRUE(true);
-}
-
 TEST(URLEncode, test1)
 {
     HttpClient h;
