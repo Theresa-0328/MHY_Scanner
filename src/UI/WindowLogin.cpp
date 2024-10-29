@@ -25,7 +25,7 @@ WindowLogin::WindowLogin(QWidget* parent) :
     for (size_t i{}; i < tabs.size(); i++)
     {
         tabs[i] = new QWidget();
-        tabWidget->addTab(tabs[i], tabsName[i]);
+        tabWidget->addTab(tabs[i], tabsName[i].data());
         tabWidget->setFont(QFont("微软雅黑", 11));
     }
     InitTabs0();
@@ -117,6 +117,9 @@ void WindowLogin::InitTabs0()
     Tab0MainVLayout->addLayout(Tab0HLayout2);
 
     Tabs0Timer = new QTimer(this);
+
+    pbtSend->setEnabled(false);
+    Tab0pbtConfirm->setEnabled(false);
 }
 
 void WindowLogin::InitTabs1()
@@ -290,9 +293,19 @@ void WindowLogin::Initconnect()
         }
     });
 
+    connect(phoneNumberLineEdit, &QLineEdit::textChanged, this, [this] {
+        if (phoneNumberLineEdit->text().toStdString().size() >= 11)
+        {
+            pbtSend->setEnabled(true);
+        }
+        else
+        {
+            pbtSend->setEnabled(false);
+        }
+    });
+
     connect(&m_WindowGeeTest, &WindowGeeTest::postMessage, this, [this](const QString& Message) {
         m_WindowGeeTest.close();
-        GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
         if (GeeTestInfo.GeeTestType == GeeTestInfo.BiLi)
         {
             QThreadPool::globalInstance()->start([this, Message]() {
@@ -308,10 +321,12 @@ void WindowLogin::Initconnect()
         else if (GeeTestInfo.GeeTestType == GeeTestInfo.Official)
         {
             QThreadPool::globalInstance()->start([this, Message]() {
+                GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
                 auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
                 if (result.retcode == 0)
                 {
                     GeeTestInfo.action_type = result.action_type;
+                    emit ButtonEnabled(true);
                 }
                 else if (result.retcode == -3006)
                 {
@@ -332,10 +347,17 @@ void WindowLogin::Initconnect()
         }
     });
 
+    connect(this, &WindowLogin::ButtonEnabled, this, [this](bool enabled) {
+        if (enabled)
+        {
+            pbtSend->setEnabled(false);
+            Tabs0Timer->start(1000);
+            remainingSeconds = 60;
+        }
+        Tab0pbtConfirm->setEnabled(enabled);
+    });
+
     connect(pbtSend, &QPushButton::clicked, this, [this] {
-        pbtSend->setEnabled(false);
-        Tabs0Timer->start(1000);
-        remainingSeconds = 60;
         QThreadPool::globalInstance()->start([this] {
             GeeTestInfo.phoneNumber = phoneNumberLineEdit->text().toStdString();
             auto result{ CreateLoginCaptcha(GeeTestInfo.phoneNumber) };
@@ -345,6 +367,10 @@ void WindowLogin::Initconnect()
                 GeeTestInfo.GeeTestType = GeeTestInfo.Official;
                 m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
                 emit showWindowGeeTest(true);
+            }
+            else if (!result.mmt_type)
+            {
+                emit ButtonEnabled(true);
             }
             else if (result.retcode == -3008)
             {

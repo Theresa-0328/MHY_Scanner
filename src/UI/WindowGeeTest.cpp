@@ -7,7 +7,7 @@ WindowGeeTest::WindowGeeTest(QWidget* parent) :
     QWidget(parent)
 {
     setWindowFlags(Qt::Window);
-    setMinimumSize(QSize(400, 450));
+    setFixedSize(QSize(400, 450));
     setWindowTitle("请完成验证");
 }
 

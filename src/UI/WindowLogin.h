@@ -39,6 +39,7 @@ signals:
     void AddUserInfo(const std::string& name, const std::string token, const std::string uid, const std::string mid, const std::string type);
     void QrcodeLoginResult(bool result);
     void StartQRCodeTimer();
+    void ButtonEnabled(bool enabled);
 
 private slots:
 
@@ -48,7 +49,7 @@ protected:
 private:
     WindowGeeTest m_WindowGeeTest{ this };
     std::array<QWidget*, 4> tabs{};
-    static constexpr std::array<const char*, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili崩坏3登录" };
+    static constexpr std::array<const std::string_view, 4> tabsName{ "短信登录", "扫码登录", "Cookie登录", "Bilibili崩坏3登录" };
     QTabWidget* tabWidget{};
     QHBoxLayout* MainHLayout{};
 
