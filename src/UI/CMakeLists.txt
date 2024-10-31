@@ -13,7 +13,4 @@ add_executable(${PROJECT_NAME}
     "WindowLogin.cpp" 
     "WindowGeeTest.h" 
     "WindowGeeTest.cpp"
-    #"LoginBili.cpp"
-    #"ThreadLocalServer.cpp"
-	#"LoginWindow.cpp"
 )
