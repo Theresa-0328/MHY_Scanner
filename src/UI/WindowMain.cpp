@@ -142,7 +142,6 @@ void WindowMain::insertTableItems(QString uid, QString userName, QString type, Q
 
 void WindowMain::AddAccount()
 {
-#if 1
     if (t1.isRunning() || t2.isRunning())
     {
         QMessageBox::information(this, "错误", "请先停止识别！", QMessageBox::Yes);
@@ -171,122 +170,6 @@ void WindowMain::AddAccount()
         QMessageBox::information(this, "提示", "添加成功", QMessageBox::Yes);
     });
     m_windowLogin->show();
-#else
-    LoginWindow loginwindow(reinterpret_cast<QDialog*>(this));
-    if (t1.isRunning() || t2.isRunning())
-    {
-        QMessageBox::information(this, "错误", "请先停止识别！", QMessageBox::Yes);
-        return;
-    }
-    loginwindow.exec();
-    if (loginwindow.getIsReject())
-    {
-        return;
-    }
-    if (loginwindow.type == 1)
-    {
-        OfficialApi o;
-        if (o.cookieParser(loginwindow.cookie) != true)
-        {
-            QMessageBox::information(this, "错误", "cookie格式错误", QMessageBox::Yes);
-            return;
-        }
-        std::string uid{ o.getUid() };
-        if (checkDuplicates(uid))
-        {
-            QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
-            return;
-        }
-        std::string stoken{ o.getStoken() };
-        std::string mid{ o.getMid() };
-        std::string gameToken{};
-        int code = o.getGameToken(stoken, mid, gameToken);
-        if (code == 0)
-        {
-            std::string name{ o.getUserName(uid) };
-            int num = userinfo["num"];
-            insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "");
-            userinfo["account"][num]["access_key"] = stoken;
-            userinfo["account"][num]["uid"] = uid;
-            userinfo["account"][num]["name"] = name;
-            userinfo["account"][num]["type"] = "官服";
-            userinfo["account"][num]["note"] = "";
-            userinfo["account"][num]["mid"] = mid;
-            userinfo["num"] = num + 1;
-        }
-        else
-        {
-            QString info = QString::fromStdString("验证失败,cookie可能过期");
-            QMessageBox::information(this, "错误", info, QMessageBox::Yes);
-        }
-    }
-    if (loginwindow.type == 2)
-    {
-        LoginBili loginbili;
-        std::string account;
-        std::string pwd;
-        std::string message;
-        std::string name;
-        std::string uid;
-        std::string token;
-        loginwindow.getAccountPwd(account, pwd);
-        int code = loginbili.loginBiliPwd(account, pwd, message, uid, token, name);
-        if (checkDuplicates(uid))
-        {
-            QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
-            return;
-        }
-        if (code == 500002)
-        {
-            QMessageBox::information(this, "错误", "账号或密码错误，请重新输入", QMessageBox::Yes);
-            return;
-        }
-        if (code != 0)
-        {
-            QMessageBox::information(this, "提示", QString::fromStdString(message), QMessageBox::Yes);
-        }
-        else
-        {
-            int num = userinfo["num"];
-            insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "崩坏3B服", "");
-            userinfo["account"][num]["access_key"] = token;
-            userinfo["account"][num]["uid"] = uid;
-            userinfo["account"][num]["name"] = name;
-            userinfo["account"][num]["type"] = "崩坏3B服";
-            userinfo["account"][num]["note"] = "";
-            userinfo["account"][num]["mid"] = "";
-            userinfo["num"] = num + 1;
-        }
-    }
-    if (loginwindow.type == 3)
-    {
-        std::string pwd;
-        std::string uid;
-        loginwindow.getAccountPwd(uid, pwd);
-        if (checkDuplicates(uid))
-        {
-            QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
-            return;
-        }
-        std::string name{ getMysUserName(uid) };
-        int num = userinfo["num"];
-        insertTableItems(QString::fromStdString(uid), QString::fromStdString(name), "官服", "");
-        const auto result = getStokenByGameToken(uid, pwd);
-        if (!result)
-        {
-            return;
-        }
-        const auto& [mid, key] = *result;
-        userinfo["account"][num]["access_key"] = key;
-        userinfo["account"][num]["uid"] = uid;
-        userinfo["account"][num]["name"] = name;
-        userinfo["account"][num]["type"] = "官服";
-        userinfo["account"][num]["note"] = "";
-        userinfo["account"][num]["mid"] = mid;
-        userinfo["num"] = num + 1;
-    }
-    m_config->updateConfig(userinfo.str());
-#endif // 0
 }
 
 void WindowMain::pBtstartScreen(bool clicked)
