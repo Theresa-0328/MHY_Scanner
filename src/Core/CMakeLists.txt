@@ -12,6 +12,4 @@ add_library(MHY_Scanner_Core STATIC
     BH3Api.hpp
     "CookieParser.hpp"
     CreateUUID.hpp
-    #BiliGameApi.cpp
-    #VideoProcessor.cpp
 )

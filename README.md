@@ -63,4 +63,4 @@
 
 - [BililiveRecorder/BililiveRecorder](https://github.com/BililiveRecorder/BililiveRecorder)
 
-- [Snap.Hutao](https://github.com/DGP-Studio/Snap.Hutao)
+- [DGP-Studio/Snap.Hutao](https://github.com/DGP-Studio/Snap.Hutao)
