@@ -20,6 +20,8 @@ WindowLogin::WindowLogin(QWidget* parent) :
     setWindowModality(Qt::WindowModal);
     setMinimumSize(QSize(500, 550));
     setMaximumSize(QSize(500, 550));
+    setWindowTitle("添加账号");
+
     tabWidget->setMinimumSize(QSize(500, 550));
     tabWidget->setMaximumSize(QSize(500, 550));
     for (size_t i{}; i < tabs.size(); i++)
@@ -461,7 +463,7 @@ void WindowLogin::Initconnect()
         }
     });
 
-    connect(checkBoxShowPw, &QCheckBox::stateChanged, this, [this](int state) {
+    connect(checkBoxShowPw, &QCheckBox::checkStateChanged, this, [this](int state) {
         if (state == Qt::Checked)
         {
             lineEditPwd->setEchoMode(QLineEdit::Normal);

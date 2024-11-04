@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ScannerGuiClass</class>
- <widget class="QMainWindow" name="ScannerGuiClass">
+ <class>WindowMain</class>
+ <widget class="QMainWindow" name="WindowMain">
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -141,7 +141,7 @@
       <x>10</x>
       <y>0</y>
       <width>481</width>
-      <height>251</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -399,7 +399,7 @@ QTableWidget::item:selected
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../Resources/ScannerGui.qrc"/>
+  <include location="../Resources/MHY_Scanner.qrc"/>
  </resources>
  <connections/>
 </ui>

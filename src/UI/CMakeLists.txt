@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.26)
+﻿cmake_minimum_required(VERSION 3.26)
 
 add_executable(${PROJECT_NAME}
-    ../Resources/MHY_Scanner.rc 
+	"${CMAKE_SOURCE_DIR}/src/Resources/MHY_Scanner.rc"
+    "${CMAKE_SOURCE_DIR}/src/Resources/MHY_Scanner.qrc" 
     "Main.cpp" 
     "QRCodeForStream.cpp"
     "QRCodeForScreen.cpp" 

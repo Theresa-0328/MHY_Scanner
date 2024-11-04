@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION 3.26)
+﻿cmake_minimum_required(VERSION 3.26)
 project(MHY_Scanner LANGUAGES CXX)
 
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "C:/Qt/6.2.3/msvc2019_64")
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -193,14 +191,43 @@ if(Unit_Tests)
 
 endif()
 
-set(Install_Directory "${PROJECT_NAME}_${_VERSION_}")
+set(Install_Directory "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}_${_VERSION_}")
+
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${Install_Directory}
 )
-install(
-    FILES ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.pdb
-    DESTINATION ${Install_Directory}
+
+set(QT_DLL_FILES
+    "$ENV{QTDIR}/bin/Qt6Core.dll"
+    "$ENV{QTDIR}/bin/Qt6Widgets.dll"
+    "$ENV{QTDIR}/bin/Qt6Gui.dll"
 )
+
+install(
+    FILES 
+	${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.pdb
+	${QT_DLL_FILES}
+    DESTINATION 
+	${Install_Directory}
+)
+
+install(
+    FILES
+    $ENV{QTDIR}/plugins/platforms/qdirect2d.dll
+    $ENV{QTDIR}/plugins/platforms/qminimal.dll
+    $ENV{QTDIR}/plugins/platforms/qoffscreen.dll
+    $ENV{QTDIR}/plugins/platforms/qwindows.dll
+    DESTINATION
+    ${Install_Directory}/plugins/platforms
+)
+
+install(
+    FILES
+    $ENV{QTDIR}/plugins/styles/qmodernwindowsstyle.dll
+    DESTINATION
+    ${Install_Directory}/plugins/styles
+)
+
 install(
     DIRECTORY
     src/ScanModel

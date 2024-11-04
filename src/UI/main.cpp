@@ -51,7 +51,20 @@ int main(int argc, char* argv[])
     QApplication a(argc, argv);
     if (isOpen())
     {
-        QMessageBox::warning(NULL, "错误", "程序正在运行");
+        HWND hwnd = FindWindowW(NULL, L"MHY扫码器");
+        if (hwnd == NULL)
+        {
+            return 0;
+        }
+        if (GetForegroundWindow() == hwnd)
+        {
+            return 0;
+        }
+        ShowWindow(hwnd, SW_MINIMIZE);
+        ShowWindow(hwnd, SW_SHOWNORMAL);
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+        SetForegroundWindow(hwnd);
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
         return -1;
     }
     WindowMain w;

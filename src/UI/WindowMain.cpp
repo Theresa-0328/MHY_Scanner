@@ -105,6 +105,7 @@ WindowMain::WindowMain(QWidget* parent) :
     ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
     ui.lineEditLiveId->setClearButtonEnabled(true);
 
+    setFont(QFont("微软雅黑"));
     configinitload.start();
 
     trrlog::SetLogFile("log.txt");
@@ -648,7 +649,7 @@ void WindowMain::configInitUpdate(bool b)
     ui.tableWidget->blockSignals(true);
     if (!b)
     {
-        int result = QMessageBox::information(this, "错误", "配置文件错误！\n重置配置文件为默认？", QMessageBox::Yes | QMessageBox::No);
+        int result = QMessageBox::information(this, "错误", "配置文件错误！\n重置配置文件为空？", QMessageBox::Yes | QMessageBox::No);
         if (result == QMessageBox::Yes)
         {
             m_config->defaultConfig();
