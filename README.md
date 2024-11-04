@@ -1,4 +1,4 @@
-# MHY_Scanner
+﻿# MHY_Scanner
 
 <div align="center">
 
@@ -23,7 +23,7 @@
 | bilibili服 |       |         |          |
 
 ## 使用说明
-下载解压后运行 MHY_Scanner.exe
+[点击Releases](https://github.com/Theresa-0328/MHY_Scanner/releases)选择最新版本下载解压后运行 MHY_Scanner.exe
 
 点击菜单栏 **账号管理->添加账号**，添加你的账号。
 
@@ -49,7 +49,7 @@
 - 启动报错无法定位程序输入点。说明你没有安装最新的vc运行时库。[下载最新支持的Visual C++](https://aka.ms/vs/17/release/vc_redist.x64.exe)，详细解释查看[Microsoft官方文档](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)。
 
 ## 依赖
-- qt v6.2.3
+- qt v6.8.0
 - curl v8.2.1
 - opencv v4.80
 - openssl v3.10

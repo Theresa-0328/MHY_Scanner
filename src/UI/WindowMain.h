@@ -79,7 +79,7 @@ signals:
 private:
     void failure();
     int countA = -1;
-    Ui::ScannerGuiClass ui;
+    Ui::WindowMain ui;
     ConfigDate* m_config = &ConfigDate::getInstance();
     json::Json userinfo;
     QRCodeForScreen t1;
