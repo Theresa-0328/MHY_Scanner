@@ -20,6 +20,7 @@ WindowMain::WindowMain(QWidget* parent) :
     t1(this),
     t2(this)
 {
+    QApplication::setFont(QFont("微软雅黑", 9));
     ui.setupUi(this);
     connect(ui.action1_3, &QAction::triggered, this, &WindowMain::AddAccount);
     connect(ui.action1_4, &QAction::triggered, this, &WindowMain::SetDefaultAccount);
@@ -105,7 +106,6 @@ WindowMain::WindowMain(QWidget* parent) :
     ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
     ui.lineEditLiveId->setClearButtonEnabled(true);
 
-    setFont(QFont("微软雅黑"));
     configinitload.start();
 
     trrlog::SetLogFile("log.txt");

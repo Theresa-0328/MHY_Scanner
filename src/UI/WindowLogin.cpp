@@ -474,6 +474,20 @@ void WindowLogin::Initconnect()
             lineEditPwd->setEchoMode(QLineEdit::Password);
         }
     });
+
+    connect(Tab0pbtCancel, &QPushButton::clicked, this, [this]() {
+        phoneNumberLineEdit->clear();
+        verifyCodeLineEdit->clear();
+    });
+
+    connect(pBtofficialreject, &QPushButton::clicked, this, [this]() {
+        lineEditCookie->clear();
+    });
+
+    connect(Tab3pBtCancel, &QPushButton::clicked, this, [this]() {
+        lineEditAccount->clear();
+        lineEditPwd->clear();
+    });
 }
 
 void WindowLogin::ResultByLoginBH3BiLiBiLi(const auto& result)
