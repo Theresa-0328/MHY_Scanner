@@ -114,6 +114,8 @@ void WindowGeeTest::showEvent(QShowEvent* event)
                                                           })
                                                           .Get(),
                                                       &m_webResourceRequestedToken);
+                                                  return S_OK;
                                               }).Get());
+            return S_OK;
         }).Get());
 }
