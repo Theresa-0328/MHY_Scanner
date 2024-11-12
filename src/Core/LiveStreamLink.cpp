@@ -232,22 +232,29 @@ LiveStreamStatus LiveDouyin::GetLiveStreamStatus()
         return LiveStreamStatus::Absent;
     json::Json data = temp["data"]["data"][0];
     std::string a1 = data.str();
-    // 抖音 status == 2 代表是开播的状态
-    if ((int)data["status"] == 2)
+    try
     {
-        std::string stream_data = data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"];
-        stream_data = unescapeString(stream_data);
-        json::Json data1;
-        data1.parse(stream_data);
-        m_flvUrl = data1["data"]["origin"]["main"]["flv"];
-        replace0026WithAmpersand(m_flvUrl);
-        return LiveStreamStatus::Normal;
+        // 抖音 status == 2 代表是开播的状态
+        if ((int)data["status"] == 2)
+        {
+            std::string stream_data = data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"];
+            stream_data = unescapeString(stream_data);
+            json::Json data1;
+            data1.parse(stream_data);
+            m_flvUrl = data1["data"]["origin"]["main"]["flv"];
+            replace0026WithAmpersand(m_flvUrl);
+            return LiveStreamStatus::Normal;
+        }
+        else if ((int)data["status"] == 4)
+        {
+            return LiveStreamStatus::NotLive;
+        }
+        return LiveStreamStatus::Error;
     }
-    else if ((int)data["status"] == 4)
+    catch (const std::exception&)
     {
-        return LiveStreamStatus::NotLive;
+        return LiveStreamStatus::Error;
     }
-    return LiveStreamStatus::Error;
 }
 
 std::string LiveDouyin::GetLiveStreamLink() const
