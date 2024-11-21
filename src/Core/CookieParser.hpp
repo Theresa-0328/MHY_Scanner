@@ -31,12 +31,22 @@ public:
         }
     }
 
-    std::unordered_map<std::string, std::string>& GetCookieMapRef()
+    std::unordered_map<std::string, std::string>::iterator find(std::string_view Keyval)
     {
-        return CookieMap;
+        return CookieMap.find(Keyval.data());
     }
 
-    std::optional<std::string> GetCookieValue(const std::string_view key) const
+    std::unordered_map<std::string, std::string>::iterator begin()
+    {
+        return CookieMap.begin();
+    }
+
+    std::unordered_map<std::string, std::string>::iterator end()
+    {
+        return CookieMap.end();
+    }
+
+    std::optional<std::string> operator[](const std::string_view key) const
     {
         if (auto it{ CookieMap.find(key.data()) }; it != CookieMap.end())
         {

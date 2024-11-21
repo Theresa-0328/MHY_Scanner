@@ -1,6 +1,7 @@
 ﻿#include "WindowLogin.h"
 
 #include <thread>
+#include <ranges>
 
 #include <Windows.h>
 
@@ -408,43 +409,40 @@ void WindowLogin::Initconnect()
             std::string CookieString{ lineEditCookie->text().toStdString() };
             CookieParser cp(CookieString);
             std::string uid{}, stoken{}, mid{};
-            if (auto value = cp.GetCookieValue("stuid"); value.has_value())
+            static constinit const std::array<std::string_view, 3> keys{ "stuid", "ltuid", "account_id" };
+            auto result = std::ranges::find_if(keys, [&cp, &uid](const std::string_view key) {
+                if (auto value = cp[key]; value.has_value())
+                {
+                    uid = *value;
+                    return true;
+                }
+                return false;
+            });
+            if (result == keys.end())
             {
-                uid = *value;
-            }
-            else if (auto value = cp.GetCookieValue("ltuid"); value.has_value())
-            {
-                uid = *value;
-            }
-            else if (auto value = cp.GetCookieValue("account_id"); value.has_value())
-            {
-                uid = *value;
-            }
-            else
-            {
-                emit showMessagebox("Cookie格式错误!");
+                Q_EMIT showMessagebox("Cookie格式错误!");
                 return;
             }
-            if (auto value = cp.GetCookieValue("stoken"); value.has_value())
+            if (auto value = cp["stoken"]; value.has_value())
             {
                 stoken = *value;
             }
             else
             {
-                emit showMessagebox("Cookie格式错误!");
+                Q_EMIT showMessagebox("Cookie格式错误!");
                 return;
             }
-            if (auto value = cp.GetCookieValue("mid"); value.has_value())
+            if (auto value = cp["mid"]; value.has_value())
             {
                 mid = *value;
             }
             else
             {
-                emit showMessagebox("Cookie格式错误!");
+                Q_EMIT showMessagebox("Cookie格式错误!");
                 return;
             }
             const std::string name{ getMysUserName(uid) };
-            emit AddUserInfo(name, stoken, uid, mid, "官服");
+            Q_EMIT AddUserInfo(name, stoken, uid, mid, "官服");
         });
     });
 

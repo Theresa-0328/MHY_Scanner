@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+#include <string>
+#include <string_view>
+
 #include <Windows.h>
 
 #include <QWidget>
@@ -23,9 +26,9 @@ protected:
     void showEvent(QShowEvent* event) override;
 
 private:
-    wil::com_ptr<ICoreWebView2Controller> m_webViewController{};
-    wil::com_ptr<ICoreWebView2> m_webView{};
-    wil::com_ptr<ICoreWebView2Settings> m_settings;
-    EventRegistrationToken m_webResourceRequestedToken{};
+    wil::com_ptr<ICoreWebView2Controller> webViewController{};
+    wil::com_ptr<ICoreWebView2> webView{};
+    wil::com_ptr<ICoreWebView2Settings> settings;
+    EventRegistrationToken webResourceRequestedToken{};
     std::wstring indexHtml{};
 };

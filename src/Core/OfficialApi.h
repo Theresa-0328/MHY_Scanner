@@ -13,15 +13,11 @@ public:
     OfficialApi();
     //获取账号上所有的角色,当前不可用！
     [[deprecated("This function is temporarily deprecated!")]] std::string getRole();
-
-    std::string getStoken() const;
     void scanInit(const GameType gameType, const std::string& ticket, const std::string& uid, const std::string& gameToken);
     ScanRet scanRequest();
     ScanRet scanConfirm();
     int getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken);
-    std::string getUid() const;
     bool validityCheck(std::string_view ticket);
-    std::string getMid() const;
 
 private:
     GameType m_gameType = GameType::UNKNOW;

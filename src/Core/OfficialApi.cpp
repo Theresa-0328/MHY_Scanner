@@ -109,46 +109,6 @@ std::string OfficialApi::getRole()
     return std::string();
 }
 
-std::string OfficialApi::getStoken() const
-{
-    return cookieMap.at("stoken");
-#if 0
-    std::map<std::string, std::string> params = {
-        { "login_ticket", cookieMap.at("login_ticket") },
-        { "uid", cookieMap.at("login_uid") },
-        { "token_types", "3" },
-    };
-    std::string s;
-    GetRequest(s, std::format("{}?{}", mhy_takumi_multi_token_by_login_ticket, MapToQueryString(params)).c_str());
-    json::Json j;
-    j.parse(s);
-    if ((int)j["retcode"] == 0)
-    {
-        data = j["data"]["list"][0]["token"];
-        return 0;
-    }
-    else
-    {
-        data = j["message"];
-        return -1;
-    }
-#endif
-}
-
-std::string OfficialApi::getUid() const
-{
-    static const std::array<std::string, 3> keys{ "stuid", "ltuid", "account_id" };
-    auto it = std::find_if(keys.begin(), keys.end(), [&cookieMap = cookieMap](std::string key) {
-        return cookieMap.find(key) != cookieMap.end();
-    });
-    return cookieMap.at(*it);
-}
-
-std::string OfficialApi::getMid() const
-{
-    return cookieMap.at("mid");
-}
-
 int OfficialApi::getGameToken(const std::string& stoken, const std::string& uid, std::string& gameToken)
 {
     std::map<std::string, std::string> params{
