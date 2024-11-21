@@ -20,7 +20,7 @@
 |   崩坏3    | 原神  | 星穹铁道 | 绝区零 |
 | :--------: | :---: | :------:| :----: |
 |    官服    | 官服  |   官服   |  官服  |
-| bilibili服 |       |         |        |
+| BiliBili |       |         |        |
 
 ## 使用说明
 [点击Releases](https://github.com/Theresa-0328/MHY_Scanner/releases)选择最新版本下载解压后运行 MHY_Scanner.exe

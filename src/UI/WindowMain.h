@@ -91,5 +91,5 @@ private:
     OnlineUpdate o;
     configInitLoad configinitload;
     void SetWindowToFront() const;
-    WindowLogin* m_windowLogin{};
+    WindowLogin* windowLogin{};
 };

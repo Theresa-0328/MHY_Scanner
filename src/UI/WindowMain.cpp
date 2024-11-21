@@ -148,8 +148,8 @@ void WindowMain::AddAccount()
         QMessageBox::information(this, "错误", "请先停止识别！", QMessageBox::Yes);
         return;
     }
-    m_windowLogin = new WindowLogin(this);
-    connect(m_windowLogin, &WindowLogin::AddUserInfo, this, [this](const std::string name, const std::string token, const std::string uid, const std::string mid, const std::string type) {
+    windowLogin = new WindowLogin(this);
+    connect(windowLogin, &WindowLogin::AddUserInfo, this, [this](const std::string name, const std::string token, const std::string uid, const std::string mid, const std::string type) {
         if (checkDuplicates(uid.data()))
         {
             QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
@@ -170,7 +170,7 @@ void WindowMain::AddAccount()
         });
         QMessageBox::information(this, "提示", "添加成功", QMessageBox::Yes);
     });
-    m_windowLogin->show();
+    windowLogin->show();
 }
 
 void WindowMain::pBtstartScreen(bool clicked)

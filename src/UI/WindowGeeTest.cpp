@@ -13,17 +13,17 @@ WindowGeeTest::WindowGeeTest(QWidget* parent) :
 
 WindowGeeTest::~WindowGeeTest()
 {
-    if (m_webViewController)
+    if (webViewController)
     {
-        m_webViewController->Close();
+        webViewController->Close();
     }
 }
 
 void WindowGeeTest::closeEvent(QCloseEvent* event)
 {
-    if (m_webViewController)
+    if (webViewController)
     {
-        m_webViewController->Close();
+        webViewController->Close();
     }
 }
 
@@ -84,26 +84,26 @@ void WindowGeeTest::showEvent(QShowEvent* event)
                                                   {
                                                       return error;
                                                   }
-                                                  m_webViewController = controller;
-                                                  m_webViewController->get_CoreWebView2(&m_webView);
-                                                  m_webViewController->put_Bounds({ 0, 0, width(), height() });
+                                                  webViewController = controller;
+                                                  webViewController->get_CoreWebView2(&webView);
+                                                  webViewController->put_Bounds({ 0, 0, width(), height() });
 
-                                                  m_webView->get_Settings(&m_settings);
-                                                  m_settings->put_IsStatusBarEnabled(false);
+                                                  webView->get_Settings(&settings);
+                                                  settings->put_IsStatusBarEnabled(false);
 
-                                                  m_webView->NavigateToString(indexHtml.c_str());
-                                                  //m_webView->Navigate(L"https://www.bing.com/");
+                                                  webView->NavigateToString(indexHtml.c_str());
+                                                  //webView->Navigate(L"https://www.bing.com/");
 
-                                                  m_webView->add_NewWindowRequested(
+                                                  webView->add_NewWindowRequested(
                                                       Microsoft::WRL::Callback<ICoreWebView2NewWindowRequestedEventHandler>(
                                                           [this](ICoreWebView2* sender, ICoreWebView2NewWindowRequestedEventArgs* args) {
                                                               args->put_Handled(TRUE);
                                                               return S_OK;
                                                           })
                                                           .Get(),
-                                                      &m_webResourceRequestedToken);
+                                                      &webResourceRequestedToken);
 
-                                                  m_webView->add_WebMessageReceived(
+                                                  webView->add_WebMessageReceived(
                                                       Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                                           [this](ICoreWebView2* sender, ICoreWebView2WebMessageReceivedEventArgs* args) {
                                                               LPWSTR message;
@@ -113,7 +113,7 @@ void WindowGeeTest::showEvent(QShowEvent* event)
                                                               return S_OK;
                                                           })
                                                           .Get(),
-                                                      &m_webResourceRequestedToken);
+                                                      &webResourceRequestedToken);
                                                   return S_OK;
                                               }).Get());
             return S_OK;
