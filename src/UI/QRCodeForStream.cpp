@@ -4,6 +4,7 @@
 #include <string_view>
 
 #include "QRScanner.h"
+#include "MhyApi.hpp"
 
 QRCodeForStream::QRCodeForStream(QObject* parent) :
     QThread(parent),
@@ -31,13 +32,13 @@ QRCodeForStream::~QRCodeForStream()
     this->wait();
 }
 
-void QRCodeForStream::setLoginInfo(const std::string& uid, const std::string& gameToken)
+void QRCodeForStream::setLoginInfo(const std::string_view uid, const std::string_view gameToken)
 {
     this->uid = uid;
     this->gameToken = gameToken;
 }
 
-void QRCodeForStream::setLoginInfo(const std::string& uid, const std::string& gameToken, const std::string& name)
+void QRCodeForStream::setLoginInfo(const std::string_view uid, const std::string_view gameToken, const std::string& name)
 {
     this->uid = uid;
     this->gameToken = gameToken;
@@ -95,8 +96,8 @@ void QRCodeForStream::LoginOfficial()
                     return;
                 }
                 setGameType[view]();
-                const std::string& ticket = str.substr(str.length() - 24);
-                if (o.validityCheck(ticket))
+                const std::string_view ticket(str.data() + str.size() - 24, 24);
+                if (lastTicket == ticket)
                 {
                     return;
                 }
@@ -107,25 +108,23 @@ void QRCodeForStream::LoginOfficial()
                         mtx.unlock();
                         return;
                     }
-                    o.scanInit(m_gametype, ticket, uid, gameToken);
-                    ret = o.scanRequest();
-                    if (ret == ScanRet::SUCCESS)
+                    if (ScanQRLogin(scanUrl.data(), ticket, gameType))
                     {
+                        lastTicket = ticket;
                         json::Json config;
                         config.parse(m_config->getConfig());
                         if (config["auto_login"])
                         {
-                            ret = o.scanConfirm();
-                            emit loginResults(ret);
+                            continueLastLogin();
                         }
                         else
                         {
-                            emit loginConfirm(m_gametype, false);
+                            emit loginConfirm(gameType, false);
                         }
                     }
                     else
                     {
-                        emit loginResults(ret);
+                        emit loginResults(ScanRet::FAILURE_1);
                     }
                     stop();
                     mtx.unlock();
@@ -248,7 +247,7 @@ void QRCodeForStream::stop()
 
 void QRCodeForStream::setUrl(const std::string& url, const std::map<std::string, std::string> heard)
 {
-    m_url = url;
+    streamUrl = url;
     for (const auto& it : heard)
     {
         av_dict_set(&pAvdictionary, it.first.c_str(), it.second.c_str(), 0);
@@ -264,7 +263,7 @@ void QRCodeForStream::setUrl(const std::string& url, const std::map<std::string,
 auto QRCodeForStream::init() -> bool
 {
     pAVFormatContext = avformat_alloc_context();
-    if (avformat_open_input(&pAVFormatContext, m_url.c_str(), NULL, &pAvdictionary) != 0)
+    if (avformat_open_input(&pAVFormatContext, streamUrl.c_str(), NULL, &pAvdictionary) != 0)
     {
         std::cerr << "Error opening input file" << std::endl;
         return false;
@@ -289,7 +288,6 @@ auto QRCodeForStream::init() -> bool
         return false;
     }
     videoStreamIndex = videoStream->index;
-    //const AVCodec* decoder{ avcodec_find_decoder_by_name("h264_cuvid") };
     const AVCodec* decoder{ avcodec_find_decoder(videoStream->codecpar->codec_id) };
     if (decoder == nullptr)
     {
@@ -318,15 +316,24 @@ void QRCodeForStream::continueLastLogin()
     {
         using enum ServerType;
     case Official:
-        ret = o.scanConfirm();
-        break;
+    {
+        bool b = ConfirmQRLogin(confirmUrl, uid, gameToken, lastTicket, gameType);
+        if (b)
+        {
+            Q_EMIT loginResults(ScanRet::SUCCESS);
+        }
+        Q_EMIT loginResults(ScanRet::FAILURE_2);
+    }
+    break;
     case BH3_BiliBili:
+    {
         ret = m.scanConfirm();
-        break;
+        Q_EMIT loginResults(ret);
+    }
+    break;
     default:
         break;
     }
-    emit loginResults(ret);
 }
 
 void QRCodeForStream::run()
