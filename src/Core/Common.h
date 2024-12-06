@@ -56,7 +56,7 @@ constexpr const char* mhy_hk4e_qrcode_scan{ "https://api-sdk.mihoyo.com/hk4e_cn/
 constexpr const char* mhy_hk4e_qrcode_confirm{ "https://api-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/confirm" };
 constexpr const char* mhy_hkrpg_qrcode_scan{ "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/scan" };
 constexpr const char* mhy_hkrpg_qrcode_confirm{ "https://api-sdk.mihoyo.com/hkrpg_cn/combo/panda/qrcode/confirm" };
-constexpr const char* mhy_nap_cn_qrcode_scan{ "https://nap-sdk.mihoyo.com/nap_cn/combo/panda/qrcode/scan" };
+constexpr const char* mhy_nap_cn_qrcode_scan{ "https://api-sdk.mihoyo.com/nap_cn/combo/panda/qrcode/scan" };
 constexpr const char* mhy_nap_cn_qrcode_confirm{ "https://api-sdk.mihoyo.com/nap_cn/combo/panda/qrcode/confirm" };
 constexpr const char* mhy_takumi_multi_token_by_login_ticket{ "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket" };
 constexpr const char* mhy_takumi_game_token{ "https://api-takumi.mihoyo.com/auth/api/getGameToken" };

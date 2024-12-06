@@ -11,6 +11,7 @@
 #include "QRScanner.h"
 #include "ScreenScan.h"
 #include "ScreenShotDXGI.hpp"
+#include "MhyApi.hpp"
 
 #define DELAYED 200
 
@@ -80,8 +81,8 @@ void QRCodeForScreen::LoginOfficial()
                 return;
             }
             setGameType[view]();
-            const std::string& ticket = str.substr(str.length() - 24);
-            if (o.validityCheck(ticket))
+            const std::string_view ticket(str.data() + str.size() - 24, 24);
+            if (lastTicket == ticket)
             {
                 return;
             }
@@ -92,24 +93,23 @@ void QRCodeForScreen::LoginOfficial()
                     mtx.unlock();
                     return;
                 }
-                o.scanInit(m_gametype, ticket, uid, gameToken);
-                if (ret = o.scanRequest(); ret == ScanRet::SUCCESS)
+                if (ScanQRLogin(scanUrl.data(), ticket, gameType))
                 {
+                    lastTicket = ticket;
                     json::Json config;
                     config.parse(m_config->getConfig());
                     if (config["auto_login"])
                     {
-                        ret = o.scanConfirm();
-                        emit loginResults(ret);
+                        continueLastLogin();
                     }
                     else
                     {
-                        emit loginConfirm(m_gametype, true);
+                        emit loginConfirm(gameType, true);
                     }
                 }
                 else
                 {
-                    emit loginResults(ret);
+                    emit loginResults(ScanRet::FAILURE_1);
                 }
                 stop();
                 mtx.unlock();
@@ -186,7 +186,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
                 }
                 else
                 {
-                    emit loginResults(ret);
+                    emit loginResults(ScanRet::FAILURE_1);
                 }
                 stop();
                 mtx.unlock();
@@ -204,15 +204,24 @@ void QRCodeForScreen::continueLastLogin()
     {
         using enum ServerType;
     case Official:
-        ret = o.scanConfirm();
-        break;
+    {
+        bool b = ConfirmQRLogin(confirmUrl, uid, gameToken, lastTicket, gameType);
+        if (b)
+        {
+            Q_EMIT loginResults(ScanRet::SUCCESS);
+        }
+        Q_EMIT loginResults(ScanRet::FAILURE_2);
+    }
+    break;
     case BH3_BiliBili:
+    {
         ret = m.scanConfirm();
-        break;
+        Q_EMIT loginResults(ret);
+    }
+    break;
     default:
         break;
     }
-    emit loginResults(ret);
 }
 
 void QRCodeForScreen::run()

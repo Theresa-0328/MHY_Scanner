@@ -20,6 +20,46 @@
 				"lhs": "${hostSystemName}",
 				"rhs": "Windows"
 			}
+		},
+		{
+			"name": "Win64 Debug",
+			"displayName": "Win64 Debug",
+			"description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(Debug)",
+			"inherits": [
+				"windows-base"
+			],
+			"architecture": {
+				"value": "x64",
+				"strategy": "external"
+			},
+			"environment": {
+				"QTDIR": ""
+			},
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "Win64 Release",
+			"displayName": "Win64 Release",
+			"description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(Release)",
+			"inherits": [
+				"Win64 Debug"
+			],
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "Win64 RelWithDebInfo",
+			"displayName": "Win64 RelWithDebInfo",
+			"description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(RelWithDebInfo)",
+			"inherits": [
+				"Win64 Debug"
+			],
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo"
+			}
 		}
 	]
 }
