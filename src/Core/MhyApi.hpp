@@ -102,11 +102,11 @@ inline auto GetQRCodeState(
             Scanned = 1,
             Confirmed = 2,
             Expired = 3
-        } StateType;
+        } StateType{};
         int retcode{};
         std::string uid{};
         std::string token{};
-    } result;
+    } result{};
     if (static_cast<int>(j["retcode"]) == 0)
     {
         if (static_cast<std::string>(j["data"]["stat"]) == "Init")
@@ -170,6 +170,27 @@ inline auto getStokenByGameToken(const std::string_view uid, const std::string_v
     {
         return std::nullopt;
     }
+}
+
+inline auto GetGameTokenByStoken(const std::string_view stoken, const std::string_view mid)
+    -> std::optional<std::string>
+{
+    HttpClient client;
+    std::map<std::string, std::string> params{
+        { "stoken", stoken.data() },
+        { "mid", mid.data() },
+    };
+    std::string s;
+    client.GetRequest(s, std::format("{}?{}", mhy_takumi_game_token, HttpClient::MapToQueryString(params)).c_str());
+    const std::string& data = UTF8_To_string(s);
+    json::Json j;
+    j.parse(data);
+    int retcode = j["retcode"];
+    if (retcode == 0)
+    {
+        return std::make_optional(j["data"]["game_token"]);
+    }
+    return std::nullopt;
 }
 
 inline std::string Encrypt(const std::string_view source)
@@ -291,10 +312,40 @@ inline auto LoginByMobileCaptcha(const std::string_view actionType, const std::s
     return result;
 }
 
-inline bool scanQRLogin()
+inline bool ScanQRLogin(const std::string_view url, const std::string_view ticket, GameType gameType)
 {
+    std::string m_sacnRet{};
+    HttpClient client;
+    client.PostRequest(m_sacnRet,
+                       url.data(),
+                       std::format(R"({{"app_id":{},"device":"{}","ticket":"{}"}})", static_cast<int>(gameType), device_id, ticket));
+    json::Json j;
+    j.parse(m_sacnRet);
+    if ((int)j["retcode"] != 0)
+    {
+        return false;
+    }
+    return true;
 }
 
-inline bool confirmQRLogin()
+inline bool ConfirmQRLogin(const std::string_view url, const std::string_view uid, const std::string_view gameToken, const std::string_view ticket, GameType gameType)
 {
+    std::string s;
+    json::Json payload;
+    payload["proto"] = "Account";
+    payload["raw"] = std::format(R"({{\"uid\":\"{}\",\"token\":\"{}\"}})", uid, gameToken);
+    json::Json data;
+    data["app_id"] = static_cast<int>(gameType);
+    data["device"] = device_id;
+    data["payload"] = payload;
+    data["ticket"] = ticket.data();
+    HttpClient client;
+    client.PostRequest(s, url.data(), data.str());
+    json::Json j;
+    j.parse(s);
+    if ((int)j["retcode"] != 0)
+    {
+        return false;
+    }
+    return true;
 }

@@ -10,7 +10,6 @@
 #include <Json.h>
 #include <trrlog.hpp>
 
-#include "OfficialApi.h"
 #include "Mihoyosdk.h"
 #include "MhyApi.hpp"
 #include "BH3Api.hpp"
@@ -193,14 +192,16 @@ void WindowMain::pBtstartScreen(bool clicked)
         }
         if (std::string type = userinfo["account"][countA]["type"]; type == "官服")
         {
-            OfficialApi o;
             std::string stoken = userinfo["account"][countA]["access_key"];
             std::string uid = userinfo["account"][countA]["uid"];
             std::string mid = userinfo["account"][countA]["mid"];
             std::string gameToken;
-            //可用性检查
-            int code = o.getGameToken(stoken, mid, gameToken);
-            if (code != 0)
+            auto result = GetGameTokenByStoken(stoken, mid);
+            if (result)
+            {
+                gameToken = *result;
+            }
+            else
             {
                 emit AccountError();
                 return;
@@ -259,14 +260,16 @@ void WindowMain::pBtStream(bool clicked)
         }
         if (const std::string& type = userinfo["account"][countA]["type"]; type == "官服")
         {
-            OfficialApi o;
             std::string stoken = userinfo["account"][countA]["access_key"];
             std::string uid = userinfo["account"][countA]["uid"];
             std::string mid = userinfo["account"][countA]["mid"];
             std::string gameToken;
-            //可用性检查
-            int code = o.getGameToken(stoken, mid, gameToken);
-            if (code != 0)
+            auto result = GetGameTokenByStoken(stoken, mid);
+            if (result)
+            {
+                gameToken = *result;
+            }
+            else
             {
                 emit AccountError();
                 return;
@@ -378,14 +381,16 @@ void WindowMain::loginConfirmTip(const GameType gameType, bool b)
     {
         return;
     }
-    if (b)
-    {
-        t1.continueLastLogin();
-    }
-    else
-    {
-        t2.continueLastLogin();
-    }
+    QThreadPool::globalInstance()->start([this, b] {
+        if (b)
+        {
+            t1.continueLastLogin();
+        }
+        else
+        {
+            t2.continueLastLogin();
+        }
+    });
 }
 
 void WindowMain::checkBoxAutoScreen(bool clicked)

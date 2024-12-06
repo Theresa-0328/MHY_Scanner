@@ -372,5 +372,4 @@ FodyWeavers.xsd
 /3rdparty/ffmpeg
 log.txt
 /CMakeUserPresets.json
-note
 /nuget.exe
