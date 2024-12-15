@@ -210,7 +210,10 @@ void QRCodeForScreen::continueLastLogin()
         {
             Q_EMIT loginResults(ScanRet::SUCCESS);
         }
-        Q_EMIT loginResults(ScanRet::FAILURE_2);
+        else
+        {
+            Q_EMIT loginResults(ScanRet::FAILURE_2);
+        }
     }
     break;
     case BH3_BiliBili:

@@ -48,6 +48,7 @@ Q_SIGNALS:
     void loginConfirm(const GameType gameType, bool b);
 
 private:
+    std::mutex mtx;
     Mihoyosdk m;
     void LoginOfficial();
     void LoginBH3BiliBili();
