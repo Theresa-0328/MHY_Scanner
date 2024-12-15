@@ -52,7 +52,6 @@ void QRCodeForStream::setServerType(const ServerType servertype)
 
 void QRCodeForStream::LoginOfficial()
 {
-    std::mutex mtx;
     while (m_stop.load())
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
@@ -95,8 +94,8 @@ void QRCodeForStream::LoginOfficial()
                 {
                     return;
                 }
-                setGameType[view]();
                 const std::string_view ticket(str.data() + str.size() - 24, 24);
+                setGameType[view]();
                 if (lastTicket == ticket)
                 {
                     return;
@@ -119,12 +118,12 @@ void QRCodeForStream::LoginOfficial()
                         }
                         else
                         {
-                            emit loginConfirm(gameType, false);
+                            Q_EMIT loginConfirm(gameType, false);
                         }
                     }
                     else
                     {
-                        emit loginResults(ScanRet::FAILURE_1);
+                        Q_EMIT loginResults(ScanRet::FAILURE_1);
                     }
                     stop();
                     mtx.unlock();
@@ -140,7 +139,6 @@ void QRCodeForStream::LoginBH3BiliBili()
 {
     const std::string& LoginData = m.verify(uid, gameToken);
     m.setUserName(m_name);
-    std::mutex mtx;
     while (m_stop.load())
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
@@ -203,16 +201,16 @@ void QRCodeForStream::LoginBH3BiliBili()
                         if (config["auto_login"])
                         {
                             ret = m.scanConfirm();
-                            emit loginResults(ret);
+                            Q_EMIT loginResults(ret);
                         }
                         else
                         {
-                            emit loginConfirm(GameType::Honkai3_BiliBili, false);
+                            Q_EMIT loginConfirm(GameType::Honkai3_BiliBili, false);
                         }
                     }
                     else
                     {
-                        emit loginResults(ret);
+                        Q_EMIT loginResults(ret);
                     }
                     stop();
                     mtx.unlock();
@@ -322,7 +320,10 @@ void QRCodeForStream::continueLastLogin()
         {
             Q_EMIT loginResults(ScanRet::SUCCESS);
         }
-        Q_EMIT loginResults(ScanRet::FAILURE_2);
+        else
+        {
+            Q_EMIT loginResults(ScanRet::FAILURE_2);
+        }
     }
     break;
     case BH3_BiliBili:
