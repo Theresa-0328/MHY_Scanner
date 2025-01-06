@@ -64,3 +64,7 @@
 - [BililiveRecorder/BililiveRecorder](https://github.com/BililiveRecorder/BililiveRecorder)
 
 - [DGP-Studio/Snap.Hutao](https://github.com/DGP-Studio/Snap.Hutao)
+
+## 感谢以下赞助者的支持，他们的赞助使得这个项目能够持续发展。
+
+[guhdiasdsknkja](https://github.com/guhdiasdsknkja)
