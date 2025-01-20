@@ -44,6 +44,8 @@ include_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Web.WebView2/build/na
 link_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Web.WebView2//build/native/x64)
 include_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.ImplementationLibrary/include)
 
+include_directories(./3rdparty/NlohmannJson/include)
+
 #opencv
 include_directories(./3rdparty/opencv/include)
 link_directories(./3rdparty/opencv/staticlib)

@@ -6,8 +6,8 @@
 #include <random>
 #include <chrono>
 
-#include <Json.h>
 #include <Base64.hpp>
+#include <nlohmann/json.hpp>
 
 #include "CryptoKit.h"
 #include "UtilString.hpp"
@@ -22,29 +22,25 @@ LiveStreamStatus LiveBili::GetLiveStreamStatus()
 {
     std::string result;
     GetRequest(result, std::format("{}?id={}", live_bili_room_init, m_roomID).c_str());
-    json::Json data;
-    data.parse(result);
-    int code = data["code"];
+    auto roomInfo = nlohmann::json::parse(result);
+    int code = roomInfo["code"];
     if (code == 60004)
     {
         //直播间不存在
-        data.clear();
         return LiveStreamStatus::Absent;
     }
     if (code == 0)
     {
-        int liveStatus = data["data"]["live_status"];
+        int liveStatus = roomInfo["data"]["live_status"];
         if (liveStatus != 1)
         {
             //直播间未开播
-            data.clear();
             return LiveStreamStatus::NotLive;
         }
         else
         {
             // 正在直播，设置真实roomid
-            m_realRoomID = data["data"]["room_id"].str();
-            data.clear();
+            m_realRoomID = std::to_string(roomInfo["data"]["room_id"].get<int>());
             return LiveStreamStatus::Normal;
         }
     }
@@ -92,15 +88,11 @@ std::string LiveBili::GetStreamUrl(const std::string& url, const std::map<std::s
 {
     std::string str;
     GetRequest(str, std::format("{}?{}", url, MapToQueryString(param)).c_str());
-
-    json::Json j;
-    j.parse(str);
-    const std::string& base_url{ static_cast<std::string>(j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"]) };
-    const std::string& extra{ static_cast<std::string>(j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"]) };
-    const std::string& host{ static_cast<std::string>(j["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"]) };
+    auto playInfo = nlohmann::json::parse(str);
+    const std::string& base_url{ playInfo["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"].get<std::string>() };
+    const std::string& extra{ playInfo["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"].get<std::string>() };
+    const std::string& host{ playInfo["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"].get<std::string>() };
     std::string stream_url{ host + base_url + extra };
-    //FIXME
-    replace0026WithAmpersand(stream_url);
     return stream_url;
 }
 
@@ -111,6 +103,7 @@ LiveHuya::LiveHuya(const std::string& roomID) :
 
 LiveStreamStatus LiveHuya::GetLiveStreamStatus()
 {
+#if 0
     std::string ret;
     const std::map<std::string, std::string>& header = {
         { "Content-Type", "text/html; charset=utf-8" },
@@ -149,6 +142,7 @@ LiveStreamStatus LiveHuya::GetLiveStreamStatus()
     {
         return LiveStreamStatus::NotLive;
     }
+#endif // 0
     return LiveStreamStatus::Error;
 }
 
@@ -163,6 +157,7 @@ LiveHuya::~LiveHuya()
 
 std::string LiveHuya::GetanonymousUid()
 {
+#if 0
     std::string ret;
     const std::map<std::string, std::string>& header = {
         { "Content-Type", "application/json" }
@@ -171,6 +166,8 @@ std::string LiveHuya::GetanonymousUid()
     json::Json data;
     data.parse(ret);
     return data["data"]["uid"];
+#endif
+    return "";
 }
 
 std::string LiveHuya::process_anticode(const std::string& anticode, const std::string& uid, const std::string& streamname)
@@ -225,36 +222,35 @@ LiveStreamStatus LiveDouyin::GetLiveStreamStatus()
         { "cookie", "ttwid=1%7CxaukhGxBEHUsUlCmIY4HRiGzUO3JIZtwThFAM26tJso%7C1676112432%7C7764fe35c2bb172955868ce911bca5aa8b1019e28e9fd9f8cd925bbb11a3ec1f; xgplayer_user_id=327735195191; odin_tt=7205a5bf96b9ae49071d11088256571edac5cfc1423f99b4d8b27ef9968e144b9ef6e70febb76032686d2f53b386b024dee75ebecccbfa2f68c2096dd7fdaaa887921bf20108bf274532d73f11ae74b2; pwa2=%220%7C0%7C3%7C1%22; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtcmVlLXB1YmxpYy1rZXkiOiJCTUoxOC9iWmV0QlF1OGxWMXFnbFpVTE5abXFIV2YzNDh5YWZLandxRXk0c3ZrdHRQaTNXcU9jYk0vSDBnVHc2bWZyWmxMYnI5MWhPTzJGWjFaaTJDbGc9IiwiYmQtdGlja2V0LWd1YXJkLXdlYi12ZXJzaW9uIjoxfQ==; s_v_web_id=verify_llt5j3pc_qHbwb43X_rsMK_4URB_8lX8_KGZk6AZuqKQW; passport_csrf_token=6ee312f524a087d2e0954e280195f093; passport_csrf_token_default=6ee312f524a087d2e0954e280195f093; FORCE_LOGIN=%7B%22videoConsumedRemainSeconds%22%3A180%7D; volume_info=%7B%22isUserMute%22%3Afalse%2C%22isMute%22%3Atrue%2C%22volume%22%3A0.6%7D; live_version=%221.1.1.3542%22; device_web_cpu_core=12; device_web_memory_size=8; webcast_local_quality=sd; csrf_session_id=c2d050ec6eca0581bd33676bb01efbcb; webcast_leading_last_show_time=1693840853743; webcast_leading_total_show_times=1; download_guide=%223%2F20230905%2F0%22; strategyABtestKey=%221693878032.975%22; stream_recommend_feed_params=%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A1536%2C%5C%22screen_height%5C%22%3A960%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A12%2C%5C%22device_memory%5C%22%3A8%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A150%7D%22; VIDEO_FILTER_MEMO_SELECT=%7B%22expireTime%22%3A1694482833541%2C%22type%22%3A1%7D; home_can_add_dy_2_desktop=%221%22; __ac_signature=_02B4Z6wo00f01HeJgRgAAIDBgvZrhVoJ1YB3qYWAAHkc9uZs7w58Na.-yxd4KVmlVgdxWyyGFH2FZ4Kcpu-LDEpV82QCjWieKfk06Z9B0S9K5LW49zI8AxPvqQFgkBRN9-xx8Aidv67iRFh00f; live_can_add_dy_2_desktop=%220%22; msToken=TJ5bDSCEeWCWz1nY9wrOhgQ4dr_SCBPPImY2G9Blj2VTSEwa7b4RfiqweW5RR0jaCEp-itcBYF8BispuGB-mlFCtslq_jJ5EU8fBjsLPginmPn39I5ZjIA==; tt_scid=NU1fQiBzvNTjAvXazULYjHoX7IQrdOmzz76IroqwcbcST8q5MiafUeBz6kCNZJIlcb47; msToken=MpALMGeJrcnDeVMS6FSENJ16Oz4BL2kXyknj5QXcXixQgcCBNF21bC0dE8mlrlHUZKbwHMN_4AG7a5V2yeSqLtePinRu-DHqZv1do92C6XGKEZVnxj4eug==; IsDouyinActive=false" }
     };
     GetRequest(ret, std::format("{}{}", live_douyin_room, m_roomID).c_str(), header);
-    std::string ret_ = UTF8_To_string(ret);
-    json::Json temp;
-    temp.parse(ret_);
-    if ((int)temp["status_code"] != 0)
+    //std::string ret_ = UTF8_To_string(ret);
+    auto streamInfo = nlohmann::json::parse(ret);
+
+    if (!streamInfo.contains("status_code") || streamInfo["status_code"].get<int>() != 0)
+    {
         return LiveStreamStatus::Absent;
-    json::Json data = temp["data"]["data"][0];
-    std::string a1 = data.str();
-    try
-    {
-        // 抖音 status == 2 代表是开播的状态
-        if ((int)data["status"] == 2)
-        {
-            std::string stream_data = data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"];
-            stream_data = unescapeString(stream_data);
-            json::Json data1;
-            data1.parse(stream_data);
-            m_flvUrl = data1["data"]["origin"]["main"]["flv"];
-            replace0026WithAmpersand(m_flvUrl);
-            return LiveStreamStatus::Normal;
-        }
-        else if ((int)data["status"] == 4)
-        {
-            return LiveStreamStatus::NotLive;
-        }
-        return LiveStreamStatus::Error;
     }
-    catch (const std::exception&)
+    if (!streamInfo.contains("data") || !streamInfo["data"].contains("data") || !streamInfo["data"]["data"].is_array() || streamInfo["data"]["data"].size() < 0)
     {
-        return LiveStreamStatus::Error;
+        return LiveStreamStatus::Absent;
     }
+    const nlohmann::json& data = streamInfo["data"]["data"][0];
+    // 抖音 status == 2 代表是开播的状态
+    int status = data["status"];
+    if (status == 2)
+    {
+        if (!data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].is_string())
+        {
+            LiveStreamStatus::Error;
+        }
+        nlohmann ::json streamData = nlohmann::json::parse(data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].get<std::string>());
+        m_flvUrl = streamData["data"]["origin"]["main"]["flv"];
+        return LiveStreamStatus::Normal;
+    }
+    else if (status == 4)
+    {
+        return LiveStreamStatus::NotLive;
+    }
+    return LiveStreamStatus::Error;
 }
 
 std::string LiveDouyin::GetLiveStreamLink() const

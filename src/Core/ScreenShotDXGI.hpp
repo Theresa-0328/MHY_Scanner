@@ -4,7 +4,6 @@
 
 #include <d3d11.h>
 #include <dxgi1_2.h>
-#include <trrlog.hpp>
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -85,10 +84,10 @@ public:
             nullptr);
         if (SUCCEEDED(hr))
         {
-            trrlog::Log_debug("InitDevice success");
+            //trrlog::Log_debug("InitDevice success");
             return true;
         }
-        trrlog::Log_debug("InitDevice error");
+        //trrlog::Log_debug("InitDevice error");
         return false;
     }
 
@@ -326,10 +325,10 @@ private:
             hr = selectedAdapter->GetDesc1(&desc);
             char narrowString[100];
             WideCharToMultiByte(CP_UTF8, 0, desc.Description, -1, narrowString, sizeof(narrowString), NULL, NULL);
-            trrlog::Log_debug("{}", narrowString);
+            //trrlog::Log_debug("{}", narrowString);
             if (desc.Flags != DXGI_ADAPTER_FLAG_SOFTWARE)
             {
-                trrlog::Log_debug("used display adapter{}", narrowString);
+                //trrlog::Log_debug("used display adapter{}", narrowString);
                 break;
             }
         }
