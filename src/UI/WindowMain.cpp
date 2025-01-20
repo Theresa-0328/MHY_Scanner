@@ -8,7 +8,6 @@
 #include <QRegularExpressionValidator>
 #include <QStringList>
 #include <Json.h>
-#include <trrlog.hpp>
 
 #include "Mihoyosdk.h"
 #include "MhyApi.hpp"
@@ -107,8 +106,8 @@ WindowMain::WindowMain(QWidget* parent) :
 
     configinitload.start();
 
-    trrlog::SetLogFile("log.txt");
-    trrlog::Log_debug("UI Initialization completed");
+    //trrlog::SetLogFile("log.txt");
+    //trrlog::Log_debug("UI Initialization completed");
 }
 
 WindowMain::~WindowMain()
@@ -573,7 +572,7 @@ void WindowMain::getInfo(int x, int y)
     ui.lineEditUname->setText(cellText);
     countA = x;
 
-    trrlog::Log_debug("{}", std::format(R"(row = {} , user_name = {})", x, cellText.toStdString()));
+    //trrlog::Log_debug("{}", std::format(R"(row = {} , user_name = {})", x, cellText.toStdString()));
 }
 
 void WindowMain::SetDefaultAccount()
@@ -619,7 +618,7 @@ void WindowMain::DeleteAccount()
     }
     userinfo["account"].remove(countA);
 
-    trrlog::Log_debug("{}", userinfo.str());
+    //trrlog::Log_debug("{}", userinfo.str());
 
     m_config->updateConfig(userinfo.str());
     //ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);

@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <string>
 
 class ConfigDate final

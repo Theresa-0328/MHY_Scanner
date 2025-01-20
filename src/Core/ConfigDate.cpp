@@ -1,5 +1,7 @@
 ﻿#include "ConfigDate.h"
 
+#include <nlohmann/json.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -23,7 +25,7 @@ void ConfigDate::updateConfig(const std::string& config)
 {
     m_config = config;
     std::ofstream outFile(ConfigFilePath);
-    outFile << config;
+    outFile << nlohmann::json::parse(config).dump(4);
     outFile.close();
 }
 
