@@ -4,6 +4,7 @@
 #include <DbgHelp.h>
 
 #include <QMessageBox>
+#include <QStyleHints>
 #include <opencv2/core/utils/logger.hpp>
 
 static std::mutex mtx;
@@ -49,6 +50,7 @@ int main(int argc, char* argv[])
     SetUnhandledExceptionFilter(ExceptionFilter);
     cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
     QApplication a(argc, argv);
+    QApplication::styleHints()->setColorScheme(Qt::ColorScheme::Light);
     if (isOpen())
     {
         HWND hwnd = FindWindowW(NULL, L"MHY扫码器");

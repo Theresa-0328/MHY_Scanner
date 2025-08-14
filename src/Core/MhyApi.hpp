@@ -325,6 +325,7 @@ inline bool ScanQRLogin(const std::string_view url, const std::string_view ticke
     {
         return false;
     }
+
     return true;
 }
 
