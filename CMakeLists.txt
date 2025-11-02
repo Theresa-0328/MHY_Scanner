@@ -66,6 +66,8 @@ include_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-
 link_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/lib)
 add_definitions(-DCURL_STATICLIB)
 
+include_directories(./3rdparty/abogus_cpp)
+link_directories(./3rdparty/abogus_cpp)
 #OpenSSL
 if(USE_OPENSSL)
     include_directories(D:/Dev/OpenSSL-Win64/include)
@@ -78,7 +80,7 @@ find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 #QR-Code-generator
 include_directories(./3rdparty/QR-Code-generator/cpp)
-add_library(QR_Code_generator STATIC 3rdparty/QR-Code-generator/cpp/qrcodegen.cpp)
+add_library(QR_Code_generator STATIC 3rdparty/QR-Code-generator/cpp/qrcodegen.cpp "3rdparty/abogus_cpp/abogus.h")
 #add_executable(QrCodeGeneratorDemo 3rdparty/QR-Code-generator/cpp/QrCodeGeneratorDemo.cpp)
 #target_link_libraries(QrCodeGeneratorDemo QR_Code_generator)
 
@@ -134,6 +136,7 @@ endif()
 set(PROJECT_LIBRARIES
     MHY_Scanner_Core
     TrrJson
+	abogus_lib
 
     # windows
     Ws2_32
