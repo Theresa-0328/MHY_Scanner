@@ -373,3 +373,4 @@ FodyWeavers.xsd
 log.txt
 /CMakeUserPresets.json
 /nuget.exe
+/3rdparty/abogus_cpp
