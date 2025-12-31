@@ -35,7 +35,7 @@ void WindowGeeTest::Init(const std::wstring_view gt, const std::wstring_view cha
                     <title>GeeTest</title>
                     <style>
                         #geetest-div {{
-                            aligin-items:center
+                            align-items:center
                         }}
                     </style>
                 </head>
