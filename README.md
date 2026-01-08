@@ -23,7 +23,11 @@
 | BiliBili |       |         |        |
 
 ## 使用说明
-[点击Releases](https://github.com/Theresa-0328/MHY_Scanner/releases)选择最新版本下载解压后运行 MHY_Scanner.exe
+[点击Releases](https://github.com/Theresa-0328/MHY_Scanner/releases)选择最新版本下载解压
+
+[点击下载安装最新支持的Visual C++](https://aka.ms/vs/17/release/vc_redist.x64.exe)，详细解释查看[Microsoft官方文档](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)。
+
+运行 MHY_Scanner.exe
 
 点击菜单栏 **账号管理->添加账号**，添加你的账号。
 
@@ -41,12 +45,8 @@
 | :--------------------------------: | :-------------------------------: |
 | [B 站](https://live.bilibili.com/) | `https://live.bilibili.com/<RID>` |
 |  [抖音](https://live.douyin.com/)  |  `https://live.douyin.com/<RID>`  |
-|     [虎牙](https://huya.com/)      |   `https://www.huya.com/<RID>`    |
 
 目前没有进行大量测试，如果有任何建议和问题欢迎提Issues。
-
-## 常见问题
-- 启动报错无法定位程序输入点。说明你没有安装最新的vc运行时库。[下载最新支持的Visual C++](https://aka.ms/vs/17/release/vc_redist.x64.exe)，详细解释查看[Microsoft官方文档](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)。
 
 ## 依赖
 - qt v6.8.0
@@ -59,7 +59,7 @@
 - httplib
 
 ## 相关项目
-- [KuRo_Scan](https://github.com/Theresa-0328/KuRo_Scan) – 鸣潮扫码器
+- [KuRo_Scanner](https://github.com/Theresa-0328/KuRo_Scanner) – 鸣潮扫码器
 
 ## 参考和感谢
 - [HonkaiScanner](https://github.com/HonkaiScanner)
