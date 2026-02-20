@@ -101,7 +101,7 @@ WindowMain::WindowMain(QWidget* parent) :
     ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui.tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
 
-    ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
+    ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[A-Za-z0-9]+$"), this));
     ui.lineEditLiveId->setClearButtonEnabled(true);
 
     configinitload.start();
