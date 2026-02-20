@@ -55,8 +55,8 @@ include_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-
 link_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/lib)
 add_definitions(-DCURL_STATICLIB)
 
-include_directories(./3rdparty/abogus_cpp)
-link_directories(./3rdparty/abogus_cpp)
+#include_directories(./3rdparty/abogus_cpp)
+#link_directories(./3rdparty/abogus_cpp)
 
 if(NOT DEV)
     add_definitions(-DTESTSPEED)
@@ -112,7 +112,6 @@ endif()
 
 set(PROJECT_LIBRARIES
     TrrJson
-	abogus_lib
 
     # windows
     Ws2_32
