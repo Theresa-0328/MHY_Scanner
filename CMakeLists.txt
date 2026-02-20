@@ -1,5 +1,8 @@
 ﻿cmake_minimum_required(VERSION 3.26)
-project(MHY_Scanner LANGUAGES CXX)
+project(MHY_Scanner
+	VERSION 1.1.14
+	LANGUAGES CXX
+)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -8,19 +11,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
-set(MAJOR_VERSION 1)
-set(MINOR_VERSION 1)
-set(MICRO_VERSION 14)
-set(_VERSION_ "v${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
-add_definitions(-DSCAN_VER="${_VERSION_}")
-
-option(Unit_Tests "Unit Tests" ON)
-option(USE_OPENSSL "OPENSSL" ON)
+option(UNIT_TESTS "Unit Tests" OFF)
 option(DEV "DEV" OFF)
+
+add_definitions(-DMHY_Scanner_VERSION="${PROJECT_VERSION}")
 
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
@@ -31,32 +25,30 @@ if(MSVC)
     endif()
 endif()
 
-find_program(NUGET_EXE NAMES nuget PATHS ${CMAKE_CURRENT_SOURCE_DIR})
-if(NOT NUGET_EXE)
-    message("NUGET.EXE not found.")
-    message(FATAL_ERROR "Please install this executable, and run CMake again.")
-endif()
+include(FetchContent)
+include(ExternalProject)
 
-execute_process(COMMAND ${NUGET_EXE} install "Microsoft.Web.WebView2"-ExcludeVersion -OutputDirectory ${CMAKE_BINARY_DIR}/packages)
-execute_process(COMMAND ${NUGET_EXE} install "Microsoft.Windows.ImplementationLibrary" -ExcludeVersion -OutputDirectory ${CMAKE_BINARY_DIR}/packages) 
+include(cmake/install_nuget.cmake)
+include(cmake/install_ffmpeg.cmake)
+include(cmake/build_QR-Code-generator.cmake)
 
-include_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Web.WebView2/build/native/include)
-link_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Web.WebView2//build/native/x64)
-include_directories(${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.ImplementationLibrary/include)
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+)
+FetchContent_MakeAvailable(nlohmann_json)
 
-include_directories(./3rdparty/NlohmannJson/include)
+find_package(OpenCV REQUIRED opencv_world)
+include_directories(${OpenCV_INCLUDE_DIRS})
 
-#opencv
-include_directories(./3rdparty/opencv/include)
-link_directories(./3rdparty/opencv/staticlib)
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+find_package(OpenSSL REQUIRED)
+
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 #boost
-include_directories(./3rdparty/boost)
-
-#ffmpeg
-include_directories(./3rdparty/ffmpeg/include)
-link_directories(D:/Dev/ffmpeg/lib)
-link_directories(./3rdparty/ffmpeg/lib)
+include_directories(${CMAKE_SOURCE_DIR}/3rdparty/boost)
 
 #curl
 include_directories(./3rdparty/libcurl-vc17-X64-release-static-zlib-static-ipv6-sspi-schannel/include)
@@ -65,21 +57,6 @@ add_definitions(-DCURL_STATICLIB)
 
 include_directories(./3rdparty/abogus_cpp)
 link_directories(./3rdparty/abogus_cpp)
-#OpenSSL
-if(USE_OPENSSL)
-    include_directories(D:/Dev/OpenSSL-Win64/include)
-    link_directories(D:/Dev/OpenSSL-Win64/lib)
-    add_definitions(-DUSE_OPENSSL)
-endif()
-
-#QT
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
-
-#QR-Code-generator
-include_directories(./3rdparty/QR-Code-generator/cpp)
-add_library(QR_Code_generator STATIC 3rdparty/QR-Code-generator/cpp/qrcodegen.cpp)
-#add_executable(QrCodeGeneratorDemo 3rdparty/QR-Code-generator/cpp/QrCodeGeneratorDemo.cpp)
-#target_link_libraries(QrCodeGeneratorDemo QR_Code_generator)
 
 if(NOT DEV)
     add_definitions(-DTESTSPEED)
@@ -89,57 +66,57 @@ endif()
 include_directories(src/TrrJson)
 include_directories(src/Core)
 
-add_subdirectory(src/UI)
-add_subdirectory(src/Core)
 add_subdirectory(src/TrrJson)
 
+add_executable(${PROJECT_NAME}
+	"${CMAKE_SOURCE_DIR}/src/Resources/MHY_Scanner.rc"
+	"${CMAKE_SOURCE_DIR}/src/Resources/MHY_Scanner.qrc" 
+	"${CMAKE_SOURCE_DIR}/src/UI/Main.cpp" 
+	"${CMAKE_SOURCE_DIR}/src/UI/QRCodeForStream.cpp"
+	"${CMAKE_SOURCE_DIR}/src/UI/QRCodeForStream.h"
+	"${CMAKE_SOURCE_DIR}/src/UI/QRCodeForScreen.cpp" 
+	"${CMAKE_SOURCE_DIR}/src/UI/QRCodeForScreen.h" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowAbout.cpp" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowAbout.h" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowMain.cpp" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowMain.h" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowLogin.h"
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowLogin.cpp" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowGeeTest.h" 
+	"${CMAKE_SOURCE_DIR}/src/UI/WindowGeeTest.cpp"
+	"${CMAKE_SOURCE_DIR}/src/Core/CryptoKit.cpp"
+	"${CMAKE_SOURCE_DIR}/src/Core/CryptoKit.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/HttpClient.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/HttpClient.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/LiveStreamLink.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/LiveStreamLink.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/Mihoyosdk.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/Mihoyosdk.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/QRScanner.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/QRScanner.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/ScreenScan.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/ScreenScan.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/ConfigDate.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/ConfigDate.h"
+    "${CMAKE_SOURCE_DIR}/src/Core/BH3Api.hpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/CookieParser.hpp"
+    "${CMAKE_SOURCE_DIR}/src/Core/CreateUUID.hpp"
+	"${CMAKE_SOURCE_DIR}/src/Core/ScannerBase.hpp"
+)
+
 if(NOT DEV)
-    #target_link_options(MHY_Scanner PRIVATE "/SUBSYSTEM:WINDOWS")
-    set_target_properties(MHY_Scanner PROPERTIES WIN32_EXECUTABLE TRUE)
+    #target_link_options(${PROJECT_NAME} PRIVATE "/SUBSYSTEM:WINDOWS")
+    set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
 #target_compile_definitions
 
-if(Unit_Tests)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
-
-set(FFMPEG_LIBRARIES)
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    list(APPEND FFMPEG_LIBRARIES 
-    libavcodec
-    libavdevice
-    libavfilter
-    libavformat
-    libavutil
-    libpostproc
-    libswresample
-    libswscale
-    )
-else()
-    list(APPEND FFMPEG_LIBRARIES 
-    avcodec
-    avdevice
-    avfilter
-    avformat
-    avutil
-    postproc
-    swresample
-    swscale
-    )
-endif()
-
 set(PROJECT_LIBRARIES
-    MHY_Scanner_Core
     TrrJson
 	abogus_lib
 
     # windows
     Ws2_32
     wldap32
-    winmm
-    Crypt32
     Normaliz
     Dbghelp
 
@@ -147,53 +124,46 @@ set(PROJECT_LIBRARIES
     Qt6::Core
     Qt6::Widgets
 
-    # opencv
-    #ade$<$<CONFIG:Debug>:d>
-    IlmImf$<$<CONFIG:Debug>:d>
-    ittnotify$<$<CONFIG:Debug>:d>
-    libjpeg-turbo$<$<CONFIG:Debug>:d>
-    libopenjp2$<$<CONFIG:Debug>:d>
-    libpng$<$<CONFIG:Debug>:d>
-    libprotobuf$<$<CONFIG:Debug>:d>
-    libtiff$<$<CONFIG:Debug>:d>
-    libwebp$<$<CONFIG:Debug>:d>
-    opencv_img_hash480$<$<CONFIG:Debug>:d>
-    opencv_world480$<$<CONFIG:Debug>:d>
-    #quirc$<$<CONFIG:Debug>:d>
-    zlib$<$<CONFIG:Debug>:d>
-    
-    # ffmpeg
-    ${FFMPEG_LIBRARIES}
-
     # curl
     libcurl_a
 
     QR_Code_generator
-
     WebView2LoaderStatic
+	nlohmann_json::nlohmann_json
+	${OpenCV_LIBS}
+	${FFMPEG_LIBS}
+	OpenSSL::Crypto
 )
-
-#target_link_libraries(QrCodeGeneratorDemo ${PROJECT_LIBRARIES})
-
-if(USE_OPENSSL)
-    target_link_libraries(MHY_Scanner_Core PRIVATE 
-        # OpenSSL
-        libssl_static
-        libcrypto_static)
-endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 
-if(Unit_Tests)
+file(GLOB FFMPEG_DLLS
+	"${FFMPEG_BIN_DIR}/avcodec-*.dll"
+	"${FFMPEG_BIN_DIR}/avformat-*.dll"
+	"${FFMPEG_BIN_DIR}/avutil-*.dll"
+	"${FFMPEG_BIN_DIR}/swscale-*.dll"
+	"${FFMPEG_BIN_DIR}/swresample-*.dll"
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+	${FFMPEG_DLLS}
+	"$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+)
+
+# unit tests
+if(UNIT_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
     target_link_libraries(test_core PRIVATE ${PROJECT_LIBRARIES})
     target_link_libraries(test_gui PRIVATE ${PROJECT_LIBRARIES})
     target_link_libraries(test_video PRIVATE ${PROJECT_LIBRARIES})
     target_link_libraries(test_video_hw PRIVATE ${PROJECT_LIBRARIES})
     target_link_libraries(test_streamlink PRIVATE ${PROJECT_LIBRARIES})
-
 endif()
 
-set(Install_Directory "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}_${_VERSION_}")
+# install
+set(Install_Directory "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}_${PROJECT_VERSION}")
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${Install_Directory}
@@ -207,8 +177,9 @@ set(QT_DLL_FILES
 
 install(
     FILES 
-	${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.pdb
+	${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pdb
 	${QT_DLL_FILES}
+	${FFMPEG_DLLS}
     DESTINATION 
 	${Install_Directory}
 )
@@ -232,7 +203,7 @@ install(
 
 install(
     DIRECTORY
-    src/ScanModel
+    ScanModel
     DESTINATION
     ${Install_Directory}
 )

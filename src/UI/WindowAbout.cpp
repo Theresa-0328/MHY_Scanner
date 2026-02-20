@@ -6,7 +6,7 @@ WindowAbout::WindowAbout(QWidget* parent) :
     setFixedSize(400, 200);
     QVBoxLayout* layout = new QVBoxLayout(this);
     QLabel* label = new QLabel("MHY_Scanner \n\n"
-                               "版本" SCAN_VER +
+                               "版本" MHY_Scanner_VERSION +
                                    QString("\nQt Version: ") + QT_VERSION_STR,
                                this);
     layout->addWidget(label);

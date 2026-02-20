@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.26)
 
 set(BUILD_GMOCK OFF)
 
-add_subdirectory(../3rdparty/googletest googletest)
-
 add_executable(test_core test_core.cpp)
 target_link_libraries(test_core PUBLIC gtest gtest_main)
 target_include_directories(test_core PUBLIC ../3rdparty/googletest-1.13.0/include)

@@ -95,7 +95,7 @@ WindowMain::WindowMain(QWidget* parent) :
         "background-color:#e2e6e7;"
         "color:#333333;"
         "}");
-    ui.label_3->setText(SCAN_VER);
+    ui.label_3->setText(MHY_Scanner_VERSION);
 
     ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
