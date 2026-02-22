@@ -224,7 +224,7 @@ LiveStreamStatus LiveDouyin::GetLiveStreamStatus()
     };
     std::string p = "aid=6383&app_name=douyin_web&live_id=1&device_platform=web&browser_language=zh-CN&browser_platform=Win32&browser_name=Edge&browser_version=139.0.0.0&is_need_double_stream=false&web_rid=" + m_roomID;
 #if 0
-	char* ab = get_abogus(user_agent.c_str(), p.c_str());
+    char* ab = get_abogus(user_agent.c_str(), p.c_str());
     std::string abogus(ab);
     free_abogus(ab);
     std::string url = live_douyin_room + p + "&a_bogus=" + abogus;
@@ -248,11 +248,19 @@ LiveStreamStatus LiveDouyin::GetLiveStreamStatus()
     int status = data["status"];
     if (status == 2)
     {
+        nlohmann::json pullDatas = data["stream_url"]["pull_datas"];
+        if (!pullDatas.empty())
+        {
+            nlohmann::json doubleScreenStreams = pullDatas.begin().value();
+            nlohmann::json streamData = nlohmann::json::parse(doubleScreenStreams["stream_data"].get<std::string>());
+            m_flvUrl = streamData["data"]["origin"]["main"]["flv"];
+            return LiveStreamStatus::Normal;
+        }
         if (!data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].is_string())
         {
-            LiveStreamStatus::Error;
+            return LiveStreamStatus::Error;
         }
-        nlohmann ::json streamData = nlohmann::json::parse(data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].get<std::string>());
+        nlohmann::json streamData = nlohmann::json::parse(data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].get<std::string>());
         m_flvUrl = streamData["data"]["origin"]["main"]["flv"];
         return LiveStreamStatus::Normal;
     }
