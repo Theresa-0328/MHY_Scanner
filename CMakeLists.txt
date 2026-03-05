@@ -24,7 +24,7 @@ if(MSVC)
 		add_link_options(/DEBUG /OPT:REF,ICF,LBR)
 	endif()
 endif()
-
+	
 include(FetchContent)
 include(ExternalProject)
 
@@ -39,7 +39,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
-include(cmake/build_cpr.cmake)
+find_package(cpr CONFIG REQUIRED)
 
 find_package(OpenCV REQUIRED opencv_world)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -164,9 +164,9 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 set(QT_DLL_FILES
-	"$ENV{QTDIR}/bin/Qt6Core.dll"
-	"$ENV{QTDIR}/bin/Qt6Widgets.dll"
-	"$ENV{QTDIR}/bin/Qt6Gui.dll"
+	"${QT6_INSTALL_PREFIX}/bin/Qt6Core.dll"
+	"${QT6_INSTALL_PREFIX}/bin/Qt6Widgets.dll"
+	"${QT6_INSTALL_PREFIX}/bin/Qt6Gui.dll"
 )
 
 install(
@@ -180,17 +180,17 @@ install(
 
 install(
 	FILES
-	$ENV{QTDIR}/plugins/platforms/qdirect2d.dll
-	$ENV{QTDIR}/plugins/platforms/qminimal.dll
-	$ENV{QTDIR}/plugins/platforms/qoffscreen.dll
-	$ENV{QTDIR}/plugins/platforms/qwindows.dll
+	"${QT6_INSTALL_PREFIX}/plugins/platforms/qdirect2d.dll"
+	"${QT6_INSTALL_PREFIX}/plugins/platforms/qminimal.dll"
+	"${QT6_INSTALL_PREFIX}/plugins/platforms/qoffscreen.dll"
+	"${QT6_INSTALL_PREFIX}/plugins/platforms/qwindows.dll"
 	DESTINATION
-	${Install_Directory}/plugins/platforms
+	"${Install_Directory}/plugins/platforms"
 )
 
 install(
 	FILES
-	$ENV{QTDIR}/plugins/styles/qmodernwindowsstyle.dll
+	"${QT6_INSTALL_PREFIX}/plugins/styles/qmodernwindowsstyle.dll"
 	DESTINATION
 	${Install_Directory}/plugins/styles
 )

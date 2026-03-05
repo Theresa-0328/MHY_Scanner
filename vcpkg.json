@@ -1,0 +1,17 @@
+﻿{
+	"name": "mhy-scanner",
+	"version": "1.1.14",
+	"builtin-baseline": "57987637aac17d62bac535bc839baca3754490e6",
+	"dependencies": [
+		{
+			"name": "cpr"
+		},
+		{
+			"name": "opencv",
+			"features": [ "world", "contrib" ]
+		},
+		{
+			"name": "openssl"
+		}
+	]
+}
