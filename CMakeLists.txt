@@ -24,11 +24,10 @@ if(MSVC)
 		add_link_options(/DEBUG /OPT:REF,ICF,LBR)
 	endif()
 endif()
-	
+
 include(FetchContent)
 include(ExternalProject)
 
-include(cmake/install_nuget.cmake)
 include(cmake/install_ffmpeg.cmake)
 include(cmake/build_QR-Code-generator.cmake)
 
@@ -38,6 +37,8 @@ FetchContent_Declare(
 	GIT_TAG v3.12.0
 )
 FetchContent_MakeAvailable(nlohmann_json)
+
+find_package(unofficial-webview2 CONFIG REQUIRED)
 
 find_package(cpr CONFIG REQUIRED)
 
@@ -122,7 +123,7 @@ set(PROJECT_LIBRARIES
 
 	cpr::cpr
 	QR_Code_generator
-	WebView2LoaderStatic
+	unofficial::webview2::webview2
 	nlohmann_json::nlohmann_json
 	${OpenCV_LIBS}
 	${FFMPEG_LIBS}
@@ -131,7 +132,7 @@ set(PROJECT_LIBRARIES
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 
-file(GLOB FFMPEG_DLLS
+file(GLOB FFMPEG_DLL_FILES
 	"${FFMPEG_BIN_DIR}/avcodec-*.dll"
 	"${FFMPEG_BIN_DIR}/avformat-*.dll"
 	"${FFMPEG_BIN_DIR}/avutil-*.dll"
@@ -141,7 +142,7 @@ file(GLOB FFMPEG_DLLS
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_if_different
-	${FFMPEG_DLLS}
+	${FFMPEG_DLL_FILES}
 	"$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )
 
@@ -159,38 +160,37 @@ endif()
 # install
 set(Install_Directory "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}_${PROJECT_VERSION}")
 
-install(TARGETS ${PROJECT_NAME}
-	RUNTIME DESTINATION ${Install_Directory}
-)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${Install_Directory})
+
+install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${Install_Directory})
 
 set(QT_DLL_FILES
-	"${QT6_INSTALL_PREFIX}/bin/Qt6Core.dll"
-	"${QT6_INSTALL_PREFIX}/bin/Qt6Widgets.dll"
-	"${QT6_INSTALL_PREFIX}/bin/Qt6Gui.dll"
+	${QT6_INSTALL_PREFIX}/bin/Qt6Core.dll
+	${QT6_INSTALL_PREFIX}/bin/Qt6Widgets.dll
+	${QT6_INSTALL_PREFIX}/bin/Qt6Gui.dll
 )
 
 install(
 	FILES 
-	${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pdb
 	${QT_DLL_FILES}
-	${FFMPEG_DLLS}
+	${FFMPEG_DLL_FILES}
 	DESTINATION 
 	${Install_Directory}
 )
 
 install(
 	FILES
-	"${QT6_INSTALL_PREFIX}/plugins/platforms/qdirect2d.dll"
-	"${QT6_INSTALL_PREFIX}/plugins/platforms/qminimal.dll"
-	"${QT6_INSTALL_PREFIX}/plugins/platforms/qoffscreen.dll"
-	"${QT6_INSTALL_PREFIX}/plugins/platforms/qwindows.dll"
+	${QT6_INSTALL_PREFIX}/plugins/platforms/qdirect2d.dll
+	${QT6_INSTALL_PREFIX}/plugins/platforms/qminimal.dll
+	${QT6_INSTALL_PREFIX}/plugins/platforms/qoffscreen.dll
+	${QT6_INSTALL_PREFIX}/plugins/platforms/qwindows.dll
 	DESTINATION
-	"${Install_Directory}/plugins/platforms"
+	${Install_Directory}/plugins/platforms
 )
 
 install(
 	FILES
-	"${QT6_INSTALL_PREFIX}/plugins/styles/qmodernwindowsstyle.dll"
+	${QT6_INSTALL_PREFIX}/plugins/styles/qmodernwindowsstyle.dll
 	DESTINATION
 	${Install_Directory}/plugins/styles
 )

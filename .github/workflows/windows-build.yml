@@ -1,0 +1,78 @@
+﻿name: Windows Build
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: ["v*"]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  BUILD_CONFIGURATION: Release
+  INSTALL_DIR: ${{ github.workspace }}\install
+  ZIP_NAME: MHY_Scanner_${{ github.ref_name }}.zip
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Qt6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.0'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+          cache: true
+
+      - name: Setup vcpkg 
+        uses: lukka/run-vcpkg@v11
+
+      - name: Configure CMake 
+        run: |
+          cmake -B build `
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_CONFIGURATION }} `
+          -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake `
+          -DVCPKG_TARGET_TRIPLET=x64-windows-static-md `
+          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\install `
+          -DUNIT_TESTS=OFF `
+          -DDEV=OFF
+      
+      - name: Build 
+        run: |
+          cmake --build build --config ${{ env.BUILD_CONFIGURATION }} --parallel
+      
+      - name: Install
+        run: |
+          cmake --install build --config ${{ env.BUILD_CONFIGURATION }}
+        
+      - name: Create ZIP
+        run: |
+          powershell Compress-Archive -Path "${{ env.INSTALL_DIR }}\*" -DestinationPath "${{ github.workspace }}\${{ env.ZIP_NAME }}"
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: ${{ github.workspace }}\${{ env.ZIP_NAME }}
+          retention-days: 5
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          files: ${{ github.workspace }}\${{ env.ZIP_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

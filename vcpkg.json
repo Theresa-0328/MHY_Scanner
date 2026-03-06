@@ -1,4 +1,4 @@
-﻿{
+{
 	"name": "mhy-scanner",
 	"version": "1.1.14",
 	"builtin-baseline": "57987637aac17d62bac535bc839baca3754490e6",
@@ -12,6 +12,9 @@
 		},
 		{
 			"name": "openssl"
+		},
+		{
+			"name": "webview2"
 		}
 	]
 }
