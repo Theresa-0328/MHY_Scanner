@@ -7,8 +7,8 @@
 
 ### **版本 - v1.1.14**
 
-## 重要提醒
-最近在闲鱼等地发现有人在卖这个项目，希望没有人真的傻逼到花钱买免费的代码。如果你是购买来的，说明你被骗了，建议联系商家退款。最后，如果你真的想卖本项目赚钱，<a href="https://www.baidu.com/s?wd=%E5%AD%A4%E5%84%BF%E6%80%8E%E4%B9%88%E5%8A%9E%E6%88%B7%E5%8F%A3%E6%9C%AC">请点这里了解</a> 
+## 说明
+本项目为免费开源项目，用于学习和研究，禁止商业化用途。
 
 ## 功能和特性
 - 从屏幕自动获取二维码登录，适用于大部分登录情景，不适用于在竞争激烈时抢码。
@@ -23,9 +23,9 @@
 | BiliBili |       |         |        |
 
 ## 使用说明
-[点击Releases](https://github.com/Theresa-0328/MHY_Scanner/releases)选择最新版本下载解压
+[点击Releases](https://github.com/Theresa-0328/MHY_Scanner/releases) 选择最新版本下载解压
 
-[点击下载安装最新支持的Visual C++](https://aka.ms/vs/17/release/vc_redist.x64.exe)，详细解释查看[Microsoft官方文档](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)。
+[点击下载安装Visual C++ 运行时库](https://aka.ms/vs/17/release/vc_redist.x64.exe)，详细解释查看[Microsoft官方文档](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)。
 
 运行 MHY_Scanner.exe
 
@@ -47,6 +47,9 @@
 |  [抖音](https://live.douyin.com/)  |  `https://live.douyin.com/<RID>`  |
 
 目前没有进行大量测试，如果有任何建议和问题欢迎提Issues。
+
+## 编译
+请参考CI/CD工作流
 
 ## 相关项目
 - [KuRo_Scanner](https://github.com/Theresa-0328/KuRo_Scanner) – 鸣潮扫码器
