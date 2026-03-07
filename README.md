@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Theresa-0328/MHY_Scanner?color=blue&style=for-the-badge)](https://github.com/Theresa-0328/MHY_Scanner/stargazers)
 </div>
 
-### **版本 - v1.1.14**
+### **版本 - v1.1.15**
 
 ## 说明
 本项目为免费开源项目，用于学习和研究，禁止商业化用途。
