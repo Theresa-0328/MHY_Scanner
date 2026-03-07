@@ -180,17 +180,12 @@ QTableWidget::item:selected
     </property>
     <item>
      <property name="text">
-      <string>BiliBili</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
       <string>抖音</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>虎牙</string>
+      <string>BiliBili</string>
      </property>
     </item>
    </widget>

@@ -493,54 +493,19 @@ bool WindowMain::checkDuplicates(const std::string uid)
 
 bool WindowMain::GetStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
 {
-    std::uint32_t live_type = ui.comboBox->currentIndex();
-    switch (live_type)
+    int live_type = ui.comboBox->currentIndex();
+    auto provider = CreateLiveProvider(static_cast<LivePlatform>(live_type), roomid);
+    auto info = provider->GetLiveStreamInfo();
+    if (info.status == LiveStreamStatus::Normal)
     {
-    case 0:
+        url = info.link;
+        return true;
+        }
+    else
     {
-        LiveBili live(roomid);
-        if (LiveStreamStatus status = live.GetLiveStreamStatus(); status != LiveStreamStatus::Normal)
-        {
-            emit LiveStreamLinkError(status);
+        Q_EMIT LiveStreamLinkError(info.status);
             return false;
         }
-        heards = {
-            { "user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
-            Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41" },
-            { "referer", "https://live.bilibili.com" }
-        };
-        url = live.GetLiveStreamLink();
-        break;
-    }
-    case 1:
-    {
-        LiveDouyin live(roomid);
-        if (LiveStreamStatus status = live.GetLiveStreamStatus(); status != LiveStreamStatus::Normal)
-        {
-            emit LiveStreamLinkError(status);
-            return false;
-        }
-        url = live.GetLiveStreamLink();
-        break;
-    }
-    case 2:
-    {
-        LiveHuya live(roomid);
-        if (LiveStreamStatus status = live.GetLiveStreamStatus(); status != LiveStreamStatus::Normal)
-        {
-            emit LiveStreamLinkError(status);
-            return false;
-        }
-        heards = {
-            { "user_agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1" }
-        };
-        url = live.GetLiveStreamLink();
-        break;
-    }
-    default:
-        break;
-    }
-    return true;
 }
 
 void WindowMain::SetWindowToFront() const

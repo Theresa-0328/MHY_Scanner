@@ -6,206 +6,140 @@
 #include <random>
 #include <chrono>
 
-#include <Base64.hpp>
 #include <nlohmann/json.hpp>
-
-#include "CryptoKit.h"
-#include "UtilString.hpp"
-#include "TimeStamp.hpp"
+#include <cpr/cpr.h>
 
 LiveBili::LiveBili(const std::string& roomID) :
-    m_roomID(roomID)
+    roomID(roomID)
 {
 }
 
-LiveStreamStatus LiveBili::GetLiveStreamStatus()
+LiveStreamInfo LiveBili::GetLiveStreamInfo()
 {
-    std::string result;
-    GetRequest(result, std::format("{}?id={}", live_bili_room_init, m_roomID).c_str());
-    auto roomInfo = nlohmann::json::parse(result);
-    int code = roomInfo["code"];
-    if (code == 60004)
+    // 获取房间初始化信息
+    auto r = cpr::Get(cpr::Url{ std::format("{}?id={}", live_bili_room_init, roomID) });
+    if (r.error || r.status_code != 200 || r.text.empty())
     {
-        //直播间不存在
-        return LiveStreamStatus::Absent;
+        return { LiveStreamStatus::Error, "" };
     }
-    if (code == 0)
+    try
     {
-        int liveStatus = roomInfo["data"]["live_status"];
+        auto roomInfo = nlohmann::json::parse(r.text, nullptr, false);
+        if (roomInfo.is_discarded())
+        {
+            return { LiveStreamStatus::Error, "" };
+        }
+        int code = roomInfo["code"].get<int>();
+        if (code == 60004)
+        {
+            return { LiveStreamStatus::Absent, "" };
+        }
+        if (code != 0)
+        {
+            return { LiveStreamStatus::Error, "" };
+        }
+        const auto& data = roomInfo["data"];
+        int liveStatus = data["live_status"].get<int>();
         if (liveStatus != 1)
         {
-            //直播间未开播
-            return LiveStreamStatus::NotLive;
+            return { LiveStreamStatus::NotLive, "" };
         }
-        else
+        // 更新真实房间ID
+        if (data.contains("room_id"))
         {
-            // 正在直播，设置真实roomid
-            m_realRoomID = std::to_string(roomInfo["data"]["room_id"].get<int>());
-            return LiveStreamStatus::Normal;
+            realRoomID = std::to_string(data["room_id"].get<int>());
         }
-    }
-    //其他错误
-    return LiveStreamStatus::Error;
-}
 
-std::string LiveBili::GetLiveStreamLink()
-{
-    return GetLinkByRealRoomID(m_realRoomID);
+        std::string link = GetLinkByRealRoomID(realRoomID);
+        if (link.empty())
+        {
+            return { LiveStreamStatus::Error, "" };
+        }
+        return { LiveStreamStatus::Normal, link };
+    }
+    catch (const nlohmann::json::exception& e)
+    {
+        return { LiveStreamStatus::Error, "" };
+    }
 }
 
 std::string LiveBili::GetLinkByRealRoomID(const std::string& realRoomID)
 {
-    const std::map<std::string, std::string>& params = {
-        //appkey:iVGUTjsxvpLeuDCf
-        //build:6215200
-        //c_locale:zh_CN
+    const cpr::Parameters params = {
+#if 0
+        appkey:iVGUTjsxvpLeuDCf
+        build:6215200
+        c_locale:zh_CN
+#endif
         { "codec", "0" },
-        //device:web
-        //device_name:VTR-AL00
-        //dolby:1
+#if 0
+        device:web
+        device_name:VTR-AL00
+        dolby:1
+#endif
         { "format", "0,2" },
-        //free_type:0
-        //http:1
-        //mask:0
-        //mobi_app:web
-        //network:wifi
-        //no_playurl:0
+#if 0
+        free_type:0
+        http:1
+        mask:0
+        mobi_app:web
+        network:wifi
+        no_playurl:0
+#endif
         { "only_audio", "0" },
         { "only_video", "0" },
+#if 0
         //TODO platform 会影响下载时使用的referer
-        //{"platform", "h5" },
-        //play_type:0
+        {"platform", "h5" },
+        play_type:0
+#endif
         { "protocol", "0,1" },
         { "qn", "10000" },
         { "room_id", realRoomID },
-        //s_locale:zh_CN
-        //statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
+#if 0
+        s_locale:zh_CN
+        statistics:{\"appId\":1,\"platform\":3,\"version\":\"6.21.5\",\"abtest\":\"\"}
+#endif
     };
     return GetStreamUrl(live_bili_v2_PlayInfo, params);
 }
 
-std::string LiveBili::GetStreamUrl(const std::string& url, const std::map<std::string, std::string>& param)
+std::string LiveBili::GetStreamUrl(const std::string& url, const cpr::Parameters param)
 {
-    std::string str;
-    GetRequest(str, std::format("{}?{}", url, MapToQueryString(param)).c_str());
-    auto playInfo = nlohmann::json::parse(str);
-    const std::string& base_url{ playInfo["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["base_url"].get<std::string>() };
-    const std::string& extra{ playInfo["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["extra"].get<std::string>() };
-    const std::string& host{ playInfo["data"]["playurl_info"]["playurl"]["stream"][0]["format"][0]["codec"][0]["url_info"][0]["host"].get<std::string>() };
-    std::string stream_url{ host + base_url + extra };
-    return stream_url;
-}
-
-LiveHuya::LiveHuya(const std::string& roomID) :
-    m_roomID(roomID)
-{
-}
-
-LiveStreamStatus LiveHuya::GetLiveStreamStatus()
-{
-#if 0
-    std::string ret;
-    const std::map<std::string, std::string>& header = {
-        { "Content-Type", "text/html; charset=utf-8" },
-        { "User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1" },
-        { "Accept-Encoding", "" }
-    };
-    GetRequest(ret, std::format("{}/{}", live_huya, m_roomID).c_str(), header);
-
-    std::smatch matches;
-    std::string s1;
-    if (std::regex_search(ret, matches, std::regex("<script> window\\.HNF_GLOBAL_INIT = (.*?) </script>")))
+    auto r = cpr::Get(cpr::Url{ url }, param);
+    if (r.error || r.status_code != 200 || r.text.empty())
     {
-        if (matches.size() > 1)
+        return "";
+    }
+    try
+    {
+        auto r = cpr::Get(cpr::Url{ url }, param);
+        if (r.error || r.status_code != 200 || r.text.empty())
         {
-            s1 = matches[1];
+            return "";
         }
+        auto playInfo = nlohmann::json::parse(r.text, nullptr, false);
+        if (playInfo.is_discarded())
+        {
+            return "";
+        }
+        const auto& data = playInfo["data"];
+        const auto& playurl_info = data["playurl_info"];
+        const auto& playurl = playurl_info["playurl"];
+        const auto& stream = playurl["stream"][0];
+        const auto& format = stream["format"][0];
+        const auto& codec = format["codec"][0];
+
+        std::string base_url = codec["base_url"].get<std::string>();
+        std::string extra = codec["url_info"][0]["extra"].get<std::string>();
+        std::string host = codec["url_info"][0]["host"].get<std::string>();
+
+        return host + base_url + extra;
     }
-    json::Json roomInfo;
-    roomInfo.parse(s1);
-    if (s1 == R"({"exceptionType":0})")
+    catch (const nlohmann::json::exception& e)
     {
-        return LiveStreamStatus::Absent;
+        return "";
     }
-    if ((int)roomInfo["roomInfo"]["eLiveStatus"] == 2)
-    {
-        json::Json s;
-        s.parse(roomInfo["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0].str());
-        m_flvUrl = std::format(R"({}/{}.{}?{})",
-                               (std::string)s["sFlvUrl"],
-                               (std::string)s["sStreamName"],
-                               (std::string)s["sFlvUrlSuffix"],
-                               process_anticode(s["sFlvAntiCode"], GetanonymousUid(), s["sStreamName"]));
-        return LiveStreamStatus::Normal;
-    }
-    else
-    {
-        return LiveStreamStatus::NotLive;
-    }
-#endif // 0
-    return LiveStreamStatus::Error;
-}
-
-std::string LiveHuya::GetLiveStreamLink() const
-{
-    return m_flvUrl;
-}
-
-LiveHuya::~LiveHuya()
-{
-}
-
-std::string LiveHuya::GetanonymousUid()
-{
-#if 0
-    std::string ret;
-    const std::map<std::string, std::string>& header = {
-        { "Content-Type", "application/json" }
-    };
-    PostRequest(ret, live_huya_anonymous_uid, R"({"appId": 5002,"byPass": 3,"context": "", "version": "2.4","data": {}})", header);
-    json::Json data;
-    data.parse(ret);
-    return data["data"]["uid"];
-#endif
-    return "";
-}
-
-std::string LiveHuya::process_anticode(const std::string& anticode, const std::string& uid, const std::string& streamname)
-{
-    std::map<std::string, std::string> m = QueryStringToMap(urlDecode(anticode));
-    m["ver"] = "1";
-    m["sv"] = "2110211124";
-    m["seqid"] = std::to_string(GetUnixTimeStampSeconds() * 1000 + std::stoll(uid));
-    m["uid"] = uid;
-    m["uuid"] = getUUID();
-    const std::string& ss = Md5(std::format("{}|{}|{}", m["seqid"], m["ctype"], m["t"]));
-    std::string fm = boost::beast::detail::base64_decode(m["fm"]);
-    fm.replace(fm.find("$0"), 2, m["uid"]);
-    fm.replace(fm.find("$1"), 2, streamname);
-    fm.replace(fm.find("$2"), 2, ss);
-    fm.replace(fm.find("$3"), 2, m["wsTime"]);
-    m["wsSecret"] = Md5(fm);
-    m.erase("fm");
-    if (m.count("txyp") > 0)
-        m.erase("txyp");
-    return MapToQueryString(m);
-}
-
-std::string LiveHuya::getUUID()
-{
-    auto now = std::chrono::system_clock::now();
-    auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
-    auto value = now_ms.time_since_epoch().count();
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, 1000);
-    int rand_num = dis(gen);
-
-    unsigned long long uuid = (value % 10000000000) * 1000 + rand_num;
-    uuid %= 4294967295;
-
-    return std::to_string(uuid);
 }
 
 LiveDouyin::LiveDouyin(const std::string& roomID) :
@@ -213,69 +147,110 @@ LiveDouyin::LiveDouyin(const std::string& roomID) :
 {
 }
 
-LiveStreamStatus LiveDouyin::GetLiveStreamStatus()
+LiveStreamInfo LiveDouyin::GetLiveStreamInfo()
 {
-    std::string ret;
-    std::string user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36";
-    const std::map<std::string, std::string>& header = {
-        { "User-Agent", user_agent },
-        { "referer", "https://live.douyin.com/" },
-        { "cookie", "ttwid=1%7CxaukhGxBEHUsUlCmIY4HRiGzUO3JIZtwThFAM26tJso%7C1676112432%7C7764fe35c2bb172955868ce911bca5aa8b1019e28e9fd9f8cd925bbb11a3ec1f; xgplayer_user_id=327735195191; odin_tt=7205a5bf96b9ae49071d11088256571edac5cfc1423f99b4d8b27ef9968e144b9ef6e70febb76032686d2f53b386b024dee75ebecccbfa2f68c2096dd7fdaaa887921bf20108bf274532d73f11ae74b2; pwa2=%220%7C0%7C3%7C1%22; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtcmVlLXB1YmxpYy1rZXkiOiJCTUoxOC9iWmV0QlF1OGxWMXFnbFpVTE5abXFIV2YzNDh5YWZLandxRXk0c3ZrdHRQaTNXcU9jYk0vSDBnVHc2bWZyWmxMYnI5MWhPTzJGWjFaaTJDbGc9IiwiYmQtdGlja2V0LWd1YXJkLXdlYi12ZXJzaW9uIjoxfQ==; s_v_web_id=verify_llt5j3pc_qHbwb43X_rsMK_4URB_8lX8_KGZk6AZuqKQW; passport_csrf_token=6ee312f524a087d2e0954e280195f093; passport_csrf_token_default=6ee312f524a087d2e0954e280195f093; FORCE_LOGIN=%7B%22videoConsumedRemainSeconds%22%3A180%7D; volume_info=%7B%22isUserMute%22%3Afalse%2C%22isMute%22%3Atrue%2C%22volume%22%3A0.6%7D; live_version=%221.1.1.3542%22; device_web_cpu_core=12; device_web_memory_size=8; webcast_local_quality=sd; csrf_session_id=c2d050ec6eca0581bd33676bb01efbcb; webcast_leading_last_show_time=1693840853743; webcast_leading_total_show_times=1; download_guide=%223%2F20230905%2F0%22; strategyABtestKey=%221693878032.975%22; stream_recommend_feed_params=%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A1536%2C%5C%22screen_height%5C%22%3A960%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A12%2C%5C%22device_memory%5C%22%3A8%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A150%7D%22; VIDEO_FILTER_MEMO_SELECT=%7B%22expireTime%22%3A1694482833541%2C%22type%22%3A1%7D; home_can_add_dy_2_desktop=%221%22; __ac_signature=_02B4Z6wo00f01HeJgRgAAIDBgvZrhVoJ1YB3qYWAAHkc9uZs7w58Na.-yxd4KVmlVgdxWyyGFH2FZ4Kcpu-LDEpV82QCjWieKfk06Z9B0S9K5LW49zI8AxPvqQFgkBRN9-xx8Aidv67iRFh00f; live_can_add_dy_2_desktop=%220%22; msToken=TJ5bDSCEeWCWz1nY9wrOhgQ4dr_SCBPPImY2G9Blj2VTSEwa7b4RfiqweW5RR0jaCEp-itcBYF8BispuGB-mlFCtslq_jJ5EU8fBjsLPginmPn39I5ZjIA==; tt_scid=NU1fQiBzvNTjAvXazULYjHoX7IQrdOmzz76IroqwcbcST8q5MiafUeBz6kCNZJIlcb47; msToken=MpALMGeJrcnDeVMS6FSENJ16Oz4BL2kXyknj5QXcXixQgcCBNF21bC0dE8mlrlHUZKbwHMN_4AG7a5V2yeSqLtePinRu-DHqZv1do92C6XGKEZVnxj4eug==; IsDouyinActive=false" }
-    };
-    std::string p = "aid=6383&app_name=douyin_web&live_id=1&device_platform=web&browser_language=zh-CN&browser_platform=Win32&browser_name=Edge&browser_version=139.0.0.0&is_need_double_stream=false&web_rid=" + m_roomID;
-#if 0
-    char* ab = get_abogus(user_agent.c_str(), p.c_str());
-    std::string abogus(ab);
-    free_abogus(ab);
-    std::string url = live_douyin_room + p + "&a_bogus=" + abogus;
-#else
-    std::string url = live_douyin_room + p;
-#endif
-    GetRequest(ret, url.c_str(), header);
-    std::string ret_ = UTF8_To_string(ret);
-    auto streamInfo = nlohmann::json::parse(ret);
+    try
+    {
+        // 构建请求参数
+        std::string user_agent =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36";
 
-    if (!streamInfo.contains("status_code") || streamInfo["status_code"].get<int>() != 0)
-    {
-        return LiveStreamStatus::Absent;
-    }
-    if (!streamInfo.contains("data") || !streamInfo["data"].contains("data") || !streamInfo["data"]["data"].is_array() || streamInfo["data"]["data"].size() < 0)
-    {
-        return LiveStreamStatus::Absent;
-    }
-    const nlohmann::json& data = streamInfo["data"]["data"][0];
-    // 抖音 status == 2 代表是开播的状态
-    int status = data["status"];
-    if (status == 2)
-    {
-        nlohmann::json pullDatas = data["stream_url"]["pull_datas"];
-        if (!pullDatas.empty())
+        const std::map<std::string, std::string> headers = {
+            { "User-Agent", user_agent },
+            { "referer", "https://live.douyin.com/" },
+            { "cookie", "enter_pc_once=1; UIFID_TEMP=29a1f63ec682dc0a0df227dd163e2b46e3a6390e403335fa4c2c6d1dc0ec5ffa7a288170e8828ecb8b2f0f16b3219daa18ad5d7faf7fb5fbb64df454c3b471cc1db9c0b5eb2cbc8e0cb1e690f5c1fbd6; stream_recommend_feed_params=%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A2560%2C%5C%22screen_height%5C%22%3A1440%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A16%2C%5C%22device_memory%5C%22%3A8%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A50%7D%22; hevc_supported=true; odin_tt=363047b47492a2e153d67e7022684ffd83726a0c57322991e6650da1dbe2fc0adb471e8be38efa85bf0ab9788a8e237d481c8fc488ef859f4476fc6ffd50dd31a258add2954b3fcf03cd546357df6a53; strategyABtestKey=%221772897157.15%22; passport_csrf_token=d71952d93315e4df5cc8373e4cdc2447; passport_csrf_token_default=d71952d93315e4df5cc8373e4cdc2447; home_can_add_dy_2_desktop=%221%22; biz_trace_id=fab9d888; ttwid=1%7CP0feYUzzIsbXr2aaLLBWHYtwVD4-6CV2voO9bAUQ7PU%7C1772897161%7Cd72bed8f6f576a1dfb7b8d1032c76706ce93b3ba3ac5b21e79501db1c2f17c9f; __security_mc_1_s_sdk_crypt_sdk=0ef27763-40a0-b3c3; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtcmVlLXB1YmxpYy1rZXkiOiJCSjhja053TW16SWxIVWQzazF4d2F6bXdQdm1JZjUrcElEVWR2MmpTN3czVWRKRWZ6djBIN1g5Z3dINUNnRkpSSGIzOEFvWTZYSEZsOEdWcGd1dmN4OGc9IiwiYmQtdGlja2V0LWd1YXJkLXdlYi12ZXJzaW9uIjoyfQ%3D%3D; bd_ticket_guard_client_web_domain=2; bd_ticket_guard_client_data_v2=eyJyZWVfcHVibGljX2tleSI6IkJKOGNrTndNbXpJbEhVZDNrMXh3YXptd1B2bUlmNStwSURVZHYyalM3dzNVZEpFZnp2MEg3WDlnd0g1Q2dGSlJIYjM4QW9ZNlhIRmw4R1ZwZ3V2Y3g4Zz0iLCJyZXFfY29udGVudCI6InNlY190cyIsInJlcV9zaWduIjoiNkxSc0hxbFZ4bUhHSFVzMCtsQ0dLaGNlU242bVZxZzRRRFJmdjJ1RzZCaz0iLCJzZWNfdHMiOiIjaUZua3E0M0pNV25FWGlQNW15b3grVTlWdUNrL3B4ZnQveVlsL3o5eWdpWnRSOUZjbEZSSmFGOXk1T1lWIn0%3D; sdk_source_info=7e276470716a68645a606960273f276364697660272927676c715a6d6069756077273f276364697660272927666d776a68605a607d71606b766c6a6b5a7666776c7571273f275e58272927666a6b766a69605a696c6061273f27636469766027292762696a6764695a7364776c6467696076273f275e582729277672715a646971273f2763646976602729277f6b5a666475273f2763646976602729276d6a6e5a6b6a716c273f2763646976602729276c6b6f5a7f6367273f27636469766027292771273f27343636343334323c3d37323234272927676c715a75776a716a666a69273f2763646976602778; bit_env=7NCrRegY020LGVG5Yx8HFRWB73RARpFbj-iyQ1LwqU0cDI9moZj9ecPpsbpkSaMTEyZqsilIKiI_lt70BB_G6Dod7wN8rkLhE631Bz9wC_ixgEAlNeIdElXvK3C9gool9MEa3Y5xuHt4r36Y7HkF5YAELvmsxcB8412Lfy3XuXNgybsvbLqhJrUhs-rG5nU1V-xyc70ffKH2TqV_ZxyfiI1Qn7a3LENvJkf8V9ntSbLM3qoKcG5so8A6lMQ5LoyEsZgIq4i-rMHEO1Bc13y9wvk3oi-sJI76Ez-qeR_ArnBjdI6ZLTG_MUWfLeu9Ikz79n1nYgUl8r6sEXw3L3au4iOY5cfKhxFNEOszmGtoiAE8n91LvALTHWW_yZgi93E_ne4h-gOaqKLccAN05tCphxDc1uAoS3i4jBcKdnyF6ZVyGuJ_FSi4NQFvVGupfejzLbrfZoWDfGj6pgZpGEMCHnF0w_ajPy3jko_TKwdpi7DW6q49w-fjUYSjc3vJ137yj0N3um5dVKvIFJM1v0yBsavXNheto_S1GKCVq-6LTcM%3D; gulu_source_res=eyJwX2luIjoiOWYxNmJiYTEwNTIwMTgyMzIwOGMyZWYyYzllN2RkYWE1YjRjNTgzYmI0ZDhkYzAwNWNlODQxZjgwNTU3MzA5ZCJ9; passport_auth_mix_state=nt3zeeuup2eyy8cn750jdgpj52a9ldxlw3vzw45ba2eu8j77; is_dash_user=1; x-web-secsdk-uid=17063330-58d4-4719-9971-dba52fc661ab; __live_version__=%221.1.4.9549%22; has_avx2=null; device_web_cpu_core=16; device_web_memory_size=8; webcast_local_quality=null; live_use_vvc=%22false%22; csrf_session_id=5fe8f9d1180e55817920dae0808993ba; live_debug_info=%7B%22roomId%22%3A%227614515520083118863%22%2C%22resolution%22%3A%7B%22width%22%3A1920%2C%22height%22%3A1080%7D%2C%22fps%22%3A70%2C%22audioDataRate%22%3A48000%2C%22droppedFrames%22%3A4%2C%22totalFrames%22%3A65%2C%22videoBuffer%22%3A%5B%5D%2C%22src%22%3A%22https%3A%2F%2Fpull-flv-q13.douyincdn.com%2Fthirdgame%2Fstream-695437557938520894.flv%3Farch_hrchy%3Dh1%26exp_hrchy%3Dh1%26expire%3D1773502023%26major_anchor_level%3Dcommon%26sign%3D5d4807ba64265f674729e812ec33618c%26t_id%3D037-202603072327037BDC1553A514D5F37F8C-QZsvPZ%26unique_id%3Dstream-695437557938520894_830_flv%26_session_id%3D037-202603072327037BDC1553A514D5F37F8C-QZsvPZ.1772897224232.33396%26rsi%3D1%26abr_pts%3D-800%22%2C%22linkmicInfo%22%3A%7B%22uiLayout%22%3A0%2C%22playModes%22%3A%5B%5D%2C%22allDevices%22%3A%22%E8%BF%9E%E7%BA%BF%E8%AE%BE%E5%A4%87%EF%BC%9A%E7%94%B3%E8%AF%B7%E8%BF%9E%E7%BA%BF%E5%90%8E%E6%89%8D%E8%8E%B7%E5%8F%96%22%2C%22audioInputs%22%3A%5B%5D%2C%22videoInputs%22%3A%5B%5D%7D%2C%22href%22%3A%22https%3A%2F%2Flive.douyin.com%2F262229562462%3Fanchor_id%3D60708713854%26follow_status%3D0%26is_vs%3D0%26vs_ep_group_id%3D%26vs_episode_id%3D%26vs_episode_stage%3D%26vs_season_id%3D%22%7D; fpk1=U2FsdGVkX19Xphctu6x8/IFxEj3mGvQobR7U2Gy90RThMds9G7h1ZgbvhsMLPFfJL+8+eZ5CzEghbCVjENUCnA==; fpk2=800cce95768a9a4605cb3f6b181e9057; h265ErrorNum=-1; webcast_leading_last_show_time=1772897235315; webcast_leading_total_show_times=1; IsDouyinActive=false; live_can_add_dy_2_desktop=%220%22" }
+        };
+        std::string params =
+            "aid=6383&app_name=douyin_web&live_id=1&device_platform=web&"
+            "browser_language=zh-CN&browser_platform=Win32&browser_name=Edge&"
+            "browser_version=139.0.0.0&is_need_double_stream=false&web_rid=" +
+            m_roomID;
+        std::string url = std::string(live_douyin_room) + params;
+        auto response = cpr::Get(
+            cpr::Url{ url },
+            cpr::Header{ headers.begin(), headers.end() });
+        if (response.error || response.status_code != 200 || response.text.empty())
         {
-            nlohmann::json doubleScreenStreams = pullDatas.begin().value();
-            nlohmann::json streamData = nlohmann::json::parse(doubleScreenStreams["stream_data"].get<std::string>());
-            m_flvUrl = streamData["data"]["origin"]["main"]["flv"];
-            return LiveStreamStatus::Normal;
+            return { LiveStreamStatus::Error, "" };
         }
-        if (!data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].is_string())
+        auto streamInfo = nlohmann::json::parse(response.text);
+        int status_code = streamInfo["status_code"].get<int>();
+        if (status_code != 0)
         {
-            return LiveStreamStatus::Error;
+            return { LiveStreamStatus::Absent, "" };
         }
-        nlohmann::json streamData = nlohmann::json::parse(data["stream_url"]["live_core_sdk_data"]["pull_data"]["stream_data"].get<std::string>());
-        m_flvUrl = streamData["data"]["origin"]["main"]["flv"];
-        return LiveStreamStatus::Normal;
+        // 获取直播数据
+        const auto& data = streamInfo["data"]["data"][0];
+        int status = data["status"].get<int>();
+        // 抖音 status == 2 代表是开播的状态
+        if (status == 2)
+        {
+            std::string link = GetStreamLinkFromResponse(data);
+            if (link.empty())
+            {
+                return { LiveStreamStatus::Error, "" };
+            }
+            return { LiveStreamStatus::Normal, link };
+        }
+        // status == 4 代表未开播
+        else if (status == 4)
+        {
+            return { LiveStreamStatus::NotLive, "" };
+        }
+        return { LiveStreamStatus::Error, "" };
     }
-    else if (status == 4)
+    catch (...)
     {
-        return LiveStreamStatus::NotLive;
+        return { LiveStreamStatus::Error, "" };
     }
-    return LiveStreamStatus::Error;
 }
 
-std::string LiveDouyin::GetLiveStreamLink() const
+std::string LiveDouyin::GetStreamLinkFromResponse(const nlohmann::json& data)
 {
-    return m_flvUrl;
+    try
+    {
+        const auto& stream_url = data["stream_url"];
+
+        if (stream_url.contains("pull_datas"))
+        {
+            const auto& pullDatas = stream_url["pull_datas"];
+            if (!pullDatas.empty())
+            {
+                auto doubleScreenStreams = pullDatas.begin().value();
+                std::string stream_data_str = doubleScreenStreams["stream_data"].get<std::string>();
+                auto streamData = nlohmann::json::parse(stream_data_str);
+
+                return streamData["data"]["origin"]["main"]["flv"].get<std::string>();
+            }
+        }
+        if (stream_url.contains("live_core_sdk_data"))
+        {
+            std::string stream_data_str =
+                stream_url["live_core_sdk_data"]["pull_data"]["stream_data"].get<std::string>();
+            auto streamData = nlohmann::json::parse(stream_data_str);
+
+            return streamData["data"]["origin"]["main"]["flv"].get<std::string>();
+        }
+
+        return "";
+    }
+    catch (...)
+    {
+        return "";
+    }
 }
 
-LiveDouyin::~LiveDouyin()
+std::unique_ptr<ILiveStreamProvider> CreateLiveProvider(LivePlatform platform, const std::string& roomID)
 {
+    switch (platform)
+    {
+    case LivePlatform::Douyin:
+        return std::make_unique<LiveDouyin>(roomID);
+    case LivePlatform::BiliBili:
+        return std::make_unique<LiveBili>(roomID);
+    default:
+        assert(false && "Unknown live platform");
+        return nullptr;
+    }
 }
