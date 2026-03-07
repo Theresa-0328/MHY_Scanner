@@ -92,4 +92,6 @@ private:
     configInitLoad configinitload;
     void SetWindowToFront() const;
     WindowLogin* windowLogin{};
+    void copyEntireRow(int row);
+    void onTableRightClicked(const QPoint& pos);
 };

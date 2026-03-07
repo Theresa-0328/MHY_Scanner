@@ -7,6 +7,7 @@
 #include <QWindow>
 #include <QRegularExpressionValidator>
 #include <QStringList>
+#include <QClipboard>
 #include <Json.h>
 
 #include "Mihoyosdk.h"
@@ -104,16 +105,35 @@ WindowMain::WindowMain(QWidget* parent) :
     ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
     ui.lineEditLiveId->setClearButtonEnabled(true);
 
-    configinitload.start();
+    ui.tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui.tableWidget, &QTableWidget::customContextMenuRequested, this, &WindowMain::onTableRightClicked);
 
-    //trrlog::SetLogFile("log.txt");
-    //trrlog::Log_debug("UI Initialization completed");
+    configinitload.start();
 }
 
 WindowMain::~WindowMain()
 {
     t1.stop();
     t2.stop();
+}
+
+void WindowMain::onTableRightClicked(const QPoint& pos)
+{
+    QTableWidgetItem* item = ui.tableWidget->itemAt(pos);
+    if (!item)
+    {
+        return;
+    }
+    int row = ui.tableWidget->row(item);
+    QMenu contextMenu(this);
+
+    QAction* copyRowAction = contextMenu.addAction("复制Cookie");
+    connect(copyRowAction, &QAction::triggered, this, [this, row]() {
+        copyEntireRow(row);
+    });
+
+    contextMenu.addSeparator();
+    contextMenu.exec(ui.tableWidget->mapToGlobal(pos) + QPoint(0, 25));
 }
 
 void WindowMain::insertTableItems(QString uid, QString userName, QString type, QString notes)
@@ -500,12 +520,12 @@ bool WindowMain::GetStreamLink(const std::string& roomid, std::string& url, std:
     {
         url = info.link;
         return true;
-        }
+    }
     else
     {
         Q_EMIT LiveStreamLinkError(info.status);
-            return false;
-        }
+        return false;
+    }
 }
 
 void WindowMain::SetWindowToFront() const
@@ -663,6 +683,25 @@ void WindowMain::updateNote(QTableWidgetItem* item)
     QString text = item->text();
     userinfo["account"][item->row()]["note"] = text.toStdString();
     m_config->updateConfig(userinfo.str());
+}
+
+void WindowMain::copyEntireRow(int row)
+{
+    QString rowData;
+    std::string stoken = userinfo["account"][row]["access_key"];
+    std::string stuid = userinfo["account"][row]["uid"];
+    std::string mid = userinfo["account"][row]["mid"];
+    if (std::string type = userinfo["account"][row]["type"]; type == "崩坏3B服")
+    {
+        QMessageBox::information(this, "提示", "暂时不支持B服Cookie", QMessageBox::Yes);
+        return;
+    }
+    rowData = QString::fromStdString(
+        "stoken=" + stoken + "; " +
+        "stuid=" + stuid + "; " +
+        "mid=" + mid);
+    QClipboard* clipboard = QApplication::clipboard();
+    clipboard->setText(rowData);
 }
 
 void OnlineUpdate::run()
