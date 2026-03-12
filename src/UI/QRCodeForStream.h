@@ -19,8 +19,7 @@ extern "C"
 #include <QThreadPool>
 #include <Json.h>
 
-#include "Mihoyosdk.h"
-#include "Common.h"
+#include "ApiDefs.hpp"
 #include "ConfigDate.h"
 #include "ScannerBase.hpp"
 
@@ -49,7 +48,6 @@ Q_SIGNALS:
 
 private:
     std::mutex mtx;
-    Mihoyosdk m;
     void LoginOfficial();
     void LoginBH3BiliBili();
     void setStreamHW();

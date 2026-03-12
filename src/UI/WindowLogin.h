@@ -24,6 +24,7 @@
 #include <QMutex>
 
 #include "WindowGeeTest.h"
+#include "ApiDefs.hpp"
 
 class WindowLogin : public QWidget
 {
@@ -99,22 +100,10 @@ private:
 
     void Initconnect();
 
-    struct
-    {
-        std::string GeetestSessionId{};
-        std::string action_type{};
-        std::string Aigis{};
-        std::string phoneNumber{};
-        std::string gt_user_id{};
-        enum
-        {
-            Official,
-            BiLi
-        } GeeTestType{};
-    } GeeTestInfo;
-
     void ResultByLoginBH3BiLiBiLi(const auto& result);
     void ResultByLoginOfficial(const auto& result);
     void StartQRCodeLogin();
     void CheckQRCodeLoginState();
+
+    GeetestData GeeTestInfo{};
 };

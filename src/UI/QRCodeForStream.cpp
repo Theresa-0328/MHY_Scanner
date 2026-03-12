@@ -137,8 +137,6 @@ void QRCodeForStream::LoginOfficial()
 
 void QRCodeForStream::LoginBH3BiliBili()
 {
-    const std::string& LoginData = m.verify(uid, gameToken);
-    m.setUserName(m_name);
     while (m_stop.load())
     {
         if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
@@ -182,7 +180,7 @@ void QRCodeForStream::LoginBH3BiliBili()
                     return;
                 }
                 const std::string& ticket = str.substr(str.length() - 24);
-                if (m.validityCheck(ticket))
+                if (lastTicket == ticket)
                 {
                     return;
                 }
@@ -193,15 +191,14 @@ void QRCodeForStream::LoginBH3BiliBili()
                         mtx.unlock();
                         return;
                     }
-                    m.scanInit(ticket, LoginData);
-                    if (ret = m.scanCheck(); ret == ScanRet::SUCCESS)
+                    if (ret = scanCheck(ticket); ret == ScanRet::SUCCESS)
                     {
+                        lastTicket = ticket;
                         json::Json config;
                         config.parse(m_config->getConfig());
                         if (config["auto_login"])
                         {
-                            ret = m.scanConfirm();
-                            Q_EMIT loginResults(ret);
+                            continueLastLogin();
                         }
                         else
                         {
@@ -328,7 +325,7 @@ void QRCodeForStream::continueLastLogin()
     break;
     case BH3_BiliBili:
     {
-        ret = m.scanConfirm();
+        ret = scanConfirm(lastTicket, uid, gameToken, m_name);
         Q_EMIT loginResults(ret);
     }
     break;

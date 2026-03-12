@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <memory>
 
-#include "Common.h"
+#include "ApiDefs.hpp"
 
 namespace cpr
 {
@@ -31,37 +31,35 @@ struct LiveStreamInfo
     std::string link;
 };
 
-class ILiveStreamProvider
-{
-public:
-    virtual ~ILiveStreamProvider() = default;
-    virtual LiveStreamInfo GetLiveStreamInfo() = 0;
-};
-
-class LiveBili : public ILiveStreamProvider
+class LiveBili
 {
 public:
     explicit LiveBili(const std::string& roomID);
-    LiveStreamInfo GetLiveStreamInfo() override;
+    LiveStreamInfo GetLiveStreamInfo();
 
 private:
     std::string GetLinkByRealRoomID(const std::string& realRoomID);
-    std::string GetStreamUrl(const std::string& url, const cpr::Parameters param);
+    std::string GetStreamUrl(const cpr::Parameters param);
 
     std::string roomID;
     std::string realRoomID;
 };
 
-class LiveDouyin : public ILiveStreamProvider
+class LiveDouyin
 {
 public:
     explicit LiveDouyin(const std::string& roomID);
-    LiveStreamInfo GetLiveStreamInfo() override;
+    LiveStreamInfo GetLiveStreamInfo();
 
 private:
     std::string GetStreamLinkFromResponse(const nlohmann::json& data);
     std::string m_roomID;
-    static constexpr std::string_view live_douyin_room = "https://live.douyin.com/webcast/room/web/enter/?";
 };
 
-std::unique_ptr<ILiveStreamProvider> CreateLiveProvider(LivePlatform platform, const std::string& roomID);
+template<typename T>
+LiveStreamInfo GetLiveInfo(const std::string& roomID)
+{
+    return T(roomID).GetLiveStreamInfo();
+}
+
+LiveStreamInfo GetLiveInfo(const LivePlatform platform, const std::string& roomID);

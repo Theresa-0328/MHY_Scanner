@@ -11,7 +11,6 @@
 #include "QRScanner.h"
 #include "ScreenScan.h"
 #include "ScreenShotDXGI.hpp"
-#include "MhyApi.hpp"
 
 #define DELAYED 200
 
@@ -126,8 +125,6 @@ void QRCodeForScreen::LoginBH3BiliBili()
     QThreadPool threadPool;
     threadPool.setMaxThreadCount(threadNumber);
     std::mutex mtx;
-    const std::string& LoginData = m.verify(uid, gameToken);
-    m.setUserName(m_name);
     ScreenShotDXGI screenshotdxgi;
     int w{ 0 };
     int h{ 0 };
@@ -158,7 +155,7 @@ void QRCodeForScreen::LoginBH3BiliBili()
                 return;
             }
             const std::string& ticket = str.substr(str.length() - 24);
-            if (m.validityCheck(ticket))
+            if (lastTicket == ticket)
             {
                 return;
             }
@@ -169,15 +166,14 @@ void QRCodeForScreen::LoginBH3BiliBili()
                     mtx.unlock();
                     return;
                 }
-                m.scanInit(ticket, LoginData);
-                if (ret = m.scanCheck(); ret == ScanRet::SUCCESS)
+                if (ret = scanCheck(ticket); ret == ScanRet::SUCCESS)
                 {
+                    lastTicket = ticket;
                     json::Json config;
                     config.parse(m_config->getConfig());
                     if (config["auto_login"])
                     {
-                        ret = m.scanConfirm();
-                        emit loginResults(ret);
+                        continueLastLogin();
                     }
                     else
                     {
@@ -218,7 +214,7 @@ void QRCodeForScreen::continueLastLogin()
     break;
     case BH3_BiliBili:
     {
-        ret = m.scanConfirm();
+        ret = scanConfirm(lastTicket, uid, gameToken, m_name);
         Q_EMIT loginResults(ret);
     }
     break;

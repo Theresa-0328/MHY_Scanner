@@ -5,10 +5,10 @@
 #include <QMutex>
 #include <QThread>
 
-#include "Common.h"
+#include "ApiDefs.hpp"
 #include "ConfigDate.h"
-#include "Mihoyosdk.h"
 #include "ScannerBase.hpp"
+#include "MhyApi.hpp"
 
 class QRCodeForScreen final :
     public QThread,
@@ -32,7 +32,6 @@ signals:
     void loginConfirm(const GameType gameType, bool b);
 
 private:
-    Mihoyosdk m;
     ConfigDate* m_config;
     void LoginOfficial();
     void LoginBH3BiliBili();

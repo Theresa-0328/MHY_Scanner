@@ -55,20 +55,6 @@ inline std::string urlDecode(const std::string& str)
     return str_decode;
 }
 
-inline std::string replaceQuotes(const std::string& str)
-{
-    std::string newStr;
-    for (int i = 0; i < str.length(); i++)
-    {
-        if (str[i] == '\"')
-        {
-            newStr += '\\';
-        }
-        newStr += str[i];
-    }
-    return newStr;
-}
-
 inline std::string string_To_UTF8(const std::string& str)
 {
     int nwLen = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
@@ -114,94 +100,6 @@ inline std::string UTF8_To_string(const std::string& str)
     delete[] pwBuf;
 
     return retStr;
-}
-
-inline std::string escapeString(const std::string& input)
-{
-    std::string escaped;
-    for (char c : input)
-    {
-        if (c == '\\')
-        {
-            escaped += "\\\\";
-        }
-        else if (c == '\"')
-        {
-            escaped += "\\\"";
-        }
-        else if (c == '\n')
-        {
-            escaped += "\\n";
-        }
-        else if (c == '\t')
-        {
-            escaped += "\\t";
-        }
-        else if (c == '\r')
-        {
-            escaped += "\\r";
-        }
-        else
-        {
-            escaped += c;
-        }
-    }
-    return escaped;
-}
-
-inline std::string unescapeString(const std::string& input)
-{
-    std::string unescaped;
-    bool isEscape = false;
-    for (char c : input)
-    {
-        if (isEscape)
-        {
-            if (c == 'n')
-            {
-                unescaped += '\n';
-            }
-            else if (c == 't')
-            {
-                unescaped += '\t';
-            }
-            else if (c == 'r')
-            {
-                unescaped += '\r';
-            }
-            else
-            {
-                unescaped += c;
-            }
-            isEscape = false;
-        }
-        else
-        {
-            if (c == '\\')
-            {
-                isEscape = true;
-            }
-            else
-            {
-                unescaped += c;
-            }
-        }
-    }
-    return unescaped;
-}
-
-//TODO temp
-inline void replace0026WithAmpersand(std::string& str)
-{
-    std::string searchString = "0026";
-    std::string replacement = "&";
-    size_t pos = 0;
-
-    while ((pos = str.find(searchString, pos)) != std::string::npos)
-    {
-        str.replace(pos, searchString.length(), replacement);
-        pos += replacement.length();
-    }
 }
 
 inline std::wstring stringTowstring(std::string str)

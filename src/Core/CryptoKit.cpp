@@ -57,37 +57,6 @@ std::string rsaEncrypt(const std::string& message, const std::string& public_key
     return cipher_text;
 }
 
-void FormatRsaPublicKey(std::string& key)
-{
-    // 检查输入参数合法性
-    if (key.empty())
-    {
-        throw std::invalid_argument("input key is empty");
-    }
-    size_t beginPos = key.find("-----BEGIN PUBLIC KEY-----");
-    if (beginPos == std::string::npos)
-    {
-        throw std::invalid_argument("input key does not contain BEGIN PUBLIC KEY marker");
-    }
-    size_t endPos = key.find("-----END PUBLIC KEY-----");
-    if (endPos == std::string::npos)
-    {
-        throw std::invalid_argument("input key does not contain END PUBLIC KEY marker");
-    }
-
-    std::string publicKey = key.substr(beginPos + 26, endPos - 26);
-    std::stringstream ss;
-
-    ss << "-----BEGIN PUBLIC KEY-----\n";
-    for (size_t i = 0; i < publicKey.length(); i += 64)
-    {
-        ss << publicKey.substr(i, 64) << "\n";
-    }
-    ss << "-----END PUBLIC KEY-----";
-    key = ss.str();
-    return;
-}
-
 std::string HmacSha256(const std::string& message, const std::string& key)
 {
     const EVP_MD* evp_md = EVP_sha256();

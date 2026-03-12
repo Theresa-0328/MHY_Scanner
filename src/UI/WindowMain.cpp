@@ -10,9 +10,8 @@
 #include <QClipboard>
 #include <Json.h>
 
-#include "Mihoyosdk.h"
 #include "MhyApi.hpp"
-#include "BH3Api.hpp"
+#include "BSGameSDK.hpp"
 
 WindowMain::WindowMain(QWidget* parent) :
     QMainWindow(parent),
@@ -214,26 +213,21 @@ void WindowMain::pBtstartScreen(bool clicked)
             std::string stoken = userinfo["account"][countA]["access_key"];
             std::string uid = userinfo["account"][countA]["uid"];
             std::string mid = userinfo["account"][countA]["mid"];
-            std::string gameToken;
-            auto result = GetGameTokenByStoken(stoken, mid);
-            if (result)
-            {
-                gameToken = *result;
-            }
-            else
+            auto [code, game_token] = GetGameTokenByStoken(stoken, mid);
+            if (code != 0)
             {
                 emit AccountError();
                 return;
             }
             t1.setServerType(ServerType::Official);
-            t1.setLoginInfo(uid, gameToken);
+            t1.setLoginInfo(uid, game_token);
         }
         else if (type == "崩坏3B服")
         {
             std::string stoken{ userinfo["account"][countA]["access_key"] };
             std::string uid{ userinfo["account"][countA]["uid"] };
             //可用性检查
-            auto result{ BH3API::BILI::GetUserInfo(uid, stoken) };
+            auto result{ BSGameSDK::BH3::GetUserInfo(uid, stoken) };
             if (result.code != 0)
             {
                 emit AccountError();
@@ -282,26 +276,21 @@ void WindowMain::pBtStream(bool clicked)
             std::string stoken = userinfo["account"][countA]["access_key"];
             std::string uid = userinfo["account"][countA]["uid"];
             std::string mid = userinfo["account"][countA]["mid"];
-            std::string gameToken;
-            auto result = GetGameTokenByStoken(stoken, mid);
-            if (result)
-            {
-                gameToken = *result;
-            }
-            else
+            auto [code, game_token] = GetGameTokenByStoken(stoken, mid);
+            if (code != 0)
             {
                 emit AccountError();
                 return;
             }
             t2.setServerType(ServerType::Official);
-            t2.setLoginInfo(uid, gameToken);
+            t2.setLoginInfo(uid, game_token);
         }
         else if (type == "崩坏3B服")
         {
             std::string stoken{ userinfo["account"][countA]["access_key"] };
             std::string uid{ userinfo["account"][countA]["uid"] };
             //可用性检查
-            auto result{ BH3API::BILI::GetUserInfo(uid, stoken) };
+            auto result{ BSGameSDK::BH3::GetUserInfo(uid, stoken) };
             if (result.code != 0)
             {
                 emit AccountError();
@@ -513,9 +502,7 @@ bool WindowMain::checkDuplicates(const std::string uid)
 
 bool WindowMain::GetStreamLink(const std::string& roomid, std::string& url, std::map<std::string, std::string>& heards)
 {
-    int live_type = ui.comboBox->currentIndex();
-    auto provider = CreateLiveProvider(static_cast<LivePlatform>(live_type), roomid);
-    auto info = provider->GetLiveStreamInfo();
+    auto info = GetLiveInfo(static_cast<LivePlatform>(ui.comboBox->currentIndex()), roomid);
     if (info.status == LiveStreamStatus::Normal)
     {
         url = info.link;
@@ -706,8 +693,7 @@ void WindowMain::copyEntireRow(int row)
 
 void OnlineUpdate::run()
 {
-    Mihoyosdk m;
-    m.setOAServer();
+    auto str = getOAString();
 }
 
 OnlineUpdate::~OnlineUpdate()

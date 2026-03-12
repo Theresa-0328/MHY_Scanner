@@ -9,7 +9,7 @@
 #include <QThread>
 
 #include "MhyApi.hpp"
-#include "BH3Api.hpp"
+#include "BSGameSDK.hpp"
 #include "UtilMat.hpp"
 #include "CookieParser.hpp"
 
@@ -309,29 +309,29 @@ void WindowLogin::Initconnect()
 
     connect(&m_WindowGeeTest, &WindowGeeTest::postMessage, this, [this](const QString& Message) {
         m_WindowGeeTest.close();
-        if (GeeTestInfo.GeeTestType == GeeTestInfo.BiLi)
+        if (GeeTestInfo.GeeTestType == ServerType::BH3_BiliBili)
         {
             QThreadPool::globalInstance()->start([this, Message]() {
                 QJsonObject json{ QJsonDocument{ QJsonDocument::fromJson(Message.toUtf8()) }.object() };
-                auto result{ BH3API::BILI::LoginByPassWord(
+                auto result{ BSGameSDK::BH3::LoginByPassWord(
                     lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString(),
-                    GeeTestInfo.gt_user_id,
+                    GeeTestInfo.session_id,
                     json.value("geetest_challenge").toString().toStdString(),
                     json.value("geetest_validate").toString().toStdString()) };
                 ResultByLoginBH3BiLiBiLi(result);
             });
         }
-        else if (GeeTestInfo.GeeTestType == GeeTestInfo.Official)
+        else if (GeeTestInfo.GeeTestType == ServerType::Official)
         {
             QThreadPool::globalInstance()->start([this, Message]() {
-                GeeTestInfo.Aigis = GeeTestInfo.GeetestSessionId + ";" + Message.toUtf8().toBase64().toStdString();
-                auto result = CreateLoginCaptcha(GeeTestInfo.phoneNumber, GeeTestInfo.Aigis);
-                if (result.retcode == 0)
+                auto [code, data] = CreateLoginCaptcha(phoneNumberLineEdit->text().toStdString(),
+                                                       GeeTestInfo.session_id + ";" + Message.toUtf8().toBase64().toStdString());
+                if (code == 0)
                 {
-                    GeeTestInfo.action_type = result.action_type;
+                    GeeTestInfo.action_type = data.action_type;
                     emit ButtonEnabled(true);
                 }
-                else if (result.retcode == -3006)
+                else if (code == -3006)
                 {
                     emit showMessagebox("请求过于频繁，请稍后再试");
                 }
@@ -362,20 +362,18 @@ void WindowLogin::Initconnect()
 
     connect(pbtSend, &QPushButton::clicked, this, [this] {
         QThreadPool::globalInstance()->start([this] {
-            GeeTestInfo.phoneNumber = phoneNumberLineEdit->text().toStdString();
-            auto result{ CreateLoginCaptcha(GeeTestInfo.phoneNumber) };
-            if (result.mmt_type)
+            auto [code, data] = CreateLoginCaptcha(phoneNumberLineEdit->text().toStdString());
+            if (data.mmt_type)
             {
-                GeeTestInfo.GeetestSessionId = result.session_id;
-                GeeTestInfo.GeeTestType = GeeTestInfo.Official;
-                m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
+                GeeTestInfo = data;
+                m_WindowGeeTest.Init(stringTowstring(GeeTestInfo.gt), stringTowstring(GeeTestInfo.challenge));
                 emit showWindowGeeTest(true);
             }
-            else if (!result.mmt_type)
+            else if (!GeeTestInfo.mmt_type)
             {
                 emit ButtonEnabled(true);
             }
-            else if (result.retcode == -3008)
+            else if (code == -3008)
             {
                 emit showMessagebox("手机号错误");
             }
@@ -384,7 +382,7 @@ void WindowLogin::Initconnect()
 
     connect(Tab0pbtConfirm, &QPushButton::clicked, this, [this] {
         QThreadPool::globalInstance()->start([this] {
-            auto result = LoginByMobileCaptcha(GeeTestInfo.action_type, GeeTestInfo.phoneNumber, verifyCodeLineEdit->text().toStdString());
+            auto result = LoginByMobileCaptcha(GeeTestInfo.action_type, phoneNumberLineEdit->text().toStdString(), verifyCodeLineEdit->text().toStdString());
             if (result.retcode == -3205)
             {
                 emit showMessagebox("短信验证码错误");
@@ -399,7 +397,7 @@ void WindowLogin::Initconnect()
 
     connect(Tab3pBtConfirm, &QPushButton::clicked, this, [this] {
         QThreadPool::globalInstance()->start([this] {
-            auto result{ BH3API::BILI::LoginByPassWord(lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString()) };
+            auto result{ BSGameSDK::BH3::LoginByPassWord(lineEditAccount->text().toStdString(), lineEditPwd->text().toStdString()) };
             ResultByLoginBH3BiLiBiLi(result);
         });
     });
@@ -496,10 +494,8 @@ void WindowLogin::ResultByLoginBH3BiLiBiLi(const auto& result)
     }
     else if (result.code == 200000)
     {
-        auto result = BH3API::BILI::CaptchaCaptcha();
-        GeeTestInfo.gt_user_id = result.gt_user_id;
-        GeeTestInfo.GeeTestType = GeeTestInfo.BiLi;
-        m_WindowGeeTest.Init(stringTowstring(result.gt), stringTowstring(result.challenge));
+        GeeTestInfo = BSGameSDK::BH3::CaptchaCaptcha();
+        m_WindowGeeTest.Init(stringTowstring(GeeTestInfo.gt), stringTowstring(GeeTestInfo.challenge));
         emit showWindowGeeTest(true);
     }
     else if (result.code == 500002)
@@ -542,24 +538,25 @@ void WindowLogin::StartQRCodeLogin()
 
 void WindowLogin::CheckQRCodeLoginState()
 {
-    switch (auto result{ GetQRCodeState(ticket) }; result.StateType)
+    auto [state, uid, game_token] = GetQRCodeState(ticket);
+    switch (state)
     {
-    case result.Init:
+    case LoginQRCodeState::Init:
     {
     }
     break;
-    case result.Scanned:
+    case LoginQRCodeState::Scanned:
     {
         QRCodelabel->setText("正在登录\n\n请在手机上点击「确认登录」");
     }
     break;
-    case result.Confirmed:
+    case LoginQRCodeState::Confirmed:
     {
-        if (const auto resultStoken{ getStokenByGameToken(result.uid, result.token) }; resultStoken.has_value())
+        auto [code, mid, stoken] = GetStokenByGameToken(uid, game_token);
+        if (code == 0)
         {
-            std::string name{ getMysUserName(result.uid) };
-            const auto& [mid, stoken] = *resultStoken;
-            emit AddUserInfo(name, stoken, result.uid, mid, "官服");
+            std::string name{ getMysUserName(uid) };
+            emit AddUserInfo(name, stoken, uid, mid, "官服");
             QRCodelabel->setText("登录成功！");
             emit QrcodeLoginResult(true);
         }
@@ -570,7 +567,7 @@ void WindowLogin::CheckQRCodeLoginState()
         return;
     }
     break;
-    case result.Expired:
+    case LoginQRCodeState::Expired:
     {
         emit QrcodeLoginResult(false);
         return;

@@ -6,7 +6,7 @@
 #include <QRunnable>
 #include <QMainWindow>
 
-#include "Common.h"
+#include "ApiDefs.hpp"
 #include "ConfigDate.h"
 #include "LiveStreamLink.h"
 #include "QRCodeForScreen.h"

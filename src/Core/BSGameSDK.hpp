@@ -5,23 +5,24 @@
 #include <iostream>
 #include <map>
 
-#include <Json.h>
+#include <nlohmann/json.hpp>
+#include <cpr/cpr.h>
 
-#include "HttpClient.h"
 #include "TimeStamp.hpp"
 #include "UtilString.hpp"
 #include "CryptoKit.h"
+#include "ApiDefs.hpp"
 
-namespace BH3API
+namespace BSGameSDK
 {
-namespace BILI
+namespace BH3
 {
 namespace detail
 {
 constinit const std::string_view userinfoParam{ R"({"cur_buvid":"XZA2FA4AC240F665E2F27F603ABF98C615C29","client_timestamp":"1667057013442","sdk_type":"1","isRoot":"0","merchant_id":"590","dp":"1280 * 720",
-"mac":"08:00 : 27 : 53 : DD : 12","uid":"437470182","support_abis":"x86, armeabi - v7a, armeabi","apk_sign":"4502a02a00395dec05a4134ad593224d","platform_type":"3","old_buvid":"XZA2FA4AC240F665E2F27F603ABF98C615C29",
+"mac":"08:00:27:53:DD:12","uid":"437470182","support_abis":"x86,armeabi-v7a,armeabi","apk_sign":"4502a02a00395dec05a4134ad593224d","platform_type":"3","old_buvid":"XZA2FA4AC240F665E2F27F603ABF98C615C29",
 "operators":"5","fingerprint":"","model":"MuMu","udid":"XXA31CBAB6CBA63E432E087B58411A213BFB7","net":"5","app_id":"180","brand":"Android","oaid":"","game_id":"180","timestamp":"1667057013275","ver":"6.1.0","c":"1",
-"version_code":"510","server_id":"378","version":"1","domain_switch_count":"0","pf_ver":"12","access_key":"","domain":"line1 - sdk - center - login - sh.biligame.net","original_domain":"","imei":"","sdk_log_type":"1",
+"version_code":"510","server_id":"378","version":"1","domain_switch_count":"0","pf_ver":"12","access_key":"","domain":"line1-sdk-center-login-sh.biligame.net","original_domain":"","imei":"","sdk_log_type":"1",
 "sdk_ver":"3.4.2","android_id":"84567e2dda72d1d4","channel_id":1})" };
 
 constinit const std::string_view rsaParam{ R"({"operators":"5", "merchant_id":"590","isRoot":"0","domain_switch_count":"0","sdk_type": "1","sdk_log_type":"1","timestamp":"1613035485639","support_abis":"x86,armeabi-v7a,armeabi",
@@ -44,88 +45,96 @@ constinit const std::string_view captchaParam{ R"({"operators":"5","merchant_id"
 "app_id":"180","version_code":"510","net":"4","pf_ver":"12","cur_buvid":"XZA2FA4AC240F665E2F27F603ABF98C615C29","c":"1","brand":"Android","client_timestamp":"1613035487431","channel_id":"1","uid":"","game_id":"180",
 "ver":"6.1.0","model":"MuMu"})" };
 
-static const std::map<std::string, std::string> headers{
+static const cpr::Header headers{
     { "User-Agent", "Mozilla/5.0 BSGameSDK" },
     { "Content-Type", "application/x-www-form-urlencoded" },
     { "Host", "line1-sdk-center-login-sh.biligame.net" }
 };
 
-inline std::string SetSign(std::map<std::string, std::string> data)
+inline std::string SetSign(nlohmann::json data)
 {
-    for (auto it = data.begin(); it != data.end(); ++it)
-    {
-        std::string key = it->first;
-        std::string value = it->second;
-        key.erase(std::remove(key.begin(), key.end(), '\"'), key.end());
-        value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
-        it->second = value;
-    }
-
     data["timestamp"] = std::to_string(GetUnixTimeStampSeconds());
     data["client_timestamp"] = std::to_string(GetUnixTimeStampSeconds());
+
     std::string sign;
-    std::string data2;
-    for (std::pair<std::string, std::string> c : data)
+    std::string body;
+
+    auto getValue = [](const nlohmann::json& v) -> std::string {
+        return v.is_string() ? v.get<std::string>() : v.dump();
+    };
+
+    for (auto it = data.begin(); it != data.end(); ++it)
     {
-        if (c.first == "pwd")
+        std::string key = it.key();
+        std::string value = getValue(it.value());
+
+        if (key == "pwd")
         {
-            std::string pwd = urlEncode(c.second);
-            data2 += c.first + "=" + pwd + "&";
+            body += key + "=" + urlEncode(value) + "&";
         }
-        data2 += c.first + "=" + c.second + "&";
+        else
+        {
+            body += key + "=" + value + "&";
+        }
     }
-    for (std::pair<std::string, std::string> c : data)
+
+    for (auto it = data.begin(); it != data.end(); ++it)
     {
-        sign += c.second;
+        sign += getValue(it.value());
     }
+
     sign += "dbf8f1b4496f430b8a3c0f436a35b931";
-    return std::format("{}{}{}", data2, "sign=", Md5(sign));
+    return body + "sign=" + Md5(sign);
+}
+
+inline std::string GetEncryptedPwd(const std::string_view pwd)
+{
+    nlohmann::json data = nlohmann::json::parse(detail::rsaParam);
+    std::string body = detail::SetSign(data);
+
+    auto rsaResponse = cpr::Post(
+        cpr::Url{ api::game::bili::rsa },
+        cpr::Body{ body },
+        cpr::Header{ detail::headers });
+
+#ifdef _DEBUG
+    std::cout << rsaResponse.text << std::endl;
+#endif
+
+    nlohmann::json rsaInfo = nlohmann::json::parse(rsaResponse.text);
+    std::string publicKey = rsaInfo["rsa_key"];
+    std::string hash = rsaInfo["hash"];
+    return rsaEncrypt(hash + std::string{ pwd }, publicKey);
 }
 }
+
 inline auto GetUserInfo(const std::string& uid, const std::string& accessKey)
 {
-    json::Json userinfoParamj;
-    userinfoParamj.parse(detail::userinfoParam.data());
-    userinfoParamj["uid"] = uid;
-    userinfoParamj["access_key"] = accessKey;
-    std::map<std::string, std::string> m = userinfoParamj.objToMap();
-    for (auto& it : m)
-    {
-        std::string& str{ it.second };
-        it.second = [&str]() -> std::string {
-            std::string result;
-            char* p{ &str[0] };
-            while (*p != '\0')
-            {
-                if (*p != '"')
-                {
-                    result += *p;
-                }
-                p++;
-            }
-            return result;
-        }();
-    }
-    std::string s{ detail::SetSign(m) };
-    std::string t;
-    HttpClient h{};
-    h.PostRequest(t, game_bili_userinfo, s, detail::headers);
+    nlohmann::json data = nlohmann::json::parse(detail::userinfoParam);
+    data["uid"] = uid;
+    data["access_key"] = accessKey;
+
+    std::string body{ detail::SetSign(data) };
+
+    auto response = cpr::Post(
+        cpr::Url{ api::game::bili::userinfo },
+        cpr::Body{ body },
+        cpr::Header{ detail::headers });
 #ifdef _DEBUG
-    std::cout << "BiliBili用户信息：" << t << std::endl;
-#endif // _DEBUG
+    std::cout << "BiliBili UserInfo ：" << response.text << std::endl;
+#endif
     struct
     {
         int code{};
         std::string uname{};
     } result;
-    json::Json j{};
-    j.parse(t);
-    result.code = j["code"];
+    nlohmann::json info = nlohmann::json::parse(response.text);
+    result.code = info["code"];
     if (result.code != 0)
     {
         return result;
     }
-    result.uname = j["uname"];
+    result.uname = info["uname"];
     return result;
 }
 
@@ -136,45 +145,29 @@ inline auto LoginByPassWord(
     const std::string_view challenge = "",
     const std::string_view validate = "")
 {
-    json::Json data;
-    data.parse(detail::rsaParam.data());
-    std::map<std::string, std::string> dataM = data.objToMap();
-    std::string p1 = detail::SetSign(dataM);
-    std::string re;
-    HttpClient h;
-    h.PostRequest(re, game_bili_rsa, p1, detail::headers);
-#ifdef _DEBUG
-    std::cout << re << std::endl;
-#endif // _DEBUG
-    data.parse(detail::loginParam.data());
-    json::Json re1J;
-    re1J.parse(re.data());
-    std::string publicKey = re1J["rsa_key"];
-    FormatRsaPublicKey(publicKey);
+    nlohmann::json data = nlohmann::json::parse(detail::loginParam);
     data["access_key"] = "";
-    data["gt_user_id"] = gt_user.data();
+    data["gt_user_id"] = gt_user;
     data["uid"] = "";
-    data["challenge"] = challenge.data();
-    data["user_id"] = biliAccount.data();
-    data["validate"] = validate.data();
+    data["challenge"] = challenge;
+    data["user_id"] = biliAccount;
+    data["validate"] = validate;
     if (!validate.empty())
     {
-        data["seccode"] = validate.data() + std::string{ "|jordan" };
+        data["seccode"] = std::string{ validate } + "|jordan";
     }
-    std::string hash1 = re1J["hash"];
-    std::string rekit = rsaEncrypt(hash1 + biliPwd.data(), publicKey);
-    data["pwd"] = rekit;
+    data["pwd"] = detail::GetEncryptedPwd(biliPwd);
+
 #ifdef _DEBUG
-    std::cout << data.str() << std::endl;
-#endif // _DEBUG
-    std::map<std::string, std::string> dataR = data.objToMap();
-    std::string p2 = detail::SetSign(dataR);
-    re.clear();
-    data.clear();
-    re1J.clear();
-    h.PostRequest(re, game_bili_login, p2, detail::headers);
-    json::Json j1;
-    j1.parse(re);
+    std::cout << data.dump() << std::endl;
+#endif
+
+    std::string body = detail::SetSign(data);
+    auto loginResponse = cpr::Post(
+        cpr::Url{ api::game::bili::login },
+        cpr::Body{ body },
+        detail::headers);
+
     struct
     {
         int code{};
@@ -183,12 +176,14 @@ inline auto LoginByPassWord(
         std::string access_key{};
         std::string uname{};
     } result;
-    result.code = j1["code"];
+
+    nlohmann::json loginInfo = nlohmann::json::parse(loginResponse.text);
+    result.code = loginInfo["code"];
     if (result.code == 20000 || result.code != 0)
     {
         try
         {
-            result.message = j1["message"];
+            result.message = loginInfo["message"];
         }
         catch (const std::exception&)
         {
@@ -196,33 +191,34 @@ inline auto LoginByPassWord(
         }
         return result;
     }
-    result.uid = std::to_string((int)j1["uid"]);
-    result.access_key = j1["access_key"];
-    auto UserInforesult{ GetUserInfo(result.uid, result.access_key) };
-    result.uname = UserInforesult.uname;
+
+    result.uid = std::to_string(loginInfo["uid"].get<int>());
+    result.access_key = loginInfo["access_key"];
+    auto userInfoResult{ GetUserInfo(result.uid, result.access_key) };
+    result.uname = userInfoResult.uname;
     return result;
 }
 
-inline auto CaptchaCaptcha()
+inline GeetestData CaptchaCaptcha()
 {
-    json::Json data;
-    data.parse(detail::captchaParam.data());
-    std::map<std::string, std::string> info = data.objToMap();
-    std::string data1 = detail::SetSign(info);
-    std::string data2;
-    HttpClient h;
-    h.PostRequest(data2, game_bili_start_captcha, data1, detail::headers);
-    json::Json captchaJ;
-    captchaJ.parse(data2);
-    struct
-    {
-        std::string gt{};
-        std::string challenge{};
-        std::string gt_user_id{};
-    } result;
-    result.gt = captchaJ["gt"];
-    result.challenge = captchaJ["challenge"];
-    result.gt_user_id = captchaJ["gt_user_id"];
+    nlohmann::json data = nlohmann::json::parse(detail::captchaParam);
+    std::string body = detail::SetSign(data);
+    auto response = cpr::Post(
+        cpr::Url{ api::game::bili::start_captcha },
+        cpr::Body{ body },
+        detail::headers);
+    nlohmann::json captcha = nlohmann::json::parse(response.text);
+    GeetestData result{};
+    //struct
+    //{
+    //    std::string gt{};
+    //    std::string challenge{};
+    //    std::string gt_user_id{};
+    //} result;
+    result.gt = captcha["gt"];
+    result.challenge = captcha["challenge"];
+    result.session_id = captcha["gt_user_id"];
+    result.GeeTestType = ServerType::BH3_BiliBili;
     return result;
 }
 
