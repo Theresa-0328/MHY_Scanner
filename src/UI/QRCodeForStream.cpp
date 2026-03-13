@@ -110,8 +110,7 @@ void QRCodeForStream::LoginOfficial()
                     if (ScanQRLogin(scanUrl.data(), ticket, gameType))
                     {
                         lastTicket = ticket;
-                        json::Json config;
-                        config.parse(m_config->getConfig());
+                        nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
                         if (config["auto_login"])
                         {
                             continueLastLogin();
@@ -194,8 +193,7 @@ void QRCodeForStream::LoginBH3BiliBili()
                     if (ret = scanCheck(ticket); ret == ScanRet::SUCCESS)
                     {
                         lastTicket = ticket;
-                        json::Json config;
-                        config.parse(m_config->getConfig());
+                        nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
                         if (config["auto_login"])
                         {
                             continueLastLogin();

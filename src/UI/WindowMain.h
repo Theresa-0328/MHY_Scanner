@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include <Json.h>
 #include <QRunnable>
 #include <QMainWindow>
 
@@ -33,7 +32,7 @@ public:
     void run();
     ~configInitLoad();
 signals:
-    void userinfoTrue(bool b);
+    void userinfoTrue();
 
 private:
     ConfigDate* m_config = &ConfigDate::getInstance();
@@ -50,7 +49,7 @@ public:
     void insertTableItems(QString uid, QString userName, QString type, QString notes);
     void closeEvent(QCloseEvent* event) override;
     void showEvent(QShowEvent* event) override;
-public slots:
+public Q_SLOTS:
     void AddAccount();
     void SetDefaultAccount();
     void DeleteAccount();
@@ -66,9 +65,9 @@ public slots:
     void islogin(const ScanRet ret);
     void loginConfirmTip(const GameType gameType, bool b);
     void getInfo(int x, int y);
-    void configInitUpdate(bool b);
+    void configInitUpdate();
     void updateNote(QTableWidgetItem* item);
-signals:
+Q_SIGNALS:
     void StopScanner();
     void AccountError();
     void LiveStreamLinkError(LiveStreamStatus status);
@@ -81,7 +80,7 @@ private:
     int countA = -1;
     Ui::WindowMain ui;
     ConfigDate* m_config = &ConfigDate::getInstance();
-    json::Json userinfo;
+    nlohmann::json userinfo;
     QRCodeForScreen t1;
     QRCodeForStream t2;
     void liveIdError(const LiveStreamStatus status);

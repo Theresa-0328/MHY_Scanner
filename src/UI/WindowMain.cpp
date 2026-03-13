@@ -8,7 +8,6 @@
 #include <QRegularExpressionValidator>
 #include <QStringList>
 #include <QClipboard>
-#include <Json.h>
 
 #include "MhyApi.hpp"
 #include "BSGameSDK.hpp"
@@ -183,7 +182,7 @@ void WindowMain::AddAccount()
             userinfo["account"][num]["note"] = "";
             userinfo["account"][num]["mid"] = mid;
             userinfo["num"] = num + 1;
-            m_config->updateConfig(userinfo.str());
+            m_config->updateConfig(userinfo.dump());
         });
         QMessageBox::information(this, "提示", "添加成功", QMessageBox::Yes);
     });
@@ -420,7 +419,7 @@ void WindowMain::checkBoxAutoScreen(bool clicked)
         ui.checkBoxAutoScreen->setChecked(false);
         userinfo["auto_start"] = false;
     }
-    m_config->updateConfig(userinfo.str());
+    m_config->updateConfig(userinfo.dump());
 }
 
 void WindowMain::checkBoxAutoExit(bool clicked)
@@ -434,7 +433,7 @@ void WindowMain::checkBoxAutoExit(bool clicked)
     {
         userinfo["auto_exit"] = false;
     }
-    m_config->updateConfig(userinfo.str());
+    m_config->updateConfig(userinfo.dump());
 }
 
 void WindowMain::checkBoxAutoLogin(bool clicked)
@@ -448,7 +447,7 @@ void WindowMain::checkBoxAutoLogin(bool clicked)
     {
         userinfo["auto_login"] = false;
     }
-    m_config->updateConfig(userinfo.str());
+    m_config->updateConfig(userinfo.dump());
 }
 
 void WindowMain::liveIdError(const LiveStreamStatus status)
@@ -554,7 +553,7 @@ void WindowMain::SetDefaultAccount()
     {
         //ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
         userinfo["last_account"] = nCurrentRow + 1;
-        m_config->updateConfig(userinfo.str());
+        m_config->updateConfig(userinfo.dump());
         QMessageBox::information(this, "设置成功！", "勾选下方\"启动时自动监视屏幕\"\n将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
         return;
     }
@@ -588,11 +587,11 @@ void WindowMain::DeleteAccount()
     {
         userinfo["last_account"] = static_cast<int>(userinfo["last_account"]) - 1;
     }
-    userinfo["account"].remove(countA);
+    userinfo["account"].erase(countA);
 
     //trrlog::Log_debug("{}", userinfo.str());
 
-    m_config->updateConfig(userinfo.str());
+    m_config->updateConfig(userinfo.dump());
     //ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
     ui.tableWidget->removeRow(nCurrentRow);
     ui.tableWidget->clearSelection();
@@ -620,10 +619,39 @@ void WindowMain::pBtStop()
     ui.pBtStream->setEnabled(true);
 }
 
-void WindowMain::configInitUpdate(bool b)
+void WindowMain::configInitUpdate()
 {
     ui.tableWidget->blockSignals(true);
-    if (!b)
+    try
+    {
+        userinfo = nlohmann::json::parse(m_config->getConfig());
+        for (int i = 0; i < userinfo["num"].get<int>(); i++)
+        {
+            insertTableItems(
+                QString::fromStdString(userinfo["account"][i]["uid"]),
+                QString::fromStdString(userinfo["account"][i]["name"]),
+                QString::fromStdString(userinfo["account"][i]["type"]),
+                QString::fromStdString(userinfo["account"][i]["note"]));
+        }
+        if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
+        {
+            countA = static_cast<int>(userinfo["last_account"]) - 1;
+            ui.pBtstartScreen->clicked(true);
+            ui.pBtstartScreen->setChecked(true);
+            ui.checkBoxAutoScreen->setChecked(true);
+            ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
+            ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);
+        }
+        if (userinfo["auto_exit"])
+        {
+            ui.checkBoxAutoExit->setChecked(true);
+        }
+        if (userinfo["auto_login"])
+        {
+            ui.checkBoxAutoLogin->setChecked(true);
+        }
+    }
+    catch (const std::exception& e)
     {
         int result = QMessageBox::information(this, "错误", "配置文件错误！\n重置配置文件为空？", QMessageBox::Yes | QMessageBox::No);
         if (result == QMessageBox::Yes)
@@ -636,32 +664,6 @@ void WindowMain::configInitUpdate(bool b)
             exit(1);
         }
     }
-    userinfo.parse(m_config->getConfig());
-    for (int i = 0; i < (int)userinfo["num"]; i++)
-    {
-        insertTableItems(
-            QString::fromStdString(userinfo["account"][i]["uid"]),
-            QString::fromStdString(userinfo["account"][i]["name"]),
-            QString::fromStdString(userinfo["account"][i]["type"]),
-            QString::fromStdString(userinfo["account"][i]["note"]));
-    }
-    if (userinfo["auto_start"] && static_cast<int>(userinfo["last_account"]) != 0)
-    {
-        countA = static_cast<int>(userinfo["last_account"]) - 1;
-        ui.pBtstartScreen->clicked(true);
-        ui.pBtstartScreen->setChecked(true);
-        ui.checkBoxAutoScreen->setChecked(true);
-        ui.lineEditUname->setText(QString::fromStdString(userinfo["account"][countA]["name"]));
-        ui.tableWidget->setCurrentCell(countA, QItemSelectionModel::Select);
-    }
-    if (userinfo["auto_exit"])
-    {
-        ui.checkBoxAutoExit->setChecked(true);
-    }
-    if (userinfo["auto_login"])
-    {
-        ui.checkBoxAutoLogin->setChecked(true);
-    }
     ui.tableWidget->blockSignals(false);
 }
 
@@ -669,7 +671,7 @@ void WindowMain::updateNote(QTableWidgetItem* item)
 {
     QString text = item->text();
     userinfo["account"][item->row()]["note"] = text.toStdString();
-    m_config->updateConfig(userinfo.str());
+    m_config->updateConfig(userinfo.dump());
 }
 
 void WindowMain::copyEntireRow(int row)
@@ -703,30 +705,7 @@ OnlineUpdate::~OnlineUpdate()
 
 void configInitLoad::run()
 {
-    const std::string& config = m_config->getConfig();
-    json::Json data;
-    try
-    {
-        data.parse(config);
-        int num = data["num"];
-        for (int i = 0; i < num; i++)
-        {
-            [[maybe_unused]] std::string s = data["account"][i]["uid"];
-            s = data["account"][i]["name"];
-            s = data["account"][i]["type"];
-            s = data["account"][i]["note"];
-            s = data["account"][i]["mid"];
-        };
-        [[maybe_unused]] int i = data["last_account"];
-        [[maybe_unused]] bool b = data["auto_start"];
-        b = data["auto_login"];
-        b = data["auto_exit"];
-        emit userinfoTrue(true);
-    }
-    catch (...)
-    {
-        emit userinfoTrue(false);
-    }
+    Q_EMIT userinfoTrue();
 }
 
 configInitLoad::~configInitLoad()

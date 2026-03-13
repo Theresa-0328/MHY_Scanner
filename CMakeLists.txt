@@ -61,10 +61,8 @@ if(NOT DEV)
 	add_definitions(-DSHOW)
 endif()
 
-include_directories(src/TrrJson)
 include_directories(src/Core)
 
-add_subdirectory(src/TrrJson)
 
 add_executable(${PROJECT_NAME}
 	"${CMAKE_SOURCE_DIR}/src/Resources/MHY_Scanner.rc"
@@ -107,8 +105,6 @@ endif()
 #target_compile_definitions
 
 set(PROJECT_LIBRARIES
-	TrrJson
-
 	# windows
 	Ws2_32
 	wldap32

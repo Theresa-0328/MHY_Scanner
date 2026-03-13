@@ -17,7 +17,6 @@ extern "C"
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 #include <QThreadPool>
-#include <Json.h>
 
 #include "ApiDefs.hpp"
 #include "ConfigDate.h"
