@@ -12,6 +12,7 @@ env:
   BUILD_CONFIGURATION: Release
   INSTALL_DIR: ${{ github.workspace }}\install
   ZIP_NAME: MHY_Scanner_${{ github.ref_name }}.zip
+  VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
 
 permissions:
   contents: write
@@ -35,6 +36,15 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2022_64'
           cache: true
+        
+      - name: Restore cache
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg-cache
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            vcpkg-${{ runner.os }}-
 
       - name: Setup vcpkg 
         uses: lukka/run-vcpkg@v11
@@ -67,6 +77,13 @@ jobs:
           name: ${{ env.ZIP_NAME }}
           path: ${{ github.workspace }}\${{ env.ZIP_NAME }}
           retention-days: 5
+
+      - name: Save cache
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg-cache
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
