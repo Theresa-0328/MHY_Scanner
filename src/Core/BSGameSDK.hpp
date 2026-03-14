@@ -209,12 +209,6 @@ inline GeetestData CaptchaCaptcha()
         detail::headers);
     nlohmann::json captcha = nlohmann::json::parse(response.text);
     GeetestData result{};
-    //struct
-    //{
-    //    std::string gt{};
-    //    std::string challenge{};
-    //    std::string gt_user_id{};
-    //} result;
     result.gt = captcha["gt"];
     result.challenge = captcha["challenge"];
     result.session_id = captcha["gt_user_id"];

@@ -27,7 +27,6 @@ endif()
 
 include(FetchContent)
 include(ExternalProject)
-
 include(cmake/install_ffmpeg.cmake)
 include(cmake/build_QR-Code-generator.cmake)
 
@@ -62,7 +61,6 @@ if(NOT DEV)
 endif()
 
 include_directories(src/Core)
-
 
 add_executable(${PROJECT_NAME}
 	"${CMAKE_SOURCE_DIR}/src/Resources/MHY_Scanner.rc"
@@ -102,7 +100,6 @@ if(NOT DEV)
 	#target_link_options(${PROJECT_NAME} PRIVATE "/SUBSYSTEM:WINDOWS")
 	set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
-#target_compile_definitions
 
 set(PROJECT_LIBRARIES
 	# windows
