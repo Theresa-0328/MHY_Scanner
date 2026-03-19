@@ -4,10 +4,7 @@ on:
   push:
     branches: [ "main" ]
     tags: ["v*"]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
-
 env:
   BUILD_CONFIGURATION: Release
   INSTALL_DIR: ${{ github.workspace }}\install
@@ -21,7 +18,7 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-
+  
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,20 +33,19 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2022_64'
           cache: true
-        
-      - name: Restore cache
-        id: restore-cache
-        uses: actions/cache/restore@v4
+
+      - name: Cache
+        uses: actions/cache@v4
         with:
           path: ${{ github.workspace }}/vcpkg-cache
           key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             vcpkg-${{ runner.os }}-
 
-      - name: Setup vcpkg 
+      - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
 
-      - name: Configure CMake 
+      - name: Configure CMake
         run: |
           cmake -B build `
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_CONFIGURATION }} `
@@ -58,32 +54,25 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\install `
           -DUNIT_TESTS=OFF `
           -DDEV=OFF
-      
-      - name: Build 
+
+      - name: Build
         run: |
           cmake --build build --config ${{ env.BUILD_CONFIGURATION }} --parallel
-      
+
       - name: Install
         run: |
           cmake --install build --config ${{ env.BUILD_CONFIGURATION }}
-        
+
       - name: Create ZIP
         run: |
           powershell Compress-Archive -Path "${{ env.INSTALL_DIR }}\*" -DestinationPath "${{ github.workspace }}\${{ env.ZIP_NAME }}"
-        
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ZIP_NAME }}
           path: ${{ github.workspace }}\${{ env.ZIP_NAME }}
           retention-days: 5
-
-      - name: Save cache
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ github.workspace }}/vcpkg-cache
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
