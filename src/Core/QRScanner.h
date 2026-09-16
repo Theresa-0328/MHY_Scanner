@@ -5,6 +5,8 @@
 #include <opencv2/wechat_qrcode.hpp>
 #include <opencv2/opencv.hpp>
 
+void qrLog(const std::string& msg);
+
 class QRScanner
 {
 public:

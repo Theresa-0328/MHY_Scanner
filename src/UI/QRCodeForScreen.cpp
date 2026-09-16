@@ -1,4 +1,12 @@
-﻿#include "QRCodeForScreen.h"
+/**
+ * @file QRCodeForScreen.cpp
+ * @brief 屏幕监视扫码：DXGI 采集桌面帧，WeChatQRCode 解码后走 passport 登录链路。
+ *
+ * DXGI 在画面无变化时会超时，静止二维码需要复用上一帧继续解码。
+ * 采集失败必须写日志并跳过，避免把全 0 缓冲区当作画面。
+ */
+
+#include "QRCodeForScreen.h"
 
 #include <chrono>
 #include <thread>
@@ -33,14 +41,19 @@ QRCodeForScreen::~QRCodeForScreen()
 void QRCodeForScreen::setLoginInfo(const std::string& uid, const std::string& token)
 {
     this->uid = uid;
-    this->gameToken = token;
+    this->stoken = token;
 }
 
 void QRCodeForScreen::setLoginInfo(const std::string& uid, const std::string& token, const std::string& name)
 {
     this->uid = uid;
-    this->gameToken = token;
+    this->stoken = token;
     this->m_name = name;
+}
+
+void QRCodeForScreen::setMid(const std::string& mid)
+{
+    this->mid = mid;
 }
 
 void QRCodeForScreen::LoginOfficial()
@@ -51,24 +64,75 @@ void QRCodeForScreen::LoginOfficial()
     ScreenShotDXGI screenshotdxgi;
     int w{ 0 };
     int h{ 0 };
-    screenshotdxgi.InitDevice();
-    screenshotdxgi.InitDupl(0, w, h);
+    if (!screenshotdxgi.InitDevice() || !screenshotdxgi.InitDupl(0, w, h))
+    {
+        ret = ScanRet::STREAMERROR;
+        Q_EMIT loginResults(ret);
+        return;
+    }
     long mBufferSize = w * h * 4;
-    uint8_t* mBuffer = new UCHAR[mBufferSize];
+    uint8_t* mBuffer = new UCHAR[mBufferSize]();
+    qrLog("Screen monitor: w=" + std::to_string(w) + " h=" + std::to_string(h));
+    int frameCount = 0;
+    cv::Mat lastGoodFrame;
     while (m_stop.load())
     {
-        screenshotdxgi.getFrame(100);
-        screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize);
+        const int frameResult = screenshotdxgi.getFrame(100);
+        if (frameResult == 1)
+        {
+            ret = ScanRet::STREAMERROR;
+            Q_EMIT loginResults(ret);
+            break;
+        }
+
         cv::Mat img;
-        cv::resize(cv::Mat(h, w, CV_8UC4, mBuffer), img, { 1280, 720 });
+        if (frameResult == 0)
+        {
+            if (!screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize))
+            {
+                qrLog("copyFrameToBuffer failed");
+                screenshotdxgi.doneWithFrame();
+                std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
+                continue;
+            }
+            cv::resize(cv::Mat(h, w, CV_8UC4, mBuffer), img, { 1280, 720 });
+            lastGoodFrame = img;
+            ++frameCount;
+            if (frameCount <= 5)
+            {
+                qrLog("frame captured #" + std::to_string(frameCount));
+            }
+            if (frameCount == 1)
+            {
+                cv::imwrite("MHY_Scanner_frame.png", img);
+                qrLog("saved first frame to MHY_Scanner_frame.png");
+            }
 #ifndef SHOW
-        cv::imshow("Video_Stream", img);
-        cv::waitKey(1);
+            cv::imshow("Video_Stream", img);
+            cv::waitKey(1);
 #endif
+            screenshotdxgi.doneWithFrame();
+        }
+        else
+        {
+            // DXGI 在画面无变化时超时；静止二维码只会在「刚出现」那一帧变化，
+            // 这里复用上一帧继续解码，避免「码一直摆着却无反应」。
+            if (lastGoodFrame.empty())
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
+                continue;
+            }
+            img = lastGoodFrame.clone();
+        }
+
         threadPool.tryStart([&, img = std::move(img)]() {
             thread_local QRScanner qrScanners;
             std::string str;
             qrScanners.decodeSingle(img, str);
+            if (!str.empty())
+            {
+                qrLog("decoded: " + str.substr(0, 160));
+            }
             if (str.size() < 85)
             {
                 return;
@@ -91,7 +155,8 @@ void QRCodeForScreen::LoginOfficial()
                     mtx.unlock();
                     return;
                 }
-                if (ScanQRLogin(scanUrl.data(), ticket, gameType))
+                passportQRUrl = PandaScanQRCode(scanUrl.data(), ticket, gameType);
+                if (!passportQRUrl.empty() && PassportQRLogin(passportQRUrl, stoken, mid, false))
                 {
                     lastTicket = ticket;
                     nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
@@ -113,7 +178,6 @@ void QRCodeForScreen::LoginOfficial()
             }
         });
         std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
-        screenshotdxgi.doneWithFrame();
     }
     delete[] mBuffer;
 }
@@ -126,24 +190,73 @@ void QRCodeForScreen::LoginBH3BiliBili()
     ScreenShotDXGI screenshotdxgi;
     int w{ 0 };
     int h{ 0 };
-    screenshotdxgi.InitDevice();
-    screenshotdxgi.InitDupl(0, w, h);
+    if (!screenshotdxgi.InitDevice() || !screenshotdxgi.InitDupl(0, w, h))
+    {
+        ret = ScanRet::STREAMERROR;
+        Q_EMIT loginResults(ret);
+        return;
+    }
     long mBufferSize = w * h * 4;
-    uint8_t* mBuffer = new UCHAR[mBufferSize];
+    uint8_t* mBuffer = new UCHAR[mBufferSize]();
+    qrLog("Screen monitor: w=" + std::to_string(w) + " h=" + std::to_string(h));
+    int frameCount = 0;
+    cv::Mat lastGoodFrame;
     while (m_stop.load())
     {
-        screenshotdxgi.getFrame(100);
-        screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize);
+        const int frameResult = screenshotdxgi.getFrame(100);
+        if (frameResult == 1)
+        {
+            ret = ScanRet::STREAMERROR;
+            Q_EMIT loginResults(ret);
+            break;
+        }
+
         cv::Mat img;
-        cv::resize(cv::Mat(h, w, CV_8UC4, mBuffer), img, { 1280, 720 });
+        if (frameResult == 0)
+        {
+            if (!screenshotdxgi.copyFrameToBuffer(&mBuffer, mBufferSize))
+            {
+                qrLog("copyFrameToBuffer failed");
+                screenshotdxgi.doneWithFrame();
+                std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
+                continue;
+            }
+            cv::resize(cv::Mat(h, w, CV_8UC4, mBuffer), img, { 1280, 720 });
+            lastGoodFrame = img;
+            ++frameCount;
+            if (frameCount <= 5)
+            {
+                qrLog("frame captured #" + std::to_string(frameCount));
+            }
+            if (frameCount == 1)
+            {
+                cv::imwrite("MHY_Scanner_frame.png", img);
+                qrLog("saved first frame to MHY_Scanner_frame.png");
+            }
 #ifndef SHOW
-        cv::imshow("Video_Stream", img);
-        cv::waitKey(1);
+            cv::imshow("Video_Stream", img);
+            cv::waitKey(1);
 #endif
+            screenshotdxgi.doneWithFrame();
+        }
+        else
+        {
+            if (lastGoodFrame.empty())
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
+                continue;
+            }
+            img = lastGoodFrame.clone();
+        }
+
         threadPool.tryStart([&, img = std::move(img)]() {
             thread_local QRScanner qrScanners;
             std::string str;
             qrScanners.decodeSingle(img, str);
+            if (!str.empty())
+            {
+                qrLog("decoded: " + str.substr(0, 160));
+            }
             if (str.size() < 85)
             {
                 return;
@@ -186,7 +299,6 @@ void QRCodeForScreen::LoginBH3BiliBili()
             }
         });
         std::this_thread::sleep_for(std::chrono::milliseconds(DELAYED));
-        screenshotdxgi.doneWithFrame();
     }
     delete[] mBuffer;
 }
@@ -198,7 +310,7 @@ void QRCodeForScreen::continueLastLogin()
         using enum ServerType;
     case Official:
     {
-        bool b = ConfirmQRLogin(confirmUrl, uid, gameToken, lastTicket, gameType);
+        bool b = PassportQRLogin(passportQRUrl, stoken, mid, true);
         if (b)
         {
             Q_EMIT loginResults(ScanRet::SUCCESS);
@@ -211,7 +323,7 @@ void QRCodeForScreen::continueLastLogin()
     break;
     case BH3_BiliBili:
     {
-        ret = scanConfirm(lastTicket, uid, gameToken, m_name);
+        ret = scanConfirm(lastTicket, uid, stoken, m_name);
         Q_EMIT loginResults(ret);
     }
     break;

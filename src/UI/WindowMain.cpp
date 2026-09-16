@@ -1,4 +1,4 @@
-﻿#include "WindowMain.h"
+#include "WindowMain.h"
 
 #include <fstream>
 #include <filesystem>
@@ -11,13 +11,19 @@
 
 #include "MhyApi.hpp"
 #include "BSGameSDK.hpp"
+#include "UiDialog.hpp"
+
+// 主窗口：账号列表、监视启停、配置项与扫码结果反馈。
+// 负责把 UI 操作接到屏幕/直播两条扫码线程（t1/t2），协议实现在 Core 层。
 
 WindowMain::WindowMain(QWidget* parent) :
     QMainWindow(parent),
     t1(this),
     t2(this)
 {
-    QApplication::setFont(QFont("微软雅黑", 9));
+    QFont appFont(QStringLiteral("Segoe UI"), 9);
+    appFont.setStyleHint(QFont::SansSerif);
+    QApplication::setFont(appFont);
     ui.setupUi(this);
     connect(ui.action1_3, &QAction::triggered, this, &WindowMain::AddAccount);
     connect(ui.action1_4, &QAction::triggered, this, &WindowMain::SetDefaultAccount);
@@ -37,6 +43,8 @@ WindowMain::WindowMain(QWidget* parent) :
     connect(this, &WindowMain::StartScanScreen, this, [&]() {
         ui.pBtstartScreen->setText("监视屏幕中");
         ui.pBtstartScreen->setEnabled(true);
+        ui.labelStatus->setText(QStringLiteral("屏幕监视中"));
+        ui.labelStatusDot->setStyleSheet("color: #F59E0B;");
     });
     connect(this, &WindowMain::AccountError, this, [&]() {
         failure();
@@ -45,12 +53,14 @@ WindowMain::WindowMain(QWidget* parent) :
     connect(this, &WindowMain::StartScanLive, this, [&]() {
         ui.pBtStream->setText("监视直播中");
         ui.pBtStream->setEnabled(true);
+        ui.labelStatus->setText(QStringLiteral("直播监视中"));
+        ui.labelStatusDot->setStyleSheet("color: #F59E0B;");
     });
     connect(this, &WindowMain::LiveStreamLinkError, this, [&](LiveStreamStatus status) {
         liveIdError(status);
     });
     connect(this, &WindowMain::AccountNotSelected, this, [&]() {
-        QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("没有选择任何账号"));
         pBtStop();
     });
     connect(ui.checkBoxAutoScreen, &QCheckBox::clicked, this, &WindowMain::checkBoxAutoScreen);
@@ -76,25 +86,17 @@ WindowMain::WindowMain(QWidget* parent) :
            << "备注";
     ui.tableWidget->setHorizontalHeaderLabels(header);
     ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    ui.tableWidget->setColumnWidth(0, 35);
-    ui.tableWidget->setColumnWidth(1, 100);
-    ui.tableWidget->setColumnWidth(2, 100);
+    ui.tableWidget->setColumnWidth(0, 48);
+    ui.tableWidget->setColumnWidth(1, 140);
+    ui.tableWidget->setColumnWidth(2, 160);
     ui.tableWidget->setColumnWidth(3, 100);
     ui.tableWidget->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
     ui.tableWidget->verticalHeader()->setVisible(false);
-    ui.tableWidget->horizontalHeader()->setFont(QFont("楷体", 11));
+    ui.tableWidget->verticalHeader()->setDefaultSectionSize(36);
     ui.tableWidget->setAlternatingRowColors(true);
 
-    ui.tableWidget->horizontalHeader()->setStyleSheet(
-        "QHeaderView::section {"
-        "padding: 1px;"
-        "border: none;"
-        "border-bottom: 1px solid rgb(75, 120, 154);"
-        "border-right: 1px solid rgb(75, 120, 154);"
-        "background-color:#e2e6e7;"
-        "color:#333333;"
-        "}");
-    ui.label_3->setText(MHY_Scanner_VERSION);
+    ui.label_3->setText(QStringLiteral("v") + QStringLiteral(MHY_Scanner_VERSION));
+    ui.labelStatus->setText(QStringLiteral("就绪"));
 
     ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -102,6 +104,8 @@ WindowMain::WindowMain(QWidget* parent) :
 
     ui.lineEditLiveId->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$"), this));
     ui.lineEditLiveId->setClearButtonEnabled(true);
+    // 默认 B 站（combo 索引 1），与主要使用场景一致；索引顺序必须保持 抖音=0 / BiliBili=1
+    ui.comboBox->setCurrentIndex(1);
 
     ui.tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui.tableWidget, &QTableWidget::customContextMenuRequested, this, &WindowMain::onTableRightClicked);
@@ -161,14 +165,14 @@ void WindowMain::AddAccount()
 {
     if (t1.isRunning() || t2.isRunning())
     {
-        QMessageBox::information(this, "错误", "请先停止识别！", QMessageBox::Yes);
+        UiDialog::warn(this, QStringLiteral("错误"), QStringLiteral("请先停止识别！"));
         return;
     }
     windowLogin = new WindowLogin(this);
     connect(windowLogin, &WindowLogin::AddUserInfo, this, [this](const std::string name, const std::string token, const std::string uid, const std::string mid, const std::string type) {
         if (checkDuplicates(uid.data()))
         {
-            QMessageBox::information(this, "提示", "该账号已添加，无需重复添加", QMessageBox::Yes);
+            UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("该账号已添加，无需重复添加"));
             return;
         }
         //TODO 有预期外信号触发,潜在bug
@@ -184,7 +188,7 @@ void WindowMain::AddAccount()
             userinfo["num"] = num + 1;
             m_config->updateConfig(userinfo.dump());
         });
-        QMessageBox::information(this, "提示", "添加成功", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("添加成功"));
     });
     windowLogin->show();
 }
@@ -212,14 +216,14 @@ void WindowMain::pBtstartScreen(bool clicked)
             std::string stoken = userinfo["account"][countA]["access_key"];
             std::string uid = userinfo["account"][countA]["uid"];
             std::string mid = userinfo["account"][countA]["mid"];
-            auto [code, game_token] = GetGameTokenByStoken(stoken, mid);
-            if (code != 0)
+            if (!CheckStokenValid(stoken, mid))
             {
                 emit AccountError();
                 return;
             }
             t1.setServerType(ServerType::Official);
-            t1.setLoginInfo(uid, game_token);
+            t1.setLoginInfo(uid, stoken);
+            t1.setMid(mid);
         }
         else if (type == "崩坏3B服")
         {
@@ -275,14 +279,14 @@ void WindowMain::pBtStream(bool clicked)
             std::string stoken = userinfo["account"][countA]["access_key"];
             std::string uid = userinfo["account"][countA]["uid"];
             std::string mid = userinfo["account"][countA]["mid"];
-            auto [code, game_token] = GetGameTokenByStoken(stoken, mid);
-            if (code != 0)
+            if (!CheckStokenValid(stoken, mid))
             {
                 emit AccountError();
                 return;
             }
             t2.setServerType(ServerType::Official);
-            t2.setLoginInfo(uid, game_token);
+            t2.setLoginInfo(uid, stoken);
+            t2.setMid(mid);
         }
         else if (type == "崩坏3B服")
         {
@@ -321,32 +325,22 @@ void WindowMain::islogin(const ScanRet ret)
     }
     pBtStop();
     SetWindowToFront();
-    QMessageBox* messageBox = new QMessageBox(this);
-    auto Show_QMessageBox = [&](const QString& title, const QString& text) {
-        messageBox->setIcon(QMessageBox::Information);
-        messageBox->setWindowTitle(title);
-        messageBox->setText(text);
-        messageBox->addButton(QMessageBox::Yes);
-        messageBox->show();
-    };
     switch (ret)
     {
-    case ScanRet::UNKNOW:
-        break;
     case ScanRet::FAILURE_1:
-        Show_QMessageBox("提示", "扫码失败!");
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("扫码失败！"));
         break;
     case ScanRet::FAILURE_2:
-        Show_QMessageBox("提示", "扫码二次确认失败!");
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("扫码二次确认失败！"));
         break;
     case ScanRet::LIVESTOP:
-        Show_QMessageBox("提示", "直播中断!");
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("直播中断！"));
         break;
     case ScanRet::STREAMERROR:
-        Show_QMessageBox("提示", "直播流初始化失败!");
+        UiDialog::warn(this, QStringLiteral("提示"), QStringLiteral("直播流初始化失败！"));
         break;
     case ScanRet::SUCCESS:
-        Show_QMessageBox("提示", "扫码成功!");
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("扫码成功！"));
         break;
     default:
         break;
@@ -378,10 +372,13 @@ void WindowMain::loginConfirmTip(const GameType gameType, bool b)
     }
     SetWindowToFront();
     QMessageBox* messageBox = new QMessageBox(this);
-    messageBox->setWindowTitle("登录确认");
-    messageBox->setText(info + "确认登录？");
-    QAbstractButton* yesButton = messageBox->addButton("登录", QMessageBox::YesRole);
-    QAbstractButton* noButton = messageBox->addButton("取消", QMessageBox::NoRole);
+    messageBox->setAttribute(Qt::WA_DeleteOnClose);
+    messageBox->setWindowTitle(QStringLiteral("登录确认"));
+    messageBox->setText(info + QStringLiteral("确认登录？"));
+    messageBox->setIcon(QMessageBox::Question);
+    QAbstractButton* yesButton = messageBox->addButton(QStringLiteral("登录"), QMessageBox::YesRole);
+    QAbstractButton* noButton = messageBox->addButton(QStringLiteral("取消"), QMessageBox::NoRole);
+    Q_UNUSED(noButton);
     messageBox->exec();
     pBtStop();
     if (messageBox->clickedButton() != yesButton)
@@ -406,7 +403,7 @@ void WindowMain::checkBoxAutoScreen(bool clicked)
     if ((int)userinfo["last_account"] == 0)
     {
         ui.checkBoxAutoScreen->setChecked(false);
-        QMessageBox::information(this, "提示", "你没有选择默认账号!", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("你没有选择默认账号！"));
         return;
     }
     if (state == Qt::Checked)
@@ -457,17 +454,17 @@ void WindowMain::liveIdError(const LiveStreamStatus status)
         using enum LiveStreamStatus;
     case Absent:
     {
-        QMessageBox::information(this, "提示", "直播间不存在!", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("直播间不存在！"));
         return;
     }
     case NotLive:
     {
-        QMessageBox::information(this, "提示", "直播间未开播！", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("直播间未开播！"));
         return;
     }
     case Error:
     {
-        QMessageBox::information(this, "提示", "直播间未知错误!", QMessageBox::Yes);
+        UiDialog::warn(this, QStringLiteral("提示"), QStringLiteral("直播间未知错误！"));
         return;
     }
     default:
@@ -528,12 +525,8 @@ void WindowMain::SetWindowToFront() const
 
 void WindowMain::failure()
 {
-    QMessageBox* messageBox = new QMessageBox(this);
-    messageBox->setAttribute(Qt::WA_DeleteOnClose);
-    messageBox->setText("登录状态失效，\n请重新添加账号！");
-    messageBox->setWindowTitle("提示");
-    messageBox->setIcon(QMessageBox::Information);
-    messageBox->show();
+    UiDialog::warn(this, QStringLiteral("提示"),
+                   QStringLiteral("登录状态失效，\n请重新添加账号！"));
 }
 
 void WindowMain::getInfo(int x, int y)
@@ -554,12 +547,13 @@ void WindowMain::SetDefaultAccount()
         //ui.tableWidget->setCurrentCell(nCurrentRow, QItemSelectionModel::Current);
         userinfo["last_account"] = nCurrentRow + 1;
         m_config->updateConfig(userinfo.dump());
-        QMessageBox::information(this, "设置成功！", "勾选下方\"启动时自动监视屏幕\"\n将在下次启动时自动扫描并使用该账号登录", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("设置成功"),
+                       QStringLiteral("勾选「启动时监视屏幕」后，将在下次启动时自动扫描并使用该账号登录"));
         return;
     }
     else
     {
-        QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("没有选择任何账号"));
         return;
     }
 }
@@ -569,11 +563,13 @@ void WindowMain::DeleteAccount()
     int nCurrentRow = getSelectedRowIndex();
     if (nCurrentRow == -1)
     {
-        QMessageBox::information(this, "提示", "没有选择任何账号", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("没有选择任何账号"));
         return;
     }
-    if (int re = QMessageBox::information(this, "删除确认", QString::fromStdString(std::format("你正在删除账号\n{}", (std::string)userinfo["account"][countA]["name"])), QMessageBox::Yes | QMessageBox::No);
-        re != QMessageBox::Yes)
+    if (!UiDialog::confirm(this, QStringLiteral("删除确认"),
+                           QStringLiteral("你正在删除账号\n%1")
+                               .arg(QString::fromStdString((std::string)userinfo["account"][countA]["name"])),
+                           QStringLiteral("删除"), QStringLiteral("取消")))
     {
         return;
     }
@@ -617,6 +613,8 @@ void WindowMain::pBtStop()
     ui.pBtStream->setChecked(false);
     ui.pBtstartScreen->setEnabled(true);
     ui.pBtStream->setEnabled(true);
+    ui.labelStatus->setText(QStringLiteral("就绪"));
+    ui.labelStatusDot->setStyleSheet("color: #0D9488;");
 }
 
 void WindowMain::configInitUpdate()
@@ -653,14 +651,15 @@ void WindowMain::configInitUpdate()
     }
     catch (const std::exception& e)
     {
-        int result = QMessageBox::information(this, "错误", "配置文件错误！\n重置配置文件为空？", QMessageBox::Yes | QMessageBox::No);
-        if (result == QMessageBox::Yes)
+        if (UiDialog::confirm(this, QStringLiteral("错误"),
+                              QStringLiteral("配置文件错误！\n重置配置文件为空？")))
         {
             m_config->defaultConfig();
         }
         else
         {
-            QMessageBox::information(this, "错误", "配置文件错误！\n无法继续运行！", QMessageBox::Yes);
+            UiDialog::warn(this, QStringLiteral("错误"),
+                           QStringLiteral("配置文件错误！\n无法继续运行！"));
             exit(1);
         }
     }
@@ -682,7 +681,7 @@ void WindowMain::copyEntireRow(int row)
     std::string mid = userinfo["account"][row]["mid"];
     if (std::string type = userinfo["account"][row]["type"]; type == "崩坏3B服")
     {
-        QMessageBox::information(this, "提示", "暂时不支持B服Cookie", QMessageBox::Yes);
+        UiDialog::info(this, QStringLiteral("提示"), QStringLiteral("暂时不支持 B 服 Cookie"));
         return;
     }
     rowData = QString::fromStdString(

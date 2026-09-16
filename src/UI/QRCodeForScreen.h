@@ -22,6 +22,7 @@ public:
 
     void setLoginInfo(const std::string& uid, const std::string& token);
     void setLoginInfo(const std::string& uid, const std::string& token, const std::string& name);
+    void setMid(const std::string& mid);
     void setServerType(const ServerType servertype);
     void continueLastLogin();
     void run();

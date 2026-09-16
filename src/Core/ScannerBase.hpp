@@ -13,7 +13,9 @@ public:
     std::string_view confirmUrl{};
     std::string lastTicket;
     std::string uid;
-    std::string gameToken{};
+    std::string stoken{};
+    std::string mid{};
+    std::string passportQRUrl{};
     std::map<std::string_view, std::function<void()>> setGameType{
         { "8F3", [this]() {
              gameType = GameType::Honkai3;

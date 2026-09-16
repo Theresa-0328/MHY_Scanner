@@ -16,6 +16,7 @@ LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "MHY_Scanner.ico"
+1 RT_MANIFEST "MHY_Scanner.manifest"
 
 
 

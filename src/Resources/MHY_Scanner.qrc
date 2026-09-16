@@ -1,4 +1,5 @@
 <RCC>
     <qresource prefix="MHY_Scanner">
+        <file>style.qss</file>
     </qresource>
 </RCC>

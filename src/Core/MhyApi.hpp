@@ -56,6 +56,7 @@ inline cpr::Header GetRequestHeader()
     static cpr::Header headers{
         { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/2.76.1" },
         { "Accept", "application/json" },
+        { "Content-Type", "application/json" },
         { "x-rpc-app_id", "bll8iq97cem8" },
         { "x-rpc-app_version", "2.76.1" },
         { "x-rpc-client_type", "2" },
@@ -67,110 +68,130 @@ inline cpr::Header GetRequestHeader()
     return headers;
 }
 
-inline std::string GetLoginQrcodeUrl(const GameType type = loginType)
+struct QRLoginData
 {
-    auto res = cpr::Post(
-        cpr::Url{ api::mhy::hk4e::qrcode_fetch },
-        cpr::Body{ nlohmann::json{
-            { "app_id", static_cast<int>(type) },
-            { "device", device_id } }
-                       .dump() },
-        cpr::Header{ { "Content-Type", "application/json" } });
+    std::string url;
+    std::string ticket;
+};
 
-    auto data = nlohmann::json::parse(res.text);
-    std::string qrcodeUrl = data["data"]["url"].get<std::string>();
-    return qrcodeUrl;
+// 扫码登录专用请求头：app_id 必须用 dw9y09jqjpxc（对齐 1.16 C++），
+// 这样 Confirmed 时 data.tokens 才会返回 stoken。
+inline cpr::Header GetPassportQRHeader()
+{
+    return cpr::Header{
+        { "Content-Type", "application/json" },
+        { "x-rpc-app_id", "dw9y09jqjpxc" },
+        { "x-rpc-device_id", device_id }
+    };
 }
 
-inline std::tuple<LoginQRCodeState, std::string, std::string> GetQRCodeState(
+// 1.16 新协议：passport createQRLogin 直接返回 url 与 ticket 两个字段
+inline QRLoginData GetLoginQrcodeUrl(const GameType type = loginType)
+{
+    try
+    {
+        const auto response = cpr::Post(
+            cpr::Url{ api::mhy::passport::create_qr_login },
+            cpr::Body{ nlohmann::json::object().dump() },
+            GetPassportQRHeader());
+
+        const auto data = nlohmann::json::parse(response.text);
+        if (data.value("retcode", -1) != 0)
+            return {};
+        const auto d = data.value("data", nlohmann::json::object());
+        return { d.value("url", ""), d.value("ticket", "") };
+    }
+    catch (...)
+    {
+        return {};
+    }
+}
+
+// 1.16 新协议：passport web 扫码状态轮询。
+// 返回 (状态, uid, stoken, mid)。
+// 返回 (status, uid, stoken, mid)。Confirmed 时：
+//   stoken = data.tokens[0].token，uid/mid = data.user_info.aid/mid。
+inline std::tuple<LoginQRCodeState, std::string, std::string, std::string> GetQRCodeState(
     const std::string_view ticket,
     const GameType type = loginType)
 {
-    const auto response = cpr::Post(
-        cpr::Url{ api::mhy::hk4e::qrcode_query },
-        cpr::Body{ nlohmann::json{
-            { "app_id", static_cast<int>(type) },
-            { "device", device_id },
-            { "ticket", ticket } }
-                       .dump() },
-        cpr::Header{ { "Content-Type", "application/json" } });
-
-    const auto data = nlohmann::json::parse(response.text);
-
-    if (data.value("retcode", -1) != 0)
-        return { LoginQRCodeState::Expired, {}, {} };
-
-    static const std::unordered_map<std::string, LoginQRCodeState> stateMap{
-        { "Init", LoginQRCodeState::Init },
-        { "Scanned", LoginQRCodeState::Scanned },
-        { "Confirmed", LoginQRCodeState::Confirmed },
-    };
-
-    const auto stat = data["data"]["stat"].get<std::string>();
-    const auto it = stateMap.find(stat);
-
-    if (it == stateMap.end())
-        return { LoginQRCodeState::Expired, {}, {} };
-
-    if (it->second == LoginQRCodeState::Confirmed)
+    try
     {
-        const auto payload = nlohmann::json::parse(
-            data["data"]["payload"]["raw"].get<std::string>());
-        return { LoginQRCodeState::Confirmed,
-                 payload["uid"].get<std::string>(),
-                 payload["token"].get<std::string>() };
-    }
+        const auto response = cpr::Post(
+            cpr::Url{ api::mhy::passport::query_qr_login_status },
+            cpr::Body{ nlohmann::json{ { "ticket", ticket } }.dump() },
+            GetPassportQRHeader());
 
-    return { it->second, {}, {} };
+        const auto data = nlohmann::json::parse(response.text);
+        if (data.value("retcode", -1) != 0)
+            return { LoginQRCodeState::Expired, {}, {}, {} };
+
+        const std::string status = data.value("data", nlohmann::json::object()).value("status", "");
+        if (status == "Created")
+            return { LoginQRCodeState::Init, {}, {}, {} };
+        if (status == "Scanned")
+            return { LoginQRCodeState::Scanned, {}, {}, {} };
+        if (status == "Confirmed")
+        {
+            const auto d = data.value("data", nlohmann::json::object());
+            const auto ui = d.value("user_info", nlohmann::json::object());
+
+            std::string uid = ui.value("aid", "");
+            std::string mid = ui.value("mid", uid);
+
+            // stoken 在 data.tokens[0].token（Confirmed 时下发），而非 Set-Cookie。
+            std::string stoken;
+            const auto tokens = d.value("tokens", nlohmann::json::array());
+            if (tokens.is_array() && !tokens.empty())
+            {
+                stoken = tokens[0].value("token", "");
+            }
+
+            return { LoginQRCodeState::Confirmed, uid, stoken, mid };
+        }
+        return { LoginQRCodeState::Expired, {}, {}, {} };
+    }
+    catch (...)
+    {
+        return { LoginQRCodeState::Expired, {}, {}, {} };
+    }
 }
 
 inline std::string getMysUserName(const std::string_view uid)
 {
-    static constexpr std::string_view url = api::mhy::mys::userinfo;
-    const auto response = cpr::Get(
-        cpr::Url{ std::format("{}?uid={}", url, uid) });
+    try
+    {
+        static constexpr std::string_view url = api::mhy::mys::userinfo;
+        const auto response = cpr::Get(
+            cpr::Url{ std::format("{}?uid={}", url, uid) });
 
-    const auto data = nlohmann::json::parse(response.text);
-    return data["data"]["user_info"]["nickname"].get<std::string>();
+        const auto data = nlohmann::json::parse(response.text);
+        return data.value("data", nlohmann::json::object())
+                   .value("user_info", nlohmann::json::object())
+                   .value("nickname", std::string{ uid });
+    }
+    catch (...)
+    {
+        return std::string{ uid };
+    }
 }
 
-inline std::tuple<int, std::string, std::string> GetStokenByGameToken(
-    const std::string_view uid,
-    const std::string_view game_token)
-{
-    const auto response = cpr::Post(
-        cpr::Url{ api::mhy::takumi::game_token_stoken },
-        cpr::Body{ nlohmann::json{ { "account_id", std::stoi(uid.data()) }, { "game_token", game_token } }.dump() },
-        GetRequestHeader());
-
-    const auto j = nlohmann::json::parse(response.text);
-    const int retcode = j.value("retcode", -1);
-
-    if (retcode != 0)
-        return { retcode, {}, {} };
-
-    return { 0,
-             j["data"]["user_info"]["mid"].get<std::string>(),
-             j["data"]["token"]["token"].get<std::string>() };
-}
-
-inline std::tuple<int, std::string> GetGameTokenByStoken(
+inline bool CheckStokenValid(
     const std::string_view stoken,
     const std::string_view mid)
 {
+    if (stoken.empty() || mid.empty())
+    {
+        return false;
+    }
     const auto response = cpr::Get(
-        cpr::Url{ api::mhy::takumi::game_token },
-        cpr::Parameters{
-            { "stoken", stoken.data() },
-            { "mid", mid.data() } });
+        cpr::Url{ api::mhy::takumi::cookie_account_info_by_stoken },
+        cpr::Header{
+            { "Accept", "application/json" },
+            { "Cookie", std::format("stoken={};mid={};", stoken, mid) } });
 
     const auto j = nlohmann::json::parse(response.text);
-    const int retcode = j.value("retcode", -1);
-
-    if (retcode != 0)
-        return { retcode, {} };
-
-    return { 0, j["data"]["game_token"].get<std::string>() };
+    return j.value("retcode", -1) == 0;
 }
 
 inline std::tuple<int, GeetestData> CreateLoginCaptcha(
@@ -257,32 +278,64 @@ inline auto LoginByMobileCaptcha(const std::string_view actionType, const std::s
     return result;
 }
 
-inline bool ScanQRLogin(const std::string_view url, const std::string_view ticket, GameType gameType)
+inline std::string PandaScanQRCode(const std::string_view scanUrl, const std::string_view ticket, GameType gameType)
 {
     const auto response = cpr::Post(
-        cpr::Url{ url },
+        cpr::Url{ scanUrl },
         cpr::Body{ nlohmann::json{
+            { "passport_app_id", "bll8iq97cem8" },
+            { "ticket", ticket },
             { "app_id", static_cast<int>(gameType) },
             { "device", device_id },
-            { "ticket", ticket } }
+            { "ts", GetUnixTimeStampSeconds() } }
                        .dump() },
-        cpr::Header{ { "Content-Type", "application/json" } });
+        cpr::Header{
+            { "Content-Type", "application/json" },
+            { "x-rpc-app_id", "bll8iq97cem8" },
+            { "x-rpc-device_id", device_id } });
 
     const auto j = nlohmann::json::parse(response.text);
-    return j.value("retcode", -1) == 0;
+    if (j.value("retcode", -1) != 0)
+    {
+        return {};
+    }
+    return j.value("data", nlohmann::json::object()).value("passport_qr_url", "");
 }
 
-inline bool ConfirmQRLogin(const std::string_view url, const std::string_view uid, const std::string_view gameToken, const std::string_view ticket, GameType gameType)
+inline bool PassportQRLogin(const std::string_view passportQRUrl, const std::string_view stoken, const std::string_view mid, const bool confirm)
 {
+    const std::string qrUrl{ passportQRUrl };
+    const auto getParam = [&qrUrl](const std::string_view key, const char terminator) -> std::string
+    {
+        const std::string needle{ std::string{ key } + "=" };
+        const auto b = qrUrl.find(needle);
+        if (b == std::string::npos)
+        {
+            return {};
+        }
+        const auto vb = b + needle.size();
+        const auto ve = qrUrl.find(terminator, vb);
+        return qrUrl.substr(vb, ve == std::string::npos ? std::string::npos : ve - vb);
+    };
+
+    const std::string ticket = getParam("tk", '&');
+    const std::string tokenTypes = getParam("token_types", '#');
+    if (ticket.empty() || tokenTypes.empty())
+    {
+        return false;
+    }
+
     const auto response = cpr::Post(
-        cpr::Url{ url },
+        cpr::Url{ confirm ? std::string_view{ api::mhy::passport::confirm_qr_login } : std::string_view{ api::mhy::passport::scan_qr_login } },
         cpr::Body{ nlohmann::json{
-            { "app_id", static_cast<int>(gameType) },
-            { "device", device_id },
             { "ticket", ticket },
-            { "payload", { { "proto", "Account" }, { "raw", nlohmann::json{ { "uid", uid }, { "token", gameToken } }.dump() } } } }
+            { "token_types", nlohmann::json::array({ tokenTypes }) } }
                        .dump() },
-        cpr::Header{ { "Content-Type", "application/json" } });
+        cpr::Header{
+            { "Content-Type", "application/json" },
+            { "x-rpc-app_id", "bll8iq97cem8" },
+            { "x-rpc-device_id", device_id },
+            { "Cookie", std::format("stoken={};mid={};", stoken, mid) } });
 
     const auto j = nlohmann::json::parse(response.text);
     return j.value("retcode", -1) == 0;

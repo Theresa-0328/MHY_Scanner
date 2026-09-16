@@ -1,4 +1,11 @@
-﻿#include "LiveStreamLink.h"
+/**
+ * @file LiveStreamLink.cpp
+ * @brief 直播平台拉流地址解析（B站 / 抖音）。
+ *
+ * B站优先返回 avc(H.264) 流，兼容性最好；抖音从 pull_datas / live_core_sdk_data 取 FLV。
+ */
+
+#include "LiveStreamLink.h"
 
 #include <format>
 #include <fstream>
@@ -121,15 +128,45 @@ std::string LiveBili::GetStreamUrl(const cpr::Parameters param)
         const auto& data = playInfo["data"];
         const auto& playurl_info = data["playurl_info"];
         const auto& playurl = playurl_info["playurl"];
-        const auto& stream = playurl["stream"][0];
-        const auto& format = stream["format"][0];
-        const auto& codec = format["codec"][0];
-
-        std::string base_url = codec["base_url"].get<std::string>();
-        std::string extra = codec["url_info"][0]["extra"].get<std::string>();
-        std::string host = codec["url_info"][0]["host"].get<std::string>();
-
-        return host + base_url + extra;
+        // 遍历 stream/format/codec 三层结构。优先返回 avc(H.264)，兼容性最好；
+        // hevc 可能缺解码器或解码异常，导致 init 失败后界面仍显示「监视直播中」。
+        std::string fallbackUrl;
+        for (const auto& s : playurl["stream"])
+        {
+            for (const auto& f : s["format"])
+            {
+                for (const auto& c : f["codec"])
+                {
+                    if (!c.contains("base_url") || !c.contains("url_info") || c["url_info"].empty())
+                    {
+                        continue;
+                    }
+                    std::string base_url = c["base_url"].get<std::string>();
+                    if (base_url.empty())
+                    {
+                        continue;
+                    }
+                    const auto& info = c["url_info"][0];
+                    if (!info.contains("extra") || !info.contains("host"))
+                    {
+                        continue;
+                    }
+                    std::string extra = info["extra"].get<std::string>();
+                    std::string host = info["host"].get<std::string>();
+                    const std::string url = host + base_url + extra;
+                    const std::string codecName = c.value("codec_name", std::string{});
+                    if (codecName == "avc" || base_url.find("avc") != std::string::npos)
+                    {
+                        return url;
+                    }
+                    if (fallbackUrl.empty())
+                    {
+                        fallbackUrl = url;
+                    }
+                }
+            }
+        }
+        return fallbackUrl;
     }
     catch (const nlohmann::json::exception& e)
     {

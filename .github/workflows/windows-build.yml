@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "bili-stream-fix" ]
     tags: ["v*"]
   workflow_dispatch:
 env:

@@ -1,6 +1,6 @@
-﻿cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.26)
 project(MHY_Scanner
-	VERSION 1.1.15
+	VERSION 1.20.0
 	LANGUAGES CXX
 )
 
@@ -19,6 +19,7 @@ add_definitions(-DMHY_Scanner_VERSION="${PROJECT_VERSION}")
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 	add_compile_options(/Zi /sdl /arch:AVX2 /utf-8)
+	add_link_options(/MANIFEST:NO)
 	#add_compile_options("/analyze:external-")
 	if(CMAKE_BUILD_TYPE STREQUAL "Release")
 		add_link_options(/DEBUG /OPT:REF,ICF,LBR)

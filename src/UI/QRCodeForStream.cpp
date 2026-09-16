@@ -1,10 +1,32 @@
-﻿#include "QRCodeForStream.h"
+/**
+ * @file QRCodeForStream.cpp
+ * @brief 直播间监视扫码：FFmpeg 拉流解码，节流提交 WeChatQRCode，走 passport 登录链路。
+ *
+ * init 失败必须 emit STREAMERROR，否则界面会显示「监视中」但实际未扫码。
+ * 解码采用「最新帧 + 200ms 节奏」避免线程池被慢速 DNN 占满导致静默丢帧。
+ */
 
+#include "QRCodeForStream.h"
+
+#include <chrono>
+#include <memory>
 #include <string>
 #include <string_view>
 
 #include "QRScanner.h"
 #include "MhyApi.hpp"
+
+// 直播流扫码的提交节奏（毫秒）。
+// 直播流帧率高（30~60fps），若对每一帧都调用 threadPool.tryStart 提交 QR 解码，
+// 2~3 个线程的线程池会被慢速 WeChatQRCode DNN 解码占满，tryStart 在无空闲线程时
+// 静默返回 false 丢帧（含二维码帧），表现为「大概率无反应、偶尔能扫上」。
+// 这里用「最新帧」机制 + 固定节奏解决：解码循环对每一帧都执行 sws_scale，但只在
+// 节奏窗口打开时把【当前最新一帧】提交给线程池；窗口关闭期间的帧只从解码器排空、
+// 并把最新一帧缓存下来，绝不直接丢弃。这样既保证二维码帧一定会被扫到，
+// 又不会因提交过密压垮线程池。节奏与屏幕扫码路径保持一致（200ms）。
+static constexpr auto kStreamSubmitInterval = std::chrono::milliseconds(200);
+// 流卡死看门狗：超过此时长未读到任何一帧，判定直播流已中断并给出反馈。
+static constexpr auto kStreamStallTimeout = std::chrono::seconds(10);
 
 QRCodeForStream::QRCodeForStream(QObject* parent) :
     QThread(parent),
@@ -32,17 +54,22 @@ QRCodeForStream::~QRCodeForStream()
     this->wait();
 }
 
-void QRCodeForStream::setLoginInfo(const std::string_view uid, const std::string_view gameToken)
+void QRCodeForStream::setLoginInfo(const std::string_view uid, const std::string_view stoken)
 {
     this->uid = uid;
-    this->gameToken = gameToken;
+    this->stoken = stoken;
 }
 
-void QRCodeForStream::setLoginInfo(const std::string_view uid, const std::string_view gameToken, const std::string& name)
+void QRCodeForStream::setLoginInfo(const std::string_view uid, const std::string_view stoken, const std::string& name)
 {
     this->uid = uid;
-    this->gameToken = gameToken;
+    this->stoken = stoken;
     this->m_name = name;
+}
+
+void QRCodeForStream::setMid(const std::string& mid)
+{
+    this->mid = mid;
 }
 
 void QRCodeForStream::setServerType(const ServerType servertype)
@@ -52,18 +79,39 @@ void QRCodeForStream::setServerType(const ServerType servertype)
 
 void QRCodeForStream::LoginOfficial()
 {
+    // 看门狗基准：记录起始时刻，循环中每成功读到一帧就刷新 lastFrameTime。
+    lastFrameTime = std::chrono::steady_clock::now();
+    int frameCount = 0;
     while (m_stop.load())
     {
-        if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
+        // 无画面看门狗：超过 kStreamStallTimeout 未读到任何一帧，判定直播流已中断。
+        auto now = std::chrono::steady_clock::now();
+        if (lastFrameTime.time_since_epoch().count() != 0 &&
+            now - lastFrameTime > kStreamStallTimeout)
         {
+            qrLog("stream stall watchdog fired");
             ret = ScanRet::LIVESTOP;
             break;
         }
+        if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
+        {
+            qrLog("av_read_frame failed");
+            ret = ScanRet::LIVESTOP;
+            break;
+        }
+        lastFrameTime = std::chrono::steady_clock::now();  // 成功读到包，刷新看门狗
         if (pAVPacket->stream_index != videoStreamIndex)
+        {
+            // 非视频包（音轨等）必须 unref，否则内存持续泄漏。
+            av_packet_unref(pAVPacket);
+            continue;
+        }
+        const int sendRet = avcodec_send_packet(pAVCodecContext, pAVPacket);
+        av_packet_unref(pAVPacket);
+        if (sendRet < 0)
         {
             continue;
         }
-        avcodec_send_packet(pAVCodecContext, pAVPacket);
         if (pAVFrame == nullptr)
         {
             std::cerr << "Error allocating frame" << std::endl;
@@ -77,77 +125,124 @@ void QRCodeForStream::LoginOfficial()
             const int dstLinesize[1] = { static_cast<int>(img.step) };
             sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height,
                       dstData, dstLinesize);
+            av_frame_unref(pAVFrame);
 #ifndef SHOW
             cv::imshow("Video_Stream", img);
             cv::waitKey(1);
 #endif
-            threadPool.tryStart([&, img = std::move(img)]() {
-                thread_local QRScanner qrScanners;
-                std::string str;
-                qrScanners.decodeSingle(img, str);
-                if (str.size() < 85)
-                {
-                    return;
-                }
-                std::string_view view(str.c_str() + 79, 3);
-                if (!setGameType.contains(view))
-                {
-                    return;
-                }
-                const std::string_view ticket(str.data() + str.size() - 24, 24);
-                setGameType[view]();
-                if (lastTicket == ticket)
-                {
-                    return;
-                }
-                if (mtx.try_lock())
-                {
-                    if (!m_stop.load())
+            ++frameCount;
+            if (frameCount <= 5)
+            {
+                qrLog("stream frame #" + std::to_string(frameCount));
+            }
+            if (frameCount == 1)
+            {
+                cv::imwrite("MHY_Scanner_stream_frame.png", img);
+                qrLog("saved first stream frame to MHY_Scanner_stream_frame.png");
+            }
+            // ── 最新帧 + 节奏限流：根治「逐帧 tryStart 静默丢帧 → 大概率无反应」──
+            // 每解出一帧都刷新 latestFrame（绝不丢弃）；仅在距上次提交 >= kStreamSubmitInterval
+            // 且线程池有空位时，把【当前最新一帧】提交解码。这样二维码帧一定会被扫到，
+            // 又不会因提交过密压垮线程池。
+            latestFrame = std::make_shared<cv::Mat>(std::move(img));
+            auto t = std::chrono::steady_clock::now();
+            if (t - lastSubmitTime >= kStreamSubmitInterval &&
+                threadPool.activeThreadCount() < threadNumber)
+            {
+                lastSubmitTime = t;
+                auto frame = std::move(latestFrame);
+                threadPool.start([this, frame]() {
+                    thread_local QRScanner qrScanners;
+                    std::string str;
+                    qrScanners.decodeSingle(*frame, str);
+                    if (!str.empty())
                     {
-                        mtx.unlock();
+                        qrLog("stream decoded: " + str.substr(0, 160));
+                    }
+                    if (str.size() < 85)
+                    {
                         return;
                     }
-                    if (ScanQRLogin(scanUrl.data(), ticket, gameType))
+                    std::string_view view(str.c_str() + 79, 3);
+                    if (!setGameType.contains(view))
                     {
-                        lastTicket = ticket;
-                        nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
-                        if (config["auto_login"])
+                        qrLog("stream qr prefix mismatch: " + std::string(view));
+                        return;
+                    }
+                    const std::string_view ticket(str.data() + str.size() - 24, 24);
+                    setGameType[view]();
+                    if (lastTicket == ticket)
+                    {
+                        return;
+                    }
+                    if (mtx.try_lock())
+                    {
+                        if (!m_stop.load())
                         {
-                            continueLastLogin();
+                            mtx.unlock();
+                            return;
+                        }
+                        passportQRUrl = PandaScanQRCode(scanUrl.data(), ticket, gameType);
+                        if (!passportQRUrl.empty() && PassportQRLogin(passportQRUrl, stoken, mid, false))
+                        {
+                            lastTicket = ticket;
+                            nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
+                            if (config["auto_login"])
+                            {
+                                continueLastLogin();
+                            }
+                            else
+                            {
+                                Q_EMIT loginConfirm(gameType, false);
+                            }
                         }
                         else
                         {
-                            Q_EMIT loginConfirm(gameType, false);
+                            Q_EMIT loginResults(ScanRet::FAILURE_1);
                         }
+                        stop();
+                        mtx.unlock();
                     }
-                    else
-                    {
-                        Q_EMIT loginResults(ScanRet::FAILURE_1);
-                    }
-                    stop();
-                    mtx.unlock();
-                }
-            });
+                });
+            }
         }
-        av_frame_unref(pAVFrame);
-        av_packet_unref(pAVPacket);
     }
 }
 
 void QRCodeForStream::LoginBH3BiliBili()
 {
+    // 看门狗基准：记录起始时刻，循环中每成功读到一帧就刷新 lastFrameTime。
+    lastFrameTime = std::chrono::steady_clock::now();
+    int frameCount = 0;
     while (m_stop.load())
     {
-        if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
+        // 无画面看门狗：超过 kStreamStallTimeout 未读到任何一帧，判定直播流已中断。
+        auto now = std::chrono::steady_clock::now();
+        if (lastFrameTime.time_since_epoch().count() != 0 &&
+            now - lastFrameTime > kStreamStallTimeout)
         {
+            qrLog("stream stall watchdog fired");
             ret = ScanRet::LIVESTOP;
             break;
         }
+        if (av_read_frame(pAVFormatContext, pAVPacket) < 0)
+        {
+            qrLog("av_read_frame failed");
+            ret = ScanRet::LIVESTOP;
+            break;
+        }
+        lastFrameTime = std::chrono::steady_clock::now();  // 成功读到包，刷新看门狗
         if (pAVPacket->stream_index != videoStreamIndex)
+        {
+            av_packet_unref(pAVPacket);
+            continue;
+        }
+        const int sendRet = avcodec_send_packet(pAVCodecContext, pAVPacket);
+        av_packet_unref(pAVPacket);
+        if (sendRet < 0)
         {
             continue;
         }
-        avcodec_send_packet(pAVCodecContext, pAVPacket);
         if (pAVFrame == nullptr)
         {
             std::cerr << "Error allocating frame" << std::endl;
@@ -162,58 +257,81 @@ void QRCodeForStream::LoginBH3BiliBili()
             const int dstLinesize[1] = { static_cast<int>(img.step) };
             sws_scale(pSwsContext, pAVFrame->data, pAVFrame->linesize, 0, pAVFrame->height,
                       dstData, dstLinesize);
+            av_frame_unref(pAVFrame);
 #ifndef SHOW
             cv::imshow("Video_Stream", img);
             cv::waitKey(1);
 #endif
-            threadPool.tryStart([&, img = std::move(img)]() {
-                thread_local QRScanner qrScanners;
-                std::string str;
-                qrScanners.decodeSingle(img, str);
-                if (str.size() < 85)
-                {
-                    return;
-                }
-                if (std::string_view view(str.c_str() + 79, 3); view != "8F3")
-                {
-                    return;
-                }
-                const std::string& ticket = str.substr(str.length() - 24);
-                if (lastTicket == ticket)
-                {
-                    return;
-                }
-                if (mtx.try_lock())
-                {
-                    if (!m_stop.load())
+            ++frameCount;
+            if (frameCount <= 5)
+            {
+                qrLog("stream frame #" + std::to_string(frameCount));
+            }
+            if (frameCount == 1)
+            {
+                cv::imwrite("MHY_Scanner_stream_frame.png", img);
+                qrLog("saved first stream frame to MHY_Scanner_stream_frame.png");
+            }
+            // ── 最新帧 + 节奏限流：根治「逐帧 tryStart 静默丢帧 → 大概率无反应」──
+            latestFrame = std::make_shared<cv::Mat>(std::move(img));
+            auto t = std::chrono::steady_clock::now();
+            if (t - lastSubmitTime >= kStreamSubmitInterval &&
+                threadPool.activeThreadCount() < threadNumber)
+            {
+                lastSubmitTime = t;
+                auto frame = std::move(latestFrame);
+                threadPool.start([this, frame]() {
+                    thread_local QRScanner qrScanners;
+                    std::string str;
+                    qrScanners.decodeSingle(*frame, str);
+                    if (!str.empty())
                     {
-                        mtx.unlock();
+                        qrLog("stream decoded: " + str.substr(0, 160));
+                    }
+                    if (str.size() < 85)
+                    {
                         return;
                     }
-                    if (ret = scanCheck(ticket); ret == ScanRet::SUCCESS)
+                    if (std::string_view view(str.c_str() + 79, 3); view != "8F3")
                     {
-                        lastTicket = ticket;
-                        nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
-                        if (config["auto_login"])
+                        qrLog("stream qr prefix mismatch: " + std::string(view));
+                        return;
+                    }
+                    const std::string& ticket = str.substr(str.length() - 24);
+                    if (lastTicket == ticket)
+                    {
+                        return;
+                    }
+                    if (mtx.try_lock())
+                    {
+                        if (!m_stop.load())
                         {
-                            continueLastLogin();
+                            mtx.unlock();
+                            return;
+                        }
+                        if (ret = scanCheck(ticket); ret == ScanRet::SUCCESS)
+                        {
+                            lastTicket = ticket;
+                            nlohmann::json config = nlohmann::json::parse(m_config->getConfig());
+                            if (config["auto_login"])
+                            {
+                                continueLastLogin();
+                            }
+                            else
+                            {
+                                Q_EMIT loginConfirm(GameType::Honkai3_BiliBili, false);
+                            }
                         }
                         else
                         {
-                            Q_EMIT loginConfirm(GameType::Honkai3_BiliBili, false);
+                            Q_EMIT loginResults(ret);
                         }
+                        stop();
+                        mtx.unlock();
                     }
-                    else
-                    {
-                        Q_EMIT loginResults(ret);
-                    }
-                    stop();
-                    mtx.unlock();
-                }
-            });
+                });
+            }
         }
-        av_frame_unref(pAVFrame);
-        av_packet_unref(pAVPacket);
     }
 }
 
@@ -241,28 +359,41 @@ void QRCodeForStream::stop()
 void QRCodeForStream::setUrl(const std::string& url, const std::map<std::string, std::string> heard)
 {
     streamUrl = url;
+    // B站 CDN 常校验 Referer；缺 UA/Referer 时部分节点直接拒流。
+    av_dict_set(&pAvdictionary, "user_agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                0);
+    av_dict_set(&pAvdictionary, "headers",
+                "Referer: https://live.bilibili.com/\r\nOrigin: https://live.bilibili.com\r\n",
+                0);
     for (const auto& it : heard)
     {
         av_dict_set(&pAvdictionary, it.first.c_str(), it.second.c_str(), 0);
     }
+    // 旧 probesize=1024 过小：fmp4/HLS 元数据未读全时 find_stream_info 会失败，
+    // init 静默返回 false，界面仍显示「监视直播中」但实际没有在扫。
+    av_dict_set(&pAvdictionary, "probesize", "5000000", 0);
+    av_dict_set(&pAvdictionary, "analyzeduration", "2000000", 0);
     av_dict_set(&pAvdictionary, "max_delay", "0", 0);
-    av_dict_set(&pAvdictionary, "probesize", "1024", 0);
-    av_dict_set(&pAvdictionary, "packetsize", "128", 0);
-    av_dict_set(&pAvdictionary, "rtbufsize", "0", 0);
-    av_dict_set(&pAvdictionary, "delay", "0", 0);
-    av_dict_set(&pAvdictionary, "buffer_size", "1000", 0);
+    av_dict_set(&pAvdictionary, "fflags", "nobuffer", 0);
+    av_dict_set(&pAvdictionary, "flags", "low_delay", 0);
+    av_dict_set(&pAvdictionary, "buffer_size", "1024000", 0);
 }
 
 auto QRCodeForStream::init() -> bool
 {
+    qrLog("stream init url=" + (streamUrl.size() > 80 ? streamUrl.substr(0, 80) + "..." : streamUrl));
     pAVFormatContext = avformat_alloc_context();
     if (avformat_open_input(&pAVFormatContext, streamUrl.c_str(), NULL, &pAvdictionary) != 0)
     {
+        qrLog("avformat_open_input FAILED");
         std::cerr << "Error opening input file" << std::endl;
         return false;
     }
     if (avformat_find_stream_info(pAVFormatContext, NULL) < 0)
     {
+        qrLog("avformat_find_stream_info FAILED");
         std::cerr << "Error finding stream information" << std::endl;
         return false;
     }
@@ -277,6 +408,7 @@ auto QRCodeForStream::init() -> bool
     }
     if (videoStream == nullptr)
     {
+        qrLog("no video stream found, nb_streams=" + std::to_string(pAVFormatContext->nb_streams));
         std::cerr << "No video stream found" << std::endl;
         return false;
     }
@@ -284,6 +416,7 @@ auto QRCodeForStream::init() -> bool
     const AVCodec* decoder{ avcodec_find_decoder(videoStream->codecpar->codec_id) };
     if (decoder == nullptr)
     {
+        qrLog(std::string("codec not found: ") + avcodec_get_name(videoStream->codecpar->codec_id));
         std::cerr << "Codec not found" << std::endl;
         return false;
     }
@@ -291,6 +424,7 @@ auto QRCodeForStream::init() -> bool
     avcodec_parameters_to_context(pAVCodecContext, videoStream->codecpar);
     if (avcodec_open2(pAVCodecContext, decoder, NULL) < 0)
     {
+        qrLog("avcodec_open2 FAILED");
         std::cerr << "Error opening codec" << std::endl;
         return false;
     }
@@ -298,8 +432,17 @@ auto QRCodeForStream::init() -> bool
     pSwsContext = sws_getContext(
         pAVCodecContext->width, pAVCodecContext->height, pAVCodecContext->pix_fmt,
         videoStreamWidth, videoStreamHeight, AV_PIX_FMT_BGR24, SWS_BILINEAR, NULL, NULL, NULL);
+    if (!pSwsContext)
+    {
+        qrLog("sws_getContext FAILED");
+        return false;
+    }
     pAVPacket = av_packet_alloc();
     pAVFrame = av_frame_alloc();
+    qrLog(std::string("stream OK codec=") + decoder->name +
+          " src=" + std::to_string(pAVCodecContext->width) + "x" + std::to_string(pAVCodecContext->height) +
+          " out=" + std::to_string(videoStreamWidth) + "x" + std::to_string(videoStreamHeight) +
+          " idx=" + std::to_string(videoStreamIndex));
     return true;
 }
 
@@ -310,7 +453,7 @@ void QRCodeForStream::continueLastLogin()
         using enum ServerType;
     case Official:
     {
-        bool b = ConfirmQRLogin(confirmUrl, uid, gameToken, lastTicket, gameType);
+        bool b = PassportQRLogin(passportQRUrl, stoken, mid, true);
         if (b)
         {
             Q_EMIT loginResults(ScanRet::SUCCESS);
@@ -323,7 +466,7 @@ void QRCodeForStream::continueLastLogin()
     break;
     case BH3_BiliBili:
     {
-        ret = scanConfirm(lastTicket, uid, gameToken, m_name);
+        ret = scanConfirm(lastTicket, uid, stoken, m_name);
         Q_EMIT loginResults(ret);
     }
     break;
@@ -338,7 +481,14 @@ void QRCodeForStream::run()
     m_stop.store(true);
     ret = ScanRet::UNKNOW;
     //TODO 获取直播流地址放在这里
-    if (init())
+    if (!init())
+    {
+        // init 失败必须可见化：否则 UI 仍显示「监视直播中」，实际完全没有在扫。
+        qrLog("stream init failed, emit STREAMERROR");
+        ret = ScanRet::STREAMERROR;
+        Q_EMIT loginResults(ret);
+    }
+    else
     {
 #ifndef SHOW
         cv::namedWindow("Video_Stream", cv::WINDOW_AUTOSIZE);
@@ -356,10 +506,10 @@ void QRCodeForStream::run()
         default:
             break;
         }
-    }
-    if (ret == ScanRet::LIVESTOP)
-    {
-        emit loginResults(ret);
+        if (ret == ScanRet::LIVESTOP)
+        {
+            emit loginResults(ret);
+        }
     }
 #ifndef SHOW
     cv::destroyWindow("Video_Stream");
